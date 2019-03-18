@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>pau-generator</artifactId>
+    <packaging>jar</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+    <groupId>com.soft.ware</groupId>
+    <name>pau-generator</name>
+    <description>代码生成器</description>
+
+    <parent>
+        <groupId>com.soft.ware</groupId>
+        <artifactId>pau-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pau-parent/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.soft.ware</groupId>
+            <artifactId>pau-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl</artifactId>
+        </dependency>
+    </dependencies>
+
+
+    
+</project>
