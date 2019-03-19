@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.SecUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.SecUser">
+        <id column="id_" property="id_" />
+            <result column="username_" property="username" />
+            <result column="sex_" property="sex" />
+            <result column="name_" property="name" />
+            <result column="password_" property="password" />
+            <result column="department_" property="department" />
+            <result column="mobile_" property="mobile" />
+            <result column="style_" property="style" />
+            <result column="email_" property="email" />
+            <result column="enable_" property="enable" />
+            <result column="sysroles_" property="sysroles" />
+            <result column="ordernum_" property="ordernum" />
+            <result column="description_" property="description" />
+            <result column="creator_" property="creator" />
+            <result column="createStamp_" property="createStamp" />
+            <result column="modifier_" property="modifier" />
+            <result column="modifyStamp_" property="modifyStamp" />
+            <result column="field01_" property="field01" />
+            <result column="field02_" property="field02" />
+            <result column="field03_" property="field03" />
+            <result column="field04_" property="field04" />
+            <result column="field05_" property="field05" />
+            <result column="field06_" property="field06" />
+            <result column="field07_" property="field07" />
+            <result column="field08_" property="field08" />
+            <result column="field09_" property="field09" />
+            <result column="field10_" property="field10" />
+            <result column="credentials_" property="credentials" />
+    </resultMap>
+
+
+    <select id="findByUsername" resultType="com.soft.ware.rest.common.persistence.model.SecUser">
+      select * from sys_user u where u.username = #{username}
+    </select>
+
+</mapper>
