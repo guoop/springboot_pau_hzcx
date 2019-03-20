@@ -4,7 +4,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 /**
- * pau Web程序启动类
+ * pau Web绋嬪簭鍚姩绫�
  */
 public class StartServletInitializer extends SpringBootServletInitializer {
 
