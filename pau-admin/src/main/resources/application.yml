@@ -77,7 +77,7 @@ mybatis-plus:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://192.168.10.128:3306/pau?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    url: jdbc:mysql://cdb-i69rvh7o.bj.tencentcdb.com:10066/pau?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
     username: root
     password: Hzcx_root
     db-name: pau
@@ -87,12 +87,12 @@ spring:
 pau:
   flowable:
     datasource:
-      url: jdbc:mysql://192.168.10.128:3306/pau_flowable?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      url: jdbc:mysql://cdb-i69rvh7o.bj.tencentcdb.com:10066/pau_flowable?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
       username: root
       password: Hzcx_root
   muti-datasource:
     default-dataSource-name: dataSourcepau #默认的数据源名称
-    url: jdbc:mysql://192.168.10.128:3306/pau_flowable?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    url: jdbc:mysql://cdb-i69rvh7o.bj.tencentcdb.com:10066/pau_flowable?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
     username: root
     password: Hzcx_root
 
@@ -110,9 +110,9 @@ logging:
 spring:
   profiles: produce
   datasource:
-      url: jdbc:mysql://127.0.0.1:3306/pau?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      url: jdbc:mysql://cdb-i69rvh7o.bj.tencentcdb.com:10066/pau?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
       username: root
-      password: root
+      password: Hzcx_root
       filters: log4j,wall,mergeStat
 
 logging:

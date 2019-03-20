@@ -5,4 +5,5 @@ import com.soft.ware.rest.common.persistence.model.TblOwner;
 
 public interface TblOwnerMapper extends BaseMapper<TblOwner> {
 
+	
 }
