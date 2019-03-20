@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.soft.ware.rest.common.persistence.dao.SecUserMapper">
-
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.SecUser">
         <id column="id_" property="id_" />
@@ -33,10 +32,7 @@
             <result column="field10_" property="field10" />
             <result column="credentials_" property="credentials" />
     </resultMap>
-
-
-    <select id="findByUsername" resultType="com.soft.ware.rest.common.persistence.model.SecUser">
-      select * from sys_user u where u.username = #{username}
+    <select id="findUserByUsername" parameterType="map" resultType="com.soft.ware.rest.common.persistence.model.SecUser">
+      select * from sec_user u where u.username_ = #{username}
     </select>
-
 </mapper>

@@ -20,7 +20,6 @@ public class AuthServiceImpl extends ServiceImpl<SecUserMapper, SecUser> impleme
 
     @Override
     public SecUser findByUsername(AuthRequest req) {
-        return secUserMapper.findByUsername(req.getUserName());
+        return secUserMapper.findUserByUsername(req.getUserName());
     }
-
 }

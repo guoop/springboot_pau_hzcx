@@ -11,5 +11,5 @@ public interface SecUserMapper extends BaseMapper<SecUser> {
      * @param username
      * @return
      */
-    SecUser findByUsername(@Param(value = "username")String username);
+    SecUser findUserByUsername(@Param(value = "username")String username);
 }
