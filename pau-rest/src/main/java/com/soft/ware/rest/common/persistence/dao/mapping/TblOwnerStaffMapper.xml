@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOwnerStaff">
+        <id column="id" property="id" />
+        <result column="owner_" property="owner" />
+        <result column="name_" property="name" />
+        <result column="phone_" property="phone" />
+        <result column="password_" property="password" />
+        <result column="createdAt_" property="createdAt" />
+        <result column="functionList_" property="functionList" />
+        <result column="urlList_" property="urlList" />
+        <result column="categoryList_" property="categoryList" />
+        <result column="status_" property="status" />
+    </resultMap>
+
+</mapper>
