@@ -17,6 +17,10 @@ public class AuthRequest implements Credence {
         this.userName = userName;
     }
 
+    public void setPhone(String phone) {
+        this.userName = phone;
+    }
+
     public String getPassword() {
         return password;
     }

@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.soft.ware.rest.common.persistence.handover.dao.HandOverMapper">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblOwnerMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.handover.model.HandOver">
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOwner">
         <id column="id" property="id" />
-        <result column="owner" property="owner" />
-        <result column="user_phone" property="userPhone" />
-        <result column="username" property="userName" />
-        <result column="pospalcode" property="pospalcode" />
-        <result column="sync_at" property="syncAt" />
-        <result column="optionstart" property="optionStart" />
-        <result column="optionat" property="optionaAt" />
-        <result column="fistordertime" property="fistOrderTime" />
-        <result column="lastordertime" property="lastOrderTime" />
-        <result column="ordernum" property="orderNum" />
-        <result column="ordertuinum" property="ordertuinum" />
-        <result column="orderreturnnum" property="orderReturnNum" />
-        <result column="allmoney" property="allMoney" />
-        <result column="ordermoney" property="orderMoney" />
-        <result column="money_shishou" property="moneyShishou" />
-        <result column="zhaoling" property="zhaoLing" />
-        <result column="membercz" property="membercz" />
-        <result column="ordertuimoney" property="orderTuimoney" />
-        <result column="orderreturnmoney" property="orderReturnMoney" />
-        <result column="wxpay" property="wxpay" />
-        <result column="wxpaynum" property="wxpayNum" />
-        <result column="alipay" property="alipay" />
-        <result column="alipaynum" property="alipayNum" />
-        <result column="unionpay" property="orderPhone" />
-        <result column="unionpaynum" property="unionPayNum" />
-        <result column="moneypay" property="moneyPay" />
-        <result column="moneypaynum" property="moneyPayNum" />
-        <result column="moneymemberpay" property="moneyMemberPay" />
-        <result column="memberpaynum" property="memberPayNum" />
+        <result column="shopId_" property="shopId" />
+        <result column="shopSecret_" property="shopSecret" />
+        <result column="appId_" property="appId" />
+        <result column="appSecret_" property="appSecret" />
+        <result column="appName_" property="appName" />
+        <result column="appQr_" property="appQr" />
+        <result column="owner_" property="owner" />
+        <result column="name_" property="name" />
+        <result column="phone_" property="phone" />
+        <result column="address_" property="address" />
+        <result column="description_" property="description" />
+        <result column="videoUrl_" property="videoUrl" />
+        <result column="timeBegin_" property="timeBegin" />
+        <result column="timeEnd_" property="timeEnd" />
+        <result column="defaultDesc_" property="defaultDesc" />
+        <result column="defaultRefundReason_" property="defaultRefundReason" />
+        <result column="delivery_" property="delivery" />
+        <result column="deliveryMoney_" property="deliveryMoney" />
+        <result column="deliveryLessMoney_" property="deliveryLessMoney" />
+        <result column="deliveryGreatMoney_" property="deliveryGreatMoney" />
+        <result column="deliveryDistance_" property="deliveryDistance" />
+        <result column="reachPay_" property="reachPay" />
+        <result column="selfPickup_" property="selfPickup" />
+        <result column="orderPhone_" property="orderPhone" />
+        <result column="updatedAt_" property="updatedAt" />
+        <result column="updatedBy_" property="updatedBy" />
+        <result column="defaultFee_" property="defaultFee" />
+        <result column="defaultFeeDesc_" property="defaultFeeDesc" />
     </resultMap>
-    
-    
-    
+
+    <select id="findOwnerByOwner" resultType="com.soft.ware.rest.common.persistence.model.TblOwner">
+        select * from tbl_owner o where o.owner = #{owner}
+    </select>
 </mapper>

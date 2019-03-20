@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblCategory">
+        <id column="id" property="id" />
+        <result column="name_" property="name" />
+        <result column="children_" property="children" />
+        <result column="description_" property="description" />
+        <result column="weights_" property="weights" />
+        <result column="cover_" property="cover" />
+        <result column="owner_" property="owner" />
+        <result column="is_delete_" property="isDelete" />
+        <result column="status_" property="status" />
+        <result column="is_system_" property="isSystem" />
+    </resultMap>
+    <select id="finalAll" resultType="com.soft.ware.rest.common.persistence.model.TblCategory">
+        select * from tbl_category c where c.is_delete = 0 and c.owner = #{owner} order by weights desc
+    </select>
+</mapper>

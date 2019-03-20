@@ -16,4 +16,8 @@
         <result column="status_" property="status" />
     </resultMap>
 
+
+    <select id="findStaffByPhone" resultType="com.soft.ware.rest.common.persistence.model.TblOwnerStaff">
+      select * from tbl_owner_staff os where os.phone = #{phone}
+    </select>
 </mapper>

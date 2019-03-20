@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOrder">
+        <id column="id" property="id" />
+        <result column="no_" property="no" />
+        <result column="source_" property="source" />
+        <result column="pickup_no_" property="pickupNo" />
+        <result column="pickup_time_" property="pickupTime" />
+        <result column="money_channel_" property="moneyChannel" />
+        <result column="money_" property="money" />
+        <result column="freight_" property="freight" />
+        <result column="pay_money_" property="payMoney" />
+        <result column="pay_at_" property="payAt" />
+        <result column="pay_response_" property="payResponse" />
+        <result column="created_at_" property="createdAt" />
+        <result column="created_by_" property="createdBy" />
+        <result column="settlement_by_" property="settlementBy" />
+        <result column="owner_" property="owner" />
+        <result column="consignee_name_" property="consigneeName" />
+        <result column="consignee_mobile_" property="consigneeMobile" />
+        <result column="consignee_address_" property="consigneeAddress" />
+        <result column="goods_" property="goods" />
+        <result column="status_" property="status" />
+        <result column="remark_" property="remark" />
+        <result column="confirm_by_" property="confirmBy" />
+        <result column="confirm_at_" property="confirmAt" />
+        <result column="distribution_at_" property="distributionAt" />
+        <result column="distribution_by_" property="distributionBy" />
+        <result column="done_at_" property="doneAt" />
+        <result column="done_by_" property="doneBy" />
+        <result column="cancel_at_" property="cancelAt" />
+        <result column="cancel_by_" property="cancelBy" />
+        <result column="cancel_reason_" property="cancelReason" />
+        <result column="refund_at_" property="refundAt" />
+        <result column="refund_by_" property="refundBy" />
+        <result column="refund_money_" property="refundMoney" />
+        <result column="refund_reason_" property="refundReason" />
+        <result column="refund_status_" property="refundStatus" />
+        <result column="refund_response_" property="refundResponse" />
+    </resultMap>
+
+</mapper>

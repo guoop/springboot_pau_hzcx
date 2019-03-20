@@ -5,6 +5,7 @@ import com.soft.ware.core.util.RenderUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.config.properties.JwtProperties;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +51,9 @@ public class AuthFilter extends OncePerRequestFilter {
                 if (flag) {
                     RenderUtil.renderJson(response, new ErrorTip(BizExceptionEnum.TOKEN_EXPIRED.getCode(), BizExceptionEnum.TOKEN_EXPIRED.getMessage()));
                     return;
+                }else{
+                    Claims c = jwtTokenUtil.getClaimFromToken(authToken);
+                    request.setAttribute("claims", c);
                 }
             } catch (JwtException e) {
                 //有异常就是token解析失败
