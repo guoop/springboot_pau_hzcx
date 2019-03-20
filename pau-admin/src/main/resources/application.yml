@@ -94,7 +94,7 @@ pau:
     default-dataSource-name: dataSourcepau #默认的数据源名称
     url: jdbc:mysql://127.0.0.1:3306/pau_flowable?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
     username: root
-    password: root
+    password: Hzcx_root
 
 logging:
   level.root: info
