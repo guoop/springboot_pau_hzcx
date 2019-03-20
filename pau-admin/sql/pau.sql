@@ -14,7 +14,7 @@ Date: 2019-01-30 11:44:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
+use pau;
 -- ----------------------------
 -- Table structure for sys_dept
 -- ----------------------------

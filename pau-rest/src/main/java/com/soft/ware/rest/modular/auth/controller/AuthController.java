@@ -1,7 +1,5 @@
 package com.soft.ware.rest.modular.auth.controller;
 
-import com.soft.ware.rest.common.persistence.model.SecUser;
-import com.soft.ware.rest.modular.auth.service.RestAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,17 +29,11 @@ public class AuthController {
     @Resource(name = "simpleValidator")
     private IReqValidator reqValidator;
 
-
-    @Autowired
-    private RestAuthService authService;
-
     @RequestMapping(value = "${jwt.auth-path}")
     public ResponseEntity<?> createAuthenticationToken(AuthRequest authRequest) {
-        boolean validate = reqValidator.validate(authRequest);
-        SecUser user = authService.findByUsername(authRequest);
-        if (user != null) {
 
-        }
+        boolean validate = reqValidator.validate(authRequest);
+
         if (validate) {
             final String randomKey = jwtTokenUtil.getRandomKey();
             final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
