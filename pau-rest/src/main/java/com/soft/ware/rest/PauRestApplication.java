@@ -24,4 +24,5 @@ public class PauRestApplication extends WebMvcConfigurerAdapter {
         argumentResolvers.add(new AuthHandlerMethodArgumentResolver());
         argumentResolvers.add(new PageHandlerMethodArgumentResolver());
     }
+    
 }
