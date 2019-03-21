@@ -22,8 +22,8 @@ import java.io.UnsupportedEncodingException;
 
 public class BaseController {
 
-    protected static String SUCCESS = "SUCCESS";
-    protected static String ERROR = "ERROR";
+    public static String SUCCESS = "SUCCESS";
+    public static String ERROR = "ERROR";
 
     protected static String REDIRECT = "redirect:";
     protected static String FORWARD = "forward:";

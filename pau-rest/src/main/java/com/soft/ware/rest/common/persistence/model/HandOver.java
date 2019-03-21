@@ -1,6 +1,7 @@
 package com.soft.ware.rest.common.persistence.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -38,7 +39,7 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 交接班结束时间
 	 */
-	private Date optionaAt;
+	private Date optionAt;
 	/**
 	 * 第一笔订单时间
 	 */
@@ -64,38 +65,38 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 商品总价
 	 */
-	private Double allMoney;
+	private BigDecimal allMoney;
 	/**
 	 * 订单总价
 	 */
-	private Double orderMoney;
+	private BigDecimal orderMoney;
 	/**
 	 * 实收总额
 	 */
-	private Double moneyShishou;
+	private BigDecimal moneyShishou;
 	/**
 	 * 找零总额
 	 */
-	private Double zhaoLing;
+	private BigDecimal zhaoLing;
 	/**
 	 * 会员充值总额
 	 */
-	private Double membercz;
+	private BigDecimal membercz;
 	
 	/**
 	 * 退款额
 	 */
-	private Double orderTuimoney;
+	private BigDecimal orderTuimoney;
 	
 	/**
 	 * 反结账额
 	 */
-	private  Double orderReturnMoney;
+	private  BigDecimal orderReturnMoney;
 	
 	/**
 	 * 微信支付总额
 	 */
-	private Double wxpay;
+	private BigDecimal wxpay;
 	/**
 	 * 微信支付单数
 	 */
@@ -103,7 +104,7 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 支付宝支付总额
 	 */
-	private Double alipay;
+	private BigDecimal alipay;
 	
 	/**
 	 * 支付宝支付单数
@@ -112,7 +113,7 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 银联支付总额
 	 */
-	private Double unionPay;
+	private BigDecimal unionPay;
 	/**
 	 * 银联支付单数
 	 */
@@ -120,7 +121,7 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 现金支付总额
 	 */
-	private Double moneyPay;
+	private BigDecimal moneyPay;
 	/**
 	 * 现金支付单数
 	 */
@@ -128,7 +129,7 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 会员支付总额
 	 */
-	private Double moneyMemberPay;
+	private BigDecimal moneyMemberPay;
 	/**
 	 * 会员支付单数
 	 */
@@ -221,13 +222,13 @@ public class HandOver extends Model<HandOver>{
 
 
 	public Date getOptionaAt() {
-		return optionaAt;
+		return optionAt;
 	}
 
 
 
 	public void setOptionaAt(Date optionaAt) {
-		this.optionaAt = optionaAt;
+		this.optionAt = optionaAt;
 	}
 
 
@@ -292,97 +293,97 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public Double getAllMoney() {
+	public BigDecimal getAllMoney() {
 		return allMoney;
 	}
 
 
 
-	public void setAllMoney(Double allMoney) {
+	public void setAllMoney(BigDecimal allMoney) {
 		this.allMoney = allMoney;
 	}
 
 
 
-	public Double getOrderMoney() {
+	public BigDecimal getOrderMoney() {
 		return orderMoney;
 	}
 
 
 
-	public void setOrderMoney(Double orderMoney) {
+	public void setOrderMoney(BigDecimal orderMoney) {
 		this.orderMoney = orderMoney;
 	}
 
 
 
-	public Double getMoneyShishou() {
+	public BigDecimal getMoneyShishou() {
 		return moneyShishou;
 	}
 
 
 
-	public void setMoneyShishou(Double moneyShishou) {
+	public void setMoneyShishou(BigDecimal moneyShishou) {
 		this.moneyShishou = moneyShishou;
 	}
 
 
 
-	public Double getZhaoLing() {
+	public BigDecimal getZhaoLing() {
 		return zhaoLing;
 	}
 
 
 
-	public void setZhaoLing(Double zhaoLing) {
+	public void setZhaoLing(BigDecimal zhaoLing) {
 		this.zhaoLing = zhaoLing;
 	}
 
 
 
-	public Double getMembercz() {
+	public BigDecimal getMembercz() {
 		return membercz;
 	}
 
 
 
-	public void setMembercz(Double membercz) {
+	public void setMembercz(BigDecimal membercz) {
 		this.membercz = membercz;
 	}
 
 
 
-	public Double getOrderTuimoney() {
+	public BigDecimal getOrderTuimoney() {
 		return orderTuimoney;
 	}
 
 
 
-	public void setOrderTuimoney(Double orderTuimoney) {
+	public void setOrderTuimoney(BigDecimal orderTuimoney) {
 		this.orderTuimoney = orderTuimoney;
 	}
 
 
 
-	public Double getOrderReturnMoney() {
+	public BigDecimal getOrderReturnMoney() {
 		return orderReturnMoney;
 	}
 
 
 
-	public void setOrderReturnMoney(Double orderReturnMoney) {
+	public void setOrderReturnMoney(BigDecimal orderReturnMoney) {
 		this.orderReturnMoney = orderReturnMoney;
 	}
 
 
 
-	public Double getWxpay() {
+	public BigDecimal getWxpay() {
 		return wxpay;
 	}
 
 
 
-	public void setWxpay(Double wxpay) {
+	public void setWxpay(BigDecimal wxpay) {
 		this.wxpay = wxpay;
 	}
 
@@ -400,13 +401,13 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public Double getAlipay() {
+	public BigDecimal getAlipay() {
 		return alipay;
 	}
 
 
 
-	public void setAlipay(Double alipay) {
+	public void setAlipay(BigDecimal alipay) {
 		this.alipay = alipay;
 	}
 
@@ -424,11 +425,11 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public Double getUnionPay() {
+	public BigDecimal getUnionPay() {
 		return unionPay;
 	}
 
-	public void setUnionPay(Double unionPay) {
+	public void setUnionPay(BigDecimal unionPay) {
 		this.unionPay = unionPay;
 	}
 
@@ -440,11 +441,11 @@ public class HandOver extends Model<HandOver>{
 		this.unionPayNum = unionPayNum;
 	}
 
-	public Double getMoneyPay() {
+	public BigDecimal getMoneyPay() {
 		return moneyPay;
 	}
 
-	public void setMoneyPay(Double moneyPay) {
+	public void setMoneyPay(BigDecimal moneyPay) {
 		this.moneyPay = moneyPay;
 	}
 
@@ -455,10 +456,10 @@ public class HandOver extends Model<HandOver>{
 		this.moneyPayNum = moneyPayNum;
 	}
 
-	public Double getMoneyMemberPay() {
+	public BigDecimal getMoneyMemberPay() {
 		return moneyMemberPay;
 	}
-	public void setMoneyMemberPay(Double moneyMemberPay) {
+	public void setMoneyMemberPay(BigDecimal moneyMemberPay) {
 		this.moneyMemberPay = moneyMemberPay;
 	}
 

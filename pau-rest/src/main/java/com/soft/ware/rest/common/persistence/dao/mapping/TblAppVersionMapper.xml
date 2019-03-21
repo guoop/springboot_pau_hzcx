@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblAppVersionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblAppVersion">
+        <id column="id" property="id" />
+        <result column="base_id_" property="baseId" />
+        <result column="version_main_" property="versionMain" />
+        <result column="version_secondary_" property="versionSecondary" />
+        <result column="version_bug_" property="versionBug" />
+        <result column="version_" property="version" />
+        <result column="is_force_" property="isForce" />
+        <result column="download_url_" property="downloadUrl" />
+        <result column="description_" property="description" />
+        <result column="created_at_" property="createdAt" />
+    </resultMap>
+    <select id="findLast" resultType="com.soft.ware.rest.common.persistence.model.TblAppVersion">
+        select v.id,v.download_url,v.description,v.version from tbl_app_version v,tbl_app_base b where b.id = v.base_id and b.code = #{platformCode} order by v.created_at desc limit 1
+    </select>
+
+</mapper>

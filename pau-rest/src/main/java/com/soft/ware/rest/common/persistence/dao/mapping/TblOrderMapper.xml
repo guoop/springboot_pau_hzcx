@@ -42,4 +42,26 @@
         <result column="refund_response_" property="refundResponse" />
     </resultMap>
 
+    <select id="findListCountByStatus" resultType="java.lang.Long">
+        select count(1) from tbl_order o where o.source = 1 and o.owner = #{user.owner} and o.status != '-2' and o.status != '-3'
+        <if test="status != null">
+          and status = #{status}
+        </if>
+    </select>
+    <select id="findListByStatus" resultType="java.util.Map">
+        select o.* from tbl_order o where o.source = 1 and o.owner = #{user.owner} and o.status != '-2' and o.status != '-3'
+        <if test="status != null">
+          and status = #{status}
+        </if>
+        order by pay_at desc
+        <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
+    </select>
+    <select id="findByNo" resultType="java.util.Map">
+        select o.* from tbl_order o where o.no = #{no} and o.owner = #{user.owner}
+    </select>
+
+    <update id="updateStatusByNo" parameterType="int">
+        update table tbl_order o set o.status = #{status} where o.no = #{no} and o.owner = #{user.owner}
+    </update>
+
 </mapper>

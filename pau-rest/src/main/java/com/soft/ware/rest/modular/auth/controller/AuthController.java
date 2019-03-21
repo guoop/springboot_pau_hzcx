@@ -7,7 +7,6 @@ import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.wrapper.AuthWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,7 +56,7 @@ public class AuthController extends BaseController {
             AuthResponse resp = new AuthResponse(token, randomKey);
             //return ResponseEntity.ok(resp);
             Map<String,Object> map = new HashMap<>();
-            map.put("code", "success");
+            map.put("code", SUCCESS);
             map.put("token", resp.getToken());
             map.put("owner", user.getOwner());
             map.put("app_name", owner.getAppName());

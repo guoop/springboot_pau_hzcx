@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.auth.wrapper;
 
+import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.warpper.BaseControllerWarpper;
 
 import java.util.HashMap;
@@ -17,6 +18,6 @@ public class SuccessWrapper extends BaseControllerWarpper {
 
     @Override
     protected void warpTheMap(Map<String, Object> map) {
-        map.put("code", "success");
+        map.put("code", BaseController.SUCCESS);
     }
 }

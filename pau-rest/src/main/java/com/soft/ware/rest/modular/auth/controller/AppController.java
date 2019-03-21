@@ -1,25 +1,26 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.rest.common.persistence.model.TblCategory;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
+import com.soft.ware.rest.modular.auth.service.TblAppVersionService;
 import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.auth.wrapper.AppVersionWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.CategoryWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.SuccessWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*@RestController
+@RestController
 public class AppController extends BaseController {
 
     @Autowired
@@ -31,19 +32,22 @@ public class AppController extends BaseController {
     @Autowired
     private TblOrderService tblOrderService;
 
+    @Autowired
+    private TblAppVersionService appVersionService;
 
-    *//**
+
+    /**
      * 接口："https://app.aiinp.com/user/category/list";
      * 参数：
      * owner（登录返回的owner），
      * Authorization（格式为：Bearer + 一个空格 + token）
      * @return
-     *//*
+     */
     @RequestMapping(value = "/user/category/list")
     public Object goods(TblOwnerStaff staff){
         List<TblCategory> list = categoryService.findAllCategory(staff);
         Map<String, Object> map = new HashMap<>();
-        map.put("code", "success");
+        map.put("code",SUCCESS);
         map.put("data", list);
         return super.warpObject(new CategoryWrapper(map));
 
@@ -59,7 +63,7 @@ public class AppController extends BaseController {
     }
 
 
-    *//**
+    /**
      *
      * 4、上传订单(POST)
      * 接口：https://app.aiinp.com/user/order
@@ -81,10 +85,29 @@ public class AppController extends BaseController {
      * Authorization（格式为：Bearer + 一个空格 + token）
      * goods拼接方式：1801__https://mp-owner-1251363375.cos.ap-guangzhou.myqcloud.com/1536655293256.jpg__馒头（每人限5袋）__-1__1__1.50__1.50
      * @return
-     *//*
+     */
+    @RequestMapping(value = "/user/order",method = RequestMethod.POST)
     public Object addOrder(TblOwnerStaff user,AddOrderParam param){
         TblOrder order = tblOrderService.createOrder(user,param);
         return super.warpObject(new SuccessWrapper(new HashMap<>()));
     }
 
-}*/
+
+    @RequestMapping(value = "/version/check",method = RequestMethod.GET)
+    public Object appVersion(){
+        TblAppVersion v = appVersionService.findLast(TblAppBase.PLATFORM_CODE_APP_ANDROID);
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", SUCCESS);
+        map.put("force", v.getIsForce());
+        Map<String, Object> newVersion = new HashMap<String,Object>();
+        newVersion.put("download_url", v.getDownloadUrl());
+        newVersion.put("description", v.getDescription());
+        newVersion.put("version", v.getVersion());
+        map.put("newVersion", newVersion);
+        return super.warpObject(new AppVersionWrapper(map));
+    }
+
+
+
+
+}

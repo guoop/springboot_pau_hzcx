@@ -1,5 +1,7 @@
 package com.soft.ware.rest.modular.auth.util;
 
+import com.soft.ware.core.base.controller.BaseController;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +11,8 @@ public class Page<T> {
 
     //总条数
     private long total;
-    //每页多少钱
-    private long limit;
+    //每页多少条
+    private long size;
     //偏移量
     private long offset;
     //总页数
@@ -18,11 +20,11 @@ public class Page<T> {
     //当前第几页
     private long page;
     //查询结果
-    private List<Page> records;
+    private List<T> records;
 
 
     public Page() {
-        limit = 20;
+        size = 20;
         offset = 1;
         records = new ArrayList<>();
     }
@@ -40,17 +42,17 @@ public class Page<T> {
             this.pages = total;
             this.offset = 1;
         }else{
-            this.pages = total % limit > 0 ? total / limit + 1 : total / limit;
+            this.pages = total % size > 0 ? total / size + 1 : total / size;
         }
-        this.offset = this.page * limit;
+        this.offset = this.page * size;
     }
 
     public long getLimit() {
-        return limit;
+        return size;
     }
 
     public void setLimit(long limit) {
-        this.limit = limit < 1 ? 1 : limit;
+        this.size = limit < 1 ? 1 : limit;
     }
 
     public long getOffset() {
@@ -78,11 +80,11 @@ public class Page<T> {
         this.page = page;
     }
 
-    public List<Page> getRecords() {
+    public List<T> getRecords() {
         return records;
     }
 
-    public void setRecords(List<Page> records) {
+    public void setRecords(List<T> records) {
         this.records = records;
     }
 
@@ -92,7 +94,7 @@ public class Page<T> {
         map.put("limit", getLimit());
         map.put("page", getPage());
         map.put("records", getRecords());
-        map.put("code", "success");
+        map.put("code", BaseController.SUCCESS);
         return map;
     }
 }

@@ -25,9 +25,21 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     SIGN_ERROR(700, "签名验证失败"),
 
     /**
+     * 修改失败
+     */
+    UPDATE_ERROR(500,"修改失败"),
+
+    /**
+     * 添加失败
+     */
+    ADD_ERROR(500,"添加失败"),
+
+    /**
      * 其他
      */
     AUTH_REQUEST_ERROR(400, "账号密码错误");
+
+
 
     BizExceptionEnum(int code, String message) {
         this.code = code;

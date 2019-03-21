@@ -30,7 +30,7 @@ public class PageHandlerMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest request, WebDataBinderFactory webDataBinderFactory) throws Exception {
         Page<?> p = new Page<>();
-        String limit = request.getParameter("limit");
+        String limit = request.getParameter("size");
         String page = request.getParameter("page");
         if (StringUtils.isNotBlank(limit)) {
             p.setLimit(Integer.valueOf(limit));
