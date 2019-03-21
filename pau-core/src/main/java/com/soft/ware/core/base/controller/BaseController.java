@@ -30,7 +30,6 @@ public class BaseController {
 
     protected static SuccessTip SUCCESS_TIP = new SuccessTip();
     
-    protected static ErrorTip ERROR_TIP = new ErrorTip(code, message)
 
     protected HttpServletRequest getHttpServletRequest() {
         return HttpKit.getRequest();

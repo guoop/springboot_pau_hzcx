@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+/*@RestController
 public class AppController extends BaseController {
 
     @Autowired
@@ -32,13 +32,13 @@ public class AppController extends BaseController {
     private TblOrderService tblOrderService;
 
 
-    /**
+    *//**
      * 接口："https://app.aiinp.com/user/category/list";
      * 参数：
      * owner（登录返回的owner），
      * Authorization（格式为：Bearer + 一个空格 + token）
      * @return
-     */
+     *//*
     @RequestMapping(value = "/user/category/list")
     public Object goods(TblOwnerStaff staff){
         List<TblCategory> list = categoryService.findAllCategory(staff);
@@ -59,7 +59,7 @@ public class AppController extends BaseController {
     }
 
 
-    /**
+    *//**
      *
      * 4、上传订单(POST)
      * 接口：https://app.aiinp.com/user/order
@@ -81,10 +81,10 @@ public class AppController extends BaseController {
      * Authorization（格式为：Bearer + 一个空格 + token）
      * goods拼接方式：1801__https://mp-owner-1251363375.cos.ap-guangzhou.myqcloud.com/1536655293256.jpg__馒头（每人限5袋）__-1__1__1.50__1.50
      * @return
-     */
+     *//*
     public Object addOrder(TblOwnerStaff user,AddOrderParam param){
         TblOrder order = tblOrderService.createOrder(user,param);
         return super.warpObject(new SuccessWrapper(new HashMap<>()));
     }
 
-}
+}*/
