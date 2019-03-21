@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblCustomerHistoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblCustomerHistory">
+        <id column="id" property="id" />
+        <result column="open_id_" property="openId" />
+        <result column="created_at_" property="createdAt" />
+        <result column="in_at_" property="inAt" />
+        <result column="out_at_" property="outAt" />
+        <result column="current_status_" property="currentStatus" />
+        <result column="address_name_" property="addressName" />
+        <result column="address_phone_" property="addressPhone" />
+        <result column="address_detail_" property="addressDetail" />
+        <result column="address_created_at_" property="addressCreatedAt" />
+        <result column="address_updated_at_" property="addressUpdatedAt" />
+        <result column="owner_" property="owner" />
+        <result column="owner_name_" property="ownerName" />
+        <result column="owner_phone_" property="ownerPhone" />
+        <result column="mp_id_" property="mpId" />
+        <result column="mp_name_" property="mpName" />
+    </resultMap>
+
+</mapper>

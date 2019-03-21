@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblAddressMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblAddress">
+        <id column="id" property="id" />
+        <result column="owner_" property="owner" />
+        <result column="name_" property="name" />
+        <result column="telephone_" property="telephone" />
+        <result column="province_" property="province" />
+        <result column="detail_" property="detail" />
+        <result column="is_default_" property="isDefault" />
+        <result column="created_at_" property="createdAt" />
+        <result column="is_deleted_" property="isDeleted" />
+        <result column="deleted_at_" property="deletedAt" />
+    </resultMap>
+
+</mapper>

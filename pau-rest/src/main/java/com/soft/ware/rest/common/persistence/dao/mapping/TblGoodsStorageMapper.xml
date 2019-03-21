@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblGoodsStorageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblGoodsStorage">
+        <id column="id" property="id" />
+        <result column="owner_" property="owner" />
+        <result column="goods_id_" property="goodsId" />
+        <result column="single_price_" property="singlePrice" />
+        <result column="in_amount_" property="inAmount" />
+        <result column="before_storage_" property="beforeStorage" />
+        <result column="after_storage_" property="afterStorage" />
+        <result column="in_money_" property="inMoney" />
+        <result column="baseline_" property="baseline" />
+        <result column="before_baseline_" property="beforeBaseline" />
+        <result column="in_at_" property="inAt" />
+        <result column="created_at_" property="createdAt" />
+    </resultMap>
+
+</mapper>
