@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.auth.controller;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.service.TblAppVersionService;
 import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
@@ -55,8 +56,8 @@ public class AppController extends BaseController {
 
 
     @RequestMapping(value = "/user/goods")
-    public Object userGoods(TblOwnerStaff staff, Page page){
-        List<Map> list = goodsService.findPage(staff, page);
+    public Object userGoods(TblOwnerStaff staff, Page page, GoodsPageParam param){
+        List<Map> list = goodsService.findPage(staff, page, param);
         page.setRecords(list);
         //todo  yancc 前端还不支持分页
         return list;

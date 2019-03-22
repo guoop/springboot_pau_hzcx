@@ -235,8 +235,9 @@ public class TblGoods extends Model<TblGoods> {
         return id;
     }
 
-    public  void setId(Long id){
+    public TblGoods setId(Long id){
         this.id = id;
+        return this;
     }
 
 

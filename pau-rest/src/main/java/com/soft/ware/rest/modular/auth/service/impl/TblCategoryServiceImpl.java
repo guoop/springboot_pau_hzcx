@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.rest.common.persistence.dao.TblCategoryMapper;
 import com.soft.ware.rest.common.persistence.model.TblCategory;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.modular.auth.controller.dto.Customer;
 import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,11 @@ public class TblCategoryServiceImpl extends ServiceImpl<TblCategoryMapper,TblCat
 
     @Override
     public List<TblCategory> findAllCategory(TblOwnerStaff staff) {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("is_delete", TblCategory.is_delete_0);
         return tblCategoryMapper.finalAll(staff.getOwner());
+    }
+
+    @Override
+    public List<TblCategory> findAllCategory(Customer customer) {
+        return tblCategoryMapper.finalAll(customer.getOwner());
     }
 }

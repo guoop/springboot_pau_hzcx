@@ -17,6 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 对客户端请求的jwt token验证过滤器
@@ -34,11 +36,31 @@ public class AuthFilter extends OncePerRequestFilter {
     @Autowired
     private JwtProperties jwtProperties;
 
+    public static Set<String> whiteUrlSet = new HashSet<>();
+    public static Set<String> whitePrefixUrlSet = new HashSet<>();
+
+    static {
+        whiteUrlSet.add("/customer/v1/banner/list");
+        whiteUrlSet.add("/customer/v1/category/list");
+        whiteUrlSet.add("/customer/v1/goods/list");
+        whiteUrlSet.add("/customer/v1/shop");
+        whiteUrlSet.add("/customer/v1/cart");
+
+        whitePrefixUrlSet.add("/customer/v1/goods/");
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
+        String path = request.getServletPath();
+        if (request.getServletPath().equals("/" + jwtProperties.getAuthPath()) || whiteUrlSet.contains(request.getServletPath())) {
             chain.doFilter(request, response);
             return;
+        }
+        for (String s : whitePrefixUrlSet) {
+            if (path.startsWith(s)) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
         String authToken = null;

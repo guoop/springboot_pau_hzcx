@@ -179,8 +179,9 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public void setUserName(String userName) {
+	public HandOver setUserName(String userName) {
 		this.userName = userName;
+		return this;
 	}
 
 

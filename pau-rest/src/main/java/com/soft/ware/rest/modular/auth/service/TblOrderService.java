@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.Customer;
+import com.soft.ware.rest.modular.auth.controller.dto.CustomerOrderParam;
 import com.soft.ware.rest.modular.auth.util.Page;
 
 import java.util.List;
@@ -43,4 +45,11 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     boolean updateStatus(TblOwnerStaff user, String orderNO, String status);
+
+    /**
+     * 用户订单
+     * @param customer
+     * @return
+     */
+    List<Map> findPage(Customer customer, CustomerOrderParam param);
 }

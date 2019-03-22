@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -83,8 +82,9 @@ public class TblBanner extends Model<TblBanner> {
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblBanner setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;

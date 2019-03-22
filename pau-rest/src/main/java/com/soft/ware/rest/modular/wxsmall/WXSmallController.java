@@ -16,20 +16,20 @@ public class WXSmallController extends BaseController {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@Autowired
-	private 
+/*	@Autowired
+	private */
 	/**
 	 * 获取openId
 	 * @param code  
 	 * @return openId
 	 */
-	@RequestMapping("/owner/share/wx_identifier")
+/*	@RequestMapping("/owner/share/wx_identifier")
 	public String getOpenId(String code){
 		
 		String result = restTemplate.getForObject(WXContants.WX_LOGIN+"?appid=APPID&secret=SECRET&js_code=+"+code+"+&grant_type=authorization_code",String.class, "json");
 		
 		return null;
 	}
-	
+	*/
 
 }

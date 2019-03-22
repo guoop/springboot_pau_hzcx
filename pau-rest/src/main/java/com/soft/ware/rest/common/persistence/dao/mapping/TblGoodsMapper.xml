@@ -32,12 +32,23 @@
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
+    <sql id="findPageCondition">
+        <if test="param.category != null and param.category != ''">
+            and g.category_id = #{param.category}
+        </if>
+        <if test="param.name != null and param.name != ''">
+            and g.name like CONCAT('%',#{param.name},'%')
+        </if>
+    </sql>
     <select id="findPage" resultType="java.util.Map">
-        select * from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner.owner} order by sort_num asc
+        select * from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner}
+        <include refid="findPageCondition"/>
+        order by sort_num asc
         <include refid="limit"/>
     </select>
     <select id="findPageCount" resultType="long">
-        select count(1) from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner.owner}
+        select count(1) from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner}
+        <include refid="findPageCondition"/>
     </select>
 
 </mapper>

@@ -39,6 +39,10 @@ spring:
       enabled: true #是否开启开发者工具（true/false）
       additional-paths: src/main/java
       exclude: static/**,WEB-INF/view/**
+  redis:
+    database: 0
+    host: 192.168.10.6
+    port: 6379
 logging:
   level.root: info
   level.com.soft.ware: debug

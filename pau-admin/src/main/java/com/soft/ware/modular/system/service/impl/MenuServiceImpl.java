@@ -9,6 +9,7 @@ import com.soft.ware.modular.system.dao.MenuMapper;
 import com.soft.ware.modular.system.model.Menu;
 import com.soft.ware.modular.system.service.IMenuService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;

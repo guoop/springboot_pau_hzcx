@@ -8,6 +8,8 @@ import com.soft.ware.rest.common.persistence.dao.TblOrderMapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.Customer;
+import com.soft.ware.rest.modular.auth.controller.dto.CustomerOrderParam;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,4 +97,18 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
         }
         return true;
     }
+
+    @Override
+    public List<Map> findPage(Customer customer, CustomerOrderParam param) {
+        return null;
+    }
+
+/*    @Override
+    public List<Map> findPage(Customer customer,Page page, CustomerOrderParam param) {
+        HashMap<Object, Object> map = new HashMap<>();
+        orderMapper.findListCountByStatus(customer, param,);
+        List<Map> list = orderMapper.findListByStatus(customer, page, param);
+
+        return list;
+    }*/
 }
