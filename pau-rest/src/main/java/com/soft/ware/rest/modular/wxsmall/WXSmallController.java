@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,17 +57,40 @@ public class WXSmallController extends BaseController {
 		return result.get("openid");
 		
 	}
+	/**
+	 * 商家端发送手机验证码
+	 * @param phone
+	 * @return
+	 */
 	@RequestMapping("/share/code")
 	@ResponseBody
 	public Tip getPhoneCode(String phone){
 		String msgCode = ToolUtil.getRandomString(6);
+		
 		Map<String,Object> map = new HashMap<String, Object>();
-		String result = restTemplate.postForObject(WXContants.TENCENTMSG_GATAWAY, map, String.class);
-		if(ToolUtil.isEmpty(result)){
+		map.put("", msgCode);
+		ResponseEntity<String> result= restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map, String.class);
+		if(ToolUtil.isNotEmpty(result.getBody())){
 			return new ErrorTip(601,"短信地址请求失败");
 		}
 		return SUCCESS_TIP;
 	}
 	
-
+	/**
+	 * 登录商家版小程序
+	 * @param phone 手机号
+	 * @param code  验证码
+	 * @return 用户信息以及token值
+	 */
+	@RequestMapping("/share/login")
+	@ResponseBody
+	public Object login(String phone,String code){
+		
+		return null;
+	}
+	
+/*	@RequestMapping("/share/login")
+	@ResponseBody
+	public String */
+	
 }
