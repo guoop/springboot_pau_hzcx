@@ -14,7 +14,7 @@ public class ResKit {
     /**
      * @Description 批量获取ClassPath下的资源文件
      */
-    public static Resource[] getClassPathResources(String pattern) {
+ /*   public static Resource[] getClassPathResources(String pattern) {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
             return resolver.getResources(pattern);
@@ -22,12 +22,13 @@ public class ResKit {
             throw new RuntimeException("加载resource文件时,找不到文件,所找文件为：" + pattern);
         }
     }
-
+*/
     /**
      * @Description 批量获取ClassPath下的资源文件
      */
-    public static String getClassPathFile(String file) {
+   /* public static String getClassPathFile(String file) {
 		//return ResKit.class.getClassLoader().getResource(file).getPath();
         return Thread.currentThread().getContextClassLoader().getResource(file).getPath();
-    }
+    }*/
+
 }

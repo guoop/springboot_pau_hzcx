@@ -9,4 +9,6 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 public interface IHandOverService extends IService<HandOver>{
 
     HandOver over(SessionUser user, HandoverParam param);
+    
+    HandOver getHandOver(HandoverParam param,SessionUser user);
 }
