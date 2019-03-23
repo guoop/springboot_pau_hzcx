@@ -1,10 +1,12 @@
 package com.soft.ware.rest.modular.handover.service.impl;
 
+import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -13,7 +15,10 @@ import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 
 import javax.annotation.Resource;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> implements IHandOverService {
@@ -67,4 +72,17 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 
 
     }
+
+
+	@Override
+	public HandOver getHandOver(HandoverParam param,SessionUser user) {
+		
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("owner", user.getOwner());
+		map.put("startTime", param.getOptionstart());
+		map.put("endTime", param.getOptionat());
+		
+		
+		return null;
+	}
 }

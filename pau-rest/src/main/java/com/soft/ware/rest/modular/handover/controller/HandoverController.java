@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.handover.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.HandOver;
@@ -11,6 +12,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.wrapper.FailWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.SuccessWrapper;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,12 +34,9 @@ public class HandoverController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping("handover")
-	public Object getHandover(String owner){
-		if(ToolUtil.isEmpty(owner)){
-			throw new PauException(BizExceptionEnum.PARAME_ERROR);
-		}
+	public Object getHandover(HandoverParam param,SessionUser session){
+		overService.getHandOver(param,session);
 		HandOver ho = new HandOver();
-		ho.setOwner(owner);
 		return overService.selectOne(new EntityWrapper<>(ho));
 	}
 

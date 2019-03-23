@@ -37,8 +37,12 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     /**
      * 其他
      */
-    AUTH_REQUEST_ERROR(400, "账号密码错误");
-
+    AUTH_REQUEST_ERROR(400, "账号密码错误"),
+    
+    /**
+     * 对象为null
+     */
+   ISNULL(601,"对象为空");
 
 
     BizExceptionEnum(int code, String message) {

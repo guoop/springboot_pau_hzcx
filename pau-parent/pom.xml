@@ -206,7 +206,7 @@
 			    <artifactId>slf4j-api</artifactId>
 			    <version>${slf4j-api.version}</version>
 			</dependency>
-			
+			<!-- 腾讯云短信 -->
 			<dependency>
 			  <groupId>com.github.qcloudsms</groupId>
 			  <artifactId>qcloudsms</artifactId>
