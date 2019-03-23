@@ -5,15 +5,20 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblAddress">
         <id column="id" property="id" />
-        <result column="owner_" property="owner" />
-        <result column="name_" property="name" />
-        <result column="telephone_" property="telephone" />
-        <result column="province_" property="province" />
-        <result column="detail_" property="detail" />
+        <result column="owner" property="owner" />
+        <result column="name" property="name" />
+        <result column="telephone" property="telephone" />
+        <result column="province" property="province" />
+        <result column="detail" property="detail" />
         <result column="is_default_" property="isDefault" />
-        <result column="created_at_" property="createdAt" />
-        <result column="is_deleted_" property="isDeleted" />
-        <result column="deleted_at_" property="deletedAt" />
+        <result column="created_at" property="createdAt" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="deleted_at" property="deletedAt" />
     </resultMap>
-
+    <select id="findAll" resultType="com.soft.ware.rest.common.persistence.model.TblAddress">
+      select id, `name`, telephone, province, detail, is_default from tbl_address where owner = #{user.id} and is_deleted = 0 order by is_default desc,id desc
+    </select>
+    <delete id="deleteDefaultAddress">
+      update tbl_address a set a.is_default = 0 where a.owner = #{user.id}
+    </delete>
 </mapper>

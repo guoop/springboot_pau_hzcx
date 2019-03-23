@@ -17,7 +17,16 @@ public class TblAddress extends Model<TblAddress> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
+
+    //：否；
+    public static Integer is_default_0 = 0;
+    //：是）
+    public static Integer is_default_1 = 1;
+    //：否；
+    public static Integer is_deleted_0 = 0;
+    //：是）
+    public static Integer is_deleted_1 = 1;
+
     private Long id;
 
     //属主（买家的openID）
@@ -43,73 +52,83 @@ public class TblAddress extends Model<TblAddress> {
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblAddress setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public String getName(){
         return name;
     }
 
-    public void setName( String name){
+    public TblAddress setName( String name){
         this.name = name;
+        return this;
     }
     public String getTelephone(){
         return telephone;
     }
 
-    public void setTelephone( String telephone){
+    public TblAddress setTelephone( String telephone){
         this.telephone = telephone;
+        return this;
     }
     public String getProvince(){
         return province;
     }
 
-    public void setProvince( String province){
+    public TblAddress setProvince( String province){
         this.province = province;
+        return this;
     }
     public String getDetail(){
         return detail;
     }
 
-    public void setDetail( String detail){
+    public TblAddress setDetail( String detail){
         this.detail = detail;
+        return this;
     }
     public Integer getIsDefault(){
         return isDefault;
     }
 
-    public void setIsDefault( Integer isDefault){
+    public TblAddress setIsDefault( Integer isDefault){
         this.isDefault = isDefault;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;
     }
 
-    public void setCreatedAt( Date createdAt){
+    public TblAddress setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
+        return this;
     }
     public Integer getIsDeleted(){
         return isDeleted;
     }
 
-    public void setIsDeleted( Integer isDeleted){
+    public TblAddress setIsDeleted( Integer isDeleted){
         this.isDeleted = isDeleted;
+        return this;
     }
     public Date getDeletedAt(){
         return deletedAt;
     }
 
-    public void setDeletedAt( Date deletedAt){
+    public TblAddress setDeletedAt( Date deletedAt){
         this.deletedAt = deletedAt;
+        return this;
     }
 
 
-    public  Long getId(){
+    public Long getId(){
         return id;
     }
 
-    public  void setId(Long id){
+    public TblAddress setId(Long id){
         this.id = id;
+        return this;
     }
 
 

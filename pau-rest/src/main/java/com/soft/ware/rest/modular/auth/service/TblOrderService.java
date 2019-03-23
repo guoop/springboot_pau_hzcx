@@ -2,8 +2,8 @@ package com.soft.ware.rest.modular.auth.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -26,16 +26,17 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param user
      * @param page
      * @param param
+     * @param source
      * @return
      */
-    List<Map> findPage(SessionUser user, Page page, OrderParam param);
+    List<Map> findPage(SessionUser user, Page page, OrderParam param,Integer source);
 
     /**
      * 根据订单号查询订单详情
      * @param no
      * @return
      */
-    Map<String, Object> findByNo(SessionUser user, String no);
+    TblOrder findByNo(SessionUser user, String no);
 
     /**
      * 更新订单状态
@@ -46,4 +47,20 @@ public interface TblOrderService extends IService<TblOrder> {
      */
     boolean updateStatus(SessionUser user, String orderNO, String status);
 
+
+    /**
+     * 买家用户删除订单
+     * @param user
+     * @param param
+     * @return
+     */
+    boolean customerDelete(SessionUser user, OrderDeleteParam param);
+
+    /**
+     * 买家取消订单
+     * @param user
+     * @param param
+     * @return
+     */
+    boolean customerCancel(SessionUser user, OrderDeleteParam param);
 }

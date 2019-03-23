@@ -1,15 +1,30 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
+/**
+ * session 用户信息
+ */
 public class SessionUser {
 
+    /**
+     * 用户id/openId
+     */
     private String id;
+    /**
+     * 用户名/手机号
+     */
     private String username;
+    /**
+     * 商家唯一标识
+     */
     private String owner;
 
+    /**
+     * 用户类型
+     */
     private String type;
 
-    public static String type_customer = "type_customer";
-    public static String type_staff = "type_staff";//
+    public static String type_customer = "type_customer";//买家端
+    public static String type_staff = "type_app";//收银端
     public static String type_owner = "type_owner";//商家
 
     public SessionUser(String type,String owner) {

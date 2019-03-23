@@ -30,6 +30,9 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
+    public final static String customerUrlPrefix = "/customer";
+    public final static String ownerUrlPrefix = "/owner";
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -45,8 +48,15 @@ public class AuthFilter extends OncePerRequestFilter {
         whiteUrlSet.add("/customer/v1/goods/list");
         whiteUrlSet.add("/customer/v1/shop");
         whiteUrlSet.add("/customer/v1/cart");
+        whiteUrlSet.add("/customer/v2/orders");
+        whiteUrlSet.add("/customer/v1/address");
+        whiteUrlSet.add("/customer/v1/address/man");
+        whiteUrlSet.add("/customer/v1/question");
+        whiteUrlSet.add("/customer/v1/order/delete");
+        whiteUrlSet.add("/customer/v1/order/cancel");
 
         whitePrefixUrlSet.add("/customer/v1/goods/");
+        whitePrefixUrlSet.add("/customer/v1/address/");
     }
 
     @Override

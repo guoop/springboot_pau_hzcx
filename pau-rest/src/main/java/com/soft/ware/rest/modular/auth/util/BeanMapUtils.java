@@ -106,6 +106,15 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
         return obj;
     }
 
+    public static List<Map<String, Object>> toMap(boolean underline,Collection list) throws Exception {
+        List<Map<String, Object>> ls = new ArrayList<>();
+        for (Object obj : list) {
+            ls.add(toMap(obj, underline));
+        }
+        return ls;
+    }
+
+
     public static Map<String, Object> toMap(Object obj,boolean underline) throws Exception {
         if(obj == null){
             return null;
@@ -123,7 +132,6 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                 map.put(field.getName(), field.get(obj));
             }
         }
-
         return map;
     }
 

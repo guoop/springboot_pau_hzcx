@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MessageConverConfig {
 
-    @Bean
+ /*   @Bean
     @ConditionalOnProperty(prefix = RestProperties.REST_PREFIX, name = "sign-open", havingValue = "true", matchIfMissing = true)
     public WithSignMessageConverter withSignMessageConverter() {
         WithSignMessageConverter withSignMessageConverter = new WithSignMessageConverter();
@@ -24,5 +24,5 @@ public class MessageConverConfig {
         withSignMessageConverter.setFastJsonConfig(defaultFastjsonConfig.fastjsonConfig());
         withSignMessageConverter.setSupportedMediaTypes(defaultFastjsonConfig.getSupportedMediaType());
         return withSignMessageConverter;
-    }
+    }*/
 }

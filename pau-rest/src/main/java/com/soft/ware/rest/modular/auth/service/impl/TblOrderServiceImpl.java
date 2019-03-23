@@ -6,6 +6,7 @@ import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
@@ -66,10 +67,10 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
      * @return
      */
     @Override
-    public List<Map> findPage(SessionUser user, Page page,OrderParam param) {
-        Long count = orderMapper.findListCount(user.getOwner(), param);
+    public List<Map> findPage(SessionUser user, Page page,OrderParam param,Integer source) {
+        Long count = orderMapper.findListCount(user, param,source);
         page.setTotal(count);
-        List<Map> list = orderMapper.findList(user.getOwner(), page, param);
+        List<Map> list = orderMapper.findList(user, page, param,source);
         return list;
     }
 
@@ -81,7 +82,7 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
      * @return
      */
     @Override
-    public Map<String, Object> findByNo(SessionUser user,String no) {
+    public TblOrder findByNo(SessionUser user,String no) {
         return orderMapper.findByNo(user,no);
     }
 
@@ -89,6 +90,25 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
     @Override
     public boolean updateStatus(SessionUser user, String orderNO, String status) {
         int i = orderMapper.updateStatusByNo(user, orderNO, status);
+        if (i != 1) {
+            throw new PauException(BizExceptionEnum.UPDATE_ERROR);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean customerDelete(SessionUser user, OrderDeleteParam param) {
+        int i = orderMapper.customerDelete(user, param);
+        if (i == 1) {
+            return true;
+        } else {
+            throw new PauException(BizExceptionEnum.UPDATE_ERROR);
+        }
+    }
+
+    @Override
+    public boolean customerCancel(SessionUser user, OrderDeleteParam param) {
+        int i = orderMapper.customerCancel(user, param);
         if (i != 1) {
             throw new PauException(BizExceptionEnum.UPDATE_ERROR);
         }

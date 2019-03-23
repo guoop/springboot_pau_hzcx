@@ -135,255 +135,291 @@ public class TblOrder extends Model<TblOrder> {
         return no;
     }
 
-    public void setNo( String no){
+    public TblOrder setNo( String no){
         this.no = no;
+        return this;
     }
     public Integer getSource(){
         return source;
     }
 
-    public void setSource(Integer source){
+    public TblOrder setSource(Integer source){
         this.source = source;
+        return this;
     }
     public Long getPickupNo(){
         return pickupNo;
     }
 
-    public void setPickupNo( Long pickupNo){
+    public TblOrder setPickupNo( Long pickupNo){
         this.pickupNo = pickupNo;
+        return this;
     }
     public Date getPickupTime(){
         return pickupTime;
     }
 
-    public void setPickupTime( Date pickupTime){
+    public TblOrder setPickupTime( Date pickupTime){
         this.pickupTime = pickupTime;
+        return this;
     }
     public Integer getMoneyChannel(){
         return moneyChannel;
     }
 
-    public void setMoneyChannel( Integer moneyChannel){
+    public TblOrder setMoneyChannel( Integer moneyChannel){
         this.moneyChannel = moneyChannel;
+        return this;
     }
     public BigDecimal getMoney(){
         return money;
     }
 
-    public void setMoney( BigDecimal money){
+    public TblOrder setMoney( BigDecimal money){
         this.money = money;
+        return this;
     }
     public BigDecimal getFreight(){
         return freight;
     }
 
-    public void setFreight( BigDecimal freight){
+    public TblOrder setFreight( BigDecimal freight){
         this.freight = freight;
+        return this;
     }
     public BigDecimal getPayMoney(){
         return payMoney;
     }
 
-    public void setPayMoney( BigDecimal payMoney){
+    public TblOrder setPayMoney( BigDecimal payMoney){
         this.payMoney = payMoney;
+        return this;
     }
     public Date getPayAt(){
         return payAt;
     }
 
-    public void setPayAt( Date payAt){
+    public TblOrder setPayAt( Date payAt){
         this.payAt = payAt;
+        return this;
     }
     public String getPayResponse(){
         return payResponse;
     }
 
-    public void setPayResponse( String payResponse){
+    public TblOrder setPayResponse( String payResponse){
         this.payResponse = payResponse;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;
     }
 
-    public void setCreatedAt( Date createdAt){
+    public TblOrder setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
+        return this;
     }
     public String getCreatedBy(){
         return createdBy;
     }
 
-    public void setCreatedBy( String createdBy){
+    public TblOrder setCreatedBy( String createdBy){
         this.createdBy = createdBy;
+        return this;
     }
     public String getSettlementBy(){
         return settlementBy;
     }
 
-    public void setSettlementBy( String settlementBy){
+    public TblOrder setSettlementBy( String settlementBy){
         this.settlementBy = settlementBy;
+        return this;
     }
     public String getOwner(){
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblOrder setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public String getConsigneeName(){
         return consigneeName;
     }
 
-    public void setConsigneeName( String consigneeName){
+    public TblOrder setConsigneeName( String consigneeName){
         this.consigneeName = consigneeName;
+        return this;
     }
     public String getConsigneeMobile(){
         return consigneeMobile;
     }
 
-    public void setConsigneeMobile( String consigneeMobile){
+    public TblOrder setConsigneeMobile( String consigneeMobile){
         this.consigneeMobile = consigneeMobile;
+        return this;
     }
     public String getConsigneeAddress(){
         return consigneeAddress;
     }
 
-    public void setConsigneeAddress( String consigneeAddress){
+    public TblOrder setConsigneeAddress( String consigneeAddress){
         this.consigneeAddress = consigneeAddress;
+        return this;
     }
     public String getGoods(){
         return goods;
     }
 
-    public void setGoods( String goods){
+    public TblOrder setGoods( String goods){
         this.goods = goods;
+        return this;
     }
     public Integer getStatus(){
         return status;
     }
 
-    public void setStatus( Integer status){
+    public TblOrder setStatus( Integer status){
         this.status = status;
+        return this;
     }
     public String getRemark(){
         return remark;
     }
 
-    public void setRemark( String remark){
+    public TblOrder setRemark( String remark){
         this.remark = remark;
+        return this;
     }
     public String getConfirmBy(){
         return confirmBy;
     }
 
-    public void setConfirmBy( String confirmBy){
+    public TblOrder setConfirmBy( String confirmBy){
         this.confirmBy = confirmBy;
+        return this;
     }
     public Date getConfirmAt(){
         return confirmAt;
     }
 
-    public void setConfirmAt( Date confirmAt){
+    public TblOrder setConfirmAt( Date confirmAt){
         this.confirmAt = confirmAt;
+        return this;
     }
     public Date getDistributionAt(){
         return distributionAt;
     }
 
-    public void setDistributionAt( Date distributionAt){
+    public TblOrder setDistributionAt( Date distributionAt){
         this.distributionAt = distributionAt;
+        return this;
     }
     public String getDistributionBy(){
         return distributionBy;
     }
 
-    public void setDistributionBy( String distributionBy){
+    public TblOrder setDistributionBy( String distributionBy){
         this.distributionBy = distributionBy;
+        return this;
     }
     public Date getDoneAt(){
         return doneAt;
     }
 
-    public void setDoneAt( Date doneAt){
+    public TblOrder setDoneAt( Date doneAt){
         this.doneAt = doneAt;
+        return this;
     }
     public String getDoneBy(){
         return doneBy;
     }
 
-    public void setDoneBy( String doneBy){
+    public TblOrder setDoneBy( String doneBy){
         this.doneBy = doneBy;
+        return this;
     }
     public Date getCancelAt(){
         return cancelAt;
     }
 
-    public void setCancelAt( Date cancelAt){
+    public TblOrder setCancelAt( Date cancelAt){
         this.cancelAt = cancelAt;
+        return this;
     }
     public String getCancelBy(){
         return cancelBy;
     }
 
-    public void setCancelBy( String cancelBy){
+    public TblOrder setCancelBy( String cancelBy){
         this.cancelBy = cancelBy;
+        return this;
     }
     public String getCancelReason(){
         return cancelReason;
     }
 
-    public void setCancelReason( String cancelReason){
+    public TblOrder setCancelReason( String cancelReason){
         this.cancelReason = cancelReason;
+        return this;
     }
     public Date getRefundAt(){
         return refundAt;
     }
 
-    public void setRefundAt( Date refundAt){
+    public TblOrder setRefundAt( Date refundAt){
         this.refundAt = refundAt;
+        return this;
     }
     public String getRefundBy(){
         return refundBy;
     }
 
-    public void setRefundBy( String refundBy){
+    public TblOrder setRefundBy( String refundBy){
         this.refundBy = refundBy;
+        return this;
     }
     public BigDecimal getRefundMoney(){
         return refundMoney;
     }
 
-    public void setRefundMoney( BigDecimal refundMoney){
+    public TblOrder setRefundMoney( BigDecimal refundMoney){
         this.refundMoney = refundMoney;
+        return this;
     }
     public String getRefundReason(){
         return refundReason;
     }
 
-    public void setRefundReason( String refundReason){
+    public TblOrder setRefundReason( String refundReason){
         this.refundReason = refundReason;
+        return this;
     }
     public Integer getRefundStatus(){
         return refundStatus;
     }
 
-    public void setRefundStatus( Integer refundStatus){
+    public TblOrder setRefundStatus( Integer refundStatus){
         this.refundStatus = refundStatus;
+        return this;
     }
     public String getRefundResponse(){
         return refundResponse;
     }
 
-    public void setRefundResponse( String refundResponse){
+    public TblOrder setRefundResponse( String refundResponse){
         this.refundResponse = refundResponse;
+        return this;
     }
 
 
-    public  Long getId(){
+    public Long getId(){
         return id;
     }
 
-    public  void setId(Long id){
+    public TblOrder setId(Long id){
         this.id = id;
+        return this;
     }
 
 

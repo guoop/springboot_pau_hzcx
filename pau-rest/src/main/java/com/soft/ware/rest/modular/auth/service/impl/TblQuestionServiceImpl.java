@@ -15,4 +15,10 @@ public class TblQuestionServiceImpl extends ServiceImpl<TblQuestionMapper,TblQue
     @Resource
     private TblQuestionMapper tblQuestionMapper;
 
+    @Override
+    public boolean add(TblQuestion question) {
+        Integer insert = tblQuestionMapper.insert(question);
+        return insert == 1;
+    }
+
 }

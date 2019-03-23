@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
+import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderUpdateStatusParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -10,7 +11,10 @@ import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.auth.wrapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,31 +37,31 @@ public class OrderController extends BaseController {
      *
      * @param user 当前登录用户
      * @param page 分页信息
-     * @param status  confirm：新订单 confirmed:备货 delivering:送/取货 done:已完成 cancel:已取消
+     * @param param  confirm：新订单 confirmed:备货 delivering:送/取货 done:已完成 cancel:已取消
      * @return
      */
     @RequestMapping(value = "/user/orders")
-    public Object orderPage(SessionUser user, Page page, @RequestParam(required = false) String status){
-        String s = null;
-        if (status != null) {
-            if ("confirm".equals(status)) {
+    public Object orderPage(SessionUser user, Page page,  OrderParam param){
+        if (param.getStatus()!=null) {
+            if ("confirm".equals(param.getStatus())) {
                 //新订单
-                s = "1";
-            } else if("confirmed".equals(status)) {
+                param.setStatus("1");
+            } else if("confirmed".equals(param.getStatus())) {
                 //备货
-            } else if ("delivering".equals(status)) {
+                param.setStatus("10");
+            } else if ("delivering".equals(param.getStatus())) {
                 //送/取货
-                s = "2";
-            } else if ("done".equals(status)) {
+                param.setStatus("2");
+            } else if ("done".equals(param.getStatus())) {
                 //已完成
-                s = "3";
-            } else if("cancel".equals(status)){
+                param.setStatus("3");
+            } else if("cancel".equals(param.getStatus())){
                 //已取消
-                s = "-1";
+                param.setStatus("-1");
             }
         }
         OrderParam orderParam = new OrderParam();
-        List<Map> list = orderService.findPage(user, page, orderParam);
+        List<Map> list = orderService.findPage(user, page, orderParam, TblOrder.SOURCE_1);
         Map<String, Object> map = new HashMap<>();
         map.put("code", SUCCESS);
         map.put("orders",list);
@@ -74,7 +78,7 @@ public class OrderController extends BaseController {
     @RequestMapping(value = "/user/order/{no}",method = RequestMethod.GET)
     public Object order(@PathVariable String no,SessionUser user){
         HashMap<Object, Object> map = new HashMap<>();
-        Map<String, Object> order = orderService.findByNo(user, no);
+        TblOrder order = orderService.findByNo(user, no);
         map.put("code", SUCCESS);
         map.put("order", order);
         return super.warpObject(new OrderWrapper(map));

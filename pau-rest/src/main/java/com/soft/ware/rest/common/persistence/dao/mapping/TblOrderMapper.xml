@@ -42,26 +42,40 @@
         <result column="refund_response_" property="refundResponse" />
     </resultMap>
 
-    <select id="findListCount" resultType="java.lang.Long">
-        select count(1) from tbl_order o where o.source = 1 and o.owner = #{owner} and o.status != '-2' and o.status != '-3'
-        <if test="status != null">
-          and status in (#{param.status})
+    <sql id="findListCondition">
+        <if test="source != null">
+            and o.source in (#{source})
         </if>
+        <if test="param.status != null">
+            and o.source in (#{param.status})
+        </if>
+        <!--根据买家用户查询-->
+        <if test="user.id != null">
+            and o.created_by in (#{user.id})
+        </if>
+    </sql>
+    <select id="findListCount" resultType="java.lang.Long">
+        select count(1) from tbl_order o where o.owner = #{user.owner}
+        <include refid="findListCondition"/>
     </select>
     <select id="findList" resultType="java.util.Map">
-        select o.* from tbl_order o where o.source = 1 and o.owner = #{owner} and o.status != '-2' and o.status != '-3'
-        <if test="status != null">
-          and status in (#{status})
-        </if>
+        select o.* from tbl_order o where  o.owner = #{user.owner}
+        <include refid="findListCondition"/>
         order by pay_at desc
         <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
     </select>
-    <select id="findByNo" resultType="java.util.Map">
+    <select id="findByNo" resultType="com.soft.ware.rest.common.persistence.model.TblOrder">
         select o.* from tbl_order o where o.no = #{no} and o.owner = #{user.owner}
     </select>
 
     <update id="updateStatusByNo" parameterType="int">
         update table tbl_order o set o.status = #{status} where o.no = #{no} and o.owner = #{user.owner}
+    </update>
+    <update id="customerDelete">
+      update tbl_order set status = -3 where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id} and status in (-2, -1, 0, 3);
+    </update>
+    <update id="customerCancel">
+		update tbl_order set status = -1, cancel_by = #{user.id}, cancel_at = now() where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id}
     </update>
 
 </mapper>

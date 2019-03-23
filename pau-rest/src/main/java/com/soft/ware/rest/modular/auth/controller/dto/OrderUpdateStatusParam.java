@@ -2,6 +2,9 @@ package com.soft.ware.rest.modular.auth.controller.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+/**
+ * 订单状态更新接口 参数
+ */
 public class OrderUpdateStatusParam {
 
     @NotBlank(message = "订单状态不能为空")
