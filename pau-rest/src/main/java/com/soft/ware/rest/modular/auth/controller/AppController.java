@@ -4,6 +4,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblAppVersionService;
 import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
@@ -45,8 +46,8 @@ public class AppController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/category/list")
-    public Object goods(TblOwnerStaff staff){
-        List<TblCategory> list = categoryService.findAllCategory(staff);
+    public Object goods(SessionUser user){
+        List<TblCategory> list = categoryService.findAllCategory(user);
         Map<String, Object> map = new HashMap<>();
         map.put("code",SUCCESS);
         map.put("data", list);
@@ -56,8 +57,8 @@ public class AppController extends BaseController {
 
 
     @RequestMapping(value = "/user/goods")
-    public Object userGoods(TblOwnerStaff staff, Page page, GoodsPageParam param){
-        List<Map> list = goodsService.findPage(staff, page, param);
+    public Object userGoods(SessionUser user, Page page, GoodsPageParam param){
+        List<Map> list = goodsService.findPage(user, page, param);
         page.setRecords(list);
         //todo  yancc 前端还不支持分页
         return list;
@@ -88,7 +89,7 @@ public class AppController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/order",method = RequestMethod.POST)
-    public Object addOrder(TblOwnerStaff user,AddOrderParam param){
+    public Object addOrder(SessionUser user,AddOrderParam param){
         TblOrder order = tblOrderService.createOrder(user,param);
         return super.warpObject(new SuccessWrapper(new HashMap<>()));
     }

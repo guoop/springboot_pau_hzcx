@@ -2,14 +2,12 @@ package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.core.exception.PauException;
-import com.soft.ware.core.exception.ServiceExceptionEnum;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
-import com.soft.ware.rest.modular.auth.controller.dto.Customer;
-import com.soft.ware.rest.modular.auth.controller.dto.CustomerOrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +32,7 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
      * @return
      */
     @Override
-    public TblOrder createOrder(TblOwnerStaff user, AddOrderParam param) {
+    public TblOrder createOrder(SessionUser user, AddOrderParam param) {
         Date date = new Date();
         TblOrder o = new TblOrder();
         o.setOwner(user.getOwner());
@@ -65,14 +62,14 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
      * 收银app分页查询订单列表
      * @param user
      * @param page
-     * @param status
+     * @param param
      * @return
      */
     @Override
-    public List<Map> findPage(TblOwnerStaff user, Page page, String status) {
-        Long count = orderMapper.findListCountByStatus(user,status);
+    public List<Map> findPage(SessionUser user, Page page,OrderParam param) {
+        Long count = orderMapper.findListCount(user.getOwner(), param);
         page.setTotal(count);
-        List<Map> list = orderMapper.findListByStatus(user, page, status);
+        List<Map> list = orderMapper.findList(user.getOwner(), page, param);
         return list;
     }
 
@@ -84,13 +81,13 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
      * @return
      */
     @Override
-    public Map<String, Object> findByNo(TblOwnerStaff user,String no) {
+    public Map<String, Object> findByNo(SessionUser user,String no) {
         return orderMapper.findByNo(user,no);
     }
 
 
     @Override
-    public boolean updateStatus(TblOwnerStaff user, String orderNO, String status) {
+    public boolean updateStatus(SessionUser user, String orderNO, String status) {
         int i = orderMapper.updateStatusByNo(user, orderNO, status);
         if (i != 1) {
             throw new PauException(BizExceptionEnum.UPDATE_ERROR);
@@ -98,17 +95,4 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
         return true;
     }
 
-    @Override
-    public List<Map> findPage(Customer customer, CustomerOrderParam param) {
-        return null;
-    }
-
-/*    @Override
-    public List<Map> findPage(Customer customer,Page page, CustomerOrderParam param) {
-        HashMap<Object, Object> map = new HashMap<>();
-        orderMapper.findListCountByStatus(customer, param,);
-        List<Map> list = orderMapper.findListByStatus(customer, page, param);
-
-        return list;
-    }*/
 }

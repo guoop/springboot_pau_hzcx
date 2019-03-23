@@ -1,8 +1,10 @@
 package com.soft.ware.rest.modular.handover.service.impl;
 
 import com.soft.ware.core.util.DateUtil;
+import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -19,14 +21,19 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
     @Resource
     private HandOverMapper overMapper;
 
+    @Resource
+    private TblOwnerStaffMapper staffMapper;
+
 
     @Override
-    public HandOver over(TblOwnerStaff user, HandoverParam param) {
+    public HandOver over(SessionUser user, HandoverParam param) {
+        //todo yancc 考虑改成session中
+        TblOwnerStaff staff = staffMapper.selectById(user.getId());
         HandOver o = new HandOver();
         Date date = new Date();
         o.setOwner(user.getOwner());
-        o.setUserPhone(user.getPhone());
-        o.setUserName(user.getName());
+        o.setUserPhone(user.getUsername());
+        o.setUserName(staff.getName());
 
         o.setPospalcode(param.getPospalcode());
         o.setSyncAt(date);

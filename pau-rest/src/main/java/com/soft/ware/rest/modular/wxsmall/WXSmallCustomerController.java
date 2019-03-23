@@ -5,9 +5,9 @@ import com.soft.ware.rest.common.persistence.model.TblBanner;
 import com.soft.ware.rest.common.persistence.model.TblCategory;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.modular.auth.controller.dto.Customer;
-import com.soft.ware.rest.modular.auth.controller.dto.CustomerOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -48,8 +48,8 @@ public class WXSmallCustomerController  extends BaseController {
 
 
     @RequestMapping(value = "/customer/v1/banner/list")
-    public Object banners(Customer customer){
-        List<TblBanner> list = bannerService.findBannerByOwner(customer.getOwner());
+    public Object banners(SessionUser user){
+        List<TblBanner> list = bannerService.findBannerByOwner(user.getOwner());
         Map<String, Object> map = new HashMap<>();
         map.put("code", SUCCESS);
         return list;
@@ -58,15 +58,15 @@ public class WXSmallCustomerController  extends BaseController {
 
 
     @RequestMapping(value = "/customer/v1/category/list")
-    public Object category(Customer customer){
-        List<TblCategory> list =  categoryService.findAllCategory(customer);
+    public Object category(SessionUser user){
+        List<TblCategory> list =  categoryService.findAllCategory(user);
         return list;
     }
 
 
     @RequestMapping(value = "/customer/v1/goods/list")
-    public Object goodsPage(GoodsPageParam param, Customer customer, Page page){
-        List<Map> list = goodsService.findPage(customer, page, param);
+    public Object goodsPage(GoodsPageParam param,SessionUser user, Page page){
+        List<Map> list = goodsService.findPage(user, page, param);
         return list;
     }
 
@@ -80,8 +80,8 @@ public class WXSmallCustomerController  extends BaseController {
 
 
     @RequestMapping(value = "/customer/v1/shop")
-    public Object owner(Customer customer) throws Exception {
-        TblOwner o = ownerService.find(customer);
+    public Object owner(SessionUser user) throws Exception {
+        TblOwner o = ownerService.find(user);
         Map<String, Object> map = BeanMapUtils.toMap(o, true);
         return map;
     }
@@ -99,8 +99,8 @@ public class WXSmallCustomerController  extends BaseController {
 
 
     @RequestMapping(value = "/customer/v2/orders")
-    public Object orders(Customer customer, CustomerOrderParam param){
-        List<Map> list = orderService.findPage(customer,param);
+    public Object orders(SessionUser user,Page page, OrderParam param){
+        List<Map> list = orderService.findPage(user,page,param);
         return list;
     }
 

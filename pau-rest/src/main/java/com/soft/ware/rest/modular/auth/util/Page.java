@@ -44,7 +44,11 @@ public class Page<T> {
         }else{
             this.pages = total % size > 0 ? total / size + 1 : total / size;
         }
-        this.offset = (this.page-1) * size;
+        if (this.page > 1) {
+            this.offset = (this.page - 1) * size;
+        } else {
+            this.offset = 1;
+        }
     }
 
     public long getLimit() {

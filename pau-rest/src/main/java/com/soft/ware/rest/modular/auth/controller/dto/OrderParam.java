@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
-public class CustomerOrderParam {
+public class OrderParam {
 
     private String status;
 

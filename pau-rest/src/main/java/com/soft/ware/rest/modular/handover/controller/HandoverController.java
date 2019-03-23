@@ -6,8 +6,8 @@ import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.HandOver;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.wrapper.FailWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.SuccessWrapper;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
@@ -47,7 +47,7 @@ public class HandoverController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping(value = "handover",method = RequestMethod.POST)
-	public Object handover(TblOwnerStaff user,HandoverParam param){
+	public Object handover(SessionUser user, HandoverParam param){
 		HandOver over = overService.over(user, param);
 		if (over == null) {
 			return super.warpObject(new FailWrapper());

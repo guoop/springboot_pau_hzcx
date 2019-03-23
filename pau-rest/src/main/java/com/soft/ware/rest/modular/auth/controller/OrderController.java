@@ -1,8 +1,9 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderUpdateStatusParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.validator.Validator;
@@ -36,7 +37,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/orders")
-    public Object orderPage(TblOwnerStaff user, Page page, @RequestParam(required = false) String status){
+    public Object orderPage(SessionUser user, Page page, @RequestParam(required = false) String status){
         String s = null;
         if (status != null) {
             if ("confirm".equals(status)) {
@@ -55,7 +56,8 @@ public class OrderController extends BaseController {
                 s = "-1";
             }
         }
-        List<Map> list = orderService.findPage(user, page, s);
+        OrderParam orderParam = new OrderParam();
+        List<Map> list = orderService.findPage(user, page, orderParam);
         Map<String, Object> map = new HashMap<>();
         map.put("code", SUCCESS);
         map.put("orders",list);
@@ -70,7 +72,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/order/{no}",method = RequestMethod.GET)
-    public Object order(@PathVariable String no,TblOwnerStaff user){
+    public Object order(@PathVariable String no,SessionUser user){
         HashMap<Object, Object> map = new HashMap<>();
         Map<String, Object> order = orderService.findByNo(user, no);
         map.put("code", SUCCESS);
@@ -84,7 +86,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/order/maintain",method = RequestMethod.POST)
-    public Object updateStatus(TblOwnerStaff user, OrderUpdateStatusParam param, BindingResult error){
+    public Object updateStatus(SessionUser user, OrderUpdateStatusParam param, BindingResult error){
         Validator.valid(error);
         boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
         return result ? warpObject(new SuccessWrapper()) : warpObject(new FailWrapper());
@@ -95,7 +97,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/order/refund",method = RequestMethod.POST)
-    public Object orderBack(TblOwnerStaff user, OrderBackParam param){
+    public Object orderBack(SessionUser user, OrderBackParam param){
         return null;//
     }
 

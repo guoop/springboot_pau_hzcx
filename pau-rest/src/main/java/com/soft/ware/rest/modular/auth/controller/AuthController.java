@@ -62,7 +62,7 @@ public class AuthController extends BaseController {
             authRequest.setPhone("15136757969");
             TblOwnerStaff user = authService.findByUsername(authRequest.getUserName());
             
-            TblOwner owner = ownerService.find(user);
+            TblOwner owner = ownerService.find(user.getOwner());
             AuthResponse resp = new AuthResponse(token, randomKey);
             //return ResponseEntity.ok(resp);
             Map<String,Object> map = new HashMap<>();
