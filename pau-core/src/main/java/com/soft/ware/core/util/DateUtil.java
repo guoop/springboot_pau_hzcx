@@ -301,10 +301,23 @@ public class DateUtil {
 //			return Func.toStr(value);
 //		}
 //	}
+	/**
+	 * 得到n天之后是周几
+	 *
+	 * @param days
+	 * @return
+	 */
+	public static Date getDateByString(String days) {
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		try {
+			return sdf.parse(days);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static void main(String[] args) {
-		System.out.println(getTime(new Date()));
-		System.out.println(getAfterDayWeek("3"));
 	}
 
 }
