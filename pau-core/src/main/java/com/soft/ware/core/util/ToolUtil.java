@@ -619,9 +619,10 @@ public class ToolUtil {
 	 }
 	 return stringBuffer.toString();
 	}
+	
 
 	/*public static void main(String[] args) {
-		System.out.println(getSHA256StrJava("appkey=de11c98a0841ddb851e7b718d221cd0d&random=7226249334&time=1553407554&mobile=15083101898"));
-		
+		System.out.println(DateUtil.getAllTime());
+		System.out.println(new Date().getTime());
 	}*/
 }

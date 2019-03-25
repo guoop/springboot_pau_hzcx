@@ -35,4 +35,35 @@
         <result column="moneymemberpay" property="moneyMemberPay" />
         <result column="memberpaynum" property="memberPayNum" />
     </resultMap>
+    
+    <sql id="Base_Column">
+      owner,user_phone,username,pospalcode,sync_at,optionstart,fistordertime,lastordertime,ordernum,ordertuinum
+    ,orderreturnnum,allmoney,ordermoney,money_shishou,zhaoling,membercz,ordertuimoney,orderreturnmoney
+    ,wxpay,wxpaynum,alipay,alipaynum,unionpay,unionpaynum,moneypay,moneypaynum,moneymemberpay,memberpaynum
+    </sql>
+    
+    <sql id="conditionQuery">
+	    <if test="owner != null and owner != ''" >
+	        and owner = #{owner}
+	    </if>
+	    <if test="user_phone != null and user_phone != ''" >
+	        and user_phone = #{user_phone}
+	    </if>
+	    <if test="username != null and username != ''" >
+	        and username = #{username}
+	    </if>
+	    <if test="pospalcode != null and pospalcode != ''" >
+	        and pospalcode = #{pospalcode}
+	    </if>
+	    <if test="optionat != null and optionstart != null" >
+	        and optionat  between #{optionat} and #{optionstart}
+	    </if>
+        
+    </sql>
+    <select id="getHandOverList" parameterType="map" resultMap="BaseResultMap">
+        select <include refid="Base_Column"/> from tbl_handover_record
+        where 1=1 
+        <include refid="conditionQuery"/>
+        limit #{page},#{size}
+    </select>
 </mapper>

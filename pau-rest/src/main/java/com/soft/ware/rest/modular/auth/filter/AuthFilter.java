@@ -60,12 +60,13 @@ public class AuthFilter extends OncePerRequestFilter {
         whitePrefixUrlSet.add("/customer/v2/orders/");
         whitePrefixUrlSet.add("/customer/v1/goods/");
         whitePrefixUrlSet.add("/customer/v1/address/");
+        whitePrefixUrlSet.add("/owner/share/code");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String path = request.getServletPath();
-        if (request.getServletPath().equals("/" + jwtProperties.getAuthPath()) || whiteUrlSet.contains(request.getServletPath())) {
+         if (request.getServletPath().equals("/" + jwtProperties.getAuthPath()) || whiteUrlSet.contains(request.getServletPath())) {
             chain.doFilter(request, response);
             return;
         }

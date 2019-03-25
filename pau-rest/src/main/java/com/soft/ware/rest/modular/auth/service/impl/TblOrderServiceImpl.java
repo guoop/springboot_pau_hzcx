@@ -11,10 +11,12 @@ import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -114,5 +116,10 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
         }
         return true;
     }
+
+	@Override
+	public List<TblOrder> findOrderListByStatus(Map<String, Object> map) {
+		return orderMapper.findOrderListByStatus(map);
+	}
 
 }

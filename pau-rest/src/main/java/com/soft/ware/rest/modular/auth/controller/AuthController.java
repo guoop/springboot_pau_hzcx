@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.support.HttpKit;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.config.properties.JwtProperties;
 import com.soft.ware.rest.modular.auth.controller.dto.AuthRequest;
@@ -53,7 +54,9 @@ public class AuthController extends BaseController {
 
     @RequestMapping(value = "${jwt.auth-path}")
     public Object createAuthenticationToken(AuthRequest authRequest) {
-
+        if(ToolUtil.isNotEmpty(authRequest.getPhone())){
+        	
+        }
         boolean validate = reqValidator.validate(authRequest);
 
         if (validate) {

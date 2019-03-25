@@ -41,6 +41,14 @@
         <result column="refund_status" property="refundStatus" />
         <result column="refund_response" property="refundResponse" />
     </resultMap>
+    
+    <sql id="Base_Column">
+	    no,source,pickup_no,pickup_time,money_channel,money,freight,pay_money,
+	    pay_at,pay_response,created_at,created_by,settlement_by,owner,consignee_name,
+	    consignee_mobile,consignee_address,goods,status,remark,confirm_by,confirm_at,
+	    distribution_at,distribution_by,done_at,done_by,cancel_at,cancel_by,cancel_reason,
+	    refund_at,refund_by,refund_money,refund_reason,refund_status,refund_response
+    </sql>
 
     <sql id="findListCondition">
         <if test="source != null">
@@ -77,5 +85,17 @@
     <update id="customerCancel">
 		update tbl_order set status = -1, cancel_by = #{user.openId}, cancel_at = now() where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id}
     </update>
+    
+    <select id="findOrderListByStatus" parameterType="map" resultMap="BaseResultMap">
+         select <include refid="Base_Column"/> from tbl_order 
+         where 1=1
+         <if test="status !=null and status != ''">
+         and status = #{status}
+         </if> 
+         <if test="owner != null and owner != ''">
+         and owner = #{owner}
+         </if>
+         limit #{page},20
+    </select>
 
 </mapper>

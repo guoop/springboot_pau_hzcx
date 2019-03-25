@@ -307,7 +307,7 @@ public class DateUtil {
 	 * @param days
 	 * @return
 	 */
-	public static Date getDateByString(String days) {
+	public static Date getDateByTime(String days) {
 		 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		try {
 			return sdf.parse(days);
@@ -316,8 +316,34 @@ public class DateUtil {
 		}
 		return null;
 	}
+	/**
+	 * 通过日期转换成字符时间
+	 * @param date
+	 * @return
+	 */
+	public static String getTimeByDate(Date date){
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd");
+		return sdf.format(date);
+	}
+	
+	public static String timestampToDate() {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	java.util.Date date = null;
+		try {
+			date = df.parse(DateUtil.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(date);
+    	long timestamp = cal.getTimeInMillis();
+    	return String.valueOf(timestamp/1000);
+	}
 
 	public static void main(String[] args) {
+		
+
+		
 	}
 
 }
