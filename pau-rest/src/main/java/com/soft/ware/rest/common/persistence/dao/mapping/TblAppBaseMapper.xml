@@ -5,9 +5,9 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblAppBase">
         <id column="id" property="id" />
-        <result column="code_" property="code" />
-        <result column="name_" property="name" />
-        <result column="platform_" property="platform" />
+        <result column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="platform" property="platform" />
     </resultMap>
 
 </mapper>

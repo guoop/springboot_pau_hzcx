@@ -1,7 +1,6 @@
-package com.soft.ware.rest.modular.auth.wrapper;
+package com.soft.ware.core.base.warpper;
 
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.BaseControllerWarpper;
 
 import java.util.HashMap;
 import java.util.Map;

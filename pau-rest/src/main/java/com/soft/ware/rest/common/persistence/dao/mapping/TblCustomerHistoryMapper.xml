@@ -5,21 +5,21 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblCustomerHistory">
         <id column="id" property="id" />
-        <result column="open_id_" property="openId" />
-        <result column="created_at_" property="createdAt" />
-        <result column="in_at_" property="inAt" />
-        <result column="out_at_" property="outAt" />
-        <result column="current_status_" property="currentStatus" />
-        <result column="address_name_" property="addressName" />
-        <result column="address_phone_" property="addressPhone" />
-        <result column="address_detail_" property="addressDetail" />
-        <result column="address_created_at_" property="addressCreatedAt" />
-        <result column="address_updated_at_" property="addressUpdatedAt" />
-        <result column="owner_" property="owner" />
-        <result column="owner_name_" property="ownerName" />
-        <result column="owner_phone_" property="ownerPhone" />
-        <result column="mp_id_" property="mpId" />
-        <result column="mp_name_" property="mpName" />
+        <result column="open_id" property="openId" />
+        <result column="created_at" property="createdAt" />
+        <result column="in_at" property="inAt" />
+        <result column="out_at" property="outAt" />
+        <result column="current_status" property="currentStatus" />
+        <result column="address_name" property="addressName" />
+        <result column="address_phone" property="addressPhone" />
+        <result column="address_detail" property="addressDetail" />
+        <result column="address_created_at" property="addressCreatedAt" />
+        <result column="address_updated_at" property="addressUpdatedAt" />
+        <result column="owner" property="owner" />
+        <result column="owner_name" property="ownerName" />
+        <result column="owner_phone" property="ownerPhone" />
+        <result column="mp_id" property="mpId" />
+        <result column="mp_name" property="mpName" />
     </resultMap>
 
 </mapper>

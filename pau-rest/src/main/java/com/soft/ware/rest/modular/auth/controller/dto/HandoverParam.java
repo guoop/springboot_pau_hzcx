@@ -16,7 +16,7 @@ public class HandoverParam {
     //收银机编号
     private String  pospalcode;
     //账号登录时间
-    private String  optionstart;
+    private Date  optionstart;
     //交接班结束时间
     private Date optionat;
     //收银单数
@@ -81,11 +81,11 @@ public class HandoverParam {
         this.pospalcode = pospalcode;
     }
 
-    public String getOptionstart() {
+    public Date getOptionstart() {
         return optionstart;
     }
 
-    public void setOptionstart(String optionstart) {
+    public void setOptionstart(Date optionstart) {
         this.optionstart = optionstart;
     }
 

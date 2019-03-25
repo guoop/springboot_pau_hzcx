@@ -1,13 +1,13 @@
 package com.soft.ware.core.base.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.warpper.BaseControllerWarpper;
+import com.soft.ware.core.base.warpper.FailWrapper;
+import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.core.page.PageInfoBT;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.FileUtil;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +17,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.UnsupportedEncodingException;
 
 public class BaseController {
@@ -109,5 +108,13 @@ public class BaseController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", dfileName);
         return new ResponseEntity<byte[]>(fileBytes, headers, HttpStatus.CREATED);
+    }
+
+    public BaseControllerWarpper render(boolean result){
+        if (result) {
+            return new SuccessWrapper();
+        } else {
+            return new FailWrapper();
+        }
     }
 }

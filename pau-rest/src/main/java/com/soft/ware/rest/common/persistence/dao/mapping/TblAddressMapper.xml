@@ -10,7 +10,7 @@
         <result column="telephone" property="telephone" />
         <result column="province" property="province" />
         <result column="detail" property="detail" />
-        <result column="is_default_" property="isDefault" />
+        <result column="is_default" property="isDefault" />
         <result column="created_at" property="createdAt" />
         <result column="is_deleted" property="isDeleted" />
         <result column="deleted_at" property="deletedAt" />

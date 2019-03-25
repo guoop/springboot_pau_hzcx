@@ -5,10 +5,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOwnerGroups">
         <id column="id" property="id" />
-        <result column="owner_" property="owner" />
-        <result column="type_" property="type" />
-        <result column="gid_" property="gid" />
-        <result column="body_" property="body" />
+        <result column="owner" property="owner" />
+        <result column="type" property="type" />
+        <result column="gid" property="gid" />
+        <result column="body" property="body" />
     </resultMap>
 
 </mapper>

@@ -5,34 +5,34 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOwner">
         <id column="id" property="id" />
-        <result column="shopId_" property="shopId" />
-        <result column="shopSecret_" property="shopSecret" />
-        <result column="appId_" property="appId" />
-        <result column="appSecret_" property="appSecret" />
-        <result column="appName_" property="appName" />
-        <result column="appQr_" property="appQr" />
-        <result column="owner_" property="owner" />
-        <result column="name_" property="name" />
-        <result column="phone_" property="phone" />
-        <result column="address_" property="address" />
-        <result column="description_" property="description" />
-        <result column="videoUrl_" property="videoUrl" />
-        <result column="timeBegin_" property="timeBegin" />
-        <result column="timeEnd_" property="timeEnd" />
-        <result column="defaultDesc_" property="defaultDesc" />
-        <result column="defaultRefundReason_" property="defaultRefundReason" />
-        <result column="delivery_" property="delivery" />
-        <result column="deliveryMoney_" property="deliveryMoney" />
-        <result column="deliveryLessMoney_" property="deliveryLessMoney" />
-        <result column="deliveryGreatMoney_" property="deliveryGreatMoney" />
-        <result column="deliveryDistance_" property="deliveryDistance" />
-        <result column="reachPay_" property="reachPay" />
-        <result column="selfPickup_" property="selfPickup" />
-        <result column="orderPhone_" property="orderPhone" />
-        <result column="updatedAt_" property="updatedAt" />
-        <result column="updatedBy_" property="updatedBy" />
-        <result column="defaultFee_" property="defaultFee" />
-        <result column="defaultFeeDesc_" property="defaultFeeDesc" />
+        <result column="shopId" property="shopId" />
+        <result column="shopSecret" property="shopSecret" />
+        <result column="appId" property="appId" />
+        <result column="appSecret" property="appSecret" />
+        <result column="appName" property="appName" />
+        <result column="appQr" property="appQr" />
+        <result column="owner" property="owner" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="description" property="description" />
+        <result column="videoUrl" property="videoUrl" />
+        <result column="timeBegin" property="timeBegin" />
+        <result column="timeEnd" property="timeEnd" />
+        <result column="defaultDesc" property="defaultDesc" />
+        <result column="defaultRefundReason" property="defaultRefundReason" />
+        <result column="delivery" property="delivery" />
+        <result column="deliveryMoney" property="deliveryMoney" />
+        <result column="deliveryLessMoney" property="deliveryLessMoney" />
+        <result column="deliveryGreatMoney" property="deliveryGreatMoney" />
+        <result column="deliveryDistance" property="deliveryDistance" />
+        <result column="reachPay" property="reachPay" />
+        <result column="selfPickup" property="selfPickup" />
+        <result column="orderPhone" property="orderPhone" />
+        <result column="updatedAt" property="updatedAt" />
+        <result column="updatedBy" property="updatedBy" />
+        <result column="defaultFee" property="defaultFee" />
+        <result column="defaultFeeDesc" property="defaultFeeDesc" />
     </resultMap>
 
     <select id="findOwnerByOwner" resultType="com.soft.ware.rest.common.persistence.model.TblOwner">

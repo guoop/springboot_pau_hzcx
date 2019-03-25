@@ -5,13 +5,13 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblRepository">
         <id column="id" property="id" />
-        <result column="name_" property="name" />
-        <result column="code_" property="code" />
-        <result column="measurement_" property="measurement" />
-        <result column="pics_" property="pics" />
-        <result column="manufacturer_" property="manufacturer" />
-        <result column="is_delete_" property="isDelete" />
-        <result column="created_at_" property="createdAt" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="measurement" property="measurement" />
+        <result column="pics" property="pics" />
+        <result column="manufacturer" property="manufacturer" />
+        <result column="is_delete" property="isDelete" />
+        <result column="created_at" property="createdAt" />
     </resultMap>
 
 </mapper>

@@ -5,41 +5,41 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOrder">
         <id column="id" property="id" />
-        <result column="no_" property="no" />
-        <result column="source_" property="source" />
-        <result column="pickup_no_" property="pickupNo" />
-        <result column="pickup_time_" property="pickupTime" />
-        <result column="money_channel_" property="moneyChannel" />
-        <result column="money_" property="money" />
-        <result column="freight_" property="freight" />
-        <result column="pay_money_" property="payMoney" />
-        <result column="pay_at_" property="payAt" />
-        <result column="pay_response_" property="payResponse" />
-        <result column="created_at_" property="createdAt" />
-        <result column="created_by_" property="createdBy" />
-        <result column="settlement_by_" property="settlementBy" />
-        <result column="owner_" property="owner" />
-        <result column="consignee_name_" property="consigneeName" />
-        <result column="consignee_mobile_" property="consigneeMobile" />
-        <result column="consignee_address_" property="consigneeAddress" />
-        <result column="goods_" property="goods" />
-        <result column="status_" property="status" />
-        <result column="remark_" property="remark" />
-        <result column="confirm_by_" property="confirmBy" />
-        <result column="confirm_at_" property="confirmAt" />
-        <result column="distribution_at_" property="distributionAt" />
-        <result column="distribution_by_" property="distributionBy" />
-        <result column="done_at_" property="doneAt" />
-        <result column="done_by_" property="doneBy" />
-        <result column="cancel_at_" property="cancelAt" />
-        <result column="cancel_by_" property="cancelBy" />
-        <result column="cancel_reason_" property="cancelReason" />
-        <result column="refund_at_" property="refundAt" />
-        <result column="refund_by_" property="refundBy" />
-        <result column="refund_money_" property="refundMoney" />
-        <result column="refund_reason_" property="refundReason" />
-        <result column="refund_status_" property="refundStatus" />
-        <result column="refund_response_" property="refundResponse" />
+        <result column="no" property="no" />
+        <result column="source" property="source" />
+        <result column="pickup_no" property="pickupNo" />
+        <result column="pickup_time" property="pickupTime" />
+        <result column="money_channel" property="moneyChannel" />
+        <result column="money" property="money" />
+        <result column="freight" property="freight" />
+        <result column="pay_money" property="payMoney" />
+        <result column="pay_at" property="payAt" />
+        <result column="pay_response" property="payResponse" />
+        <result column="created_at" property="createdAt" />
+        <result column="created_by" property="createdBy" />
+        <result column="settlement_by" property="settlementBy" />
+        <result column="owner" property="owner" />
+        <result column="consignee_name" property="consigneeName" />
+        <result column="consignee_mobile" property="consigneeMobile" />
+        <result column="consignee_address" property="consigneeAddress" />
+        <result column="goods" property="goods" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="confirm_by" property="confirmBy" />
+        <result column="confirm_at" property="confirmAt" />
+        <result column="distribution_at" property="distributionAt" />
+        <result column="distribution_by" property="distributionBy" />
+        <result column="done_at" property="doneAt" />
+        <result column="done_by" property="doneBy" />
+        <result column="cancel_at" property="cancelAt" />
+        <result column="cancel_by" property="cancelBy" />
+        <result column="cancel_reason" property="cancelReason" />
+        <result column="refund_at" property="refundAt" />
+        <result column="refund_by" property="refundBy" />
+        <result column="refund_money" property="refundMoney" />
+        <result column="refund_reason" property="refundReason" />
+        <result column="refund_status" property="refundStatus" />
+        <result column="refund_response" property="refundResponse" />
     </resultMap>
 
     <sql id="findListCondition">
@@ -47,7 +47,7 @@
             and o.source in (#{source})
         </if>
         <if test="param.status != null">
-            and o.source in (#{param.status})
+            and o.status in (#{param.status})
         </if>
         <!--根据买家用户查询-->
         <if test="user.id != null">

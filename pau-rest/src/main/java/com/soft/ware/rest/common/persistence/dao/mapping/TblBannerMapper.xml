@@ -5,14 +5,14 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblBanner">
         <id column="id" property="id" />
-        <result column="poster_" property="poster" />
-        <result column="name_" property="name" />
-        <result column="description_" property="description" />
-        <result column="type_" property="type" />
-        <result column="target_" property="target" />
-        <result column="status_" property="status" />
-        <result column="owner_" property="owner" />
-        <result column="created_at_" property="createdAt" />
+        <result column="poster" property="poster" />
+        <result column="name" property="name" />
+        <result column="description" property="description" />
+        <result column="type" property="type" />
+        <result column="target" property="target" />
+        <result column="status" property="status" />
+        <result column="owner" property="owner" />
+        <result column="created_at" property="createdAt" />
     </resultMap>
 
 </mapper>

@@ -15,4 +15,11 @@ public interface TblGoodsService extends IService<TblGoods> {
     List<Map> findPage(SessionUser user, Page page, GoodsPageParam param);
 
     TblGoods findById(Long id);
+
+    /**
+     * 根据商品id in 查询所有商品
+     * @param ids 商品id
+     * @return
+     */
+    List<TblGoods> findAll(SessionUser user,List<String> ids);
 }

@@ -9,11 +9,12 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.auth.wrapper.SuccessWrapper;
+import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
@@ -112,13 +113,67 @@ public class WXSmallCustomerController  extends BaseController {
 
 
     @RequestMapping(value = "/customer/v1/cart")
-    public Object owner(@RequestParam String goods){
-        String[] ss = goods.split("&&");
-        String id = ss[0];
-        String uint = ss[1];
-        String num = ss[2];
+    public Object owner(SessionUser user,@RequestParam(required = false,defaultValue = "all") String flag, @RequestParam(defaultValue = "") String goods){
+        String[] goodsList = goods.split(",");
+        String[] ss;
+        long[] ids = new long[goodsList.length];
+        String[] uints = new String[goodsList.length];
+        int[] nums = new int[goodsList.length];
+        List<String> sids = new ArrayList<>();
+        for (int i = 0; i < goodsList.length; i++) {
+            ss = goodsList[i].split("\\$\\$");
+            ids[i]= Long.parseLong(ss[0]);
+            uints[i] = ss[1];
+            nums[i] = Integer.parseInt(ss[2]);
+            sids.add(ss[0]);
+        }
+        List<TblGoods> all = goodsService.findAll(user, sids);
 
-        return super.warpObject(new SuccessWrapper());
+        long current = System.currentTimeMillis();
+        TblGoods g;
+        BigDecimal total = BigDecimal.ZERO;
+        int count = 0;
+        List<Map> maps = new ArrayList<>();
+        Map<String,Object> m;
+        for (int i = 0; i < all.size(); i++) {
+            // 计算单个商品的总价（总价 = 购买数量 * 商品单价）
+            // let goodsMoney = parseInt(cartGoodsItems[2]) * parseFloat(result.price_unit);
+            g = all.get(i);
+            BigDecimal goodsMoney = BigDecimal.valueOf(nums[i]).multiply(g.getPriceUnit());
+            // 如果是促销商品，则：总价 = 购买数量 * 促销价
+            if (g.getIsPromotion().equals(1) && g.getPromotionEndtime().getTime() > current) {
+                // goodsMoney = parseInt(cartGoodsItems[2]) * parseFloat(result.promotion_price);
+                goodsMoney = BigDecimal.valueOf(nums[i]).multiply(g.getPromotionPrice());
+            }
+            // 商品总价只计算在售商品
+            if (g.getStatus().equals(1)) {
+                // total += goodsMoney;
+                total = total.add(goodsMoney);
+                count += nums[i];
+            }
+            boolean is_promotion = TblGoods.is_promotion_1.equals(g.getIsPromotion());
+            m = new HashMap<>();
+            if ("all".equals(flag)) {
+                m.put("id", g.getId());
+                m.put("name", g.getName());
+                m.put("pics", g.getPics() != null ? g.getPics().split(",")[0] : "");
+                m.put("measurement_unit", g.getMeasurementUnit());
+                m.put("specifications", uints[i]);
+                m.put("count", nums[i]);
+                m.put("total", goodsMoney.setScale(2, BigDecimal.ROUND_HALF_UP));
+                m.put("status", g.getStatus());
+                m.put("is_promotion",g.getIsPromotion());
+                m.put("promotion_price", is_promotion ? g.getPromotionPrice().setScale(2, BigDecimal.ROUND_HALF_UP) : 0);
+                m.put("promotion_in_progress", is_promotion ? g.getPromotionEndtime().getTime() > current : 0);
+                maps.add(m);
+            }
+        }
+
+        Map<Object, Object> map = new HashMap<>();
+        map.put("count", count);
+        map.put("total", total.setScale(2, BigDecimal.ROUND_HALF_UP));
+        map.put("goods", maps);
+        return super.warpObject(new CarWrapper(map));
     }
 
 
@@ -159,8 +214,8 @@ public class WXSmallCustomerController  extends BaseController {
      */
     @RequestMapping(value = "/customer/v1/order/delete",method = RequestMethod.POST)
     public Object deleteOrder(SessionUser user,@RequestBody OrderDeleteParam param){
-        orderService.customerDelete(user,param);
-        return warpObject(new SuccessWrapper());
+        boolean b = orderService.customerDelete(user, param);
+        return warpObject(render(b));
     }
 
     /**
@@ -171,8 +226,8 @@ public class WXSmallCustomerController  extends BaseController {
      */
     @RequestMapping(value = "/customer/v1/order/cancel",method = RequestMethod.POST)
     public Object cancelOrder(SessionUser user,@RequestBody OrderDeleteParam param){
-        orderService.customerCancel(user,param);
-        return warpObject(new SuccessWrapper());
+        boolean b = orderService.customerCancel(user, param);
+        return warpObject(render(b));
     }
 
     /**
@@ -211,7 +266,8 @@ public class WXSmallCustomerController  extends BaseController {
         if (address.getId() == null) {
             address.setOwner(user.getId());
             address.setCreatedAt(new Date());
-            addressService.addAddress(user,address);
+            boolean b = addressService.addAddress(user, address);
+            return warpObject(render(b));
         }else{
             TblAddress old = addressService.findById(user, address.getId());
             old.setName(address.getName());
@@ -219,9 +275,9 @@ public class WXSmallCustomerController  extends BaseController {
             old.setDetail(address.getDetail());
             old.setTelephone(address.getTelephone());
             old.setIsDefault(address.getIsDefault());
-            addressService.updateAddress(user,address);
+            boolean b = addressService.updateAddress(user, address);
+            return warpObject(render(b));
         }
-        return warpObject(new SuccessWrapper());
     }
 
 
@@ -235,8 +291,8 @@ public class WXSmallCustomerController  extends BaseController {
         question.setOpenId(user.getId());
         question.setOwner(user.getOwner());
         question.setCreatedAt(new Date());
-        questionService.add(question);
-        return warpObject(new SuccessWrapper());
+        boolean b = questionService.add(question);
+        return warpObject(render(b));
     }
 
 }

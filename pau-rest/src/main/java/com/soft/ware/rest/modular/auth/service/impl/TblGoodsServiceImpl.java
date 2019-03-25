@@ -7,6 +7,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.util.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,5 +33,10 @@ public class TblGoodsServiceImpl extends ServiceImpl<TblGoodsMapper,TblGoods> im
     public TblGoods findById(Long id) {
         return tblGoodsMapper.selectOne(new TblGoods().setId(id));
 
+    }
+
+    @Override
+    public List<TblGoods> findAll(SessionUser user,List<String> ids) {
+        return tblGoodsMapper.findListByIds(user,  StringUtils.join(ids, "','"));
     }
 }

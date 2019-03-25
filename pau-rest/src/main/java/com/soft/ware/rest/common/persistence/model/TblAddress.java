@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,6 +26,7 @@ public class TblAddress extends Model<TblAddress> {
     //：是）
     public static Integer is_deleted_1 = 1;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     //属主（买家的openID）

@@ -5,17 +5,17 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblGoodsStorage">
         <id column="id" property="id" />
-        <result column="owner_" property="owner" />
-        <result column="goods_id_" property="goodsId" />
-        <result column="single_price_" property="singlePrice" />
-        <result column="in_amount_" property="inAmount" />
-        <result column="before_storage_" property="beforeStorage" />
-        <result column="after_storage_" property="afterStorage" />
-        <result column="in_money_" property="inMoney" />
-        <result column="baseline_" property="baseline" />
-        <result column="before_baseline_" property="beforeBaseline" />
-        <result column="in_at_" property="inAt" />
-        <result column="created_at_" property="createdAt" />
+        <result column="owner" property="owner" />
+        <result column="goods_id" property="goodsId" />
+        <result column="single_price" property="singlePrice" />
+        <result column="in_amount" property="inAmount" />
+        <result column="before_storage" property="beforeStorage" />
+        <result column="after_storage" property="afterStorage" />
+        <result column="in_money" property="inMoney" />
+        <result column="baseline" property="baseline" />
+        <result column="before_baseline" property="beforeBaseline" />
+        <result column="in_at" property="inAt" />
+        <result column="created_at" property="createdAt" />
     </resultMap>
 
 </mapper>

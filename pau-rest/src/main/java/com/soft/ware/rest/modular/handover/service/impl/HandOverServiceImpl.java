@@ -1,21 +1,16 @@
 package com.soft.ware.rest.modular.handover.service.impl;
 
-import com.soft.ware.core.support.HttpKit;
-import com.soft.ware.core.util.DateUtil;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.rest.common.persistence.dao.HandOverMapper;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
+import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-
+import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.soft.ware.rest.common.persistence.dao.HandOverMapper;
-import com.soft.ware.rest.common.persistence.model.HandOver;
-import com.soft.ware.rest.modular.handover.service.IHandOverService;
-
 import javax.annotation.Resource;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +37,7 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 
         o.setPospalcode(param.getPospalcode());
         o.setSyncAt(date);
-        o.setOptionStart(DateUtil.parseTime(param.getOptionstart()));
+        o.setOptionStart(param.getOptionstart());
         o.setOptionaAt(param.getOptionat());
         o.setFistOrderTime(param.getFistordertime());
         o.setLastOrderTime(param.getLastordertime());

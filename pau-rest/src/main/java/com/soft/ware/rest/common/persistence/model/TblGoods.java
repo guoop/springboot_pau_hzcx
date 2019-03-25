@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,6 +16,29 @@ import java.util.Date;
 public class TblGoods extends Model<TblGoods> {
 
     private static final long serialVersionUID = 1L;
+
+    //：未上架；
+    public static Integer status_0 = 0;
+    //：销售中；
+    public static Integer status_1 = 1;
+    //：已下架）
+    public static Integer status_2 = 2;
+    //：未删除；
+    public static Integer is_delete_0 = 0;
+    //：已删除）
+    public static Integer is_delete_1 = 1;
+    //：扫码添加；
+    public static Integer source_1 = 1;
+    //：小程序手工添加；
+    public static Integer source_2 = 2;
+    //：后台手工添加；
+    public static Integer source_3 = 3;
+    //：导入）
+    public static Integer source_4 = 4;
+    //：否；
+    public static Integer is_promotion_0 = 0;
+    //：是）
+    public static Integer is_promotion_1 = 1;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

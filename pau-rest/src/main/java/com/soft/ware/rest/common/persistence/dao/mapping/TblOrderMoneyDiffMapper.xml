@@ -5,20 +5,20 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff">
         <id column="id" property="id" />
-        <result column="no_" property="no" />
-        <result column="owner_" property="owner" />
-        <result column="order_no_" property="orderNo" />
-        <result column="money_" property="money" />
-        <result column="money_diff_" property="moneyDiff" />
-        <result column="pic_" property="pic" />
-        <result column="created_at_" property="createdAt" />
-        <result column="status_" property="status" />
-        <result column="pay_at_" property="payAt" />
-        <result column="pay_response_" property="payResponse" />
-        <result column="refund_by_" property="refundBy" />
-        <result column="refund_at_" property="refundAt" />
-        <result column="refund_status_" property="refundStatus" />
-        <result column="refund_response_" property="refundResponse" />
+        <result column="no" property="no" />
+        <result column="owner" property="owner" />
+        <result column="order_no" property="orderNo" />
+        <result column="money" property="money" />
+        <result column="money_diff" property="moneyDiff" />
+        <result column="pic" property="pic" />
+        <result column="created_at" property="createdAt" />
+        <result column="status" property="status" />
+        <result column="pay_at" property="payAt" />
+        <result column="pay_response" property="payResponse" />
+        <result column="refund_by" property="refundBy" />
+        <result column="refund_at" property="refundAt" />
+        <result column="refund_status" property="refundStatus" />
+        <result column="refund_response" property="refundResponse" />
     </resultMap>
 
 </mapper>

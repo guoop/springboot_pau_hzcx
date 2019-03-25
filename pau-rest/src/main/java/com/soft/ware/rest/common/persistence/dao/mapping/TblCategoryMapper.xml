@@ -5,15 +5,15 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblCategory">
         <id column="id" property="id" />
-        <result column="name_" property="name" />
-        <result column="children_" property="children" />
-        <result column="description_" property="description" />
-        <result column="weights_" property="weights" />
-        <result column="cover_" property="cover" />
-        <result column="owner_" property="owner" />
-        <result column="is_delete_" property="isDelete" />
-        <result column="status_" property="status" />
-        <result column="is_system_" property="isSystem" />
+        <result column="name" property="name" />
+        <result column="children" property="children" />
+        <result column="description" property="description" />
+        <result column="weights" property="weights" />
+        <result column="cover" property="cover" />
+        <result column="owner" property="owner" />
+        <result column="is_delete" property="isDelete" />
+        <result column="status" property="status" />
+        <result column="is_system" property="isSystem" />
     </resultMap>
     <select id="finalAll" resultType="com.soft.ware.rest.common.persistence.model.TblCategory">
         select * from tbl_category c where c.is_delete = 0 and c.owner = #{owner} order by weights desc

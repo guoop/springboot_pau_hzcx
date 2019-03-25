@@ -5,12 +5,12 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOwnerHistory">
         <id column="id" property="id" />
-        <result column="owner_" property="owner" />
-        <result column="name_" property="name" />
-        <result column="phone_" property="phone" />
-        <result column="in_at_" property="inAt" />
-        <result column="out_at_" property="outAt" />
-        <result column="current_status_" property="currentStatus" />
+        <result column="owner" property="owner" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="in_at" property="inAt" />
+        <result column="out_at" property="outAt" />
+        <result column="current_status" property="currentStatus" />
     </resultMap>
 
 </mapper>

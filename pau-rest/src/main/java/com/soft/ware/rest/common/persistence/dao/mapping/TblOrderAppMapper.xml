@@ -5,21 +5,21 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblOrderApp">
         <id column="id" property="id" />
-        <result column="no_" property="no" />
-        <result column="source_" property="source" />
-        <result column="money_channel_" property="moneyChannel" />
-        <result column="money_" property="money" />
-        <result column="money_dpay_" property="moneyDpay" />
-        <result column="money_shishou_" property="moneyShishou" />
-        <result column="money_zhaol_" property="moneyZhaol" />
-        <result column="channel_pay_" property="channelPay" />
-        <result column="pay_at_" property="payAt" />
-        <result column="created_at_" property="createdAt" />
-        <result column="settlement_by_" property="settlementBy" />
-        <result column="owner_" property="owner" />
-        <result column="goods_" property="goods" />
-        <result column="status_" property="status" />
-        <result column="remark_" property="remark" />
+        <result column="no" property="no" />
+        <result column="source" property="source" />
+        <result column="money_channel" property="moneyChannel" />
+        <result column="money" property="money" />
+        <result column="money_dpay" property="moneyDpay" />
+        <result column="money_shishou" property="moneyShishou" />
+        <result column="money_zhaol" property="moneyZhaol" />
+        <result column="channel_pay" property="channelPay" />
+        <result column="pay_at" property="payAt" />
+        <result column="created_at" property="createdAt" />
+        <result column="settlement_by" property="settlementBy" />
+        <result column="owner" property="owner" />
+        <result column="goods" property="goods" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
     </resultMap>
 
 </mapper>

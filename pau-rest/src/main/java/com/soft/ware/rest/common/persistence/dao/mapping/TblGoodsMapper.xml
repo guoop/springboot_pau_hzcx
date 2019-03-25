@@ -5,29 +5,29 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblGoods">
         <id column="id" property="id" />
-        <result column="category_id_" property="categoryId" />
-        <result column="category_child_" property="categoryChild" />
-        <result column="name_" property="name" />
-        <result column="code_" property="code" />
-        <result column="measurement_unit_" property="measurementUnit" />
-        <result column="price_unit_" property="priceUnit" />
-        <result column="pics_" property="pics" />
-        <result column="description_" property="description" />
-        <result column="specs_" property="specs" />
-        <result column="baseline_" property="baseline" />
-        <result column="stock_" property="stock" />
-        <result column="created_at_" property="createdAt" />
-        <result column="created_by_" property="createdBy" />
-        <result column="owner_" property="owner" />
-        <result column="status_" property="status" />
-        <result column="sells_" property="sells" />
-        <result column="sort_num_" property="sortNum" />
-        <result column="is_delete_" property="isDelete" />
-        <result column="source_" property="source" />
-        <result column="top_time_" property="topTime" />
-        <result column="is_promotion_" property="isPromotion" />
-        <result column="promotion_price_" property="promotionPrice" />
-        <result column="promotion_endtime_" property="promotionEndtime" />
+        <result column="category_id" property="categoryId" />
+        <result column="category_child" property="categoryChild" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="measurement_unit" property="measurementUnit" />
+        <result column="price_unit" property="priceUnit" />
+        <result column="pics" property="pics" />
+        <result column="description" property="description" />
+        <result column="specs" property="specs" />
+        <result column="baseline" property="baseline" />
+        <result column="stock" property="stock" />
+        <result column="created_at" property="createdAt" />
+        <result column="created_by" property="createdBy" />
+        <result column="owner" property="owner" />
+        <result column="status" property="status" />
+        <result column="sells" property="sells" />
+        <result column="sort_num" property="sortNum" />
+        <result column="is_delete" property="isDelete" />
+        <result column="source" property="source" />
+        <result column="top_time" property="topTime" />
+        <result column="is_promotion" property="isPromotion" />
+        <result column="promotion_price" property="promotionPrice" />
+        <result column="promotion_endtime" property="promotionEndtime" />
     </resultMap>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
@@ -49,6 +49,14 @@
     <select id="findPageCount" resultType="long">
         select count(1) from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner}
         <include refid="findPageCondition"/>
+    </select>
+    <select id="findListByIds" resultType="com.soft.ware.rest.common.persistence.model.TblGoods" resultMap="BaseResultMap">
+      select id, name, pics, measurement_unit, price_unit, status, is_promotion, promotion_price,
+       ifnull(promotion_endtime>=current_date, 1) as promotion_in_progress from tbl_goods
+       where is_delete = 0 and owner = #{user.owner} and id in (#{inIds})
+        <!--<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>-->
     </select>
 
 </mapper>

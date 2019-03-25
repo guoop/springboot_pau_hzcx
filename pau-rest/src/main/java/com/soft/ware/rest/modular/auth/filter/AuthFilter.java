@@ -43,6 +43,7 @@ public class AuthFilter extends OncePerRequestFilter {
     public static Set<String> whitePrefixUrlSet = new HashSet<>();
 
     static {
+        whiteUrlSet.add("/test/xxxx");
         whiteUrlSet.add("/customer/v1/banner/list");
         whiteUrlSet.add("/customer/v1/category/list");
         whiteUrlSet.add("/customer/v1/goods/list");

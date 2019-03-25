@@ -5,15 +5,15 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblQuestion">
         <id column="id" property="id" />
-        <result column="name_" property="name" />
-        <result column="phone_" property="phone" />
-        <result column="address_" property="address" />
-        <result column="description_" property="description" />
-        <result column="created_at_" property="createdAt" />
-        <result column="owner_" property="owner" />
-        <result column="open_id_" property="openId" />
-        <result column="account_info_" property="accountInfo" />
-        <result column="system_info_" property="systemInfo" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="description" property="description" />
+        <result column="created_at" property="createdAt" />
+        <result column="owner" property="owner" />
+        <result column="open_id" property="openId" />
+        <result column="account_info" property="accountInfo" />
+        <result column="system_info" property="systemInfo" />
     </resultMap>
 
 </mapper>

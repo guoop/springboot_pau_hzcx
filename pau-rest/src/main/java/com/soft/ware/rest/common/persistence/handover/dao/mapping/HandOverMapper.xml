@@ -5,34 +5,34 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.HandOver">
         <id column="id" property="id" />
-        <result column="owner_" property="owner" />
-        <result column="user_phone_" property="userPhone" />
-        <result column="username_" property="userName" />
-        <result column="pospalcode_" property="pospalcode" />
-        <result column="sync_at_" property="syncAt" />
-        <result column="optionstart_" property="optionStart" />
-        <result column="optionat_" property="optionAt" />
-        <result column="fistordertime_" property="fistOrderTime" />
-        <result column="lastordertime_" property="lastOrderTime" />
-        <result column="ordernum_" property="orderNum" />
-        <result column="ordertuinum_" property="ordertuinum" />
-        <result column="orderreturnnum_" property="orderReturnNum" />
-        <result column="allmoney_" property="allMoney" />
-        <result column="ordermoney_" property="orderMoney" />
-        <result column="money_shishou_" property="moneyShishou" />
-        <result column="zhaoling_" property="zhaoLing" />
-        <result column="membercz_" property="membercz" />
-        <result column="ordertuimoney_" property="orderTuimoney" />
-        <result column="orderreturnmoney_" property="orderReturnMoney" />
-        <result column="wxpay_" property="wxpay" />
-        <result column="wxpaynum_" property="wxpayNum" />
-        <result column="alipay_" property="alipay" />
-        <result column="alipaynum_" property="alipayNum" />
-        <result column="unionpay_" property="unionPay" />
-        <result column="unionpaynum_" property="unionPayNum" />
-        <result column="moneypay_" property="moneyPay" />
-        <result column="moneypaynum_" property="moneyPayNum" />
-        <result column="moneymemberpay_" property="moneyMemberPay" />
-        <result column="memberpaynum_" property="memberPayNum" />
+        <result column="owner" property="owner" />
+        <result column="user_phone" property="userPhone" />
+        <result column="username" property="userName" />
+        <result column="pospalcode" property="pospalcode" />
+        <result column="sync_at" property="syncAt" />
+        <result column="optionstart" property="optionStart" />
+        <result column="optionat" property="optionAt" />
+        <result column="fistordertime" property="fistOrderTime" />
+        <result column="lastordertime" property="lastOrderTime" />
+        <result column="ordernum" property="orderNum" />
+        <result column="ordertuinum" property="ordertuinum" />
+        <result column="orderreturnnum" property="orderReturnNum" />
+        <result column="allmoney" property="allMoney" />
+        <result column="ordermoney" property="orderMoney" />
+        <result column="money_shishou" property="moneyShishou" />
+        <result column="zhaoling" property="zhaoLing" />
+        <result column="membercz" property="membercz" />
+        <result column="ordertuimoney" property="orderTuimoney" />
+        <result column="orderreturnmoney" property="orderReturnMoney" />
+        <result column="wxpay" property="wxpay" />
+        <result column="wxpaynum" property="wxpayNum" />
+        <result column="alipay" property="alipay" />
+        <result column="alipaynum" property="alipayNum" />
+        <result column="unionpay" property="unionPay" />
+        <result column="unionpaynum" property="unionPayNum" />
+        <result column="moneypay" property="moneyPay" />
+        <result column="moneypaynum" property="moneyPayNum" />
+        <result column="moneymemberpay" property="moneyMemberPay" />
+        <result column="memberpaynum" property="memberPayNum" />
     </resultMap>
 </mapper>
