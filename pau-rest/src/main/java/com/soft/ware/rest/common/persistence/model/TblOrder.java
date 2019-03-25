@@ -23,39 +23,39 @@ public class TblOrder extends Model<TblOrder> {
     //：收银机；
     public static int SOURCE_1 = 1;
     //：到店自取订单）
-    public static int source_2 = 2;
+    public static int SOURCE_2 = 2;
     //：在线支付；
-    public static Integer money_channel_0 = 0;
+    public static Integer MONEY_CHANNEL_0 = 0;
     //：货到付款；
-    public static Integer money_channel_1 = 1;
+    public static Integer MONEY_CHANNEL_1 = 1;
     //：现金；
-    public static Integer money_channel_2 = 2;
+    public static Integer MONEY_CHANNEL_2 = 2;
     //：微信；
-    public static Integer money_channel_3 = 3;
+    public static Integer MONEY_CHANNEL_3 = 3;
     //：支付宝；
-    public static Integer money_channel_4 = 4;
+    public static Integer MONEY_CHANNEL_4 = 4;
     //：银联）
-    public static Integer money_channel_5 = 5;
+    public static Integer MONEY_CHANNEL_5 = 5;
     //-
-    public static Integer status_03 = -3;
+    public static Integer STATUS_03 = -3;
     //：配送中；
-    public static Integer status_2 = 2;
+    public static Integer STATUS_2 = 2;
     //：待商家确认（在线支付支付成功、货到付款下单成功）；
-    public static Integer status_1 = 1;
+    public static Integer STATUS_1 = 1;
     //：待付款（新建订单）；
-    public static Integer status_0 = 0;
+    public static Integer STATUS_0 = 0;
     //：已完成（在线支付配送完成；货到付款付款功能）；
-    public static Integer status_3 = 3;
+    public static Integer STATUS_3 = 3;
     //：商家确认接单（主要用于配送前及时提醒买家商家已接单））
-    public static Integer status_10 = 10;
+    public static Integer STATUS_10 = 10;
     //-
-    public static String cancel_by_01 = "-1";
+    public static String CANCEL_BY_01 = "-1";
     //：处理中；
-    public static Integer refund_status_0 = 0;
+    public static Integer REFUND_STATUS_0 = 0;
     //：成功；
-    public static Integer refund_status_1 = 1;
+    public static Integer REFUND_STATUS_1 = 1;
     //：失败）
-    public static Integer refund_status_2 = 2;
+    public static Integer REFUND_STATUS_2 = 2;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

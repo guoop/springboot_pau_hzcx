@@ -50,13 +50,14 @@
         select count(1) from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner}
         <include refid="findPageCondition"/>
     </select>
-    <select id="findListByIds" resultType="com.soft.ware.rest.common.persistence.model.TblGoods" resultMap="BaseResultMap">
+    <select id="findListByIds" resultType="com.soft.ware.rest.common.persistence.model.TblGoods">
       select id, name, pics, measurement_unit, price_unit, status, is_promotion, promotion_price,
        ifnull(promotion_endtime>=current_date, 1) as promotion_in_progress from tbl_goods
-       where is_delete = 0 and owner = #{user.owner} and id in (#{inIds})
-        <!--<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>-->
+       where is_delete = 0 and owner = #{user.owner} and id
+       in
+      <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+        #{id}
+      </foreach>
     </select>
 
 </mapper>

@@ -50,8 +50,8 @@
             and o.status in (#{param.status})
         </if>
         <!--根据买家用户查询-->
-        <if test="user.id != null">
-            and o.created_by in (#{user.id})
+        <if test="user.openId != null">
+            and o.created_by in (#{user.openId})
         </if>
     </sql>
     <select id="findListCount" resultType="java.lang.Long">
@@ -72,10 +72,10 @@
         update table tbl_order o set o.status = #{status} where o.no = #{no} and o.owner = #{user.owner}
     </update>
     <update id="customerDelete">
-      update tbl_order set status = -3 where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id} and status in (-2, -1, 0, 3);
+      update tbl_order set status = -3 where owner = #{user.owner} and no = #{param.no} and created_by = #{user.openId} and status in (-2, -1, 0, 3);
     </update>
     <update id="customerCancel">
-		update tbl_order set status = -1, cancel_by = #{user.id}, cancel_at = now() where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id}
+		update tbl_order set status = -1, cancel_by = #{user.openId}, cancel_at = now() where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id}
     </update>
 
 </mapper>

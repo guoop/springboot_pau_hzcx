@@ -53,9 +53,11 @@ public class AuthFilter extends OncePerRequestFilter {
         whiteUrlSet.add("/customer/v1/address");
         whiteUrlSet.add("/customer/v1/address/man");
         whiteUrlSet.add("/customer/v1/question");
+        whiteUrlSet.add("/customer/v1/order");
         whiteUrlSet.add("/customer/v1/order/delete");
         whiteUrlSet.add("/customer/v1/order/cancel");
 
+        whitePrefixUrlSet.add("/customer/v2/orders/");
         whitePrefixUrlSet.add("/customer/v1/goods/");
         whitePrefixUrlSet.add("/customer/v1/address/");
     }

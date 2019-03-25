@@ -25,7 +25,7 @@ public class TblAddressServiceImpl extends ServiceImpl<TblAddressMapper,TblAddre
 
     @Override
     public TblAddress findById(SessionUser user, long id) {
-        return addressMapper.selectOne(new TblAddress().setId(id).setOwner(user.getId()));
+        return addressMapper.selectOne(new TblAddress().setId(id).setOwner(user.getOpenId()));
     }
 
     @Override

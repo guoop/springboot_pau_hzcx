@@ -7,7 +7,6 @@ import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.util.Page;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +36,6 @@ public class TblGoodsServiceImpl extends ServiceImpl<TblGoodsMapper,TblGoods> im
 
     @Override
     public List<TblGoods> findAll(SessionUser user,List<String> ids) {
-        return tblGoodsMapper.findListByIds(user,  StringUtils.join(ids, "','"));
+        return tblGoodsMapper.findListByIds(user, ids);
     }
 }

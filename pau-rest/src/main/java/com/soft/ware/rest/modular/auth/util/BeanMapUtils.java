@@ -123,6 +123,9 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
         Field[] declaredFields = obj.getClass().getDeclaredFields();
         if (underline) {
             for (Field field : declaredFields) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
                 field.setAccessible(true);
                 map.put(underline(new StringBuffer(field.getName())).toString(), field.get(obj));
             }
