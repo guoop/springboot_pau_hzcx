@@ -1,5 +1,7 @@
 package com.soft.ware.rest.modular.wxsmall;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +24,20 @@ import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.support.HttpKit;
+import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
+import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.handover.service.IHandOverService;
+import com.soft.ware.rest.modular.handover.service.impl.HandOverServiceImpl;
 
 @Controller
 @RequestMapping("/owner")
@@ -40,6 +49,8 @@ public class WXSmallController extends BaseController {
 	private TblOwnerService tblOwnerService;
 	@Autowired
 	private TblOwnerStaffService tblOwnerStaffService;
+	@Autowired
+	private IHandOverService handOverService;
 	
 	/**
 	 * 获取openId
@@ -67,15 +78,41 @@ public class WXSmallController extends BaseController {
 	/**
 	 * 商家端发送手机验证码
 	 * @param phone
+	 *  "ext": "",
+    "extend": "",
+    "params": [
+        "254687"
+        
+    ],
+    "sig": "d7bab2db710f125946727f4a2638fd6911205a719e59575c2545912b6f204771",
+    "sign": "汇智创享",
+    "tel": {
+        "mobile": "15083101898",
+        "nationcode": "86"
+    },
+    "time": 1553407554,
+    "tpl_id": 241314
 	 * @return
 	 */
 	@RequestMapping("/share/code")
 	@ResponseBody
 	public Tip getPhoneCode(String phone){
-		String msgCode = ToolUtil.getRandomString(6);
+		String msgCode = ToolUtil.getRandomInt(6);
+		
 		
 		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String,Object> phoneMap = new HashMap<String, Object>();
+		List<String> list = new ArrayList<String>();
 		map.put("", msgCode);
+		map.put("params", list.add(msgCode));
+		
+		map.put("sign", "汇智创享");
+		phoneMap.put("mobile", phone);
+		phoneMap.put("nationcode", "86");
+		map.put("tel",phoneMap.put("mobile", phoneMap));
+		map.put("time", ToolUtil.currentTime());
+		map.put("tpl_id", WXContants.TENCENT_TEMPLATE_ID1);
+		map.put("sig",ToolUtil.getSHA256StrJava("appkey="+WXContants.TENCENTMSG_APPKEY+"&random=7226249334&time="+map.get("time")+"="+map.get("mobeil")+""));
 		ResponseEntity<String> result= restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map, String.class);
 		if(ToolUtil.isNotEmpty(result.getBody())){
 			return new ErrorTip(601,"短信地址请求失败");
@@ -116,6 +153,7 @@ public class WXSmallController extends BaseController {
 	
 	/**
 	 * 退出登录
+	 * 暂时没写好，需要调整
 	 */
 	@RequestMapping("/v1/logout")
 	@ResponseBody
@@ -206,7 +244,31 @@ public class WXSmallController extends BaseController {
    		return new ErrorTip(606, "删除失败");
    	}
    	
-   	
+	/**
+   	 * 获取交接班记录列表
+   	 * @param start 开始时间
+   	 * @param end  结束时间
+   	 * @param page 当前页
+   	 * @param size 页面条数
+   	 */
+   	@SuppressWarnings("unchecked")
+	@RequestMapping("v1/app/handover")
+   	@ResponseBody
+   	public Object getHandOverList(SessionUser user,HandOver param,Page<HandOver> page){
+   		@SuppressWarnings("unused")
+		List<HandOver> listData = null;
+   		String startTime = (String) HttpKit.getRequest().getAttribute("start");
+   		String endTime = (String) HttpKit.getRequest().getAttribute("end");
+   		Date startDate = DateUtil.getDateByString(startTime);
+   		Date endDate = DateUtil.getDateByString(endTime);
+   		param.setOptionaAt(endDate);;
+   		param.setOptionStart(startDate);
+   		//listData = (List<HandOver>) handOverService.getHandOver(param, user, page);
+   		if(listData.size() > 0){
+   			return listData;
+   		}
+   		return null;
+   	}
    	
    	
 }
