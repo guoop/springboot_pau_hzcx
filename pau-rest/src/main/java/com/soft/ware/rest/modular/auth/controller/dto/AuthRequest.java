@@ -9,8 +9,12 @@ import com.soft.ware.rest.modular.auth.validator.dto.Credence;
  * @Date 2017/8/24 14:00
  */
 public class AuthRequest implements Credence {
+    private String phone;
+    public String getPhone() {
+		return phone;
+	}
 
-    private String userName;
+	private String userName;
     private String password;
 
     public void setUserName(String userName) {
@@ -18,7 +22,7 @@ public class AuthRequest implements Credence {
     }
 
     public void setPhone(String phone) {
-        this.userName = phone;
+        this.phone = phone;
     }
 
     public String getPassword() {

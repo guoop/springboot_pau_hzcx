@@ -63,4 +63,11 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     boolean customerCancel(SessionUser user, OrderDeleteParam param);
+    /**
+     * 通过订单状态查询订单列表
+     * @param map
+     * @return
+     */
+    List<TblOrder> findOrderListByStatus(Map<String,Object> map);
+    
 }

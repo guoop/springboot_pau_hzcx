@@ -17,7 +17,7 @@ public class WXContants {
 	/**
 	 * 腾讯云短信服务
 	 */
-	public static final String TENCENTMSG_GATAWAY = "https://yun.tim.qq.com/v5/tlssmssvr/sendsms";
+	public static final String TENCENTMSG_GATAWAY = "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=1400165586&random=142536";
 	//appid
 	public static final String TENCENTMSG_APPID = "1400165586";
     //app key
@@ -27,7 +27,7 @@ public class WXContants {
 	//短信模板2订单通知
 	public static final String TENCENT_TEMPLATE_ID2 = "241320";
 	//短信模板1自主版订单通知
-	public static final String TENCENT_TEMPLATE_ID1 = "241324";
+	public static final String TENCENT_TEMPLATE_ID1 = "241314";
 	
 	
 	

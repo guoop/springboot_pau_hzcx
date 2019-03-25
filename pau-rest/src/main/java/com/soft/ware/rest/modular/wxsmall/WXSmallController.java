@@ -28,29 +28,43 @@ import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.HandOver;
+import com.soft.ware.rest.common.persistence.model.TblCategory;
+import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.service.TblCategoryService;
+import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.auth.wrapper.CategoryWrapper;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import com.soft.ware.rest.modular.handover.service.impl.HandOverServiceImpl;
 
 @Controller
 @RequestMapping("/owner")
 public class WXSmallController extends BaseController {
-	
+	//请求外部服务
 	@Autowired
 	private RestTemplate restTemplate;
+	//商户服务
 	@Autowired
 	private TblOwnerService tblOwnerService;
+	//超市员工服务
 	@Autowired
 	private TblOwnerStaffService tblOwnerStaffService;
+	//交接班服务
 	@Autowired
 	private IHandOverService handOverService;
+	//订单服务
+	@Autowired
+	private TblOrderService tblOrderService;
+	//分类服务
+	@Autowired
+    private TblCategoryService categoryService;
 	
 	/**
 	 * 获取openId
@@ -98,23 +112,23 @@ public class WXSmallController extends BaseController {
 	@ResponseBody
 	public Tip getPhoneCode(String phone){
 		String msgCode = ToolUtil.getRandomInt(6);
-		
-		
+		HttpKit.getRequest().getSession().setAttribute(phone, msgCode);
+		HttpKit.getRequest().getSession().setMaxInactiveInterval(6000);
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String,Object> phoneMap = new HashMap<String, Object>();
 		List<String> list = new ArrayList<String>();
-		map.put("", msgCode);
-		map.put("params", list.add(msgCode));
-		
+		list.add(msgCode);
+		map.put("params",list);
 		map.put("sign", "汇智创享");
-		phoneMap.put("mobile", phone);
+		phoneMap.put("mobile", ""+phone+"");
 		phoneMap.put("nationcode", "86");
-		map.put("tel",phoneMap.put("mobile", phoneMap));
-		map.put("time", ToolUtil.currentTime());
+		map.put("tel",phoneMap);
+		
+		map.put("time", DateUtil.timestampToDate());
 		map.put("tpl_id", WXContants.TENCENT_TEMPLATE_ID1);
-		map.put("sig",ToolUtil.getSHA256StrJava("appkey="+WXContants.TENCENTMSG_APPKEY+"&random=7226249334&time="+map.get("time")+"="+map.get("mobeil")+""));
+		map.put("sig",ToolUtil.getSHA256StrJava("appkey="+WXContants.TENCENTMSG_APPKEY+"&random=142536&time="+map.get("time")+"&mobile="+phone));
 		ResponseEntity<String> result= restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map, String.class);
-		if(ToolUtil.isNotEmpty(result.getBody())){
+		if(result.getStatusCodeValue() != 200 ){
 			return new ErrorTip(601,"短信地址请求失败");
 		}
 		return SUCCESS_TIP;
@@ -128,8 +142,12 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("/share/login")
 	@ResponseBody
-	public Object login(String phone,String code){
-		
+	public Object login(@RequestBody Map<String,Object> map){
+		if(ToolUtil.isNotEmpty(map)){
+			if(ToolUtil.isNotEmpty(map.get("phone").toString())&&ToolUtil.isNotEmpty(map.get("password"))){
+				String code = (String) HttpKit.getRequest().getSession().getAttribute(map.get("phone").toString());
+			}
+		}
 		return null;
 	}
 	/**
@@ -254,21 +272,110 @@ public class WXSmallController extends BaseController {
    	@SuppressWarnings("unchecked")
 	@RequestMapping("v1/app/handover")
    	@ResponseBody
-   	public Object getHandOverList(SessionUser user,HandOver param,Page<HandOver> page){
+   	public Object getHandOverList(SessionUser user,HandoverParam param,Page<HandOver> page){
    		@SuppressWarnings("unused")
 		List<HandOver> listData = null;
    		String startTime = (String) HttpKit.getRequest().getAttribute("start");
    		String endTime = (String) HttpKit.getRequest().getAttribute("end");
-   		Date startDate = DateUtil.getDateByString(startTime);
-   		Date endDate = DateUtil.getDateByString(endTime);
-   		param.setOptionaAt(endDate);;
-   		param.setOptionStart(startDate);
-   		//listData = (List<HandOver>) handOverService.getHandOver(param, user, page);
+        if(ToolUtil.isEmpty(endTime)){
+        	DateUtil.getTimeByDate(new Date());
+        }
+   		Date startDate = DateUtil.getDateByTime(startTime);
+   		Date endDate = DateUtil.getDateByTime(endTime);
+   		
+   		param.setOptionat(endDate);
+   		param.setOptionstart(startDate);
+   		listData = (List<HandOver>) handOverService.getHandOver(param, user, page);
    		if(listData.size() > 0){
    			return listData;
    		}
    		return null;
    	}
+   	/**
+   	 * 通过订单状态查询订单列表
+   	 * @param status（订单状态）,page（页码） 
+   	 * @return
+   	 */
+   	@RequestMapping("v2/orders")
+   	@ResponseBody
+   	public Object getOrderList(@RequestBody Map<String,Object> map){
+   		if(ToolUtil.isEmpty(map)){
+   			throw new PauException(BizExceptionEnum.PARAME_ERROR);
+   		}
+   		if(ToolUtil.isEmpty(map.get("status"))&&ToolUtil.isEmpty(map.get("page"))){
+   			throw new PauException(BizExceptionEnum.PARAME_ERROR);
+   		}
+   		List<TblOrder> list= tblOrderService.findOrderListByStatus(map);
+   		if(list.size() > 0){
+   			return list;
+   		}
+		return null;
+   	}
+   	/**
+   	 * 获取线下订单列表
+   	 * @param map 
+   	 * @return
+   	 */
+   	@RequestMapping("v1/app/orders")
+   	@ResponseBody
+   	public Object getOfflineOrderList(@RequestBody Map<String,Object> map){
+   		if(ToolUtil.isNotEmpty(map)){
+   			if(ToolUtil.isNotEmpty(map.get("page"))){
+   				List<TblOrder> list = tblOrderService.findOrderListByStatus(map);
+   				if(list.size() > 0){
+   					return list;
+   				}
+   			}
+   		}
+   		return null;
+   	}
    	
+   	/**
+   	 * 标记订单状态
+   	 * @param map
+   	 */
+   	@RequestMapping("v2/order/maintain")
+   	@ResponseBody
+   	public Tip signOrderStatus(@RequestBody Map<String,Object> map,SessionUser user){
+   		if(ToolUtil.isNotEmpty(map)){
+   			if(ToolUtil.isNotEmpty(map.get("orderNo"))&&ToolUtil.isNotEmpty(map.get("status"))){
+   				boolean isSuccess = tblOrderService.updateStatus(user, map.get("orderNo").toString(), map.get("status").toString());
+   				if(isSuccess){
+   					return SUCCESS_TIP;
+   				}
+   			}
+   		}
+   		return new ErrorTip(604, "订单状态更新失败");
+   	}
+   	/**
+   	 * v1/category/list
+   	 * 获取商品分类信息
+   	 * @param 
+   	 */
+   	@RequestMapping("v1/category/list")
+   	@ResponseBody
+   	public Object getCategoryList(SessionUser user){
+   		List<TblCategory> list = categoryService.findAllCategory(user);
+        if(list.size() > 0){
+        	return list;
+        }
+        return null;
+   	}
+   	/**
+   	 * 获取分类详情
+   	 * @param 
+   	 */
+    @RequestMapping("v1/auth/category/index")
+    @ResponseBody
+    public Object getCategoryDetail(String id,SessionUser user){
+    	/*if(ToolUtil.isNotEmpty(id)){
+    		List<TblCategory> categoryList = categoryService;
+    		if(ToolUtil.isNotEmpty(category)){
+    			return category;
+    		}
+    	}*/
+    	return null;
+    }
    	
+    
 }

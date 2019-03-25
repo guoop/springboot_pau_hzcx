@@ -24,4 +24,7 @@ public interface TblOrderMapper extends BaseMapper<TblOrder> {
     int customerDelete(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
 
     int customerCancel(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
+    
+    List<TblOrder> findOrderListByStatus(Map<String,Object> map);
+    
 }

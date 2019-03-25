@@ -76,7 +76,6 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 
     }
 
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getHandOver(HandoverParam param,SessionUser user,Page page) {
