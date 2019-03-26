@@ -1,15 +1,13 @@
 package com.soft.ware.rest.modular.auth.util;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.MD5Util;
 import com.soft.ware.core.util.ToolUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WXUtils {
 	
@@ -26,7 +24,22 @@ public class WXUtils {
 			}
 		return resultMap;
 	}
-	
+
+
+	/**
+	 * 根据url获取oen
+	 * @param request
+	 * @return
+	 */
+	public static String getAppId(HttpServletRequest request){
+		String referer = request.getHeader("Referer");
+		String[] split = referer.split("/");
+		String domain = split[2];
+		String appId = split[3];
+		return appId;
+	}
+
+
 	public static void main(String[] args) {
 		System.out.println();
 	}

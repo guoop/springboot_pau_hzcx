@@ -8,7 +8,7 @@ import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
-import com.soft.ware.rest.modular.auth.util.WxUtils;
+import com.soft.ware.rest.modular.auth.util.WXUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +31,7 @@ public class WxController extends BaseController {
      */
     @RequestMapping(value = "/customer/v1/wx_identifier")
     public Object wx_identifier(String code, HttpServletRequest request) throws Exception {
-        String appId = WxUtils.getAppId(request);
+        String appId = WXUtils.getAppId(request);
         TblOwner owner = ownerService.findByAppId(appId);
         WxMaService service = hzcxWxService.getWxMaService(owner);
         WxMaJscode2SessionResult result = service.jsCode2SessionInfo(code);
