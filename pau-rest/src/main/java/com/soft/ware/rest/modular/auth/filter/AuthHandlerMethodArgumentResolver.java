@@ -46,8 +46,8 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             String domain = split[2];
             String appId = split[3];
             SessionUser user = new SessionUser(SessionUser.type_customer,"16d0a4b0dcd411e8b2e187bf6b98e5cd");
-            user.setId("o_Eds5ZAxJb5ayqXKea410smUXuY");
-            user.setUsername("o_Eds5ZAxJb5ayqXKea410smUXuY");
+            user.setId("o_Eds5b8vKez2-UE3iOXpf_na-LQ");
+            user.setUsername("o_Eds5b8vKez2-UE3iOXpf_na-LQ");
             user.setOwner("16d0a4b0dcd411e8b2e187bf6b98e5cd");
             return user;
         } else {

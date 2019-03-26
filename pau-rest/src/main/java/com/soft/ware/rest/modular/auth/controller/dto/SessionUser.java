@@ -44,6 +44,11 @@ public class SessionUser {
         return id;
     }
 
+    public SessionUser setOpenId(String openId) {
+        this.id = openId;
+        return this;
+    }
+
     public String getUsername() {
         return username;
     }

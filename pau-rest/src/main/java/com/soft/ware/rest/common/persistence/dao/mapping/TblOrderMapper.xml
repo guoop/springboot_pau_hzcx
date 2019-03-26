@@ -73,7 +73,7 @@
         <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
     </select>
     <select id="findByNo" resultType="com.soft.ware.rest.common.persistence.model.TblOrder">
-        select o.* from tbl_order o where o.no = #{no} and o.owner = #{user.owner}
+        select o.* from tbl_order o where o.no = #{no} and o.owner = #{user.owner} and o.created_by = #{user.openId}
     </select>
 
     <update id="updateStatusByNo" parameterType="int">

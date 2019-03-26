@@ -25,7 +25,7 @@ public class Page<T> {
 
     public Page() {
         size = 20;
-        offset = 1;
+        offset = 0;
         records = new ArrayList<>();
     }
 
@@ -40,14 +40,14 @@ public class Page<T> {
         }
         if (total < 1) {
             this.pages = total;
-            this.offset = 1;
+            this.offset = 0;
         }else{
             this.pages = total % size > 0 ? total / size + 1 : total / size;
         }
         if (this.page > 1) {
             this.offset = (this.page - 1) * size;
         } else {
-            this.offset = 1;
+            this.offset = 0;
         }
     }
 

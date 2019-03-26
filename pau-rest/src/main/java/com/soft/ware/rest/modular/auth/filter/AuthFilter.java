@@ -56,6 +56,10 @@ public class AuthFilter extends OncePerRequestFilter {
         whiteUrlSet.add("/customer/v1/order");
         whiteUrlSet.add("/customer/v1/order/delete");
         whiteUrlSet.add("/customer/v1/order/cancel");
+        whiteUrlSet.add("/customer/v1/wxpay/unifiedorder");//下单
+        whiteUrlSet.add("/customer-pay");//支付回调
+        whiteUrlSet.add("/customer-pay/pickup");//支付回调,到店自提
+        whiteUrlSet.add("/customer/v1/wx_identifier");//获取openId
 
         whitePrefixUrlSet.add("/customer/v2/orders/");
         whitePrefixUrlSet.add("/customer/v1/goods/");

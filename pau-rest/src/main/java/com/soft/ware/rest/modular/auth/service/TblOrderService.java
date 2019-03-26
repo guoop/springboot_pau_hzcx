@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
@@ -69,5 +70,12 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     List<TblOrder> findOrderListByStatus(Map<String,Object> map);
-    
+
+
+    /**
+     * 微信支付回调结果处理
+     * @param result
+     * @return
+     */
+    boolean update(WxPayOrderNotifyResult result,SessionUser user) throws Exception;
 }

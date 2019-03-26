@@ -11,4 +11,7 @@ public interface TblOwnerService extends IService<TblOwner> {
     TblOwner find(SessionUser user, boolean detail);
 
     TblOwner find(String owner);
+
+    TblOwner findByAppId(String appId);
+
 }

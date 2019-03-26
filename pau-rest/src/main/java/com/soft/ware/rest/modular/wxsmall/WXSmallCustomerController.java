@@ -2,11 +2,10 @@ package com.soft.ware.rest.modular.wxsmall;
 
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
-import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
-import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
+import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.base.warpper.MapWrapper;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.common.persistence.model.*;
@@ -17,7 +16,6 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.RegexUtils;
 import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +58,8 @@ public class WXSmallCustomerController  extends BaseController {
     @Autowired
     private TblQuestionService questionService;
 
-    //todo yancc Autowired
-    //@Resource
-    private WxPayService wxPayService;
+    @Autowired
+    private HzcxWxService hzcxWxService;
     //todo yancc 删掉
     //@Value("${payUrlPrefix}")
     private String payUrlPrefix;
@@ -112,13 +109,13 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "/customer/v1/goods/{id}")
-    public Object goods(@PathVariable Long id){
+    public Object goods(@PathVariable Long id) throws Exception {
        TblGoods goods = goodsService.findById(id);
         List<TblGoods> list = new ArrayList<>();
         list.add(goods);
-       return list;
+        List<Map<String, Object>> maps = BeanMapUtils.toMap(true, list);
+        return warpObject(new ListWrapper(maps));
     }
-
 
     /**
      * 商户信息查询
@@ -162,7 +159,7 @@ public class WXSmallCustomerController  extends BaseController {
             g = all.get(i);
             BigDecimal goodsMoney = BigDecimal.valueOf(nums[i]).multiply(g.getPriceUnit());
             // 如果是促销商品，则：总价 = 购买数量 * 促销价
-            if (g.getIsPromotion().equals(1) && g.getPromotionEndtime().getTime() > current) {
+            if (g.getIsPromotion().equals(TblGoods.is_promotion_1) && g.getPromotionEndtime() != null &&  g.getPromotionEndtime().getTime() > current) {
                 // goodsMoney = parseInt(cartGoodsItems[2]) * parseFloat(result.promotion_price);
                 goodsMoney = BigDecimal.valueOf(nums[i]).multiply(g.getPromotionPrice());
             }
@@ -185,8 +182,21 @@ public class WXSmallCustomerController  extends BaseController {
                 m.put("total", goodsMoney.setScale(2,round));
                 m.put("status", g.getStatus());
                 m.put("is_promotion",g.getIsPromotion());
-                m.put("promotion_price", is_promotion ? g.getPromotionPrice().setScale(2, round) : 0);
-                m.put("promotion_in_progress", is_promotion ? g.getPromotionEndtime().getTime() > current : 0);
+                if (is_promotion) {
+                    if (g.getPromotionEndtime()!=null && g.getPromotionEndtime().getTime() < current) {
+                        //促销过期
+                        m.put("promotion_price", 0);
+                        m.put("promotion_in_progress", 0);
+                    }else{
+                        //正常促销
+                        m.put("promotion_price", g.getPromotionPrice().setScale(2, round));
+                        m.put("promotion_in_progress", 1);
+                    }
+                }else{
+                    //没有促销
+                    m.put("promotion_price", 0);
+                    m.put("promotion_in_progress",0);
+                }
                 maps.add(m);
             }
         }
@@ -264,7 +274,15 @@ public class WXSmallCustomerController  extends BaseController {
         return warpObject(new OrderWrapper(list));
     }
 
-    public Object unifiedorder(SessionUser user, UnifiedorderParam param, HttpServletRequest request) {
+    /**
+     * 微信支付
+     * @param user
+     * @param param
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/customer/v1/wxpay/unifiedorder")
+    public Object unifiedorder(SessionUser user,@RequestBody UnifiedorderParam param, HttpServletRequest request) {
         if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
             MapWrapper wrapper = new MapWrapper();
             wrapper.put("code", "false");
@@ -281,53 +299,27 @@ public class WXSmallCustomerController  extends BaseController {
         // 商品描述
         String body = "购买商品";
         // 支付成功的回调地址  可访问 不带参数
-        String urlPrefix = payUrlPrefix == null ? "https://wx.aiinp.com/third-part-callback/we-chat-pay/dev" : payUrlPrefix;
-        String notify_url = (urlPrefix + "/customer-pay");
-        if (order.getSource().equals(TblOrder.SOURCE_2)) {
+        //String urlPrefix = payUrlPrefix == null ? "https://wx.aiinp.com/third-part-callback/we-chat-pay/dev" : payUrlPrefix;
+        String urlPrefix = payUrlPrefix == null ? "https://wx.javaccy.giize.com" : payUrlPrefix;
+        String notify_url = urlPrefix + "/customer-pay";
+        if (param.getSource().equals(TblOrder.SOURCE_2)) {
             notify_url = (urlPrefix + "/customer-pay/pickup");
         }
         // 随机字符串
         //String nonce_str = wxSign.getNonceStr();
         //todo yancc 改用微信sdk自带的
-        String nonce_str = RandomStringUtils.random(11,"abcdefjhijklmnopqrstuvwxyz0123456789");
         // 商户订单号
         String out_trade_no = order.getNo();
-        if (order.getSource().equals(TblOrder.SOURCE_2)) {
+        if (param.getSource().equals(TblOrder.SOURCE_2)) {
             // out_trade_no = result.order.consignee_mobile.toString() + '' + new Date(result.order.created_at).getTime().toString()
             out_trade_no = param.getTelephone() + "" + order.getCreatedAt().getTime();
         }
         // 订单价格 单位是 分
         // let total_fee = parseInt(result.order.money * 100 + result.order.freight * 100);
         int total_fee = order.getMoney().multiply(BigDecimal.valueOf(100)).add(order.getFreight().multiply(BigDecimal.valueOf(100))).intValue();
-        if (order.getSource().equals(TblOrder.SOURCE_2)) {
+        if (param.getSource().equals(TblOrder.SOURCE_2)) {
             total_fee = order.getMoney().multiply(BigDecimal.valueOf(100)).intValue();
         }
-        // 当前时间
-        long timestamp = new Date().getTime()/1000;
-
-        String bodyData = "<xml>";
-        // 小程序ID
-        bodyData += "<appid>" + owner.getAppId() + "</appid>";
-        // 商品描述
-        bodyData += "<body>" + body + "</body>";
-        // 附加信息
-        bodyData += "<attach>" + remark + "</attach>";
-        // 商户号
-        bodyData += "<mch_id>" + owner.getShopId() + "</mch_id>";
-        // 随机字符串
-        bodyData += "<nonce_str>" + nonce_str + "</nonce_str>";
-        // 支付成功的回调地址
-        bodyData += "<notify_url>" + notify_url + "</notify_url>";
-        // 用户标识
-        bodyData += "<openid>" + user.getOpenId() + "</openid>";
-        // 商户订单号
-        bodyData += "<out_trade_no>" + out_trade_no + "</out_trade_no>";
-        // 终端IP
-        bodyData += "<spbill_create_ip>" + spbill_create_ip + "</spbill_create_ip>";
-        // 总金额 单位为分
-        bodyData += "<total_fee>" + total_fee + "</total_fee>";
-        // 交易类型 小程序取值如下：JSAPI
-        bodyData += "<trade_type>JSAPI</trade_type>";
         WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
                 .newBuilder()
                 .body(body)
@@ -338,20 +330,17 @@ public class WXSmallCustomerController  extends BaseController {
                 .spbillCreateIp(spbill_create_ip)
                 .tradeType(WxPayConstants.TradeType.JSAPI)
                 .totalFee(total_fee).build();
-
         Map<String, Object> map = new HashMap<>();
-
         try {
-            WxPayMpOrderResult result = wxPayService.createOrder(req);
-            WxPayUnifiedOrderResult res = wxPayService.unifiedOrder(req);
+            WxPayMpOrderResult res = hzcxWxService.getWxPayService(owner).createOrder(req);
             map.put("msg", "操作成功");
             map.put("status", "100");
             map.put("out_trade_no", out_trade_no);
             // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数
-            map.put("nonceStr",nonce_str);
-            map.put("timestamp", timestamp);
-            map.put("package", "prepay_id="+res.getPrepayId());
-            map.put("paySign", res.getSign());
+            map.put("nonceStr",res.getNonceStr());
+            map.put("timestamp", res.getTimeStamp());
+            map.put("package", res.getPackageValue());
+            map.put("paySign", res.getPaySign());
         } catch (WxPayException e) {
             e.printStackTrace();
             map.put("msg",e.getReturnMsg());
@@ -373,7 +362,6 @@ public class WXSmallCustomerController  extends BaseController {
         List<TblGoods> list = goodsService.findAll(user, param.getSids());
         TblOwner owner = ownerService.find(user.getOwner());
         List<TblAddress> addressList = addressService.findAll(user);
-        TblAddress address = addressList.get(0);
         long current = System.currentTimeMillis();
         //k 商品id， param 下标
         Map<Long, Integer> m = new LinkedHashMap<>();
@@ -397,7 +385,7 @@ public class WXSmallCustomerController  extends BaseController {
                 BigDecimal goodsPrice = g.getPriceUnit();                                // 商品单价
                 BigDecimal goodsMoney = BigDecimal.valueOf(param.getNums()[i]).multiply(goodsPrice);   // 商品总价 = 商品单价 * 购买数量
                 // 判断是否促销商品
-                if (g.getIsPromotion().equals(1) && g.getPromotionEndtime().getTime() > current) {
+                if (g.getIsPromotion().equals(TblGoods.is_promotion_1) && g.getPromotionEndtime() != null &&  g.getPromotionEndtime().getTime() > current) {
                     // goodsPrice = parseFloat(result.promotion_price);        // 商品促销单价
                     // goodsMoney = parseInt(cartGoodsItems[2]) * goodsPrice;  // 商品总价 = 商品促销单价 * 购买数量
                     goodsPrice = g.getPromotionPrice();                           // 商品促销单价
@@ -445,9 +433,12 @@ public class WXSmallCustomerController  extends BaseController {
         o.setOwner(user.getOwner());
         o.setGoods(StringUtils.join(goodsStr, ","));
         o.setStatus(TblOrder.STATUS_0);
-        o.setConsigneeName(address.getName());
-        o.setConsigneeMobile(address.getTelephone());
-        o.setConsigneeAddress(address.getProvince() + "    " + address.getDetail());
+        if (!addressList.isEmpty()) {
+            TblAddress address = addressList.get(0);
+            o.setConsigneeName(address.getName());
+            o.setConsigneeMobile(address.getTelephone());
+            o.setConsigneeAddress(address.getProvince() + "    " + address.getDetail());
+        }
         boolean insert = orderService.insert(o);
         String tempKey = "ms:fio:" + orderNO;
         //todo yancc 处理formID
@@ -546,5 +537,7 @@ public class WXSmallCustomerController  extends BaseController {
         boolean b = questionService.add(question);
         return warpObject(render(b));
     }
+
+
 
 }

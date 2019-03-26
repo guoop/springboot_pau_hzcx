@@ -1,7 +1,11 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
@@ -10,13 +14,12 @@ import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -121,5 +124,17 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
 	public List<TblOrder> findOrderListByStatus(Map<String, Object> map) {
 		return orderMapper.findOrderListByStatus(map);
 	}
+
+    @Override
+    public boolean update(WxPayOrderNotifyResult result,SessionUser user) throws Exception {
+        user.setOpenId(result.getOpenid());
+        TblOrder order = this.findByNo(user, result.getOutTradeNo());
+        order.setPayAt(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
+        order.setStatus(TblOrder.STATUS_1);
+        Map<String, Object> map = BeanMapUtils.toMap(result, true);
+        order.setPayResponse(JSON.toJSONString(map));
+        order.update(new EntityWrapper<TblOrder>(order));
+        return true;
+    }
 
 }

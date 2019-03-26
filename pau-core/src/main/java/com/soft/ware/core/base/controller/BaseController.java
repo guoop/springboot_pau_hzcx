@@ -8,6 +8,8 @@ import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.core.page.PageInfoBT;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +22,12 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 
 public class BaseController {
+
+    protected Logger logger;
+
+    public BaseController() {
+        this.logger = LoggerFactory.getLogger(getClass());
+    }
 
     public static String SUCCESS = "success";
     public static String ERROR = "ERROR";
@@ -117,4 +125,14 @@ public class BaseController {
             return new FailWrapper();
         }
     }
+
+
+    public BaseControllerWarpper render(boolean result,String msg){
+        if (result) {
+            return new SuccessWrapper();
+        } else {
+            return new FailWrapper();
+        }
+    }
+
 }

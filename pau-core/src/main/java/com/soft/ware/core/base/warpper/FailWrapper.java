@@ -7,6 +7,13 @@ import java.util.Map;
 
 public class FailWrapper extends BaseControllerWarpper {
 
+    private String msg;
+
+    public FailWrapper(String msg) {
+        super(new HashMap<String,Object>());
+        this.msg = msg;
+    }
+
     public FailWrapper(Object obj) {
         super(obj);
     }
@@ -18,7 +25,12 @@ public class FailWrapper extends BaseControllerWarpper {
     @Override
     protected void warpTheMap(Map<String, Object> map) {
         map.put("code", BaseController.ERROR);
+        if (msg != null) {
+            map.put("code", BaseController.ERROR);
+        }
     }
+
+
 
 
 }

@@ -95,8 +95,9 @@ public class TblOwner extends Model<TblOwner> {
         return appId;
     }
 
-    public void setAppId( String appId){
+    public TblOwner setAppId( String appId){
         this.appId = appId;
+        return this;
     }
     public String getAppSecret(){
         return appSecret;

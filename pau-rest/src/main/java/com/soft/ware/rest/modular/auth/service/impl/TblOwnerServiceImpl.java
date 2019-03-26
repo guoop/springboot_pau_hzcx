@@ -44,4 +44,9 @@ public class TblOwnerServiceImpl extends ServiceImpl<TblOwnerMapper,TblOwner> im
         return ownerMapper.findOwnerByOwner(owner);
     }
 
+    @Override
+    public TblOwner findByAppId(String appId) {
+        return ownerMapper.selectOne(new TblOwner().setAppId(appId));
+    }
+
 }
