@@ -17,4 +17,11 @@ public interface Credence {
      * 密码或者是其他的验证码之类的
      */
     String getCredenceCode();
+    
+    /**
+     * 小程序端获取登录的手机号
+     */
+    String  getPhoneName();
+    
+    
 }

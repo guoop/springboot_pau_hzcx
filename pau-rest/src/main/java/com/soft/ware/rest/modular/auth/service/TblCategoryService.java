@@ -5,10 +5,13 @@ import com.soft.ware.rest.common.persistence.model.TblCategory;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TblCategoryService extends IService<TblCategory> {
 
 
     List<TblCategory> findAllCategory(SessionUser staff);
+    
+    TblCategory selectByOwner(TblCategory cate);
 
 }

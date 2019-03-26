@@ -1,7 +1,9 @@
 package com.soft.ware.rest.modular.auth.validator.impl;
 
+import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,11 +24,14 @@ public class SimpleValidator implements IReqValidator {
 
         String userName = credence.getCredenceName();
         String password = credence.getCredenceCode();
-
-        if (USER_NAME.equals(userName) && PASSWORD.equals(password)) {
-            return true;
-        } else {
-            return false;
+        String phone = credence.getPhoneName();
+        String user = (String) HttpKit.getRequest().getSession().getAttribute(phone);
+        if(user != null && user.equals(password)){
+        	return true;
+        }else if(USER_NAME.equals(userName) && PASSWORD.equals(password)){
+        	 return true;
+        }else{
+        	 return false;
         }
     }
 }

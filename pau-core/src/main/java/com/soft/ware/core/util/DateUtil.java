@@ -325,7 +325,10 @@ public class DateUtil {
 		 SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd");
 		return sdf.format(date);
 	}
-	
+	/**
+	 * 得到十位当前的时间戳
+	 * @return
+	 */
 	public static String timestampToDate() {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	java.util.Date date = null;
@@ -339,10 +342,24 @@ public class DateUtil {
     	long timestamp = cal.getTimeInMillis();
     	return String.valueOf(timestamp/1000);
 	}
+	
+	 /* 
+     * 将时间转换为时间戳
+     */    
+    public static String dateToStamp(String s) throws ParseException{
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(s);
+        long ts = date.getTime();
+        res = String.valueOf(ts);
+        return res;
+    }
+
 
 	public static void main(String[] args) {
 		
-
+      System.out.println(timestampToDate());
+		System.out.println();
 		
 	}
 
