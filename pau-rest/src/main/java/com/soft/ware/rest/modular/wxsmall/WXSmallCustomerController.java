@@ -22,12 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
@@ -63,8 +61,11 @@ public class WXSmallCustomerController  extends BaseController {
     private TblQuestionService questionService;
 
     //todo yancc Autowired
-    @Resource
+    //@Resource
     private WxPayService wxPayService;
+    //todo yancc 删掉
+    //@Value("${payUrlPrefix}")
+    private String payUrlPrefix;
 
     /**
      * banner
@@ -246,8 +247,7 @@ public class WXSmallCustomerController  extends BaseController {
         return warpObject(new OrderWrapper(list));
     }
 
-    @Value("${payUrlPrefix}")
-    private String payUrlPrefix;
+
 
     /**
      * 订单详情
