@@ -77,5 +77,5 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param result
      * @return
      */
-    boolean update(WxPayOrderNotifyResult result,SessionUser user) throws Exception;
+    boolean update(WxPayOrderNotifyResult result,SessionUser user,String no) throws Exception;
 }

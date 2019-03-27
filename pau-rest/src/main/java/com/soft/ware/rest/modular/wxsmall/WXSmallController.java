@@ -1,22 +1,5 @@
 package com.soft.ware.rest.modular.wxsmall;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
-
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.soft.ware.core.base.controller.BaseController;
@@ -27,27 +10,24 @@ import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.HandOver;
-import com.soft.ware.rest.common.persistence.model.TblCategory;
-import com.soft.ware.rest.common.persistence.model.TblCategoryIcon;
-import com.soft.ware.rest.common.persistence.model.TblGoods;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.service.ITblCategoryIconService;
-import com.soft.ware.rest.modular.auth.service.TblCategoryService;
-import com.soft.ware.rest.modular.auth.service.TblGoodsService;
-import com.soft.ware.rest.modular.auth.service.TblOrderService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
+import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
-import com.soft.ware.rest.modular.auth.wrapper.CategoryWrapper;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
-import com.soft.ware.rest.modular.handover.service.impl.HandOverServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/owner")
@@ -129,24 +109,22 @@ public class WXSmallController extends BaseController {
 			return new ErrorTip(604, "参数不能为空");
 		}
 		System.out.println(msgCode);
-		/*
-		 * Map<String,Object> map = new HashMap<String, Object>();
-		 * Map<String,Object> phoneMap = new HashMap<String, Object>();
-		 * List<String> list = new ArrayList<String>(); list.add(msgCode);
-		 * map.put("params",list); map.put("sign", "汇智创享");
-		 * phoneMap.put("mobile", ""+phone+""); phoneMap.put("nationcode",
-		 * "86"); map.put("tel",phoneMap);
-		 * 
-		 * map.put("time", DateUtil.timestampToDate()); map.put("tpl_id",
-		 * WXContants.TENCENT_TEMPLATE_ID1);
-		 * map.put("sig",ToolUtil.getSHA256StrJava
-		 * ("appkey="+WXContants.TENCENTMSG_APPKEY
-		 * +"&random=142536&time="+map.get("time")+"&mobile="+phone));
-		 * ResponseEntity<String> result=
-		 * restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map,
-		 * String.class); if(result.getStatusCodeValue() != 200 ){ return new
-		 * ErrorTip(601,"短信地址请求失败"); }
-		 */
+		  Map<String,Object> map = new HashMap<String, Object>();
+		  Map<String,Object> phoneMap = new HashMap<String, Object>();
+		  List<String> list = new ArrayList<String>(); list.add(msgCode);
+		  map.put("params",list); map.put("sign", "汇智创享");
+		  phoneMap.put("mobile", ""+phone+""); phoneMap.put("nationcode",
+		  "86"); map.put("tel",phoneMap);
+
+		  map.put("time", DateUtil.timestampToDate()); map.put("tpl_id",
+		  WXContants.TENCENT_TEMPLATE_ID1);
+		  map.put("sig",ToolUtil.getSHA256StrJava
+		  ("appkey="+WXContants.TENCENTMSG_APPKEY
+		  +"&random=142536&time="+map.get("time")+"&mobile="+phone));
+		  ResponseEntity<String> result=
+		  restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map,
+		  String.class); if(result.getStatusCodeValue() != 200 ){ return new
+		  ErrorTip(601,"短信地址请求失败"); }
 		return SUCCESS_TIP;
 	}
 
@@ -461,7 +439,7 @@ public class WXSmallController extends BaseController {
 	/**
 	 * 新增编辑分类
 	 */
-	@RequestMapping("v1/auth/category/index")
+	@RequestMapping(value = "v1/auth/category/index",method = RequestMethod.POST)
 	@ResponseBody
 	public Object addOrUpdateCategory(TblCategory tblCategory) {
 		boolean isSuccess = false;
@@ -479,7 +457,7 @@ public class WXSmallController extends BaseController {
 		return new ErrorTip(604, "插入失败");
 	}
 
-	@RequestMapping("v1/auth/category/index")
+	//@RequestMapping("v1/auth/category/index")
 	@ResponseBody
 	public Object delCategory(@RequestBody Map<String, Object> map) {
 		boolean isSuccess = false;

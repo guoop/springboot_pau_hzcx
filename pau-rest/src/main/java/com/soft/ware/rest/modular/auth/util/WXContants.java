@@ -28,7 +28,9 @@ public class WXContants {
 	public static final String TENCENT_TEMPLATE_ID2 = "241320";
 	//短信模板1自主版订单通知
 	public static final String TENCENT_TEMPLATE_ID1 = "241314";
-	
+	//订单通知短信模板
+	public static final String TENCENT_TEMPLATE_ID4 = "241324";
+
 	/**
 	 * 极光推送
 	 */

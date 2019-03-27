@@ -44,7 +44,16 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      */
    ISNULL(601,"对象不能为空"),
     
-   NO_USER(609,"非法用户");
+   NO_USER(609,"非法用户"),
+
+
+    //短信发送错误
+    SMS_ERROR_PHONE_FORMAT(400,"手机号格式错误"),
+
+    SMS_ERROR_SEND(400,"短信发送失败"),
+
+    ERROR(500,"未知错误");
+
 
 
     BizExceptionEnum(int code, String message) {

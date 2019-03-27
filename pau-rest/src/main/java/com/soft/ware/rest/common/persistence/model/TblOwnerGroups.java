@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 /**
@@ -14,6 +13,11 @@ import java.io.Serializable;
 public class TblOwnerGroups extends Model<TblOwnerGroups> {
 
     private static final long serialVersionUID = 1L;
+
+    //：员工群；
+    public static Integer type_0 = 0;
+    //：买家群）
+    public static Integer type_1 = 1;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -31,15 +35,17 @@ public class TblOwnerGroups extends Model<TblOwnerGroups> {
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblOwnerGroups setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public Integer getType(){
         return type;
     }
 
-    public void setType( Integer type){
+    public TblOwnerGroups setType( Integer type){
         this.type = type;
+        return this;
     }
     public String getGid(){
         return gid;
