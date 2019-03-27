@@ -7,10 +7,12 @@ import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.util.Page;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.util.List;
 import java.util.Map;
 
@@ -38,4 +40,9 @@ public class TblGoodsServiceImpl extends ServiceImpl<TblGoodsMapper,TblGoods> im
     public List<TblGoods> findAll(SessionUser user,List<String> ids) {
         return tblGoodsMapper.findListByIds(user, ids);
     }
+
+	@Override
+	public boolean updateGoodsOnDown(Map<String, Object> map) {
+		return tblGoodsMapper.updateGoodsOnDown(map);
+	}
 }

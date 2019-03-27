@@ -22,4 +22,7 @@ public interface TblGoodsService extends IService<TblGoods> {
      * @return
      */
     List<TblGoods> findAll(SessionUser user,List<String> ids);
+    
+    boolean updateGoodsOnDown(Map<String,Object> map);
+    
 }

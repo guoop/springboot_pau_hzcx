@@ -18,4 +18,6 @@ public interface TblGoodsMapper extends BaseMapper<TblGoods> {
     Long findPageCount(@Param("owner") String owner, @Param("param") GoodsPageParam param);
 
     List<TblGoods> findListByIds(@Param("user") SessionUser user, @Param("ids") List<String> ids);
+    
+    boolean updateGoodsOnDown(Map<String,Object> map);
 }

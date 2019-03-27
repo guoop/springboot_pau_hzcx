@@ -6,14 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,22 +30,26 @@ import com.soft.ware.rest.common.persistence.model.TblCategory;
 import com.soft.ware.rest.common.persistence.model.TblCategoryIcon;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
+import com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.common.persistence.model.TblRepository;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ITblCategoryIconService;
 import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
+import com.soft.ware.rest.modular.auth.service.TblGoodsStorageService;
+import com.soft.ware.rest.modular.auth.service.TblOrderMoneyDiffService;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
+import com.soft.ware.rest.modular.auth.service.TblRepositoryService;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
-import com.soft.ware.rest.modular.auth.wrapper.CategoryWrapper;
+import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
-import com.soft.ware.rest.modular.handover.service.impl.HandOverServiceImpl;
 
 @Controller
 @RequestMapping("/owner")
@@ -76,6 +78,15 @@ public class WXSmallController extends BaseController {
 	//商品服务
     @Autowired
     private TblGoodsService goodsService;
+    //商品库管理
+    @Autowired
+    private TblRepositoryService tblRepositoryService;
+    //商品库存服务管理
+    @Autowired
+    private TblGoodsStorageService tblGoodsStorageService;
+    //订单查价服务管理
+    @Autowired 
+    private TblOrderMoneyDiffService tblOrderMoneyDiffService;
 
 	/**
 	 * 获取openId
@@ -259,7 +270,6 @@ public class WXSmallController extends BaseController {
 
 	/**
 	 * 添加或者编辑店员信息
-	 * 
 	 * @return
 	 */
 	@RequestMapping("/v2/auth/staff/man")
@@ -423,22 +433,21 @@ public class WXSmallController extends BaseController {
 	 * 
 	 * @param
 	 */
-	@RequestMapping("v1/auth/category/index")
+	@RequestMapping(value = "v1/auth/category/index",method = RequestMethod.GET)
 	@ResponseBody
-	public Object getCategoryDetail(String id, SessionUser user) {
-		/* Map<String,Object> paramMap = new HashMap<String,Object>(); */
+	public Object getCategoryDetail(String id) {
 		TblCategory tbl = new TblCategory();
 		List<TblCategory> cateList = new ArrayList<TblCategory>();
 		if (ToolUtil.isNotEmpty(id)) {
 			tbl.setId(Long.valueOf(id));
-			tbl.setOwner(user.getOwner());
+			//tbl.setOwner(user.getOwner());
 			TblCategory category = categoryService.selectByOwner(tbl); //
 			if (ToolUtil.isNotEmpty(category)) {
 				cateList.add(category);
 				return cateList;
 			}
 		}
-		return null;
+		return new ErrorTip(600,"获取分类详情失败");
 	}
 
 	/**
@@ -454,14 +463,16 @@ public class WXSmallController extends BaseController {
 		if (list.size() > 0) {
 			return list;
 		}
-		return null;
+		return new ErrorTip(600, "获取分类图标失败");
 
 	}
 
 	/**
 	 * 新增编辑分类
+	 * v1/auth/category/index 此url地址和获取分类详情地址冲突
+	 * 修改如下  v1/auth/category/addorupdate
 	 */
-	@RequestMapping("v1/auth/category/index")
+	@RequestMapping(value = "v1/auth/category/index",method=RequestMethod.POST)
 	@ResponseBody
 	public Object addOrUpdateCategory(TblCategory tblCategory) {
 		boolean isSuccess = false;
@@ -476,10 +487,14 @@ public class WXSmallController extends BaseController {
 		if (isSuccess) {
 			return SUCCESS_TIP;
 		}
-		return new ErrorTip(604, "插入失败");
+		return new ErrorTip(604, "分类新增或者更新失败");
 	}
-
-	@RequestMapping("v1/auth/category/index")
+    /**
+     * 删除分类信息
+     * @param map
+     * @return
+     */
+	@RequestMapping("v1/auth/category/del")
 	@ResponseBody
 	public Object delCategory(@RequestBody Map<String, Object> map) {
 		boolean isSuccess = false;
@@ -489,12 +504,10 @@ public class WXSmallController extends BaseController {
 						.deleteById(map.get("id").toString());
 				if (isSuccess) {
 					return SUCCESS_TIP;
-				} else {
-					return new ErrorTip(606, "分类删除失败");
-				}
+				} 
 			}
 		}
-		return new ErrorTip(604, "参数不能为空");
+		return new ErrorTip(604, "删除分类信息失败");
 	}
 
 	/**
@@ -504,9 +517,14 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("v1/auth/category/sort")
 	@ResponseBody
-	public Object sortCategory() {
-
-		return null;
+	public Object sortCategory(List<TblCategory> list) {
+        if(list.size() > 0){
+        	boolean isSuccess = categoryService.updateBatchById(list);
+        	if(isSuccess){
+        		return SUCCESS_TIP;
+        	}
+        }
+		return new ErrorTip(600, "分类排序失败");
 	}
 
 	/**
@@ -582,13 +600,122 @@ public class WXSmallController extends BaseController {
 	}
 	/**
 	 *29 商品置顶
+	 *@param id
+	 *@param flag 是否置顶
+	 *@return code 'success'
 	 */
 	@RequestMapping("v1/auth/goods/top")
 	@ResponseBody
 	public Object goodsTop(){
-		return null;
+		
+		return SUCCESS_TIP;
+	}
+	/**
+	 * 更新商品上下架
+	 * @param id 商品id
+	 * @param statu 商品状态 
+	 * @return
+	 */
+	/*@RequestMapping("v1/auth/goods/update")
+	@ResponseBody
+	public Tip goodsOnDownUpdate(SessionUser user,Map<String,Object> map){
+		boolean isSuccess = false;
+        if(ToolUtil.isNotEmpty(user)&&ToolUtil.isNotEmpty(map)){
+        	map.put("owner", user.getOwner());
+        	isSuccess = goodsService.updateGoodsOnDown(map);
+        	if(isSuccess){
+        		return SUCCESS_TIP;
+        	}
+        }
+		return new ErrorTip(600,"更新商品上下架失败");
+	}*/
+	
+	/**
+	 * 删除商品
+	 * @param id
+	 */
+	@RequestMapping("v1/auth/goods/delete")
+	@ResponseBody
+	public Tip delGoods(TblGoods goods){
+		boolean isSuccess = false;
+		if(ToolUtil.isNotEmpty(goods)){
+			goods.setIsDelete(1);
+			isSuccess = goodsService.updateById(goods);
+			if(isSuccess){
+				return SUCCESS_TIP;
+			}
+		}
+		return new ErrorTip(600,"删除商品失败");
+	}
+	/**
+	 * 根据商品编码查询商品库
+	 * @param code
+	 */
+	public Object getGoodsRepositoryByCode(@RequestParam Map<String,Object> map){
+		if(ToolUtil.isNotEmpty(map)){
+			TblRepository repository = tblRepositoryService.getGoodsRepositoryByCode(map);		
+			if(ToolUtil.isNotEmpty(repository)){
+				return repository;
+			}
+		}
+		return new ErrorTip(600,"查询商品库失败");
 	}
 	
+	/**
+	 * 商品调价
+	 * todo 商品更新接口一样
+	 */
+	@RequestMapping("v2/auth/goods/price")
+	@ResponseBody
+	public Object goodsAdjustPrice(TblGoods goods){
+		if(ToolUtil.isNotEmpty(goods)){
+			boolean isSuccess = goodsService.updateById(goods);
+			if(isSuccess){
+				return SUCCESS_TIP;
+			}
+		}
+		return new ErrorTip(600,"商品调价失败");
+	}
+	
+	/**
+	 * 商品调库存
+	 */
+	@RequestMapping("v2/auth/goods/storage")
+	@ResponseBody
+	public Object goodsStorage(@RequestBody Map<String,Object> map){
+		if(tblGoodsStorageService.adjustGoodsRepository(map)){
+			return SUCCESS_TIP;
+		}
+		return new ErrorTip(600,"调库存失败");
+		
+	}
+	/**
+	 * 新增小票金额
+	 * orderNO：订单编号
+	 * money：小票金额
+	 * pic：小票图片URL
+	 */
+	@RequestMapping("v2/order/money/diff")
+	@ResponseBody
+	public Object addSmallBill(TblOrderMoneyDiff tbl){
+		if(ToolUtil.isNotEmpty(tbl)){
+			if(tblOrderMoneyDiffService.insert(tbl)){
+				return SUCCESS_TIP;
+			};
+		}
+		return new ErrorTip(600,"新增小票失败");
+	} 
+    /**
+     * 极光im初始化
+     */
+	@RequestMapping("im/init")
+	@ResponseBody
+	public Object getPayLoad(){
+		Map<String,Object> map = new HashMap<String, Object>();
+		map = WXUtils.getPayLoad();
+		map.put("code", "success");
+		return map;
+	}
 	
 	
 }
