@@ -13,5 +13,6 @@ public interface TblCategoryService extends IService<TblCategory> {
     List<TblCategory> findAllCategory(SessionUser staff);
     
     TblCategory selectByOwner(TblCategory cate);
+    
 
 }
