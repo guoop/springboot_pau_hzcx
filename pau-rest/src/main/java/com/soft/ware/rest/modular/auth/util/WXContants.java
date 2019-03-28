@@ -1,6 +1,20 @@
 package com.soft.ware.rest.modular.auth.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+
+@Repository
 public class WXContants {
+
+
+	@Value(value = "${wx.pay.notify_host}")
+	private String customerPayHost;
+
+	@Value(value = "${wx.pay.notify_url_customer_pay_pickup}")
+	private String customerPayPickup;
+
+	@Value(value = "${wx.pay.notify_url_customer_pay}")
+	private String customerPay;
 	
 	//微信小程序网关
 	public static final String WX_GETWAY = "https://api.weixin.qq.com";
@@ -42,8 +56,29 @@ public class WXContants {
 	public static final String JG_MASTER_SECRET = "0da6b113a07bd3454d798bdb";
 	//网关
 	public static final String JG_GATEWAY = "https://api.im.jpush.cn";
-	
-	
-	
-	
+
+
+	public String getCustomerPayHost() {
+		return customerPayHost;
+	}
+
+	public void setCustomerPayHost(String customerPayHost) {
+		this.customerPayHost = customerPayHost;
+	}
+
+	public String getCustomerPayPickup() {
+		return customerPayPickup;
+	}
+
+	public void setCustomerPayPickup(String customerPayPickup) {
+		this.customerPayPickup = customerPayPickup;
+	}
+
+	public String getCustomerPay() {
+		return customerPay;
+	}
+
+	public void setCustomerPay(String customerPay) {
+		this.customerPay = customerPay;
+	}
 }

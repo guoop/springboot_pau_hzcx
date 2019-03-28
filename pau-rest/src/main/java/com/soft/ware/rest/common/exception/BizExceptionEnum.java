@@ -46,9 +46,10 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     
    NO_USER(609,"非法用户"),
 
+   ORDER_CREATE_FAIL(500,"下单失败"),
 
     //短信发送错误
-    SMS_ERROR_PHONE_FORMAT(400,"手机号格式错误"),
+   SMS_ERROR_PHONE_FORMAT(400,"手机号格式错误"),
 
     SMS_ERROR_SEND(400,"短信发送失败"),
 

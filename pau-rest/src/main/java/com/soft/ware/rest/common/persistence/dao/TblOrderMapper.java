@@ -13,9 +13,9 @@ import java.util.Map;
 
 public interface TblOrderMapper extends BaseMapper<TblOrder> {
 
-    Long findListCount(@Param("user") SessionUser owner, @Param("param") OrderParam param, @Param("source") Integer source);
+    Long findListCount(@Param("user") SessionUser owner, @Param("param") OrderParam param, @Param("source") Integer... source);
 
-    List<Map> findList(@Param("user") SessionUser owner, @Param("page") Page page, @Param("param") OrderParam param, @Param("source") Integer source);
+    List<Map> findList(@Param("user") SessionUser owner, @Param("page") Page page, @Param("param") OrderParam param, @Param("source") Integer... source);
 
     TblOrder findByNo(@Param("user") SessionUser user, @Param("no") String no);
 

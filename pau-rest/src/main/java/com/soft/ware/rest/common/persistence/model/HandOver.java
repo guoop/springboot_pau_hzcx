@@ -1,10 +1,10 @@
 package com.soft.ware.rest.common.persistence.model;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import com.baomidou.mybatisplus.activerecord.Model;
 
 public class HandOver extends Model<HandOver>{
 	
@@ -474,7 +474,6 @@ public class HandOver extends Model<HandOver>{
 
 	@Override
 	protected Serializable pkVal() {
-		// TODO Auto-generated method stub
 		return this.id;
 	}
 

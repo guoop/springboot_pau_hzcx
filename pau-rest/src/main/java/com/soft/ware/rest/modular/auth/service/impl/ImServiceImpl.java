@@ -2,6 +2,7 @@ package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroup;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -47,7 +48,7 @@ public class ImServiceImpl implements ImService {
     }
 
     @Override
-    public void sendNewOrderNotify(SessionUser user){
+    public void sendNewOrderNotify(SessionUser user, TblOrder order){
         List<TblOwnerGroups> groups = ownerGroupsService.find(user, TblOwnerGroups.type_0);
         for (TblOwnerGroups group : groups) {
             if (StringUtils.isBlank(group.getBody())) {
@@ -75,12 +76,8 @@ public class ImServiceImpl implements ImService {
             params.put("msg_body", body);
             HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
             ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/messages", http, String.class);
-            if (entity.getStatusCodeValue() == 200) {
-                logger.info("正常新订单到达时群发消息返回结果：" + entity.getBody());
-            }else{
-                logger.info("异常新订单到达时群发消息异常信息：" + JSON.toJSONString(entity.getStatusCode()));
-                logger.info("异常新订单到达时群发消息返回结果：" + JSON.toJSONString(entity.getBody()));
-            }
+            logger.info(order.getNo() + "新订单到达时群发消息返回状态" + entity.getStatusCodeValue());
+            logger.info(order.getNo() + "新订单到达时群发消息返回结果：" + JSON.toJSONString(entity.getBody()));
         }
 
     }

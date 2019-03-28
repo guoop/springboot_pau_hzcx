@@ -3,9 +3,11 @@ package com.soft.ware.rest.modular.auth.filter;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.SpringContextHolder;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
+import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.AuthService;
+import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.core.MethodParameter;
@@ -40,18 +42,20 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest request, WebDataBinderFactory webDataBinderFactory) throws Exception {
         HttpServletRequest req = HttpKit.getRequest();
         String referer = req.getHeader("Referer");
+        TblOwnerService ownerService = SpringContextHolder.getBean(TblOwnerService.class);
         if (req.getServletPath().startsWith("/customer")) {
             //买家端用户
             String[] split = referer.split("/");
             String domain = split[2];
             String appId = split[3];
-            SessionUser user = new SessionUser(SessionUser.type_customer,"16d0a4b0dcd411e8b2e187bf6b98e5cd");
+            TblOwner owner = ownerService.findByAppId(appId);
+            SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
             String openId = req.getHeader("Hzcx-User");
             user.setAppId(appId);
             user.setId(openId);
             user.setOpenId(openId);
             user.setUsername(openId);
-            user.setOwner("16d0a4b0dcd411e8b2e187bf6b98e5cd");
+            user.setOwner(user.getOwner());
             return user;
         } else {
             //收银端用户

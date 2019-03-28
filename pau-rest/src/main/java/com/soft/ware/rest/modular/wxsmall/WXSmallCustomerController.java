@@ -16,13 +16,11 @@ import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.base.warpper.MapWrapper;
 import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.core.util.DateUtil;
-import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.auth.util.RegexUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
@@ -38,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 @RestController
 public class WXSmallCustomerController  extends BaseController {
@@ -81,9 +78,8 @@ public class WXSmallCustomerController  extends BaseController {
     @Autowired
     private ImService imService;
 
-    //todo yancc 删掉
-    //@Value("${payUrlPrefix}")
-    private String payUrlPrefix;
+    @Autowired
+    private WXContants wxContants;
 
     /**
      * banner
@@ -120,8 +116,6 @@ public class WXSmallCustomerController  extends BaseController {
      */
     @RequestMapping(value = "/customer/v1/goods/list")
     public Object goodsPage(GoodsPageParam param,SessionUser user, Page page) throws WxErrorException {
-        //String pay = tempService.getTplId(user, "pay");
-        imService.sendNewOrderNotify(user);
         List<Map> list = goodsService.findPage(user, page, param);
         return list;
     }
@@ -263,21 +257,23 @@ public class WXSmallCustomerController  extends BaseController {
     public Object orders(SessionUser user,Page page, OrderParam param){
         // 所有订单
         if ("all".equals(param.getStatus())) {
-            param.setStatus("-2, -1, 0, 1, 2, 3, 10");
+            param.setStatus("-2,-1,0,1,2,3,10");
         } else if ("pay".equals(param.getStatus())) {
             // 待付款
             param.setStatus("0");
         } else if ("receive".equals(param.getStatus())) {
             // 待收货
-            param.setStatus("1, 2, 10");
+            param.setStatus("1,2,10");
         } else if ("done".equals(param.getStatus())) {
             // 已完成
             param.setStatus("3");
-        }else if ("cancel".equals(param.getStatus())) {
+        } else if ("cancel".equals(param.getStatus())) {
             // 已取消
-            param.setStatus("-1, -2");
+            param.setStatus("-1,-2");
+        } else {
+            param.setStatus(Integer.MAX_VALUE+"");
         }
-        List<Map> list = orderService.findPage(user,page,param,TblOrder.SOURCE_0);
+        List<Map> list = orderService.findPage(user, page, param, TblOrder.SOURCE_0, TblOrder.SOURCE_2);
         return warpObject(new OrderWrapper(list));
     }
 
@@ -356,7 +352,7 @@ public class WXSmallCustomerController  extends BaseController {
         // IM通知店铺
         //todo yancc im 极光
         //imSign.notifyMpForOrder(req._target_);
-        imService.sendNewOrderNotify(user);
+        imService.sendNewOrderNotify(user, order);
         String tempKey = "ms:fit:" + param.getOrderNO();
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800,TimeUnit.SECONDS);
         logger.info("买家支付订单时保存FormID {} = {}", tempKey, param.getFormID());
@@ -407,32 +403,24 @@ public class WXSmallCustomerController  extends BaseController {
         TblOrder order = orderService.findByNo(user,no);
         TblOwner owner = ownerService.find(user);
         boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(source);
-        String attach = "无";
-
         // 获取客户端ip
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
 
         // 商品描述
         String body = "购买商品";
         // 支付成功的回调地址  可访问 不带参数
-        //String urlPrefix = payUrlPrefix == null ? "https://wx.aiinp.com/third-part-callback/we-chat-pay/dev" : payUrlPrefix;
-        String urlPrefix = payUrlPrefix == null ? "https://wx.javaccy.giize.com" : payUrlPrefix;
-        String notify_url = urlPrefix + "/customer-pay";
+        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPay();
+        String attach = "无";
         if (source2) {
-            notify_url = (urlPrefix + "/customer-pay/pickup");
+            notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayPickup();
             attach = no;
         }
-        // 随机字符串
-        //String nonce_str = wxSign.getNonceStr();
-        //todo yancc 改用微信sdk自带的
         // 商户订单号
         String out_trade_no = order.getNo();
         if (source2) {
-            // out_trade_no = result.order.consignee_mobile.toString() + '' + new Date(result.order.created_at).getTime().toString()
             out_trade_no = param.getTelephone() + "" + order.getCreatedAt().getTime();
         }
         // 订单价格 单位是 分
-        // let total_fee = parseInt(result.order.money * 100 + result.order.freight * 100);
         int total_fee = order.getMoney().multiply(BigDecimal.valueOf(100)).add(order.getFreight().multiply(BigDecimal.valueOf(100))).intValue();
         if (source2) {
             total_fee = order.getMoney().multiply(BigDecimal.valueOf(100)).intValue();
@@ -467,102 +455,16 @@ public class WXSmallCustomerController  extends BaseController {
     }
 
     /**
-     * 下单
-     * @param formID
+     * 小程序下单
      * @param param
      * @return
      */
     @RequestMapping(value = {"/customer/v1/order"},method = RequestMethod.POST)
-    public Object order(SessionUser user,@RequestParam(defaultValue = "") String formID,@RequestBody CartParam param) {
-        int round = BigDecimal.ROUND_HALF_UP;
-        Map<String,Object> map = new HashMap<>();
-        List<TblGoods> list = goodsService.findAll(user, param.getSids());
-        TblOwner owner = ownerService.find(user.getOwner());
-        List<TblAddress> addressList = addressService.findAll(user);
-        long current = System.currentTimeMillis();
-        //k 商品id， param 下标
-        Map<Long, Integer> m = new LinkedHashMap<>();
-        for (int i = 0; i < param.getIds().length; i++) {
-            for (TblGoods g : list) {
-                if (g.getId().equals(param.getIds()[i])) {
-                    m.put(g.getId(), i);
-                    g.setPics(g.getPics() == null ? "" : g.getPics());
-                    g.setPics(g.getPics().split(",")[0]);
-                }
-            }
-        }
-        int i;
-        BigDecimal total = BigDecimal.ZERO;
-        for (TblGoods g : list) {
-            i = m.get(g.getId());
-            // 只计算在售商品
-            if (TblGoods.status_1.equals(g.getStatus())) {
-                // let goodsPrice = parseFloat(result.price_unit);             // 商品单价
-                // let goodsMoney = parseInt(cartGoodsItems[2]) * goodsPrice;  // 商品总价 = 商品单价 * 购买数量
-                BigDecimal goodsPrice = g.getPriceUnit();                                // 商品单价
-                BigDecimal goodsMoney = BigDecimal.valueOf(param.getNums()[i]).multiply(goodsPrice);   // 商品总价 = 商品单价 * 购买数量
-                // 判断是否促销商品
-                if (g.getIsPromotion().equals(TblGoods.is_promotion_1) && g.getPromotionEndtime() != null &&  g.getPromotionEndtime().getTime() > current) {
-                    // goodsPrice = parseFloat(result.promotion_price);        // 商品促销单价
-                    // goodsMoney = parseInt(cartGoodsItems[2]) * goodsPrice;  // 商品总价 = 商品促销单价 * 购买数量
-                    goodsPrice = g.getPromotionPrice();                           // 商品促销单价
-                    goodsMoney = BigDecimal.valueOf(param.getNums()[i]).multiply(goodsPrice);   // 商品总价 = 商品促销单价 * 购买数量
-                }
-                //设置总价格，下面的保存订单逻辑要用到
-                param.setTotal(goodsMoney, i);
-                total = total.add(goodsMoney);
-            }
-        }
-
-
-        BigDecimal goodsMoney = total;   // 商品总价（不包含配送费）
-        BigDecimal actualFee = BigDecimal.ZERO;  // 运费
-        if (goodsMoney.compareTo(owner.getDeliveryMoney()) < 0) {
-            // 配送费取delivery_less_money
-            actualFee = BigDecimal.valueOf(owner.getDeliveryLessMoney());
-        } else {
-            // 配送费取delivery_great_money
-            actualFee = BigDecimal.valueOf(owner.getDeliveryGreatMoney());
-        }
-        // 保存订单信息
-        List<String> goodsStr = new ArrayList<>();
-        for (TblGoods temp : list) {
-            i = m.get(temp.getId());
-            if (temp.getCode()!=null && temp.getCode().length() == 5) {
-                String a = RegexUtils.find(temp.getMeasurementUnit(), Pattern.compile("\\d+"), "1").get(0);
-                String b = RegexUtils.find(temp.getMeasurementUnit(), Pattern.compile("[^\\d]"), "").get(0);
-                BigDecimal c = BigDecimal.valueOf(Float.valueOf(a)).multiply(BigDecimal.valueOf(param.getNums()[i]));
-                //todo yancc pics  和 getSpecs 等 需要预处理
-                goodsStr.add(temp.getId() + "__" + temp.getPics() + "__" + temp.getName() + "__" + param.getUnits()[i] + "__" + (c.setScale(0,round) + b) + "__" + temp.getPriceUnit() + '/' + temp.getMeasurementUnit() + "__" + param.getTotals().get(i));
-            } else {
-                goodsStr.add(temp.getId() + "__" + temp.getPics() + "__" + temp.getName() + "__" + param.getUnits()[i] + "__" + param.getNums()[i] + "__" + temp.getPriceUnit() + "__" + param.getTotals().get(i));
-            }
-        }
-		final String orderNO =  IdGenerator.getId();
-        TblOrder o = new TblOrder();
-        o.setNo(orderNO);
-        o.setMoneyChannel(TblOrder.MONEY_CHANNEL_0);
-        o.setMoney(goodsMoney.setScale(2, round));
-        o.setFreight(actualFee.setScale(2, round));
-        o.setPayMoney(goodsMoney.add(actualFee).setScale(2, round));
-        o.setCreatedAt(new Date(current));
-        o.setCreatedBy(user.getOpenId());
-        o.setOwner(user.getOwner());
-        o.setGoods(StringUtils.join(goodsStr, ","));
-        o.setStatus(TblOrder.STATUS_0);
-        if (!addressList.isEmpty()) {
-            TblAddress address = addressList.get(0);
-            o.setConsigneeName(address.getName());
-            o.setConsigneeMobile(address.getTelephone());
-            o.setConsigneeAddress(address.getProvince() + "    " + address.getDetail());
-        }
-        boolean insert = orderService.insert(o);
-        String tempKey = "ms:fio:" + orderNO;
-        //todo yancc 处理formID
-        redisTemplate.opsForValue().set(tempKey, "EX", 604800,TimeUnit.SECONDS);
-        log.debug("买家下单时保存FormID {tempKey} = {req.body.formID}", tempKey, formID);
-        map.put("orderNO", orderNO);
-        return map;
+    public Object order(SessionUser user,@RequestBody CartParam param) {
+        TblOrder order = orderService.createMiniAppOrder(user, param);
+        MapWrapper map = new MapWrapper();
+        map.put("orderNO", order.getNo());
+        return warpObject(map);
     }
 
 
@@ -628,6 +530,20 @@ public class WXSmallCustomerController  extends BaseController {
         TblAddress address = addressService.findById(user, id);
         return address;
     }
+
+    /**
+     * 删除收货地址
+     * @param user
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/customer/v1/address/del",method = RequestMethod.POST)
+    public Object addressDel(SessionUser user,@RequestBody Id id){
+        TblAddress address = addressService.findById(user, Integer.valueOf(id.getId()));
+        boolean b = addressService.deleteById(address.getId());
+        return warpObject(render(b));
+    }
+
 
 
     /**

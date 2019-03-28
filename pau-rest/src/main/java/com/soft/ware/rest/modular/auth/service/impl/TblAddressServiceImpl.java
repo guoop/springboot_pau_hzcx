@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.rest.common.persistence.dao.TblAddressMapper;
 import com.soft.ware.rest.common.persistence.model.TblAddress;
@@ -31,7 +32,7 @@ public class TblAddressServiceImpl extends ServiceImpl<TblAddressMapper,TblAddre
     @Override
     public boolean addAddress(SessionUser user,TblAddress address) {
         //清空默认收获地址
-        if (address.getIsDefault().equals(TblAddress.is_default_1)) {
+        if (TblAddress.is_default_1.equals(address.getIsDefault())) {
             addressMapper.deleteDefaultAddress(user);
         }
         Integer insert = addressMapper.insert(address);
@@ -41,10 +42,17 @@ public class TblAddressServiceImpl extends ServiceImpl<TblAddressMapper,TblAddre
     @Override
     public boolean updateAddress(SessionUser user,TblAddress address) {
         //清空默认收货地址
-        if (address.getIsDefault().equals(TblAddress.is_default_1)) {
+        if (TblAddress.is_default_1.equals(address.getIsDefault())) {
             addressMapper.deleteDefaultAddress(user);
         }
         Integer integer = addressMapper.updateById(address);
         return integer == 1;
+    }
+
+    @Override
+    public boolean deleteById(SessionUser user,TblAddress address){
+        address.setIsDeleted(TblAddress.is_deleted_1);
+        Integer row = addressMapper.update(address, new EntityWrapper<>(new TblAddress().setId(address.getId()).setOwner(user.getOpenId())));
+        return row == 1;
     }
 }

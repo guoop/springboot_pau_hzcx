@@ -3,10 +3,7 @@ package com.soft.ware.rest.modular.auth.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.Page;
 
 import java.util.List;
@@ -30,7 +27,7 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param source
      * @return
      */
-    List<Map> findPage(SessionUser user, Page page, OrderParam param,Integer source);
+    List<Map> findPage(SessionUser user, Page page, OrderParam param,Integer... source);
 
     /**
      * 根据订单号查询订单详情
@@ -78,4 +75,13 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     boolean update(WxPayOrderNotifyResult result,SessionUser user,String no) throws Exception;
+
+
+    /**
+     * 微信支付小程序下单
+     * @param user
+     * @param param
+     * @return
+     */
+    TblOrder createMiniAppOrder(SessionUser user, CartParam param);
 }

@@ -13,6 +13,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -27,7 +28,14 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
 
     private HashMap<String,WxPayService> map = new HashMap<>();
     private HashMap<String,WxMaService> map2 = new HashMap<>();
-    private WxPayService nullWxPayService;
+    @Value(value = "${wx.pay.notify_host}")
+    private String customerPayHost;
+
+    @Value(value = "${wx.pay.notify_url_customer_pay_pickup}")
+    private String customerPayPickup;
+
+    @Value(value = "${wx.pay.notify_url_customer_pay}")
+    private String customerPay;
 
     @Override
     public WxPayService getWxPayService(TblOwner owner) {
@@ -38,7 +46,7 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
             WxPayConfig config = new WxPayConfig();
             config.setAppId(owner.getAppId());
             config.setMchId(owner.getShopId());//商户号
-            config.setNotifyUrl("https://wx.javaccy.giize.com/customer-pay/pickup");
+            config.setNotifyUrl(customerPayHost + customerPay);
             config.setMchKey(owner.getShopSecret());
             config.setTradeType(WxPayConstants.TradeType.JSAPI);
             config.setSignType(WxPayConstants.SignType.MD5);

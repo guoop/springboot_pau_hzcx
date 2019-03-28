@@ -33,7 +33,6 @@ public class WxPayController extends BaseController {
      * @param xmlData
      * @return
      */
-    //@ApiOperation(value = "支付回调通知处理")
     @PostMapping("/customer-pay")
     public String parseOrderNotifyResult(@RequestBody String xmlData) {
         try {
@@ -43,20 +42,17 @@ public class WxPayController extends BaseController {
                 SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
                 WxPayService service = hzcxWxService.getWxPayService(owner);
                 result.checkResult(service, service.getConfig().getSignType(), false);
-                boolean update = orderService.update(result, user, result.getOutTradeNo());
-                logger.info("到店自取支付回调成功：" + xmlData);
+                orderService.update(result, user, result.getOutTradeNo());
+                logger.info("商家配送支付回调成功：" + xmlData);
                 return WxPayNotifyResponse.success("成功");
-            } else {
-                //todo yancc 需要处理失败
-                return WxPayNotifyResponse.fail("失败");
             }
         } catch (WxPayException e){
             e.printStackTrace();
-            logger.info("到店自取支付回调失败：" + xmlData);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //todo yancc
+        //todo yancc 处理失败
+        logger.error("商家配送支付回调失败:" + xmlData);
         return WxPayNotifyResponse.fail("失败");
     }
 
@@ -66,7 +62,6 @@ public class WxPayController extends BaseController {
      * @return
      * @throws WxPayException
      */
-    //@ApiOperation(value = "支付回调通知处理")
     @PostMapping("/customer-pay/pickup")
     public String pickup(@RequestBody String xmlData) {
         try {
@@ -76,21 +71,17 @@ public class WxPayController extends BaseController {
                 SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
                 WxPayService service = hzcxWxService.getWxPayService(owner);
                 result.checkResult(service, service.getConfig().getSignType(), false);
-                boolean update = orderService.update(result, user, result.getAttach());
+                orderService.update(result, user, result.getAttach());
                 logger.info("到店自取支付回调成功：" + xmlData);
                 return WxPayNotifyResponse.success("成功");
-            } else {
-                //todo yancc 需要处理失败
-                return WxPayNotifyResponse.fail("失败");
             }
         } catch (WxPayException e){
             e.printStackTrace();
-            logger.info("到店自取支付回调失败：" + xmlData);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //todo yancc
+        //todo yancc 处理失败
+        logger.info("到店自取支付回调失败：" + xmlData);
         return WxPayNotifyResponse.fail("失败");
     }
 
@@ -99,7 +90,6 @@ public class WxPayController extends BaseController {
     @PostMapping("/notify/refund")
     public String parseRefundNotifyResult(@RequestBody String xmlData) throws WxPayException {
         //final WxPayRefundNotifyResult result = hzcxWxService.getWxPayService(null).parseRefundNotifyResult(xmlData);
-        // TODO 根据自己业务场景需要构造返回对象
         return WxPayNotifyResponse.success("成功");
     }
 
@@ -107,7 +97,6 @@ public class WxPayController extends BaseController {
     @PostMapping("/notify/scanpay")
     public String parseScanPayNotifyResult(String xmlData) throws WxPayException {
        // final WxScanPayNotifyResult result = hzcxWxService.getWxPayService(null).parseScanPayNotifyResult(xmlData);
-        // TODO 根据自己业务场景需要构造返回对象
         return WxPayNotifyResponse.success("成功");
     }
 

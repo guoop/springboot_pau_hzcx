@@ -52,10 +52,16 @@
 
     <sql id="findListCondition">
         <if test="source != null">
-            and o.source in (#{source})
+            and o.source in
+            <foreach collection="source" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
         </if>
         <if test="param.status != null">
-            and o.status in (#{param.status})
+            and o.status in
+            <foreach collection="param.statusArray" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
         </if>
         <!--根据买家用户查询-->
         <if test="user.openId != null">
@@ -69,7 +75,7 @@
     <select id="findList" resultType="java.util.Map">
         select o.* from tbl_order o where  o.owner = #{user.owner}
         <include refid="findListCondition"/>
-        order by pay_at desc
+        order by pay_at,created_at desc
         <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
     </select>
     <select id="findByNo" resultType="com.soft.ware.rest.common.persistence.model.TblOrder">
