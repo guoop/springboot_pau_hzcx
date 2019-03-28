@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,6 +16,18 @@ import java.util.Date;
 public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
 
     private static final long serialVersionUID = 1L;
+
+
+    //：未补差价；
+    public static Integer status_0 = 0;
+    //：已补差价）
+    public static Integer status_1 = 1;
+    //：处理中；
+    public static Integer refund_status_0 = 0;
+    //：成功；
+    public static Integer refund_status_1 = 1;
+    //：失败）
+    public static Integer refund_status_2 = 2;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -36,7 +47,7 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
     //添加时间
     private Date createdAt;
     //状态（0：未补差价；1：已补差价）
-    private Boolean status;
+    private Integer status;
     //支付成功时间
     private Date payAt;
     //支付信息
@@ -46,7 +57,7 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
     //退款时间
     private Date refundAt;
     //退款状态（0：处理中；1：成功；2：失败）
-    private Boolean refundStatus;
+    private Integer refundStatus;
     //退款信息
     private String refundResponse;
 
@@ -54,15 +65,17 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
         return no;
     }
 
-    public void setNo( String no){
+    public TblOrderMoneyDiff setNo( String no){
         this.no = no;
+        return this;
     }
     public String getOwner(){
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblOrderMoneyDiff setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public String getOrderNo(){
         return orderNo;
@@ -99,11 +112,11 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
     public void setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
     }
-    public Boolean getStatus(){
+    public Integer getStatus(){
         return status;
     }
 
-    public void setStatus( Boolean status){
+    public void setStatus(Integer status){
         this.status = status;
     }
     public Date getPayAt(){
@@ -134,11 +147,11 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
     public void setRefundAt( Date refundAt){
         this.refundAt = refundAt;
     }
-    public Boolean getRefundStatus(){
+    public Integer getRefundStatus(){
         return refundStatus;
     }
 
-    public void setRefundStatus( Boolean refundStatus){
+    public void setRefundStatus( Integer refundStatus){
         this.refundStatus = refundStatus;
     }
     public String getRefundResponse(){

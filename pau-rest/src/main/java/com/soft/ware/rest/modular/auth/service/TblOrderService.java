@@ -2,6 +2,7 @@ package com.soft.ware.rest.modular.auth.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -84,4 +85,12 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     TblOrder createMiniAppOrder(SessionUser user, CartParam param);
+
+    /**
+     * 当用户查询订单时，例如支付成功，但是订单状态没有发生改变时，根据微信支付状态，修改订单状态
+     * @param result
+     * @param user
+     * @return
+     */
+    boolean update(WxPayOrderQueryResult result, SessionUser user);
 }

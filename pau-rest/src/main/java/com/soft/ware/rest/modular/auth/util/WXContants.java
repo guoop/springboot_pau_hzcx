@@ -15,7 +15,10 @@ public class WXContants {
 
 	@Value(value = "${wx.pay.notify_url_customer_pay}")
 	private String customerPay;
-	
+
+	@Value(value = "${wx.pay.notify_url_customer_pay_diff}")
+	private String customerPayDiff;
+
 	//微信小程序网关
 	public static final String WX_GETWAY = "https://api.weixin.qq.com";
 
@@ -80,5 +83,13 @@ public class WXContants {
 
 	public void setCustomerPay(String customerPay) {
 		this.customerPay = customerPay;
+	}
+
+	public String getCustomerPayDiff() {
+		return customerPayDiff;
+	}
+
+	public void setCustomerPayDiff(String customerPayDiff) {
+		this.customerPayDiff = customerPayDiff;
 	}
 }

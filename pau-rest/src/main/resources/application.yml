@@ -6,6 +6,7 @@ wx:
   notify_host: http://wx.javaccy.giize.com
   notify_url_customer_pay_pickup: /customer-pay/pickup #到店自提支付回调
   notify_url_customer_pay: /customer-pay #商家发货支付回调
+  notify_url_customer_pay_diff: /customer-pay/money-diff #补差价支付回调
 jwt:
   header: Authorization   #http请求头所需要的字段
   secret: mySecret        #jwt秘钥

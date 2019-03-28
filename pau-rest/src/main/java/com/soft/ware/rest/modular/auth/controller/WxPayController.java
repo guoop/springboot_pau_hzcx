@@ -8,6 +8,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
+import com.soft.ware.rest.modular.auth.service.TblOrderMoneyDiffService;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,16 @@ public class WxPayController extends BaseController {
     @Autowired
     private TblOwnerService ownerService;
 
+    @Autowired
+    private TblOrderMoneyDiffService orderMoneyDiffService;
+
 
     /**
      * 支付回调
      * @param xmlData
      * @return
      */
-    @PostMapping("/customer-pay")
+    @PostMapping(value = "${wx.pay.notify_url_customer_pay}")
     public String parseOrderNotifyResult(@RequestBody String xmlData) {
         try {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
@@ -62,7 +66,7 @@ public class WxPayController extends BaseController {
      * @return
      * @throws WxPayException
      */
-    @PostMapping("/customer-pay/pickup")
+    @PostMapping(value = "${wx.pay.notify_url_customer_pay_pickup}")
     public String pickup(@RequestBody String xmlData) {
         try {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
@@ -72,6 +76,34 @@ public class WxPayController extends BaseController {
                 WxPayService service = hzcxWxService.getWxPayService(owner);
                 result.checkResult(service, service.getConfig().getSignType(), false);
                 orderService.update(result, user, result.getAttach());
+                logger.info("到店自取支付回调成功：" + xmlData);
+                return WxPayNotifyResponse.success("成功");
+            }
+        } catch (WxPayException e){
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //todo yancc 处理失败
+        logger.info("到店自取支付回调失败：" + xmlData);
+        return WxPayNotifyResponse.fail("失败");
+    }
+
+    /**
+     * 补差价回调
+     * @param xmlData
+     * @return
+     */
+    @PostMapping(value = "${wx.pay.notify_url_customer_pay_diff}")
+    public String diff(@RequestBody String xmlData) {
+        try {
+            final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
+            TblOwner owner = ownerService.findByAppId(result.getAppid());
+            if (owner != null) {
+                SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
+                WxPayService service = hzcxWxService.getWxPayService(owner);
+                result.checkResult(service, service.getConfig().getSignType(), false);
+                orderMoneyDiffService.update(result, user);
                 logger.info("到店自取支付回调成功：" + xmlData);
                 return WxPayNotifyResponse.success("成功");
             }

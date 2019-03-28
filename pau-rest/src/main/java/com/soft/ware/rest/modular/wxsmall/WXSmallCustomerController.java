@@ -14,7 +14,6 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.base.warpper.MapWrapper;
-import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
@@ -80,6 +79,9 @@ public class WXSmallCustomerController  extends BaseController {
 
     @Autowired
     private WXContants wxContants;
+
+    @Autowired
+    private TblOrderMoneyDiffService orderMoneyDiffService;
 
     /**
      * banner
@@ -425,33 +427,9 @@ public class WXSmallCustomerController  extends BaseController {
         if (source2) {
             total_fee = order.getMoney().multiply(BigDecimal.valueOf(100)).intValue();
         }
-        WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
-                .newBuilder()
-                .body(body)
-                .attach(attach)
-                .notifyUrl(notify_url)
-                .openid(user.getOpenId())
-                .outTradeNo(out_trade_no)
-                .spbillCreateIp(spbill_create_ip)
-                .tradeType(WxPayConstants.TradeType.JSAPI)
-                .totalFee(total_fee).build();
-        Map<String, Object> map = new HashMap<>();
-        try {
-            WxPayMpOrderResult res = hzcxWxService.getWxPayService(owner).createOrder(req);
-            map.put("msg", "操作成功");
-            map.put("status", "100");
-            map.put("out_trade_no", out_trade_no);
-            // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数
-            map.put("nonceStr",res.getNonceStr());
-            map.put("timestamp", res.getTimeStamp());
-            map.put("package", res.getPackageValue());
-            map.put("paySign", res.getPaySign());
-        } catch (WxPayException e) {
-            e.printStackTrace();
-            map.put("msg",e.getReturnMsg());
-            map.put("code", "102");
-        }
-        return warpObject(new MapWrapper(map));
+        WxPayUnifiedOrderRequest req = buildPayReq(user, out_trade_no, total_fee, notify_url, body, attach, spbill_create_ip);
+        MapWrapper map = buildPayMap(owner, req);
+        return warpObject(map);
     }
 
     /**
@@ -588,20 +566,95 @@ public class WXSmallCustomerController  extends BaseController {
 
 
     /**
-     *
+     * 前端查询某个订单的状态
      * @param user
      * @param orderNO
      * @return
      * @throws WxPayException
      */
-    @RequestMapping(value = "/order/check")
+    @RequestMapping(value = "/customer/v1/order/status",method = RequestMethod.GET)
     public Object orderFind(SessionUser user,String orderNO) throws WxPayException {
+        MapWrapper map = new MapWrapper();
         TblOwner owner = ownerService.find(user);
         WxPayService service = hzcxWxService.getWxPayService(owner);
-        //todo yancc 处理订单逻辑
         WxPayOrderQueryResult result = service.queryOrder(WxPayOrderQueryRequest.newBuilder().outTradeNo(orderNO).build());
-        return warpObject(new SuccessWrapper(result));
+        try{
+            TblOrder o = orderService.findByNo(user, orderNO);
+            if (TblOrder.STATUS_0.equals(o.getStatus())) {
+                orderService.update(result, user);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("前端查询订单，被动更新失败：订单号=" + orderNO);
+        }
+        map.put("code", SUCCESS);
+        map.put("msg", "订单支付成功！");
+        map.put("total_fee", result.getTotalFee());
+        return warpObject(map);
+    }
+
+    /**
+     * 补差价的二次支付下单
+     * 描述：一个订单，当商家补充了小票金额后，当小票金额大于订单已支付金额时，需要买家补齐差价。
+     * @param user 用户
+     * @param param 参数
+     * @return 该接口逻辑和微信下单接口逻辑一样，返回结果也一样
+     */
+    @RequestMapping(value = "/customer/v2/diff/wxpay/unifiedrder")
+    public Object diff(SessionUser user,DiffParam param,HttpServletRequest request) {
+        String no = param.getDiffNO();
+        TblOrderMoneyDiff diff = orderMoneyDiffService.findByNo(user, no);
+        TblOwner owner = ownerService.find(user);
+
+        String remark = "无";
+
+        // 获取客户端ip
+        String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
+        // 商品描述
+        String body = "购买商品";
+        // 支付成功的回调地址  可访问 不带参数
+        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiff();
+        // 订单价格 单位是 分
+        Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
+        WxPayUnifiedOrderRequest req = buildPayReq(user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+        MapWrapper map = buildPayMap(owner, req);
+        return warpObject(map);
+
+    }
+
+    public WxPayUnifiedOrderRequest buildPayReq(SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) {
+        WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
+                .newBuilder()
+                .body(body)
+                .attach(attach)
+                .notifyUrl(notifyUrl)
+                .openid(user.getOpenId())
+                .outTradeNo(no)
+                .spbillCreateIp(ip)
+                .tradeType(WxPayConstants.TradeType.JSAPI)
+                .totalFee(total_fee).build();
+        return req;
     }
 
 
+    public MapWrapper buildPayMap(TblOwner owner,WxPayUnifiedOrderRequest req){
+        MapWrapper map = new MapWrapper();
+        try {
+            WxPayMpOrderResult res = hzcxWxService.getWxPayService(owner).createOrder(req);
+            map.put("msg", "操作成功");
+            map.put("status", "100");
+            map.put("out_trade_no", req.getOutTradeNo());
+            // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数
+            map.put("nonceStr", res.getNonceStr());
+            map.put("timestamp", res.getTimeStamp());
+            map.put("package", res.getPackageValue());
+            map.put("paySign", res.getPaySign());
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            map.put("msg", e.getReturnMsg());
+            map.put("code", "102");
+        }
+
+        return map;
+    }
 }

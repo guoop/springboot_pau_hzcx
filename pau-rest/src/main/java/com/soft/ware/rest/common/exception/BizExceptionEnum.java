@@ -48,6 +48,8 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
 
    ORDER_CREATE_FAIL(500,"下单失败"),
 
+   ORDER_PAY_FAIL(500,"订单付款失败"),
+
     //短信发送错误
    SMS_ERROR_PHONE_FORMAT(400,"手机号格式错误"),
 

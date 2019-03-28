@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.IdGenerator;
@@ -169,8 +170,12 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
         order.setStatus(TblOrder.STATUS_1);
         Map<String, Object> map = BeanMapUtils.toMap(result, true);
         order.setPayResponse(JSON.toJSONString(map));
-        boolean update = update(order, new EntityWrapper<TblOrder>(new TblOrder().setId(order.getId()).setStatus(beforeStatus)));
-        return update;
+        Integer update = orderMapper.update(order, new EntityWrapper<TblOrder>(new TblOrder().setId(order.getId()).setStatus(beforeStatus)));
+        if (update != 1) {
+            //这样做也没什么用，但是微信会尝试重新执行回调
+            throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
+        }
+        return true;
     }
 
 
@@ -265,6 +270,11 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800, TimeUnit.SECONDS);
         logger.debug("买家下单时保存FormID {tempKey} = {req.body.formID}", tempKey, param.getFormID());
         return o;
+    }
+
+    @Override
+    public boolean update(WxPayOrderQueryResult result, SessionUser user) {
+        return false;
     }
 
 }
