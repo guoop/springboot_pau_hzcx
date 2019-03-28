@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblAppVersionMapper;
 import com.soft.ware.rest.common.persistence.model.TblAppVersion;
 import com.soft.ware.rest.modular.auth.service.TblAppVersionService;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 @Service
 @Transactional
-public class TblAppVersionServiceImpl extends ServiceImpl<TblAppVersionMapper,TblAppVersion> implements TblAppVersionService {
+public class TblAppVersionServiceImpl extends BaseService<TblAppVersionMapper,TblAppVersion> implements TblAppVersionService {
 
     @Resource
     private TblAppVersionMapper appVersionMapper;

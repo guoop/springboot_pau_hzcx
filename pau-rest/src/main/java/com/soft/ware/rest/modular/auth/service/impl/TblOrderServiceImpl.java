@@ -2,9 +2,9 @@ package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.IdGenerator;
@@ -23,8 +23,6 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.RegexUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,10 +36,8 @@ import java.util.regex.Pattern;
 
 @Service
 @Transactional
-public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> implements TblOrderService {
+public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> implements TblOrderService {
 
-
-    private Logger logger = LoggerFactory.getLogger(TblOrderServiceImpl.class);
 
     @Resource
     private TblOrderMapper orderMapper;

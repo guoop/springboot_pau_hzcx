@@ -4,7 +4,7 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.template.WxMaTemplateListResult;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerTempMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwnerTemp;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Service
 @Transactional
-public class TblOwnerTempServiceImpl extends ServiceImpl<TblOwnerTempMapper,TblOwnerTemp> implements TblOwnerTempService {
+public class TblOwnerTempServiceImpl extends BaseService<TblOwnerTempMapper,TblOwnerTemp> implements TblOwnerTempService {
 
     @Resource
     private TblOwnerTempMapper tblOwnerTempMapper;

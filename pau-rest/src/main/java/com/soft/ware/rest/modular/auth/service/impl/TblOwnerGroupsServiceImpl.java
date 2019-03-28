@@ -1,7 +1,7 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerGroupsMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class TblOwnerGroupsServiceImpl extends ServiceImpl<TblOwnerGroupsMapper,TblOwnerGroups> implements TblOwnerGroupsService {
+public class TblOwnerGroupsServiceImpl extends BaseService<TblOwnerGroupsMapper,TblOwnerGroups> implements TblOwnerGroupsService {
 
     @Resource
     private TblOwnerGroupsMapper ownerGroupsMapper;

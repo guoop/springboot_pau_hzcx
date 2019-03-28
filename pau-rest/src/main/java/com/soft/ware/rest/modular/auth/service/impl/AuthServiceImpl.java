@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.service.AuthService;
@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 @Service
 @Transactional
-public class AuthServiceImpl extends ServiceImpl<TblOwnerStaffMapper, TblOwnerStaff> implements AuthService {
+public class AuthServiceImpl extends BaseService<TblOwnerStaffMapper, TblOwnerStaff> implements AuthService {
 
     @Resource
     private TblOwnerStaffMapper staffMapper;

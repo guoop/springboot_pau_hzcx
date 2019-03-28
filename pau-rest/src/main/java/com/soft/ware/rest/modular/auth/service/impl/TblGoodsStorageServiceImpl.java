@@ -1,22 +1,20 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.persistence.dao.TblGoodsStorageMapper;
 import com.soft.ware.rest.common.persistence.model.TblGoodsStorage;
 import com.soft.ware.rest.modular.auth.service.TblGoodsStorageService;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Map;
 @Service
 @Transactional
-public class TblGoodsStorageServiceImpl extends ServiceImpl<TblGoodsStorageMapper,TblGoodsStorage> implements TblGoodsStorageService {
+public class TblGoodsStorageServiceImpl extends BaseService<TblGoodsStorageMapper,TblGoodsStorage> implements TblGoodsStorageService {
 
     @Resource
     private TblGoodsStorageMapper tblGoodsStorageMapper;

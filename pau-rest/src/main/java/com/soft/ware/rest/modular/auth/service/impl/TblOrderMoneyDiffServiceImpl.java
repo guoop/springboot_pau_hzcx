@@ -2,8 +2,8 @@ package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMoneyDiffMapper;
@@ -18,7 +18,7 @@ import java.util.Date;
 
 @Service
 @Transactional
-public class TblOrderMoneyDiffServiceImpl extends ServiceImpl<TblOrderMoneyDiffMapper,TblOrderMoneyDiff> implements TblOrderMoneyDiffService {
+public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffMapper,TblOrderMoneyDiff> implements TblOrderMoneyDiffService {
 
     @Resource
     private TblOrderMoneyDiffMapper mapper;
