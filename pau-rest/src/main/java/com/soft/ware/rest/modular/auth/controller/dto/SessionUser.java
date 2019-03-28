@@ -23,6 +23,11 @@ public class SessionUser {
      */
     private String type;
 
+    /**
+     * appId，小程序客户端才有
+     */
+    private String appId;
+
     public static String type_customer = "type_customer";//买家端
     public static String type_staff = "type_app";//收银端
     public static String type_owner = "type_owner";//商家
@@ -74,4 +79,11 @@ public class SessionUser {
     }
 
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
 }

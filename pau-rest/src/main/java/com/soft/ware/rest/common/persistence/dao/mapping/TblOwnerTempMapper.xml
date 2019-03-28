@@ -37,5 +37,11 @@
         <result column="refused_reason02" property="refusedReason02" />
         <result column="owner_is_valid" property="ownerIsValid" />
     </resultMap>
+    <select id="findByUser" resultType="com.soft.ware.rest.common.persistence.model.TblOwnerTemp">
+        select tot.id,tot.shop_id,tot.shop_secret,tot.app_id,tot.app_secret,tot.app_name,tot.app_qr,
+        tot.owner,tot.acct_name,tot.acct_pwd,tot.company_name,tot.company_code,tot.company_license,
+        tot.name,tot.phone,tot.mailbox,tot.refund_cert,tot.tmpl,tot.created_at,tot.status01,tot.status02,tot.passed_by01,tot.passed_at01,tot.passed_by02,tot.passed_at02,tot.refused_by01,tot.refused_at01,tot.refused_reason01,tot.refused_by02,tot.refused_at02,tot.refused_reason02,tot.owner_is_valid
+         from tbl_owner_temp tot where tot.owner = #{user.owner}
+    </select>
 
 </mapper>

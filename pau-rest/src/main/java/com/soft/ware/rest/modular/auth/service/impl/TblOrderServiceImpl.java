@@ -126,15 +126,15 @@ public class TblOrderServiceImpl extends ServiceImpl<TblOrderMapper,TblOrder> im
 	}
 
     @Override
-    public boolean update(WxPayOrderNotifyResult result,SessionUser user) throws Exception {
+    public boolean update(WxPayOrderNotifyResult result,SessionUser user,String no) throws Exception {
         user.setOpenId(result.getOpenid());
-        TblOrder order = this.findByNo(user, result.getOutTradeNo());
+        TblOrder order = this.findByNo(user,no);
         order.setPayAt(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
         order.setStatus(TblOrder.STATUS_1);
         Map<String, Object> map = BeanMapUtils.toMap(result, true);
         order.setPayResponse(JSON.toJSONString(map));
-        order.update(new EntityWrapper<TblOrder>(order));
-        return true;
+        boolean update = update(order, new EntityWrapper<TblOrder>(new TblOrder().setId(order.getId()).setStatus(order.getStatus())));
+        return update;
     }
 
 }

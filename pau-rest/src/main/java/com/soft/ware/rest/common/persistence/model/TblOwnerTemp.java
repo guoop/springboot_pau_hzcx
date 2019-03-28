@@ -336,8 +336,9 @@ public class TblOwnerTemp extends Model<TblOwnerTemp> {
         return id;
     }
 
-    public void setId(Long id){
+    public TblOwnerTemp setId(Long id){
         this.id = id;
+        return  this;
     }
 
 
