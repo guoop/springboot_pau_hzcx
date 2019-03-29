@@ -15,7 +15,7 @@ public class ControllerConfig {
     private List<String> imports;//所引入的包
 
     public void init() {
-        ArrayList<String> imports = new ArrayList<>();
+        List<String> imports = new ArrayList<>();
         imports.add(contextConfig.getCoreBasePackage() + ".base.controller.BaseController");
         imports.add("org.springframework.stereotype.Controller");
         imports.add("org.springframework.web.bind.annotation.RequestMapping");
