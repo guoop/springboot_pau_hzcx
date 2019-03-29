@@ -63,6 +63,10 @@ public class AuthFilter extends OncePerRequestFilter {
         whiteUrlSet.add("/customer/v1/order/address");
         whiteUrlSet.add("/customer/v2/diff/wxpay/unifiedrder");//补差价
 
+        whiteUrlSet.add("/owner/share/login");
+        whiteUrlSet.add("/owner/im/init");
+        whiteUrlSet.add("/owner/share/wx_identifier");
+
         whitePrefixUrlSet.add("/customer/v2/orders/");
         whitePrefixUrlSet.add("/customer/v1/orders/");
         whitePrefixUrlSet.add("/customer/v1/goods/");

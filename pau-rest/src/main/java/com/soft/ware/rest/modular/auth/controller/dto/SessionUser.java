@@ -9,6 +9,12 @@ public class SessionUser {
      * 用户id/openId
      */
     private String id;
+
+    /**
+     * openId
+     */
+    private String openId;
+
     /**
      * 用户名/手机号
      */
@@ -46,11 +52,11 @@ public class SessionUser {
     }
 
     public String getOpenId(){
-        return id;
+        return openId;
     }
 
     public SessionUser setOpenId(String openId) {
-        this.id = openId;
+        this.openId = openId;
         return this;
     }
 

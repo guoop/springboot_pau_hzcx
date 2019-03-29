@@ -19,5 +19,4 @@ public interface TblGoodsMapper extends BaseMapper<TblGoods> {
 
     List<TblGoods> findListByIds(@Param("user") SessionUser user, @Param("ids") List<String> ids);
     
-    boolean updateGoodsOnDown(Map<String,Object> map);
 }

@@ -16,6 +16,13 @@ public class TblOwnerStaff extends Model<TblOwnerStaff> {
 
     private static final long serialVersionUID = 1L;
 
+    //：正常；
+    public static Integer status_0 = 0;
+    //：已禁用；
+    public static Integer status_1 = 1;
+    //：已删除）
+    public static Integer status_2 = 2;
+
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
@@ -38,78 +45,90 @@ public class TblOwnerStaff extends Model<TblOwnerStaff> {
     //状态（0：正常；1：已禁用；2：已删除）
     private Integer status;
 
+
+    public Integer getId(){
+        return id;
+    }
+
+    public TblOwnerStaff setId(Integer id){
+        this.id = id;
+        return this;
+    }
+
+
     public String getOwner(){
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblOwnerStaff setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public String getName(){
         return name;
     }
 
-    public void setName( String name){
+    public TblOwnerStaff setName( String name){
         this.name = name;
+        return this;
     }
     public String getPhone(){
         return phone;
     }
 
-    public void setPhone( String phone){
+    public TblOwnerStaff setPhone( String phone){
         this.phone = phone;
+        return this;
     }
     public String getPassword(){
         return password;
     }
 
-    public void setPassword( String password){
+    public TblOwnerStaff setPassword( String password){
         this.password = password;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;
     }
 
-    public void setCreatedAt( Date createdAt){
+    public TblOwnerStaff setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
+        return this;
     }
     public String getFunctionList(){
         return functionList;
     }
 
-    public void setFunctionList( String functionList){
+    public TblOwnerStaff setFunctionList( String functionList){
         this.functionList = functionList;
+        return this;
     }
     public String getUrlList(){
         return urlList;
     }
 
-    public void setUrlList( String urlList){
+    public TblOwnerStaff setUrlList( String urlList){
         this.urlList = urlList;
+        return this;
     }
     public String getCategoryList(){
         return categoryList;
     }
 
-    public void setCategoryList( String categoryList){
+    public TblOwnerStaff setCategoryList( String categoryList){
         this.categoryList = categoryList;
+        return this;
     }
     public Integer getStatus(){
         return status;
     }
 
-    public void setStatus( Integer status){
+    public TblOwnerStaff setStatus( Integer status){
         this.status = status;
+        return this;
     }
 
-
-    public  Integer getId(){
-        return id;
-    }
-
-    public  void setId(Integer id){
-        this.id = id;
-    }
 
 
     @Override

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -52,120 +51,138 @@ public class TblOrderApp extends Model<TblOrderApp> {
     //备注信息
     private String remark;
 
+
+    public Long getId(){
+        return id;
+    }
+
+    public TblOrderApp setId(Long id){
+        this.id = id;
+        return this;
+    }
+
+
     public String getNo(){
         return no;
     }
 
-    public void setNo( String no){
+    public TblOrderApp setNo( String no){
         this.no = no;
+        return this;
     }
     public Boolean getSource(){
         return source;
     }
 
-    public void setSource( Boolean source){
+    public TblOrderApp setSource( Boolean source){
         this.source = source;
+        return this;
     }
     public String getMoneyChannel(){
         return moneyChannel;
     }
 
-    public void setMoneyChannel( String moneyChannel){
+    public TblOrderApp setMoneyChannel( String moneyChannel){
         this.moneyChannel = moneyChannel;
+        return this;
     }
     public BigDecimal getMoney(){
         return money;
     }
 
-    public void setMoney( BigDecimal money){
+    public TblOrderApp setMoney( BigDecimal money){
         this.money = money;
+        return this;
     }
     public BigDecimal getMoneyDpay(){
         return moneyDpay;
     }
 
-    public void setMoneyDpay( BigDecimal moneyDpay){
+    public TblOrderApp setMoneyDpay( BigDecimal moneyDpay){
         this.moneyDpay = moneyDpay;
+        return this;
     }
     public BigDecimal getMoneyShishou(){
         return moneyShishou;
     }
 
-    public void setMoneyShishou( BigDecimal moneyShishou){
+    public TblOrderApp setMoneyShishou( BigDecimal moneyShishou){
         this.moneyShishou = moneyShishou;
+        return this;
     }
     public BigDecimal getMoneyZhaol(){
         return moneyZhaol;
     }
 
-    public void setMoneyZhaol( BigDecimal moneyZhaol){
+    public TblOrderApp setMoneyZhaol( BigDecimal moneyZhaol){
         this.moneyZhaol = moneyZhaol;
+        return this;
     }
     public String getChannelPay(){
         return channelPay;
     }
 
-    public void setChannelPay( String channelPay){
+    public TblOrderApp setChannelPay( String channelPay){
         this.channelPay = channelPay;
+        return this;
     }
     public Date getPayAt(){
         return payAt;
     }
 
-    public void setPayAt( Date payAt){
+    public TblOrderApp setPayAt( Date payAt){
         this.payAt = payAt;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;
     }
 
-    public void setCreatedAt( Date createdAt){
+    public TblOrderApp setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
+        return this;
     }
     public String getSettlementBy(){
         return settlementBy;
     }
 
-    public void setSettlementBy( String settlementBy){
+    public TblOrderApp setSettlementBy( String settlementBy){
         this.settlementBy = settlementBy;
+        return this;
     }
     public String getOwner(){
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblOrderApp setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public String getGoods(){
         return goods;
     }
 
-    public void setGoods( String goods){
+    public TblOrderApp setGoods( String goods){
         this.goods = goods;
+        return this;
     }
     public Integer getStatus(){
         return status;
     }
 
-    public void setStatus( Integer status){
+    public TblOrderApp setStatus( Integer status){
         this.status = status;
+        return this;
     }
     public String getRemark(){
         return remark;
     }
 
-    public void setRemark( String remark){
+    public TblOrderApp setRemark( String remark){
         this.remark = remark;
+        return this;
     }
 
-
-    public  Long getId(){
-        return id;
-    }
-
-    public  void setId(Long id){
-        this.id = id;
-    }
 
 
     @Override

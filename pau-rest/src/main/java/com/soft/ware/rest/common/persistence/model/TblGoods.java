@@ -90,170 +90,8 @@ public class TblGoods extends Model<TblGoods> {
     //促销结束时间
     private Date promotionEndtime;
 
-    public Long getCategoryId(){
-        return categoryId;
-    }
 
-    public void setCategoryId( Long categoryId){
-        this.categoryId = categoryId;
-    }
-    public String getCategoryChild(){
-        return categoryChild;
-    }
-
-    public void setCategoryChild( String categoryChild){
-        this.categoryChild = categoryChild;
-    }
-    public String getName(){
-        return name;
-    }
-
-    public void setName( String name){
-        this.name = name;
-    }
-    public String getCode(){
-        return code;
-    }
-
-    public void setCode( String code){
-        this.code = code;
-    }
-    public String getMeasurementUnit(){
-        return measurementUnit;
-    }
-
-    public void setMeasurementUnit( String measurementUnit){
-        this.measurementUnit = measurementUnit;
-    }
-    public BigDecimal getPriceUnit(){
-        return priceUnit;
-    }
-
-    public void setPriceUnit( BigDecimal priceUnit){
-        this.priceUnit = priceUnit;
-    }
-    public String getPics(){
-        return pics;
-    }
-
-    public void setPics( String pics){
-        this.pics = pics;
-    }
-    public String getDescription(){
-        return description;
-    }
-
-    public void setDescription( String description){
-        this.description = description;
-    }
-    public String getSpecs(){
-        return specs;
-    }
-
-    public void setSpecs( String specs){
-        this.specs = specs;
-    }
-    public BigDecimal getBaseline(){
-        return baseline;
-    }
-
-    public void setBaseline( BigDecimal baseline){
-        this.baseline = baseline;
-    }
-    public BigDecimal getStock(){
-        return stock;
-    }
-
-    public void setStock( BigDecimal stock){
-        this.stock = stock;
-    }
-    public Date getCreatedAt(){
-        return createdAt;
-    }
-
-    public void setCreatedAt( Date createdAt){
-        this.createdAt = createdAt;
-    }
-    public Long getCreatedBy(){
-        return createdBy;
-    }
-
-    public void setCreatedBy( Long createdBy){
-        this.createdBy = createdBy;
-    }
-    public String getOwner(){
-        return owner;
-    }
-
-    public void setOwner( String owner){
-        this.owner = owner;
-    }
-    public Integer getStatus(){
-        return status;
-    }
-
-    public void setStatus( Integer status){
-        this.status = status;
-    }
-    public Integer getSells(){
-        return sells;
-    }
-
-    public void setSells( Integer sells){
-        this.sells = sells;
-    }
-    public Integer getSortNum(){
-        return sortNum;
-    }
-
-    public void setSortNum( Integer sortNum){
-        this.sortNum = sortNum;
-    }
-    public Integer getIsDelete(){
-        return isDelete;
-    }
-
-    public void setIsDelete( Integer isDelete){
-        this.isDelete = isDelete;
-    }
-    public Integer getSource(){
-        return source;
-    }
-
-    public void setSource( Integer source){
-        this.source = source;
-    }
-    public Date getTopTime(){
-        return topTime;
-    }
-
-    public void setTopTime( Date topTime){
-        this.topTime = topTime;
-    }
-    public Integer getIsPromotion(){
-        return isPromotion;
-    }
-
-    public void setIsPromotion( Integer isPromotion){
-        this.isPromotion = isPromotion;
-    }
-    public BigDecimal getPromotionPrice(){
-        return promotionPrice;
-    }
-
-    public void setPromotionPrice( BigDecimal promotionPrice){
-        this.promotionPrice = promotionPrice;
-    }
-    public Date getPromotionEndtime(){
-        return promotionEndtime;
-    }
-
-    public void setPromotionEndtime( Date promotionEndtime){
-        this.promotionEndtime = promotionEndtime;
-    }
-
-
-    public  Long getId(){
+    public Long getId(){
         return id;
     }
 
@@ -261,6 +99,193 @@ public class TblGoods extends Model<TblGoods> {
         this.id = id;
         return this;
     }
+
+
+    public Long getCategoryId(){
+        return categoryId;
+    }
+
+    public TblGoods setCategoryId( Long categoryId){
+        this.categoryId = categoryId;
+        return this;
+    }
+    public String getCategoryChild(){
+        return categoryChild;
+    }
+
+    public TblGoods setCategoryChild( String categoryChild){
+        this.categoryChild = categoryChild;
+        return this;
+    }
+    public String getName(){
+        return name;
+    }
+
+    public TblGoods setName( String name){
+        this.name = name;
+        return this;
+    }
+    public String getCode(){
+        return code;
+    }
+
+    public TblGoods setCode( String code){
+        this.code = code;
+        return this;
+    }
+    public String getMeasurementUnit(){
+        return measurementUnit;
+    }
+
+    public TblGoods setMeasurementUnit( String measurementUnit){
+        this.measurementUnit = measurementUnit;
+        return this;
+    }
+    public BigDecimal getPriceUnit(){
+        return priceUnit;
+    }
+
+    public TblGoods setPriceUnit( BigDecimal priceUnit){
+        this.priceUnit = priceUnit;
+        return this;
+    }
+    public String getPics(){
+        return pics;
+    }
+
+    public TblGoods setPics( String pics){
+        this.pics = pics;
+        return this;
+    }
+    public String getDescription(){
+        return description;
+    }
+
+    public TblGoods setDescription( String description){
+        this.description = description;
+        return this;
+    }
+    public String getSpecs(){
+        return specs;
+    }
+
+    public TblGoods setSpecs( String specs){
+        this.specs = specs;
+        return this;
+    }
+    public BigDecimal getBaseline(){
+        return baseline;
+    }
+
+    public TblGoods setBaseline( BigDecimal baseline){
+        this.baseline = baseline;
+        return this;
+    }
+    public BigDecimal getStock(){
+        return stock;
+    }
+
+    public TblGoods setStock( BigDecimal stock){
+        this.stock = stock;
+        return this;
+    }
+    public Date getCreatedAt(){
+        return createdAt;
+    }
+
+    public TblGoods setCreatedAt( Date createdAt){
+        this.createdAt = createdAt;
+        return this;
+    }
+    public Long getCreatedBy(){
+        return createdBy;
+    }
+
+    public TblGoods setCreatedBy( Long createdBy){
+        this.createdBy = createdBy;
+        return this;
+    }
+    public String getOwner(){
+        return owner;
+    }
+
+    public TblGoods setOwner( String owner){
+        this.owner = owner;
+        return this;
+    }
+    public Integer getStatus(){
+        return status;
+    }
+
+    public TblGoods setStatus( Integer status){
+        this.status = status;
+        return this;
+    }
+    public Integer getSells(){
+        return sells;
+    }
+
+    public TblGoods setSells( Integer sells){
+        this.sells = sells;
+        return this;
+    }
+    public Integer getSortNum(){
+        return sortNum;
+    }
+
+    public TblGoods setSortNum( Integer sortNum){
+        this.sortNum = sortNum;
+        return this;
+    }
+    public Integer getIsDelete(){
+        return isDelete;
+    }
+
+    public TblGoods setIsDelete( Integer isDelete){
+        this.isDelete = isDelete;
+        return this;
+    }
+    public Integer getSource(){
+        return source;
+    }
+
+    public TblGoods setSource( Integer source){
+        this.source = source;
+        return this;
+    }
+    public Date getTopTime(){
+        return topTime;
+    }
+
+    public TblGoods setTopTime( Date topTime){
+        this.topTime = topTime;
+        return this;
+    }
+    public Integer getIsPromotion(){
+        return isPromotion;
+    }
+
+    public TblGoods setIsPromotion( Integer isPromotion){
+        this.isPromotion = isPromotion;
+        return this;
+    }
+    public BigDecimal getPromotionPrice(){
+        return promotionPrice;
+    }
+
+    public TblGoods setPromotionPrice( BigDecimal promotionPrice){
+        this.promotionPrice = promotionPrice;
+        return this;
+    }
+    public Date getPromotionEndtime(){
+        return promotionEndtime;
+    }
+
+    public TblGoods setPromotionEndtime( Date promotionEndtime){
+        this.promotionEndtime = promotionEndtime;
+        return this;
+    }
+
 
 
     @Override

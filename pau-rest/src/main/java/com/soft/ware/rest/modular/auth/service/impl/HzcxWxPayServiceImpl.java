@@ -12,6 +12,7 @@ import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
+import com.soft.ware.rest.modular.auth.util.WXContants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
     @Value(value = "${wx.pay.notify_url_customer_pay}")
     private String customerPay;
 
+    private WxMaService wxMaService;
+
     @Override
     public WxPayService getWxPayService(TblOwner owner) {
         if (map.containsKey(owner.getAppId())) {
@@ -61,7 +64,6 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
 
     @Override
     public WxMaService getWxMaService(TblOwner owner){
-
         if (map2.containsKey(owner.getAppId())) {
             return map2.get(owner.getAppId());
         } else {
@@ -82,10 +84,28 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
     }
 
 
+
     @Override
     public WxPayService getWxPayService(SessionUser user) {
         TblOwner owner = ownerService.findByAppId(user.getAppId());
         return getWxPayService(owner);
+    }
+
+
+
+
+    @Override
+    public WxMaService getWxMaService() {
+        if (wxMaService != null) {
+            return wxMaService;
+        } else {
+            wxMaService = new WxMaServiceImpl();
+            WxMaInMemoryConfig config = new WxMaInMemoryConfig();
+            config.setAppid(WXContants.OWNER_APP_ID);
+            config.setSecret(WXContants.OWNER_APP_SECRET);
+            wxMaService.setWxMaConfig(config);
+        }
+        return wxMaService;
     }
 
 }

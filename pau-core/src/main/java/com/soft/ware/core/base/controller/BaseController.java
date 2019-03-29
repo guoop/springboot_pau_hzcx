@@ -30,7 +30,7 @@ public class BaseController {
     }
 
     public static String SUCCESS = "success";
-    public static String ERROR = "ERROR";
+    public static String ERROR = "fail";
 
     protected static String REDIRECT = "redirect:";
     protected static String FORWARD = "forward:";
@@ -129,9 +129,9 @@ public class BaseController {
 
     public BaseControllerWarpper render(boolean result,String msg){
         if (result) {
-            return new SuccessWrapper();
+            return new SuccessWrapper(msg);
         } else {
-            return new FailWrapper();
+            return new FailWrapper(msg);
         }
     }
 

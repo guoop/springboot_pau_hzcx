@@ -4,7 +4,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.warpper.FailWrapper;
 import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderUpdateStatusParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
@@ -45,7 +45,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/orders")
-    public Object orderPage(SessionUser user, Page page,  OrderParam param){
+    public Object orderPage(SessionUser user, Page page,  OrderPageParam param){
         if (param.getStatus()!=null) {
             if ("confirm".equals(param.getStatus())) {
                 //新订单
@@ -64,8 +64,7 @@ public class OrderController extends BaseController {
                 param.setStatus("-1");
             }
         }
-        OrderParam orderParam = new OrderParam();
-        List<Map> list = orderService.findPage(user, page, orderParam, TblOrder.SOURCE_1);
+        List<Map> list = orderService.findPage(user, page, param, TblOrder.SOURCE_1);
         Map<String, Object> map = new HashMap<>();
         map.put("code", SUCCESS);
         map.put("orders",list);

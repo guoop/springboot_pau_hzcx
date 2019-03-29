@@ -9,12 +9,12 @@ public class MapWrapper extends BaseControllerWarpper {
 
     public MapWrapper(Map<String,Object> map) {
         super(map);
-        o = (HashMap<String,Object>)obj;
+        o = (Map<String,Object>)obj;
     }
 
     public MapWrapper() {
         super(new HashMap<>());
-        o = (HashMap<String,Object>)obj;
+        o = (Map<String,Object>)obj;
     }
 
     @Override

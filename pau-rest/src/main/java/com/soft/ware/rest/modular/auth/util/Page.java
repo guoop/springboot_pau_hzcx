@@ -12,7 +12,7 @@ public class Page<T> {
     //总条数
     private long total;
     //每页多少条
-    private long size;
+    private int size;
     //偏移量
     private long offset;
     //总页数
@@ -51,11 +51,11 @@ public class Page<T> {
         }
     }
 
-    public long getLimit() {
+    public int getLimit() {
         return size;
     }
 
-    public void setLimit(long limit) {
+    public void setLimit(int limit) {
         this.size = limit < 1 ? 1 : limit;
     }
 

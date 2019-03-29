@@ -15,6 +15,26 @@
         <result column="status" property="status" />
         <result column="is_system" property="isSystem" />
     </resultMap>
+    <update id="updateSort" parameterType="list">
+        UPDATE tbl_category
+        SET
+        status =
+        CASE id
+          <foreach collection="param.list" item="item">
+              WHEN #{item.id} THEN #{item.status}
+          </foreach>
+        END,
+        weights =
+        CASE id
+        <foreach collection="param.list" item="item">
+            WHEN #{item.id} THEN #{item.weights}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="param.list" close=")" open="(" item="item" separator="," index="index">
+            ${item.id}
+        </foreach>
+    </update>
     <select id="finalAll" resultType="com.soft.ware.rest.common.persistence.model.TblCategory">
         select * from tbl_category c where c.is_delete = 0 and c.owner = #{owner} order by weights desc
     </select>

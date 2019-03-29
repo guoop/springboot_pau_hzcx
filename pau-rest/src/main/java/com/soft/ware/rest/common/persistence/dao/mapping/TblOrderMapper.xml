@@ -103,5 +103,32 @@
          </if>
          limit #{page},20
     </select>
+    <sql id="findOwnerOrderListCondition">
+      where a.owner = #{user.owner} and a.status in (${param.status})
+    </sql>
+    <select id="findOwnerOrderList" resultType="java.util.Map">
+        select a.id, a.no, a.source, a.pickup_no, a.pickup_time, a.money_channel,
+        a.money, a.freight, a.pay_money, a.created_at, a.settlement_by, a.goods, a.status, a.consignee_name, a.consignee_mobile,
+        a.consignee_address, a.refund_status, a.cancel_by,b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff
+        as diffMoney, b.status as diffStatus, b.refund_status as diffRefundStatus
+        from tbl_order a left outer join tbl_order_money_diff b
+        on a.owner = b.owner and a.no = b.order_no
+        <include refid="findOwnerOrderListCondition"/>
+        order by a.created_at desc
+        <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
+    </select>
+    <select id="findOwnerOrderListCount" resultType="long">
+        select count(1)
+        from tbl_order a
+        <include refid="findOwnerOrderListCondition"/>
+    </select>
+    <select id="findOwnerOrder" resultType="java.util.Map">
+        select a.no, a.source, a.pickup_no, a.pickup_time, a.money_channel, a.money, a.freight, a.pay_money, a.pay_at, a.created_at, a.settlement_by, a.consignee_name, a.consignee_mobile, a.consignee_address,
+		a.goods, a.status, a.remark, a.confirm_by, a.confirm_at, a.distribution_by, a.distribution_at, a.done_by, a.done_at,
+		a.cancel_by, a.cancel_at, a.cancel_reason, a.refund_by, a.refund_at, a.refund_money, a.refund_reason, a.refund_status, a.refund_response,
+		b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus, b.refund_by as diffRefundBy, b.refund_at as diffRefundAt, b.refund_status as diffRefundStatus, b.refund_response as diffRefundResponse
+		from tbl_order a left outer join tbl_order_money_diff b on a.owner = b.owner and a.no = b.order_no
+		where a.owner = #{user.owner} and a.no = #{no}
+    </select>
 
 </mapper>

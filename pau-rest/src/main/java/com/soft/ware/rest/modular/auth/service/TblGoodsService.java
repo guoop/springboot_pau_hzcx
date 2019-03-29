@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.auth.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsUpdateParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 
@@ -22,7 +23,13 @@ public interface TblGoodsService extends IService<TblGoods> {
      * @return
      */
     List<TblGoods> findAll(SessionUser user,List<String> ids);
-    
-    boolean updateGoodsOnDown(Map<String,Object> map);
+
+    /**
+     * 更新商品状态
+     * @param param
+     * @param user
+     * @return
+     */
+    boolean updateGoodsStatus(SessionUser user,GoodsUpdateParam param);
     
 }

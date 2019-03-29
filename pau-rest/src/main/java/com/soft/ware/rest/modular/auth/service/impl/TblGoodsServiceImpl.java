@@ -1,9 +1,11 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblGoodsMapper;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsUpdateParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -40,7 +42,10 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
     }
 
 	@Override
-	public boolean updateGoodsOnDown(Map<String, Object> map) {
-		return tblGoodsMapper.updateGoodsOnDown(map);
-	}
+	public boolean updateGoodsStatus(SessionUser user,GoodsUpdateParam param) {
+        TblGoods goods = tblGoodsMapper.selectById(param.getId());
+        goods.setStatus(Integer.valueOf(param.getStatus()));
+        Integer row = tblGoodsMapper.update(goods, new EntityWrapper<>(new TblGoods().setId(goods.getId()).setOwner(user.getOwner())));
+        return row == 1;
+    }
 }

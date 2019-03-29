@@ -8,6 +8,8 @@ import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
+import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.auth.util.WXUtils;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.core.MethodParameter;
@@ -41,13 +43,10 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest request, WebDataBinderFactory webDataBinderFactory) throws Exception {
         HttpServletRequest req = HttpKit.getRequest();
-        String referer = req.getHeader("Referer");
         TblOwnerService ownerService = SpringContextHolder.getBean(TblOwnerService.class);
         if (req.getServletPath().startsWith("/customer")) {
             //买家端用户
-            String[] split = referer.split("/");
-            String domain = split[2];
-            String appId = split[3];
+            String appId = WXUtils.getAppId(req);
             TblOwner owner = ownerService.findByAppId(appId);
             SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
             String openId = req.getHeader("Hzcx-User");
@@ -57,8 +56,8 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             user.setUsername(openId);
             user.setOwner(user.getOwner());
             return user;
-        } else {
-            //收银端用户
+        }  else {
+            //收银端用户/商家端用户
             Object claims = request.getAttribute("claims",0);
             if (claims instanceof DefaultClaims) {
                 DefaultClaims c = (DefaultClaims) claims;
@@ -67,6 +66,16 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
                 TblOwnerStaff user = authService.findByUsername(username);
                 if (user != null) {
                     SessionUser u = new SessionUser(SessionUser.type_staff, user.getOwner());
+                    u.setId(user.getId().toString() + "");
+                    u.setOwner(user.getOwner());
+                    if (req.getServletPath().startsWith("/owner")) {
+                        //小程序用户
+                        String openId = req.getHeader("Hzcx-User");
+                        u.setType(SessionUser.type_owner);
+                        u.setOpenId(openId);
+                        u.setUsername(user.getPhone());
+                        u.setAppId(WXContants.OWNER_APP_ID);
+                    }
                     return u;
                 }
             }

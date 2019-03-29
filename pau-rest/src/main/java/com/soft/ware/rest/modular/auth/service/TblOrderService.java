@@ -28,7 +28,7 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param source
      * @return
      */
-    List<Map> findPage(SessionUser user, Page page, OrderParam param,Integer... source);
+    List<Map> findPage(SessionUser user, Page page, OrderPageParam param,Integer... source);
 
     /**
      * 根据订单号查询订单详情
@@ -93,4 +93,21 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     boolean update(WxPayOrderQueryResult result, SessionUser user);
+
+    /**
+     * 商家小程序分页查询订单
+     * @param user
+     * @param page
+     * @param param
+     * @return
+     */
+    List<Map> findOwnerOrderPage(SessionUser user, Page page, OrderPageParam param);
+
+    /**
+     * 商家用户查询订单详情
+     * @param user
+     * @param no
+     * @return
+     */
+    Map findOwnerOrder(SessionUser user, String no);
 }

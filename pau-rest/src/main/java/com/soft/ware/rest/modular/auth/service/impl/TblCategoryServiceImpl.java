@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.auth.service.impl;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblCategoryMapper;
 import com.soft.ware.rest.common.persistence.model.TblCategory;
+import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,10 @@ public class TblCategoryServiceImpl extends BaseService<TblCategoryMapper,TblCat
 	public TblCategory selectByOwner(TblCategory cate) {
 		return tblCategoryMapper.selectOne(cate);
 	}
+
+    @Override
+    public boolean updateSort(CategorySortParam param) {
+        return tblCategoryMapper.updateSort(param);
+    }
 
 }

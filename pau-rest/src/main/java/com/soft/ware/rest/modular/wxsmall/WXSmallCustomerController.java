@@ -25,8 +25,6 @@ import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 public class WXSmallCustomerController  extends BaseController {
-
-    private Logger log = LoggerFactory.getLogger(WXSmallCustomerController.class);
 
     @Autowired
     private TblBannerService bannerService;
@@ -256,7 +252,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "/customer/v2/orders")
-    public Object orders(SessionUser user,Page page, OrderParam param){
+    public Object orders(SessionUser user,Page page, OrderPageParam param){
         // 所有订单
         if ("all".equals(param.getStatus())) {
             param.setStatus("-2,-1,0,1,2,3,10");
@@ -352,8 +348,6 @@ public class WXSmallCustomerController  extends BaseController {
            smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.getOrderNO());
         }
         // IM通知店铺
-        //todo yancc im 极光
-        //imSign.notifyMpForOrder(req._target_);
         imService.sendNewOrderNotify(user, order);
         String tempKey = "ms:fit:" + param.getOrderNO();
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800,TimeUnit.SECONDS);
@@ -581,7 +575,8 @@ public class WXSmallCustomerController  extends BaseController {
         try{
             TblOrder o = orderService.findByNo(user, orderNO);
             if (TblOrder.STATUS_0.equals(o.getStatus())) {
-                orderService.update(result, user);
+                //orderService.update(result, user);
+
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -104,7 +104,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
      * @return
      */
     @Override
-    public List<Map> findPage(SessionUser user, Page page,OrderParam param,Integer... source) {
+    public List<Map> findPage(SessionUser user, Page page,OrderPageParam param,Integer... source) {
         Long count = orderMapper.findListCount(user, param,source);
         page.setTotal(count);
         List<Map> list = orderMapper.findList(user, page, param,source);
@@ -271,6 +271,18 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     @Override
     public boolean update(WxPayOrderQueryResult result, SessionUser user) {
         return false;
+    }
+
+    @Override
+    public List<Map> findOwnerOrderPage(SessionUser user, Page page, OrderPageParam param) {
+        long count = orderMapper.findOwnerOrderListCount(user, param);
+        page.setTotal(count);
+        return orderMapper.findOwnerOrderList(user, page, param);
+    }
+
+    @Override
+    public Map findOwnerOrder(SessionUser user, String no) {
+        return orderMapper.findOwnerOrder(user,no);
     }
 
 }

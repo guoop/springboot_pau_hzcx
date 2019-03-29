@@ -1,6 +1,7 @@
 package com.soft.ware.core.base.warpper;
 
 import com.soft.ware.core.base.controller.BaseController;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +26,8 @@ public class FailWrapper extends BaseControllerWarpper {
     @Override
     protected void warpTheMap(Map<String, Object> map) {
         map.put("code", BaseController.ERROR);
-        if (msg != null) {
-            map.put("code", BaseController.ERROR);
+        if (StringUtils.isNotBlank(msg)) {
+            map.put("msg", this.msg);
         }
     }
 

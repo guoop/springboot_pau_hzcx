@@ -31,4 +31,11 @@ public interface HzcxWxService {
     WxMaService getWxMaService(SessionUser owner);
 
     WxPayService getWxPayService(SessionUser user);
+
+    /**
+     * 获取商户版小程序 service
+     * @return
+     */
+    WxMaService getWxMaService();
+
 }

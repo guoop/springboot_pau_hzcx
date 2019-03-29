@@ -107,21 +107,38 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
     }
 
     public static List<Map<String, Object>> toMap(boolean underline,Collection list) throws Exception {
+        return toMap(underline, list, 1);
+    }
+
+    public static List<Map<String, Object>> toMap(boolean underline,Collection list,int empty) throws Exception {
         List<Map<String, Object>> ls = new ArrayList<>();
         for (Object obj : list) {
-            ls.add(toMap(obj, underline));
+            ls.add(toMap(obj, underline,empty));
         }
         return ls;
     }
 
-
     public static Map<String, Object> toMap(Object obj,boolean underline) throws Exception {
+        return toMap(obj, underline, 1);
+    }
+
+    /**
+     * object 转 map
+     * @param obj
+     * @param underline
+     * @param empty 1 不返回null，2 返回null, 3 把null替换为空
+     * @return
+     * @throws Exception
+     */
+    public static Map<String, Object> toMap(Object obj,boolean underline,int empty) throws Exception {
         if(obj == null){
             return null;
         }
         Map<String, Object> map = new HashMap<>();
-        Field[] declaredFields = obj.getClass().getDeclaredFields();
-        if (underline) {
+        if(obj instanceof Map){
+            map = (Map<String, Object>) obj;
+        }else {
+            Field[] declaredFields = obj.getClass().getDeclaredFields();
             for (Field field : declaredFields) {
                 if (Modifier.isStatic(field.getModifiers())) {
                     continue;
@@ -129,10 +146,27 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                 field.setAccessible(true);
                 map.put(underline(new StringBuffer(field.getName())).toString(), field.get(obj));
             }
-        } else {
-            for (Field field : declaredFields) {
-                field.setAccessible(true);
-                map.put(field.getName(), field.get(obj));
+        }
+
+        if (underline) {
+            Map m = new LinkedHashMap<>();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                m.put(underline(new StringBuffer(entry.getKey())).toString(), entry.getValue());
+            }
+            map = m;
+        }
+        Set<String> keys = new HashSet<>();
+        if (1 == empty) {
+            for (String s : map.keySet()) {
+                if (map.get(s) == null) {
+                    keys.add(s);
+                }
+            }
+        } else if (2 == empty) {
+
+        } else if (3 == empty) {
+            for (String s : map.keySet()) {
+                map.putIfAbsent(s, "");
             }
         }
         return map;

@@ -19,6 +19,15 @@ public class WXContants {
 	@Value(value = "${wx.pay.notify_url_customer_pay_diff}")
 	private String customerPayDiff;
 
+	//用户登录,验证码redis key 前缀
+	public final static String loginCodePrefix = "owner:sms_login_code";
+	//用户登录,验证码时常 秒
+	public final static Long loginCodeExpire = 120L;
+
+	//商家小程序id
+	public final static String OWNER_APP_ID = "wxde3d576b9b28b080";
+	public final static String OWNER_APP_SECRET = "f6c2462960af2139fe0eea1a6ae28647";
+
 	//微信小程序网关
 	public static final String WX_GETWAY = "https://api.weixin.qq.com";
 
