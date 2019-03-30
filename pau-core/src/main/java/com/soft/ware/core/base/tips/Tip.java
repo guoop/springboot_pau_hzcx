@@ -5,22 +5,22 @@ package com.soft.ware.core.base.tips;
  */
 public abstract class Tip {
 
-    protected int code;
-    protected String message;
+    protected String code;
+    protected String msg;
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

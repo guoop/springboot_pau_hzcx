@@ -49,4 +49,9 @@ public class TblOwnerServiceImpl extends BaseService<TblOwnerMapper,TblOwner> im
         return ownerMapper.selectOne(new TblOwner().setAppId(appId));
     }
 
+    @Override
+    public TblOwner findByPhone(String phone) {
+        return ownerMapper.selectOne(new TblOwner().setPhone(phone));
+    }
+
 }

@@ -2,8 +2,12 @@ package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
+import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroup;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImService;
@@ -21,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ImServiceImpl implements ImService {
@@ -39,6 +40,9 @@ public class ImServiceImpl implements ImService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private TblOwnerGroupsService groupsService;
 
     private MultiValueMap<String,String> getJpushHeaders(){
         MultiValueMap<String,String> headers = new HttpHeaders();
@@ -80,6 +84,36 @@ public class ImServiceImpl implements ImService {
             logger.info(order.getNo() + "新订单到达时群发消息返回结果：" + JSON.toJSONString(entity.getBody()));
         }
 
+    }
+
+    @Override
+    public void addUsers(SessionUser user, TblOwnerStaff... ss) {
+        for (TblOwnerStaff s : ss) {
+            String username = user.getOwner() + "-0-" + s.getPhone();
+            String password = "Hzcx-owner";
+            ArrayList<Kv<String, String>> params = Lists.newArrayList(Kv.by("username", username).set("password", password).set("nickname", s.getName()));
+            HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
+            ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/users", http, String.class);
+            if (entity.getStatusCodeValue() != 200) {
+                throw new PauException(BizExceptionEnum.JPUSH_USER_ADD_FAIL);
+            }
+            addGroup(user, s);
+        }
+    }
+
+
+
+    public void addGroup(SessionUser user, TblOwnerStaff s) {
+        List<TblOwnerGroups> groups = groupsService.find(user, TblOwnerGroups.type_0);
+        for (TblOwnerGroups group : groups) {
+            String username = user.getOwner() + "-0-" + s.getPhone();
+            Kv<String, String> params = Kv.by("username", username);
+            HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
+            ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/groups/" + group.getGid() + "/members", http, String.class);
+            if (entity.getStatusCodeValue() != 200) {
+                throw new PauException(BizExceptionEnum.JPUSH_USER_ADD_FAIL);
+            }
+        }
     }
 
 }

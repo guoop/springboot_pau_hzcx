@@ -14,4 +14,5 @@ public interface TblOwnerService extends IService<TblOwner> {
 
     TblOwner findByAppId(String appId);
 
+    TblOwner findByPhone(String phone);
 }

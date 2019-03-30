@@ -162,6 +162,9 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                     keys.add(s);
                 }
             }
+            for (String key : keys) {
+                map.remove(key);
+            }
         } else if (2 == empty) {
 
         } else if (3 == empty) {

@@ -38,6 +38,9 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      * 其他
      */
     AUTH_REQUEST_ERROR(400, "账号密码错误"),
+
+
+    JPUSH_USER_ADD_FAIL(500, "极光im添加用户失败"),
     
     /**
      * 对象为null
@@ -49,6 +52,8 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
    ORDER_CREATE_FAIL(500,"下单失败"),
 
    ORDER_PAY_FAIL(500,"订单付款失败"),
+
+   PHONE_EXISTS(500,"手机号码已存在"),
 
     //短信发送错误
    SMS_ERROR_PHONE_FORMAT(400,"手机号格式错误"),

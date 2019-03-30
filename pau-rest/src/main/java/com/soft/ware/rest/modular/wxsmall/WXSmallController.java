@@ -1,7 +1,6 @@
 package com.soft.ware.rest.modular.wxsmall;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
@@ -20,11 +19,13 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
+import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -74,6 +75,9 @@ public class WXSmallController extends BaseController {
 
     @Autowired
     private TblOrderAppService orderAppService;
+
+    @Autowired
+    public ImService imService;
 
 
 
@@ -171,10 +175,11 @@ public class WXSmallController extends BaseController {
 	 * 更新商户信息
 	 * @param owner 商户类
 	 */
-	@RequestMapping("v1/auth/info")
+	@RequestMapping(value = "v1/auth/info",method = RequestMethod.POST)
 	public Object updateOwner(SessionUser user,@RequestBody TblOwner owner) {
 		TblOwner o = tblOwnerService.find(user);
 		owner.setId(o.getId());
+		//todo yancc 修改配送设置需要前端，改  setDelivery.wxml 文件 owner.delivery === ‘1’ 改为 owner.delivery == '1'
 		boolean b = tblOwnerService.updateById(owner);
 		return warpObject(render(b));
 	}
@@ -188,7 +193,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping(value = "v1/info",method = RequestMethod.GET)
 	public Object updateOwner(SessionUser user) throws Exception {
 		TblOwner owner = tblOwnerService.find(user);
-		Map<String, Object> map = BeanMapUtils.toMap(owner, true);
+		Map<String, Object> map = BeanMapUtils.toMap(owner, true,1);
 		return warpObject(new MapWrapper(map));
 	}
 
@@ -196,9 +201,8 @@ public class WXSmallController extends BaseController {
 	 * 获取店员列表
 	 */
 	@RequestMapping("v1/auth/staff/list")
-	public Object getStaffList() throws Exception {
-		Wrapper<TblOwnerStaff> wrapper = new EntityWrapper<TblOwnerStaff>();
-		List<TblOwnerStaff> list = tblOwnerStaffService.selectList(wrapper);
+	public Object getStaffList(SessionUser user) throws Exception {
+		List<TblOwnerStaff> list = tblOwnerStaffService.selectAll(user);
 		MapWrapper map = new MapWrapper();
 		map.put("code", SUCCESS);
 		map.put("data", BeanMapUtils.toMap(true, list));
@@ -211,37 +215,42 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("v2/auth/staff/index")
 	public Object getStaffDetail(SessionUser user,String id) throws Exception {
+		// 用户权限信息
+		List<Map> functionList = Lists.newArrayList();
+		functionList.add(Kv.by("key", "configOrderPhone").set("title", "订单通知"));
+		functionList.add(Kv.by("key", "configStaff").set("title", "店员管理"));
+		functionList.add(Kv.by("key", "configShop").set("title", "商户信息"));
+		functionList.add(Kv.by("key", "configDelivery").set("title", "配送设置"));
+		functionList.add(Kv.by("key", "configGoods").set("title", "商品认值设置"));
+		functionList.add(Kv.by("key", "doRefund").set("title", "退款"));
+		functionList.add(Kv.by("key", "goodsMan").set("title", "商品管理"));
+		functionList.add(Kv.by("key", "goodsManStorage").set("title", "进货入库"));
+		functionList.add(Kv.by("key", "goodsManPrice").set("title", "商品调价"));
+		functionList.add(Kv.by("key", "categoryMan").set("title", "分类管理"));
+		functionList.add(Kv.by("key", "printPriceTicket").set("title", "打印价签"));
+
 		TblOwnerStaff tblOwnerStaff = tblOwnerStaffService.selectById(id);
 		List<TblCategory> list = categoryService.findAllCategory(user);
 		MapWrapper map = new MapWrapper();
 		map.put("code", SUCCESS);
-		map.put("staff", BeanMapUtils.toMap(tblOwnerStaff, true));
-		map.put("function_list", tblOwnerStaff.getFunctionList());
+		map.put("staff", Lists.newArrayList(BeanMapUtils.toMap(tblOwnerStaff, true)));
+		map.put("function_list", functionList);
 		map.put("category_list", BeanMapUtils.toMap(true, list));
 		return warpObject(map);
 	}
 
+
+
 	/**
 	 * 添加或者编辑店员信息
+	 *
 	 * @return
 	 */
 	@RequestMapping("/v2/auth/staff/man")
-	public Tip addOrUpdate(@RequestBody TblOwnerStaff tblOwnerStaff) {
-		Boolean isSuccess;
-		if (ToolUtil.isEmpty(tblOwnerStaff)) {
-			if (ToolUtil.isEmpty(tblOwnerStaff.getId())) {
-				isSuccess = tblOwnerStaffService
-						.updateAllColumnById(tblOwnerStaff);
-			} else {
-				isSuccess = tblOwnerStaffService.insert(tblOwnerStaff);
-			}
-			if (isSuccess) {
-				return SUCCESS_TIP;
-			} else {
-				return new ErrorTip(608, "插入或者更新失败");
-			}
-		}
-		return new ErrorTip(604, "参数为空");
+	public Object addOrUpdate(SessionUser user, @RequestBody StaffEditParam param, BindingResult result) throws Exception {
+		Validator.valid(result);
+		tblOwnerStaffService.saveOrUpdate(user,param);
+		return warpObject(render(true));
 	}
 
 	/**
@@ -273,8 +282,7 @@ public class WXSmallController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("v1/app/handover")
-	public Object getHandOverList(SessionUser user, HandoverParam param,
-			Page<HandOver> page) {
+	public Object getHandOverList(SessionUser user, HandoverParam param,Page<HandOver> page) {
 		@SuppressWarnings("unused")
 		List<HandOver> listData = null;
 		String startTime = (String) HttpKit.getRequest().getAttribute("start");
@@ -282,17 +290,17 @@ public class WXSmallController extends BaseController {
 		if (ToolUtil.isEmpty(endTime)) {
 			DateUtil.getTimeByDate(new Date());
 		}
-		Date startDate = DateUtil.getDateByTime(startTime);
-		Date endDate = DateUtil.getDateByTime(endTime);
 
-		param.setOptionat(endDate);
-		param.setOptionstart(startDate);
-		listData = (List<HandOver>) handOverService.getHandOver(param, user,
-				page);
-		if (listData.size() > 0) {
-			return listData;
+		if (!ToolUtil.isEmpty(startTime)) {
+			Date startDate = DateUtil.getDateByTime(startTime);
+			param.setOptionstart(startDate);
 		}
-		return null;
+		if (!ToolUtil.isEmpty(endTime)) {
+			Date endDate = DateUtil.getDateByTime(endTime);
+			param.setOptionat(endDate);
+		}
+		listData = handOverService.getHandOver(param, user,page);
+		return listData;
 	}
 
 	/**
@@ -349,22 +357,48 @@ public class WXSmallController extends BaseController {
 
 	/**
 	 * 标记订单状态
-	 * 
 	 * @param map
 	 */
 	@RequestMapping("v2/order/maintain")
-	public Tip signOrderStatus(@RequestBody Map<String, Object> map,
-			SessionUser user) {
-		if (ToolUtil.isNotEmpty(map)) {
-			if (ToolUtil.isNotEmpty(map.get("orderNo"))
-					&& ToolUtil.isNotEmpty(map.get("status"))) {
-				boolean isSuccess = tblOrderService.updateStatus(user,
-						map.get("orderNo").toString(), map.get("status")
-								.toString());
-				if (isSuccess) {
-					return SUCCESS_TIP;
-				}
+	public Tip signOrderStatus(@RequestBody Map<String, Object> map,SessionUser user) {
+		String no = map.get("orderNO").toString();
+		String status = map.get("status").toString();
+		TblOrder order = tblOrderService.findByNo(user, no);
+/*		if ("cancel".equals(status)) {
+			// 只允许取消货到付款、待商家确认的订单
+			if (order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_1)  && order.getStatus().equals(TblOrder.STATUS_1)) {
+				callback(null, order);
+			} else {
+				callback(new Error('该订单不支持取消操作'));
 			}
+		} else if (action === 'confirm') {
+			// 只允许确认待商家确认的订单
+			if (order.status === 1) {
+				callback(null, order);
+			} else {
+				callback(new Error('该订单不支持确认操作'));
+			}
+		} else if (action === 'deliver') {
+			// 只允许对已经经过商家确认的订单进行配送
+			if (order.status === 10) {
+				callback(null, order);
+			} else {
+				callback(new Error('该订单不支持配送操作'));
+			}
+		} else if (action === 'done') {
+			// 只允许对配送中的订单进行标记完成操作
+			if (order.status === 2) {
+				callback(null, order);
+			} else {
+				callback(new Error('该订单不支持完成操作'));
+			}
+		} else {
+			// 不允许其他操作
+			callback(new Error('非法操作'));
+		}*/
+		boolean isSuccess = tblOrderService.updateStatus(user, no, status);
+		if (isSuccess) {
+			return SUCCESS_TIP;
 		}
 		return new ErrorTip(604, "订单状态更新失败");
 	}
@@ -623,8 +657,7 @@ public class WXSmallController extends BaseController {
      */
 	@RequestMapping("im/init")
 	public Object getPayLoad(){
-		Map<String,Object> map = new HashMap<String, Object>();
-		map = WXUtils.getPayLoad();
+		Map<String, Object> map = WXUtils.getPayLoad();
 		map.put("code", "success");
 		return map;
 	}
