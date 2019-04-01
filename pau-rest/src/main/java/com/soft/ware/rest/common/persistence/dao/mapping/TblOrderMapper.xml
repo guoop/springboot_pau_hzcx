@@ -78,10 +78,6 @@
         order by pay_at,created_at desc
         <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
     </select>
-    <select id="findByNo" resultType="com.soft.ware.rest.common.persistence.model.TblOrder">
-        select o.* from tbl_order o where o.no = #{no} and o.owner = #{user.owner} and o.created_by = #{user.openId}
-    </select>
-
     <update id="updateStatusByNo" parameterType="int">
         update table tbl_order o set o.status = #{status} where o.no = #{no} and o.owner = #{user.owner}
     </update>

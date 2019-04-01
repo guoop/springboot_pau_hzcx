@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.wxsmall;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
@@ -21,6 +22,7 @@ import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -78,7 +80,6 @@ public class WXSmallController extends BaseController {
 
     @Autowired
     public ImService imService;
-
 
 
 	/**
@@ -359,48 +360,20 @@ public class WXSmallController extends BaseController {
 	 * 标记订单状态
 	 * @param map
 	 */
-	@RequestMapping("v2/order/maintain")
-	public Tip signOrderStatus(@RequestBody Map<String, Object> map,SessionUser user) {
+	@RequestMapping(value = "v2/order/maintain",method = RequestMethod.POST)
+	public Object signOrderStatus(@RequestBody Map<String, Object> map,SessionOwnerUser user) {
 		String no = map.get("orderNO").toString();
 		String status = map.get("status").toString();
 		TblOrder order = tblOrderService.findByNo(user, no);
-/*		if ("cancel".equals(status)) {
-			// 只允许取消货到付款、待商家确认的订单
-			if (order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_1)  && order.getStatus().equals(TblOrder.STATUS_1)) {
-				callback(null, order);
-			} else {
-				callback(new Error('该订单不支持取消操作'));
-			}
-		} else if (action === 'confirm') {
-			// 只允许确认待商家确认的订单
-			if (order.status === 1) {
-				callback(null, order);
-			} else {
-				callback(new Error('该订单不支持确认操作'));
-			}
-		} else if (action === 'deliver') {
-			// 只允许对已经经过商家确认的订单进行配送
-			if (order.status === 10) {
-				callback(null, order);
-			} else {
-				callback(new Error('该订单不支持配送操作'));
-			}
-		} else if (action === 'done') {
-			// 只允许对配送中的订单进行标记完成操作
-			if (order.status === 2) {
-				callback(null, order);
-			} else {
-				callback(new Error('该订单不支持完成操作'));
-			}
-		} else {
-			// 不允许其他操作
-			callback(new Error('非法操作'));
-		}*/
-		boolean isSuccess = tblOrderService.updateStatus(user, no, status);
-		if (isSuccess) {
-			return SUCCESS_TIP;
+		TblOwner owner = tblOwnerService.find(user);
+		Object reason = map.get("reason");
+		try {
+			boolean b = tblOrderService.updateOwnerOrder(user, status, order, owner, reason == null ? "" : reason.toString());
+			return warpObject(render(b));
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+			return warpObject(render(false, e.getMessage()));
 		}
-		return new ErrorTip(604, "订单状态更新失败");
 	}
 
 	/**
@@ -660,6 +633,22 @@ public class WXSmallController extends BaseController {
 		Map<String, Object> map = WXUtils.getPayLoad();
 		map.put("code", "success");
 		return map;
+	}
+
+	/**
+	 * 商家退款接口
+	 * @param user
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value = "v1/auth/order/refund",method = RequestMethod.POST)
+	public Object getRefund(SessionOwnerUser user,@RequestBody OrderRefundParam param){
+		try {
+			boolean	refund = tblOrderService.refund(user, param);
+			return warpObject(render(refund));
+		} catch (WxPayException e) {
+			return warpObject(render(false,e.getErrCodeDes()));
+		}
 	}
 	
 	

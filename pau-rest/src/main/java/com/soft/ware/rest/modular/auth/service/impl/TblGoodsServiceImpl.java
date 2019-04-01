@@ -6,6 +6,7 @@ import com.soft.ware.rest.common.persistence.dao.TblGoodsMapper;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsUpdateParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -47,5 +48,19 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         goods.setStatus(Integer.valueOf(param.getStatus()));
         Integer row = tblGoodsMapper.update(goods, new EntityWrapper<>(new TblGoods().setId(goods.getId()).setOwner(user.getOwner())));
         return row == 1;
+    }
+
+    @Override
+    public TblGoodsMapper getTblGoodsMapper() {
+        return tblGoodsMapper;
+    }
+
+    @Override
+    public boolean updateStock(SessionOwnerUser user, List<String> ids, List<String> nums){
+        return tblGoodsMapper.updateStock(user, ids, nums);
+    }
+
+    public void setTblGoodsMapper(TblGoodsMapper tblGoodsMapper) {
+        this.tblGoodsMapper = tblGoodsMapper;
     }
 }

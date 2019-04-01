@@ -3,9 +3,12 @@ package com.soft.ware.rest.modular.auth.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
+import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.Page;
+import me.chanjar.weixin.common.error.WxErrorException;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,15 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     TblOrder findByNo(SessionUser user, String no);
+
+
+    /**
+     * 根据订单号查询订单详情
+     * @param user
+     * @param no
+     * @return
+     */
+    TblOrder findByNo(SessionOwnerUser user, String no);
 
     /**
      * 更新订单状态
@@ -110,4 +122,23 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     Map findOwnerOrder(SessionUser user, String no);
+
+    /**
+     * 商家更新订单状态
+     * @param user
+     * @param status
+     * @param order
+     * @param owner
+     * @param reason 原因
+     * @return
+     */
+    boolean updateOwnerOrder(SessionOwnerUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException;
+
+    /**
+     * 商家退款
+     * @param user
+     * @param param
+     * @return
+     */
+    boolean refund(SessionOwnerUser user, OrderRefundParam param) throws WxPayException;
 }

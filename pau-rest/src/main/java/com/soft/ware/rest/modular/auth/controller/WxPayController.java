@@ -43,7 +43,7 @@ public class WxPayController extends BaseController {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
             TblOwner owner = ownerService.findByAppId(result.getAppid());
             if (owner != null) {
-                SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
+                SessionUser user = new SessionUser(owner.getOwner());
                 WxPayService service = hzcxWxService.getWxPayService(owner);
                 result.checkResult(service, service.getConfig().getSignType(), false);
                 orderService.update(result, user, result.getOutTradeNo());
@@ -72,7 +72,7 @@ public class WxPayController extends BaseController {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
             TblOwner owner = ownerService.findByAppId(result.getAppid());
             if (owner != null) {
-                SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
+                SessionUser user = new SessionUser(owner.getOwner());
                 WxPayService service = hzcxWxService.getWxPayService(owner);
                 result.checkResult(service, service.getConfig().getSignType(), false);
                 orderService.update(result, user, result.getAttach());
@@ -100,7 +100,7 @@ public class WxPayController extends BaseController {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
             TblOwner owner = ownerService.findByAppId(result.getAppid());
             if (owner != null) {
-                SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
+                SessionUser user = new SessionUser(owner.getOwner());
                 WxPayService service = hzcxWxService.getWxPayService(owner);
                 result.checkResult(service, service.getConfig().getSignType(), false);
                 orderMoneyDiffService.update(result, user);
