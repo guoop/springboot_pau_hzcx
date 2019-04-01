@@ -81,6 +81,9 @@ public class WXSmallController extends BaseController {
     @Autowired
     public ImService imService;
 
+    @Autowired
+    private TblOrderMoneyDiffService diffService;
+
 
 	/**
 	 * 商家端发送手机验证码
@@ -122,33 +125,7 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping(value = "/share/login",method = RequestMethod.POST)
 	public Object login(@RequestBody Map<String, String> map, HttpServletRequest request) {
-		String phone = map.get("phone");
-		String password = map.get("password");
-		String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
-		String appId = WXUtils.getAppId(request);
-		TblOwner owner = tblOwnerService.findByAppId(appId);
-		TblOwnerStaff user = tblOwnerStaffService.findByPhone(phone);
-		if (user == null) {
-			return warpObject(render(false, "用户不存在"));
-		}
-		if (TblOwnerStaff.status_1.equals(user.getStatus())) {
-			return warpObject(render(false, "账户被禁用"));
-		}
-		if (TblOwnerStaff.status_2.equals(user.getStatus())) {
-			return warpObject(render(false, "账户不存在"));
-		}
-		MapWrapper w = new MapWrapper();
-		w.put("msg", "认证通过");
-		//w.put("token", token);
-		w.put("payload", WXUtils.getPayLoad());
-		w.put("user", user);
-		if (password.equals(s)) {
-			//清除验证码
-			redisTemplate.delete(WXContants.loginCodePrefix + phone);
-			return warpObject(render(true));
-		} else {
-			return warpObject(render(false,"验证码错误"));
-		}
+		return restRedirect(restTemplate, getBasePath(request) + "/auth/login", map, request, "");
 	}
 
 	/**
@@ -650,6 +627,44 @@ public class WXSmallController extends BaseController {
 			return warpObject(render(false,e.getErrCodeDes()));
 		}
 	}
-	
-	
+
+
+	/**
+	 * 获取商家待发货订单总数
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "v2/orders/count",method = RequestMethod.GET)
+	public Object orderCount(SessionOwnerUser user){
+		int i = tblOrderService.selectCount(new EntityWrapper<>(new TblOrder().setOwner(user.getOwner()).setStatus(TblOrder.STATUS_1)));
+		MapWrapper map = new MapWrapper();
+		map.put("count", i);
+		return warpObject(map);
+
+	}
+
+
+	/**
+	 * 订单退差价
+	 * @return
+	 */
+	@RequestMapping(value = "/order/refund",method = RequestMethod.POST)
+	public Object refundDiff(SessionOwnerUser user,OrderRefundParam param){
+		String no = param.getOrder();
+		TblOrder order = tblOrderService.findByNo(user, no);
+		TblOrderMoneyDiff diff = diffService.findByNo(user, no);
+		TblOwner owner = tblOwnerService.find(user);
+/*		if (TblOrderMoneyDiff.status_1.equals(diff.getStatus())) {
+			callback(new Error('差价已退款，请勿重复'));
+		} else if (order.refund_status === 0) {
+			callback(new Error('退款中，请稍后'));
+		} else if (order.refund_status === 1) {
+			callback(new Error('差价已退款，请勿重复'));
+		} else {
+			callback(null, order);
+		}*/
+
+		return null;
+	}
+
 }

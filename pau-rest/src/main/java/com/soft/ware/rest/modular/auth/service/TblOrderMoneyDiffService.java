@@ -3,11 +3,12 @@ package com.soft.ware.rest.modular.auth.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 
 public interface TblOrderMoneyDiffService extends IService<TblOrderMoneyDiff> {
 
-    TblOrderMoneyDiff findByNo(SessionUser user, String diffNO);
+    TblOrderMoneyDiff findByNo(SessionOwnerUser user, String diffNO);
 
     /**
      * 补差价付款

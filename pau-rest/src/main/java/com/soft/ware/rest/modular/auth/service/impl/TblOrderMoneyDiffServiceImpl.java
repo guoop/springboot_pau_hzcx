@@ -8,6 +8,7 @@ import com.soft.ware.core.exception.PauException;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMoneyDiffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderMoneyDiffService;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffM
     private TblOrderMoneyDiffMapper mapper;
 
     @Override
-    public TblOrderMoneyDiff findByNo(SessionUser user, String diffNO) {
+    public TblOrderMoneyDiff findByNo(SessionOwnerUser user, String diffNO) {
         return mapper.selectOne(new TblOrderMoneyDiff().setNo(diffNO).setOwner(user.getOwner()));
     }
 

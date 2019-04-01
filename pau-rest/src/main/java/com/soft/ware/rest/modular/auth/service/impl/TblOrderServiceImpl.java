@@ -332,6 +332,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public boolean updateOwnerOrder(SessionOwnerUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException {
+        //todo yancc 更新成功后是否需要清除 redis 中的 formId
         String no = order.getNo();
         long current = System.currentTimeMillis();
         String dateFormat = "YYYY-MM-DD HH:mm:ss";
@@ -424,7 +425,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public boolean refund(SessionOwnerUser user, OrderRefundParam param) throws WxPayException {
-
+        //todo yancc 更新成功后是否需要清除 redis 中的 formId
         int round = WXContants.big_decimal_sale;
         Date date = new Date();
         TblOrder order = this.findByNo(user, param.getOrder());
@@ -444,7 +445,6 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         }
         // 部分退款
         if ("part".equals(param.getRefundType())) {
-            // refundMoney = (parseFloat(req.body.refundMoney) * 100).toFixed(0);
             refundMoney = (param.getRefundMoney().multiply(BigDecimal.valueOf(100))).setScale(2, round);
         }
 
