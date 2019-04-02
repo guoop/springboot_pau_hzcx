@@ -78,7 +78,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
             Integer row = mapper.insert(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
-                imService.addUsers(user, s);
+                imService.addOrUpdateUsers(user, s);
             }
             if (row != 1) {
                 throw new PauException(BizExceptionEnum.ADD_ERROR);
@@ -99,6 +99,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
                 for (String key : keys) {
                     redisTemplate.opsForHash().putAll(key, BeanMapUtils.toMap(s,true));
                 }
+                imService.addOrUpdateUsers(user, s);
             } else {
                 // 禁用店员信息
                 //todo yancc 可能还需要删除im群组信息

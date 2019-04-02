@@ -16,6 +16,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,25 +86,72 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
         return map;
     }
 
+    public static <T> T toObject(Map<String, Object> map, Class<T> beanClass) throws Exception {
+        return toObject(map, beanClass, false);
+    }
 
-    public static Object toObject(Map<String, Object> map, Class<?> beanClass) throws Exception {
+    /**
+     * 把 map 转为对象
+     * @param map
+     * @param beanClass
+     * @param underline 是否下划线转驼峰
+     * @param <T>
+     * @return
+     * @throws Exception
+     */
+    public static <T> T toObject(Map<String, Object> map, Class<T> beanClass,boolean underline) throws Exception {
         if (map == null)
             return null;
-
         Object obj = beanClass.newInstance();
-
         Field[] fields = obj.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            int mod = field.getModifiers();
-            if(Modifier.isStatic(mod) || Modifier.isFinal(mod)){
-                continue;
-            }
+        Object o;
+        if (underline) {
+            for (Field field : fields) {
+                int mod = field.getModifiers();
+                if(Modifier.isStatic(mod) || Modifier.isFinal(mod)){
+                    continue;
+                }
+                field.setAccessible(true);
+                o = map.get(underline(field.getName()));
+                String s;
+                if (o != null) {
+                    s = o.toString();
+                    if (s.trim().length() > 0) {
+                        if (field.getType() == String.class) {
+                            field.set(obj, s);
+                        }else if (field.getType() == Long.class) {
+                            field.set(obj, Long.valueOf(s));
+                        } else if (field.getType() == Integer.class) {
+                            field.set(obj,Integer.valueOf(s));
+                        } else if (field.getType() == BigDecimal.class) {
+                            field.set(obj, BigDecimal.valueOf(Double.valueOf(s)));
+                        } else if (field.getType() == Float.class) {
+                            field.set(obj, Float.valueOf(s));
+                        } else if (field.getType() == Double.class) {
+                            field.set(obj, Double.valueOf(s));
+                        } else if (field.getType() == Boolean.class) {
+                            field.set(obj, Boolean.valueOf(s));
+                        } else if (field.getType() == Short.class){
+                            field.set(obj, Short.valueOf(s));
+                        } else {
+                            logger.warn("未知类型:" + field.getType().getName());
+                        }
+                    }
 
-            field.setAccessible(true);
-            field.set(obj, map.get(field.getName()));
+                }
+            }
+        } else {
+            for (Field field : fields) {
+                int mod = field.getModifiers();
+                if(Modifier.isStatic(mod) || Modifier.isFinal(mod)){
+                    continue;
+                }
+                field.setAccessible(true);
+                field.set(obj, map.get(field.getName()));
+            }
         }
 
-        return obj;
+        return (T)obj;
     }
 
     public static List<Map<String, Object>> toMap(boolean underline,Collection list) throws Exception {
@@ -173,6 +221,10 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
             }
         }
         return map;
+    }
+
+    public static String underline(String str) {
+        return underline(new StringBuffer(str)).toString();
     }
 
     /**

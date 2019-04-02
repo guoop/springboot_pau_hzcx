@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +15,11 @@ import java.util.Date;
 public class TblRepository extends Model<TblRepository> {
 
     private static final long serialVersionUID = 1L;
+
+    //：否；
+    public static Integer is_delete_0 = 0;
+    //：是）
+    public static Integer is_delete_1 = 1;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -31,68 +35,78 @@ public class TblRepository extends Model<TblRepository> {
     //厂商
     private String manufacturer;
     //是否删除（0：否；1：是）
-    private Boolean isDelete;
+    private Integer isDelete;
     //记录添加时间
     private Date createdAt;
+
+
+    public Long getId(){
+        return id;
+    }
+
+    public TblRepository setId(Long id){
+        this.id = id;
+        return this;
+    }
+
 
     public String getName(){
         return name;
     }
 
-    public void setName( String name){
+    public TblRepository setName( String name){
         this.name = name;
+        return this;
     }
     public String getCode(){
         return code;
     }
 
-    public void setCode( String code){
+    public TblRepository setCode( String code){
         this.code = code;
+        return this;
     }
     public String getMeasurement(){
         return measurement;
     }
 
-    public void setMeasurement( String measurement){
+    public TblRepository setMeasurement( String measurement){
         this.measurement = measurement;
+        return this;
     }
     public String getPics(){
         return pics;
     }
 
-    public void setPics( String pics){
+    public TblRepository setPics( String pics){
         this.pics = pics;
+        return this;
     }
     public String getManufacturer(){
         return manufacturer;
     }
 
-    public void setManufacturer( String manufacturer){
+    public TblRepository setManufacturer( String manufacturer){
         this.manufacturer = manufacturer;
+        return this;
     }
-    public Boolean getIsDelete(){
+    public Integer getIsDelete(){
         return isDelete;
     }
 
-    public void setIsDelete( Boolean isDelete){
+    public TblRepository setIsDelete( Integer isDelete){
         this.isDelete = isDelete;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;
     }
 
-    public void setCreatedAt( Date createdAt){
+    public TblRepository setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
+        return this;
     }
 
-
-    public  Long getId(){
-        return id;
-    }
-
-    public  void setId(Long id){
-        this.id = id;
-    }
 
 
     @Override

@@ -55,13 +55,19 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
 
    ORDER_PAY_FAIL(500,"订单付款失败"),
 
+    ORDER_STATUS_NOT_SUPPORT(500, "当前订单状态不允许"),
     ORDER_CANEL_FAIL(500,"该订单不支持取消操作"),
     ORDER_CONFIRM_FAIL(500,"该订单不支持确认操作"),
     ORDER_DELIVER_FAIL(500,"该订单不支持配送操作"),
     ORDER_DONE_FAIL(500,"该订单不支持完成操作"),
     ORDER_REFUND_NOT_SUPPORT(500,"该订单不支持退款操作"),
     ORDER_REFUND_RUNNING(500,"退款中，请稍后"),
+    ORDER_DIFF_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_REFUND_FINISHED(500,"已退款，请勿重复"),
+    ORDER_DIFF_REFUND_FINISHED(500,"差价已退款，请勿重复"),
+
+
+    GOODS_REPEAT(500,"商品已存在"),
 
    PHONE_EXISTS(500,"手机号码已存在"),
 

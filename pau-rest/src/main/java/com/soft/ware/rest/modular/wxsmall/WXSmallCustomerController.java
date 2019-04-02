@@ -21,12 +21,14 @@ import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -112,7 +114,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param page
      * @return
      */
-    @RequestMapping(value = "/customer/v1/goods/list")
+    @RequestMapping(value = "/customer/v1/goods/list",method = RequestMethod.GET)
     public Object goodsPage(GoodsPageParam param,SessionUser user, Page page) throws WxErrorException {
         List<Map> list = goodsService.findPage(user, page, param);
         return list;
@@ -123,13 +125,24 @@ public class WXSmallCustomerController  extends BaseController {
      * @param id
      * @return
      */
-    
     @RequestMapping(value = "/customer/v1/goods/{id}")
     public Object goods(@PathVariable Long id) throws Exception {
        TblGoods goods = goodsService.findById(id);
         List<TblGoods> list = new ArrayList<>();
         list.add(goods);
         List<Map<String, Object>> maps = BeanMapUtils.toMap(true, list);
+        return warpObject(new ListWrapper(maps));
+    }
+
+    /**
+     * 商品详情
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/customer/v1/goods/{id}",method = RequestMethod.GET,params = {"flag=goodsNO"})
+    public Object goodsByCode(SessionOwner owner,@PathVariable String id) throws Exception {
+        List<TblGoods> goods = goodsService.findByCode(owner,id);
+        List<Map<String, Object>> maps = BeanMapUtils.toMap(true, goods);
         return warpObject(new ListWrapper(maps));
     }
 
@@ -284,11 +297,8 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "/customer/v2/orders/{no}",method = RequestMethod.GET)
-    public Object orders(SessionUser user,@PathVariable String no) throws Exception {
-        TblOrder order = orderService.findByNo(user, no);
-        List<Map> list = new ArrayList<>();
-        Map<String, Object> map = BeanMapUtils.toMap(order, true);
-        list.add(map);
+    public Object orders(SessionUser user,@PathVariable String no) {
+        List<Map> list = orderService.findOrderMapByNo(user, no);
         return warpObject(new OrderWrapper(list));
     }
 
@@ -576,7 +586,7 @@ public class WXSmallCustomerController  extends BaseController {
             TblOrder o = orderService.findByNo(user, orderNO);
             if (TblOrder.STATUS_0.equals(o.getStatus())) {
                 //orderService.update(result, user);
-
+                //todo yancc
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -595,14 +605,13 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param 参数
      * @return 该接口逻辑和微信下单接口逻辑一样，返回结果也一样
      */
-    @RequestMapping(value = "/customer/v2/diff/wxpay/unifiedrder")
-    public Object diff(SessionUser user,DiffParam param,HttpServletRequest request) {
+    @RequestMapping(value = "/customer/v2/diff/wxpay/unifiedorder",method = RequestMethod.POST)
+    public Object diff(SessionUser user, @RequestBody DiffParam param, HttpServletRequest request, BindingResult result) {
+        Validator.valid(result);
         String no = param.getDiffNO();
         TblOrderMoneyDiff diff = orderMoneyDiffService.findByNo(user, no);
         TblOwner owner = ownerService.find(user);
-
         String remark = "无";
-
         // 获取客户端ip
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
         // 商品描述
@@ -618,7 +627,7 @@ public class WXSmallCustomerController  extends BaseController {
     }
 
     public WxPayUnifiedOrderRequest buildPayReq(SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) {
-        WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
+        return WxPayUnifiedOrderRequest
                 .newBuilder()
                 .body(body)
                 .attach(attach)
@@ -628,7 +637,6 @@ public class WXSmallCustomerController  extends BaseController {
                 .spbillCreateIp(ip)
                 .tradeType(WxPayConstants.TradeType.JSAPI)
                 .totalFee(total_fee).build();
-        return req;
     }
 
 
@@ -647,7 +655,8 @@ public class WXSmallCustomerController  extends BaseController {
         } catch (WxPayException e) {
             e.printStackTrace();
             map.put("msg", e.getReturnMsg());
-            map.put("code", "102");
+            map.put("code", "error");
+            map.put("status", "102");
         }
 
         return map;

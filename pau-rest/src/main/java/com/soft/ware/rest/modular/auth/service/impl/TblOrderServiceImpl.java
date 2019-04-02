@@ -19,10 +19,7 @@ import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMapper;
-import com.soft.ware.rest.common.persistence.model.TblAddress;
-import com.soft.ware.rest.common.persistence.model.TblGoods;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
+import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
@@ -68,6 +65,10 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
 
     @Autowired
     private WXContants contants;
+
+    @Autowired
+    private TblOrderMoneyDiffService diffService;
+
     /**
      * 收银app下单
      * @param user
@@ -467,7 +468,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             WxPayRefundRequest req = WxPayRefundRequest
                     .newBuilder()
                     .outTradeNo(orderNO)
-                    .outRefundNo(UUID.randomUUID().toString().replaceAll("-", ""))
+                    .outRefundNo(IdGenerator.getId())
                     .totalFee(order.getPayMoney().multiply(BigDecimal.valueOf(100)).intValue())
                     .refundFee(refundMoney.intValue())
                     .refundDesc(ToolUtil.isEmpty(param.getRefundReason()) ? "" : param.getRefundReason())
@@ -506,6 +507,78 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
 
 
         return false;
+    }
+
+    @Override
+    public boolean refundDiff(SessionOwnerUser user, OrderRefundParam param) {
+        Date date = new Date();
+        String no = param.getOrder();
+        TblOrder order = this.findByNo(user, no);
+        TblOrderMoneyDiff diff = diffService.findByNo(user, order);
+        TblOwner owner = ownerService.find(user);
+        if (TblOrderMoneyDiff.status_1.equals(diff.getStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
+        } else if (TblOrderMoneyDiff.refund_status_0.equals(diff.getRefundStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_RUNNING);
+        } else if (TblOrderMoneyDiff.refund_status_1.equals(diff.getRefundStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_FINISHED);
+        }
+        // 如果是到店自提的订单
+        if (order.getSource().equals(TblOrder.SOURCE_2)) {
+            no = order.getConsigneeMobile() + "" + order.getCreatedAt().getTime();
+        }
+
+        diff.setStatus(TblOrderMoneyDiff.status_1);
+        diff.setRefundBy(user.getUsername());
+        diff.setRefundAt(date);
+        diff.setRefundStatus(TblOrderMoneyDiff.refund_status_1);
+        //todo yancc 需要乐观锁
+        boolean update = diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+
+        try {
+            if (update) {
+                WxPayService service = hzcxWxService.getWxPayService(owner);
+                BigDecimal refundFee = BigDecimal.valueOf(Math.abs(diff.getMoneyDiff().doubleValue()));
+                WxPayRefundRequest req = WxPayRefundRequest
+                        .newBuilder()
+                        .outTradeNo(no)
+                        .outRefundNo(IdGenerator.getId())
+                        .totalFee(order.getPayMoney().multiply(BigDecimal.valueOf(100)).intValue())
+                        .refundFee(refundFee.multiply(BigDecimal.valueOf(100)).intValue())
+                        .build();
+                service.refund(req);
+                String formID = redisTemplate.opsForValue().get("ms:ppi:" + order.getNo());
+                String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + owner.getAppId(), "refund");
+                WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, order);
+                msg.getData().set(4, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
+                msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.getRefundReason()) ? "小票差额退款" : param.getRefundReason()));
+                msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
+                try {
+                    hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
+                } catch (WxErrorException e) {
+                    logger.error("订单差价退款成功，但是通知发送失败,订单号:{},退款单号:{},错误码：{},错误信息：{}", order.getNo(), req.getOutRefundNo(), e.getError().getErrorCode(), e.getError().getErrorMsg());
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+        } catch (WxPayException e) {
+            //todo yancc 需要乐观锁
+            logger.info("订单差价退款失败,订单号{}，错误码{},错误原因{}", no, e.getErrCode(), e.getErrCodeDes());
+            //退款失败
+            diff.setRefundBy(user.getUsername());
+            diff.setRefundAt(date);
+            diff.setRefundStatus(TblOrderMoneyDiff.refund_status_2);
+            diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<Map> findOrderMapByNo(SessionUser user, String no) {
+        return orderMapper.findOrderMapByNo(user, no);
     }
 
 

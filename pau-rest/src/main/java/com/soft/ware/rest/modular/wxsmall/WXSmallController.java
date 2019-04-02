@@ -463,18 +463,30 @@ public class WXSmallController extends BaseController {
 	}
 	
 	/**
-	 * 根据商品ID、商品编码获取商品详情
+	 * 根据商品ID、获取商品详情
 	 */
-	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET)
-    public Object getGoodsDetail(SessionUser user,Id id) throws Exception {
-		TblGoods goods = goodsService.findById(Long.parseLong(id.getId()));
+	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET,params = "id")
+    public Object getGoodsDetail(String id) throws Exception {
+		TblGoods goods = goodsService.findById(Long.parseLong(id));
 		return Lists.newArrayList(BeanMapUtils.toMap(goods, true));
+	}
+
+	/**
+	 * 根据商品code、获取商品详情
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET,params = "code")
+	public Object getGoodsDetailByCode(SessionOwnerUser user,String code) throws Exception {
+		List<TblGoods> goods = goodsService.findByCode(user, code);
+		return BeanMapUtils.toMap(true, goods);
 	}
 	
 	/**
 	 * 编辑商品信息
 	 */
-	@RequestMapping("v1/auth/goods/edit")
+	@RequestMapping(value = "v1/auth/goods/edit",method = RequestMethod.POST)
 	public Object editGoods(@RequestBody TblGoods tblgoods){
 		MapWrapper map = new MapWrapper();
 		goodsService.updateById(tblgoods);
@@ -486,26 +498,22 @@ public class WXSmallController extends BaseController {
 	 * 扫码添加商品
 	 */
 	@RequestMapping("v2/auth/goods/addByScan")
-	public Object addByScan(TblGoods tblgoods){
-		if(ToolUtil.isNotEmpty(tblgoods)){
-			if(goodsService.insert(tblgoods)){
-				return SUCCESS_TIP;
-			};
-		}
-		return new ErrorTip(604,"商品编辑失败");
+	public Object addByScan(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
+		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
+		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
+		boolean b = goodsService.addByScan(user, g, s);
+		return warpObject(render(b));
 	} 
 	/**
 	 * 
 	 * 手动添加商品
 	 */
-	@RequestMapping("v2/auth/goods/addByHand")
-	public Object addByHand(TblGoods tblgoods){
-		if(ToolUtil.isNotEmpty(tblgoods)){	
-			if(goodsService.insert(tblgoods)){
-				return SUCCESS_TIP;
-			};
-		}
-		return new ErrorTip(604,"商品编辑失败");
+	@RequestMapping(value = "v2/auth/goods/addByHand",method = RequestMethod.POST)
+	public Object addByHand(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
+		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
+		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
+		boolean b = goodsService.addByHand(user, g, s);
+		return warpObject(render(b));
 	}
 	/**
 	 *29 商品置顶
@@ -549,7 +557,7 @@ public class WXSmallController extends BaseController {
 	}
 	/**
 	 * 根据商品编码查询商品库
-	 * @param code
+	 * @param map
 	 */
 	public Object getGoodsRepositoryByCode(@RequestParam Map<String,Object> map){
 		if(ToolUtil.isNotEmpty(map)){
@@ -594,13 +602,10 @@ public class WXSmallController extends BaseController {
 	 * pic：小票图片URL
 	 */
 	@RequestMapping("v2/order/money/diff")
-	public Object addSmallBill(TblOrderMoneyDiff tbl){
-		if(ToolUtil.isNotEmpty(tbl)){
-			if(tblOrderMoneyDiffService.insert(tbl)){
-				return SUCCESS_TIP;
-			};
-		}
-		return new ErrorTip(600,"新增小票失败");
+	public Object addSmallBill(SessionUser user,@RequestBody OrderDiffParam param,BindingResult result){
+		Validator.valid(result);
+		boolean b = diffService.create(user, param);
+		return warpObject(render(b));
 	} 
     /**
      * 极光im初始化
@@ -650,21 +655,8 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping(value = "/order/refund",method = RequestMethod.POST)
 	public Object refundDiff(SessionOwnerUser user,OrderRefundParam param){
-		String no = param.getOrder();
-		TblOrder order = tblOrderService.findByNo(user, no);
-		TblOrderMoneyDiff diff = diffService.findByNo(user, no);
-		TblOwner owner = tblOwnerService.find(user);
-/*		if (TblOrderMoneyDiff.status_1.equals(diff.getStatus())) {
-			callback(new Error('差价已退款，请勿重复'));
-		} else if (order.refund_status === 0) {
-			callback(new Error('退款中，请稍后'));
-		} else if (order.refund_status === 1) {
-			callback(new Error('差价已退款，请勿重复'));
-		} else {
-			callback(null, order);
-		}*/
-
-		return null;
+		boolean b = tblOrderService.refundDiff(user, param);
+		return warpObject(render(b));
 	}
 
 }

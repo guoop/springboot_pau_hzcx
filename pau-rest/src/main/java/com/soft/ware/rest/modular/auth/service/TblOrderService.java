@@ -141,4 +141,20 @@ public interface TblOrderService extends IService<TblOrder> {
      * @return
      */
     boolean refund(SessionOwnerUser user, OrderRefundParam param) throws WxPayException;
+
+    /**
+     * 商家退差价
+     * @param user
+     * @param param
+     * @return
+     */
+    boolean refundDiff(SessionOwnerUser user, OrderRefundParam param);
+
+    /**
+     * 根据订单号查询订单详细信息
+     * @param user
+     * @param no
+     * @return
+     */
+    List<Map> findOrderMapByNo(SessionUser user, String no);
 }

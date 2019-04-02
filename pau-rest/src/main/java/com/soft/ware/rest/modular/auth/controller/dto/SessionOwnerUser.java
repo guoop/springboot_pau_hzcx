@@ -7,6 +7,8 @@ public class SessionOwnerUser extends SessionOwner {
      */
     private String username;
 
+    private String name;
+
     public SessionOwnerUser(String owner) {
         super(owner);
     }
@@ -20,4 +22,11 @@ public class SessionOwnerUser extends SessionOwner {
         this.username = username;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
