@@ -52,7 +52,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
 
     @Override
     public boolean saveOrUpdate(SessionUser user, StaffEditParam param) throws Exception {
-        TblOwner o = tblOwnerService.findByPhone(param.getPhone());
+        TblOwner o = tblOwnerService.find(user);
         if (o != null && param.getPhone().equals(o.getPhone())) {
             throw new PauException(BizExceptionEnum.PHONE_EXISTS);
         }
@@ -78,7 +78,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
             Integer row = mapper.insert(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
-                imService.addOrUpdateUsers(user, s);
+                imService.syncUsers(user,o, s);
             }
             if (row != 1) {
                 throw new PauException(BizExceptionEnum.ADD_ERROR);
@@ -93,13 +93,13 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
             Integer row = mapper.updateAllColumnById(s);
             String keyPrefix = "user:" + s.getPhone() + ":*";
             Set<String> keys = redisTemplate.keys(keyPrefix);
+            imService.syncUsers(user, o, s);
             if (TblOwnerStaff.status_0.equals(param.getStatus())) {
                 //启用店员信息
                 //todo yancc 可能还需要更新im群组信息
                 for (String key : keys) {
                     redisTemplate.opsForHash().putAll(key, BeanMapUtils.toMap(s,true));
                 }
-                imService.addOrUpdateUsers(user, s);
             } else {
                 // 禁用店员信息
                 //todo yancc 可能还需要删除im群组信息

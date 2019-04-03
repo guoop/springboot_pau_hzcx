@@ -9,7 +9,11 @@ public class Kv<K,V> implements Map<K,V> {
 
     private Map<K,V> map;
 
-    private Kv(Map<K, V> map) {
+    public Kv() {
+        this(new LinkedHashMap<>());
+    }
+
+    public Kv(Map<K, V> map) {
         this.map = map;
     }
 
