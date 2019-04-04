@@ -7,11 +7,13 @@ import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 
+import java.util.List;
+
 public interface IHandOverService extends IService<HandOver>{
 
     HandOver over(SessionUser user, HandoverParam param);
     
-    Object getHandOver(HandoverParam param,SessionUser user,Page page);
+    List<HandOver> getHandOver(HandoverParam param, SessionUser user, Page page);
     
     
 }

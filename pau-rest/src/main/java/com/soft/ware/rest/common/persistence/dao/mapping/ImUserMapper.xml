@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.ImUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.ImUser">
+        <id column="id" property="id" />
+        <result column="owner_id" property="ownerId" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="nickname" property="nickname" />
+        <result column="avatar" property="avatar" />
+        <result column="birthday" property="birthday" />
+        <result column="signature" property="signature" />
+        <result column="gender" property="gender" />
+        <result column="region" property="region" />
+        <result column="address" property="address" />
+        <result column="body" property="body" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+</mapper>

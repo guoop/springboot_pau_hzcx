@@ -40,6 +40,7 @@
             and g.name like CONCAT('%',#{param.name},'%')
         </if>
     </sql>
+
     <select id="findPage" resultType="java.util.Map">
         select * from tbl_goods g where g.is_delete = 0 and  g.status = 1 and g.owner = #{owner}
         <include refid="findPageCondition"/>
@@ -59,4 +60,20 @@
         #{id}
       </foreach>
     </select>
+    <update id="updateStock">
+        UPDATE  tbl_goods
+        SET
+        stock =
+        CASE id
+        <foreach collection="ids" item="item" index="index">
+            WHEN #{item} THEN ifnull(stock, 0) - #{nums[${index}]}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="ids" close=")" open="(" item="item" separator="," index="index">
+            ${item}
+        </foreach>
+    </update>
+
+
 </mapper>

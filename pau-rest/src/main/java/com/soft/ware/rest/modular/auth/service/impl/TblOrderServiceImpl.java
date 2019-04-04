@@ -1,29 +1,34 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
+import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.IdGenerator;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.dao.TblOrderMapper;
-import com.soft.ware.rest.common.persistence.model.TblAddress;
-import com.soft.ware.rest.common.persistence.model.TblGoods;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
+import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
-import com.soft.ware.rest.modular.auth.service.TblAddressService;
-import com.soft.ware.rest.modular.auth.service.TblGoodsService;
-import com.soft.ware.rest.modular.auth.service.TblOrderService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
+import com.soft.ware.rest.modular.auth.service.*;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.RegexUtils;
+import com.soft.ware.rest.modular.auth.util.WXContants;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,16 +57,17 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     private TblOwnerService ownerService;
 
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String,String> redisTemplate;
 
-    @Value(value = "${wx.pay.notify_host}")
-    private String customerPayHost;
+    @Autowired
+    private HzcxWxService hzcxWxService;
 
-    @Value(value = "${wx.pay.notify_url_customer_pay_pickup}")
-    private String customerPayPickup;
 
-    @Value(value = "${wx.pay.notify_url_customer_pay}")
-    private String customerPay;
+    @Autowired
+    private WXContants contants;
+
+    @Autowired
+    private TblOrderMoneyDiffService diffService;
 
     /**
      * 收银app下单
@@ -120,7 +126,12 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
      */
     @Override
     public TblOrder findByNo(SessionUser user,String no) {
-        return orderMapper.findByNo(user,no);
+        return orderMapper.selectOne(new TblOrder().setNo(no).setCreatedBy(user.getOpenId()).setOwner(user.getOwner()));
+    }
+
+    @Override
+    public TblOrder findByNo(SessionOwnerUser user, String no) {
+        return orderMapper.selectOne(new TblOrder().setNo(no).setOwner(user.getOwner()));
     }
 
 
@@ -284,5 +295,291 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     public Map findOwnerOrder(SessionUser user, String no) {
         return orderMapper.findOwnerOrder(user,no);
     }
+
+
+    private WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TblOrder order){
+        StringBuilder goodsName = new StringBuilder();
+        String[] gs = order.getGoods().split(",");
+        int i = 0;
+        do {
+            String[] s = gs[i].split("__");
+            goodsName.append(",");
+            goodsName.append(s[2]);
+            if (i == 2) {
+                //最多拼接三个
+                break;
+            }
+            i++;
+        } while (i < gs.length && i < 3);
+        if (gs.length > 3) {
+            goodsName.append("...共").append(gs.length).append("种商品");
+        }
+        ArrayList<WxMaTemplateData> data = Lists.newArrayList();
+        data.add(new WxMaTemplateData("keyword1", order.getNo()));// 订单编号
+        data.add(new WxMaTemplateData("keyword2", DateUtil.format(order.getCreatedAt(), WXContants.date_format)));// 下单时间
+        data.add(new WxMaTemplateData("keyword3", order.getPayMoney().setScale(2, WXContants.big_decimal_sale) + ""));// 订单金额
+        data.add(new WxMaTemplateData("keyword4", goodsName.toString()));// 商品名称
+        data.add(new WxMaTemplateData("keyword5", order.getConsigneeName() + ' ' + order.getConsigneeMobile() + ' ' + order.getConsigneeAddress()));// 收货地址
+        WxMaTemplateMessage msg = WxMaTemplateMessage.builder()
+                .templateId(templateID)
+                .formId(fromID)
+                .toUser(order.getCreatedBy())
+                .page("pages/mine/index")
+                .data(data)
+                .build();
+        return msg;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public boolean updateOwnerOrder(SessionOwnerUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException {
+        //todo yancc 更新成功后是否需要清除 redis 中的 formId
+        String no = order.getNo();
+        long current = System.currentTimeMillis();
+        String dateFormat = "YYYY-MM-DD HH:mm:ss";
+        Date date = new Date(current);
+        WxMaService service = hzcxWxService.getWxMaService(owner);
+        List<String> ids = Lists.newArrayList();
+        List<String> nums = Lists.newArrayList();
+        String[] gs = order.getGoods().split(",");
+        for (String g : gs) {
+            String[] s = g.split("__");
+            ids.add(s[0]);
+            nums.add(s[4]);
+        }
+        //todo yancc 需要添加 行锁
+        boolean update = false;
+        if ("cancel".equals(status)) {
+            // 只允许取消货到付款、待商家确认的订单
+            if (order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_1)  && order.getStatus().equals(TblOrder.STATUS_1)) {
+                order.setStatus(TblOrder.STATUS_01);
+                order.setCancelBy(user.getUsername());
+                order.setCancelAt(date);
+                order.setCancelReason(reason);
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                logger.info("取消订单 - {}", order.getNo());
+                String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + no);
+                WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, order);
+                msg.getData().add(new WxMaTemplateData("keyword6", order.getCancelReason()));// 取消原因
+                msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
+                service.getMsgService().sendTemplateMsg(msg);
+            } else {
+                throw new PauException(BizExceptionEnum.ORDER_CANEL_FAIL);
+            }
+        } else if ("confirm".equals(status)) {
+            // 只允许确认待商家确认的订单
+            if (order.getStatus().equals(TblOrder.STATUS_1)) {
+                order.setStatus(TblOrder.STATUS_10);
+                order.setConfirmBy(user.getUsername());
+                order.setConfirmAt(date);
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                if (update) {
+                    update = goodsService.updateStock(user, ids, nums);
+                }
+                logger.info("确认订单 - {}", no);
+                String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + no);
+                WxMaTemplateMessage msg = this.buildOrderTemplateMessage("confirm", templateFormId, order);
+                msg.getData().add(new WxMaTemplateData("keyword6", DateUtil.format(order.getConfirmAt(), dateFormat)));// 确认时间
+                msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
+            } else {
+                throw new PauException(BizExceptionEnum.ORDER_CONFIRM_FAIL);
+            }
+        } else if ("deliver".equals(status)) {
+            // 只允许对已经经过商家确认的订单进行配送
+            if (order.getStatus().equals(TblOrder.STATUS_10)) {
+                order.setStatus(TblOrder.STATUS_2);
+                order.setDistributionBy(user.getUsername());
+                order.setDistributionAt(date);
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                if (order.getSource().equals(TblOrder.SOURCE_0)) {
+                    logger.info("配送订单 - ", no);
+                    String templateFormId = redisTemplate.opsForValue().get("ms:fit:" + no);
+                    WxMaTemplateMessage msg = this.buildOrderTemplateMessage("deliver", templateFormId, order);
+                    msg.getData().add(new WxMaTemplateData("keyword6", "配送人员已经开始为您配送，请保持手机畅通"));// 温馨提示
+                    msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
+                    service.getMsgService().sendTemplateMsg(msg);
+                }
+            } else {
+                throw new PauException(BizExceptionEnum.ORDER_DELIVER_FAIL);
+            }
+        } else if ("done".equals(status)) {
+            // 只允许对配送中的订单进行标记完成操作
+            if (order.getStatus().equals(TblOrder.SOURCE_2)) {
+                order.setStatus(TblOrder.STATUS_3);
+                order.setDoneBy(user.getUsername());
+                order.setDoneAt(date);
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+            } else {
+                throw new PauException(BizExceptionEnum.ORDER_DONE_FAIL);
+            }
+        } else {
+            // 不允许其他操作
+            throw new PauException(BizExceptionEnum.NO_OPTION);
+        }
+
+        if (update) {
+            return true;
+        }
+        throw new PauException(BizExceptionEnum.ERROR);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public boolean refund(SessionOwnerUser user, OrderRefundParam param) throws WxPayException {
+        //todo yancc 更新成功后是否需要清除 redis 中的 formId
+        int round = WXContants.big_decimal_sale;
+        Date date = new Date();
+        TblOrder order = this.findByNo(user, param.getOrder());
+        if (!order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_0) || (!order.getStatus().equals(TblOrder.STATUS_1) && !order.getStatus().equals(TblOrder.STATUS_3))) {
+            throw new PauException(BizExceptionEnum.ORDER_REFUND_NOT_SUPPORT);
+        } else if (TblOrder.REFUND_STATUS_0.equals(order.getRefundStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_REFUND_RUNNING);
+        } else if (TblOrder.REFUND_STATUS_1.equals(order.getRefundStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
+        }
+
+        // 退款金额
+        BigDecimal refundMoney = BigDecimal.ZERO;
+        // 全额退款
+        if ("all".equals(param.getRefundType())) {
+            refundMoney = (order.getPayMoney().multiply(BigDecimal.valueOf(100))).setScale(2, round);
+        }
+        // 部分退款
+        if ("part".equals(param.getRefundType())) {
+            refundMoney = (param.getRefundMoney().multiply(BigDecimal.valueOf(100))).setScale(2, round);
+        }
+
+        // 如果是到店自提的订单
+        String orderNO = order.getNo();
+        if (order.getSource().equals(TblOrder.SOURCE_2)) {
+            orderNO = order.getConsigneeMobile() + "" + order.getCreatedAt().getTime();
+        }
+        TblOwner owner = ownerService.find(user);
+        WxPayService service = hzcxWxService.getWxPayService(owner);
+        //先执行操作，在发送通知，发送失败可以回滚
+        //todo yancc 需要添加 行锁
+        order.setStatus(param.getRefundType().equals("all") ? -1 : 3);
+        order.setRefundBy(user.getUsername());
+        order.setRefundAt(date);
+        order.setRefundReason(param.getRefundReason());
+        order.setRefundMoney(refundMoney);
+        boolean update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+        if (update) {
+            WxPayRefundRequest req = WxPayRefundRequest
+                    .newBuilder()
+                    .outTradeNo(orderNO)
+                    .outRefundNo(IdGenerator.getId())
+                    .totalFee(order.getPayMoney().multiply(BigDecimal.valueOf(100)).intValue())
+                    .refundFee(refundMoney.intValue())
+                    .refundDesc(ToolUtil.isEmpty(param.getRefundReason()) ? "" : param.getRefundReason())
+                    //.notifyUrl(contants.getCustomerPayHost() + "/") //todo yancc 回调地址
+                    .build();
+            WxPayRefundResult result = service.refund(req);
+            logger.info("微信退款请求执行成功:订单号{}，错误码：{}", order.getNo(), result.getErrCode());
+            try{
+                // 全额退款则意味着取消订单
+                if ("all".equals(param.getRefundType())) {
+                    order.setCancelBy(user.getUsername());
+                    order.setCancelAt(date);
+                    order.setCancelReason(order.getRefundReason());
+                }
+
+                String formID = redisTemplate.opsForValue().get("ms:ppi:" + order.getNo());
+                String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + owner.getAppId(), "refund");
+
+                WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, order);
+                msg.getData().set(4, new WxMaTemplateData("keyword5", "all".equals(param.getRefundType()) ? order.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
+                msg.getData().add(new WxMaTemplateData("keyword6", order.getRefundReason()));
+                msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
+                msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
+
+                hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
+            }catch (Exception e){
+                e.printStackTrace();
+                //todo yancc 失败是否补发通知
+                logger.error("{}退款成功：退款通知发送失败!", order.getNo());
+            }
+
+            return true;
+
+        }
+
+
+
+        return false;
+    }
+
+    @Override
+    public boolean refundDiff(SessionOwnerUser user, OrderRefundParam param) {
+        Date date = new Date();
+        String no = param.getOrder();
+        TblOrder order = this.findByNo(user, no);
+        TblOrderMoneyDiff diff = diffService.findByNo(user, order);
+        TblOwner owner = ownerService.find(user);
+        if (TblOrderMoneyDiff.status_1.equals(diff.getStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
+        } else if (TblOrderMoneyDiff.refund_status_0.equals(diff.getRefundStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_RUNNING);
+        } else if (TblOrderMoneyDiff.refund_status_1.equals(diff.getRefundStatus())) {
+            throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_FINISHED);
+        }
+        // 如果是到店自提的订单
+        if (order.getSource().equals(TblOrder.SOURCE_2)) {
+            no = order.getConsigneeMobile() + "" + order.getCreatedAt().getTime();
+        }
+
+        diff.setStatus(TblOrderMoneyDiff.status_1);
+        diff.setRefundBy(user.getUsername());
+        diff.setRefundAt(date);
+        diff.setRefundStatus(TblOrderMoneyDiff.refund_status_1);
+        //todo yancc 需要乐观锁
+        boolean update = diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+
+        try {
+            if (update) {
+                WxPayService service = hzcxWxService.getWxPayService(owner);
+                BigDecimal refundFee = BigDecimal.valueOf(Math.abs(diff.getMoneyDiff().doubleValue()));
+                WxPayRefundRequest req = WxPayRefundRequest
+                        .newBuilder()
+                        .outTradeNo(no)
+                        .outRefundNo(IdGenerator.getId())
+                        .totalFee(order.getPayMoney().multiply(BigDecimal.valueOf(100)).intValue())
+                        .refundFee(refundFee.multiply(BigDecimal.valueOf(100)).intValue())
+                        .build();
+                service.refund(req);
+                String formID = redisTemplate.opsForValue().get("ms:ppi:" + order.getNo());
+                String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + owner.getAppId(), "refund");
+                WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, order);
+                msg.getData().set(4, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
+                msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.getRefundReason()) ? "小票差额退款" : param.getRefundReason()));
+                msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
+                try {
+                    hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
+                } catch (WxErrorException e) {
+                    logger.error("订单差价退款成功，但是通知发送失败,订单号:{},退款单号:{},错误码：{},错误信息：{}", order.getNo(), req.getOutRefundNo(), e.getError().getErrorCode(), e.getError().getErrorMsg());
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+        } catch (WxPayException e) {
+            //todo yancc 需要乐观锁
+            logger.info("订单差价退款失败,订单号{}，错误码{},错误原因{}", no, e.getErrCode(), e.getErrCodeDes());
+            //退款失败
+            diff.setRefundBy(user.getUsername());
+            diff.setRefundAt(date);
+            diff.setRefundStatus(TblOrderMoneyDiff.refund_status_2);
+            diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<Map> findOrderMapByNo(SessionUser user, String no) {
+        return orderMapper.findOrderMapByNo(user, no);
+    }
+
 
 }

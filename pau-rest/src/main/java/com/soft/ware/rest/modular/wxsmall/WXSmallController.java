@@ -1,7 +1,7 @@
 package com.soft.ware.rest.modular.wxsmall;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
@@ -21,12 +21,14 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
+import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
-
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -78,6 +80,11 @@ public class WXSmallController extends BaseController {
     @Autowired
     private TblOrderAppService orderAppService;
 
+    @Autowired
+    public ImService imService;
+
+    @Autowired
+    private TblOrderMoneyDiffService diffService;
 
 
 	/**
@@ -120,33 +127,7 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping(value = "/share/login",method = RequestMethod.POST)
 	public Object login(@RequestBody Map<String, String> map, HttpServletRequest request) {
-		String phone = map.get("phone");
-		String password = map.get("password");
-		String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
-		String appId = WXUtils.getAppId(request);
-		TblOwner owner = tblOwnerService.findByAppId(appId);
-		TblOwnerStaff user = tblOwnerStaffService.findByPhone(phone);
-		if (user == null) {
-			return warpObject(render(false, "用户不存在"));
-		}
-		if (TblOwnerStaff.status_1.equals(user.getStatus())) {
-			return warpObject(render(false, "账户被禁用"));
-		}
-		if (TblOwnerStaff.status_2.equals(user.getStatus())) {
-			return warpObject(render(false, "账户不存在"));
-		}
-		MapWrapper w = new MapWrapper();
-		w.put("msg", "认证通过");
-		//w.put("token", token);
-		w.put("payload", WXUtils.getPayLoad());
-		w.put("user", user);
-		if (password.equals(s)) {
-			//清除验证码
-			redisTemplate.delete(WXContants.loginCodePrefix + phone);
-			return warpObject(render(true));
-		} else {
-			return warpObject(render(false,"验证码错误"));
-		}
+		return restRedirect(restTemplate, getBasePath(request) + "/auth/login", map, request, "");
 	}
 
 	/**
@@ -174,10 +155,11 @@ public class WXSmallController extends BaseController {
 	 * 更新商户信息
 	 * @param owner 商户类
 	 */
-	@RequestMapping("v1/auth/info")
+	@RequestMapping(value = "v1/auth/info",method = RequestMethod.POST)
 	public Object updateOwner(SessionUser user,@RequestBody TblOwner owner) {
 		TblOwner o = tblOwnerService.find(user);
 		owner.setId(o.getId());
+		//todo yancc 修改配送设置需要前端，改  setDelivery.wxml 文件 owner.delivery === ‘1’ 改为 owner.delivery == '1'
 		boolean b = tblOwnerService.updateById(owner);
 		return warpObject(render(b));
 	}
@@ -191,7 +173,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping(value = "v1/info",method = RequestMethod.GET)
 	public Object updateOwner(SessionUser user) throws Exception {
 		TblOwner owner = tblOwnerService.find(user);
-		Map<String, Object> map = BeanMapUtils.toMap(owner, true);
+		Map<String, Object> map = BeanMapUtils.toMap(owner, true,1);
 		return warpObject(new MapWrapper(map));
 	}
 
@@ -199,9 +181,8 @@ public class WXSmallController extends BaseController {
 	 * 获取店员列表
 	 */
 	@RequestMapping("v1/auth/staff/list")
-	public Object getStaffList() throws Exception {
-		Wrapper<TblOwnerStaff> wrapper = new EntityWrapper<TblOwnerStaff>();
-		List<TblOwnerStaff> list = tblOwnerStaffService.selectList(wrapper);
+	public Object getStaffList(SessionUser user) throws Exception {
+		List<TblOwnerStaff> list = tblOwnerStaffService.selectAll(user);
 		MapWrapper map = new MapWrapper();
 		map.put("code", SUCCESS);
 		map.put("data", BeanMapUtils.toMap(true, list));
@@ -214,18 +195,35 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("v2/auth/staff/index")
 	public Object getStaffDetail(SessionUser user,String id) throws Exception {
+		// 用户权限信息
+		List<Map> functionList = Lists.newArrayList();
+		functionList.add(Kv.by("key", "configOrderPhone").set("title", "订单通知"));
+		functionList.add(Kv.by("key", "configStaff").set("title", "店员管理"));
+		functionList.add(Kv.by("key", "configShop").set("title", "商户信息"));
+		functionList.add(Kv.by("key", "configDelivery").set("title", "配送设置"));
+		functionList.add(Kv.by("key", "configGoods").set("title", "商品认值设置"));
+		functionList.add(Kv.by("key", "doRefund").set("title", "退款"));
+		functionList.add(Kv.by("key", "goodsMan").set("title", "商品管理"));
+		functionList.add(Kv.by("key", "goodsManStorage").set("title", "进货入库"));
+		functionList.add(Kv.by("key", "goodsManPrice").set("title", "商品调价"));
+		functionList.add(Kv.by("key", "categoryMan").set("title", "分类管理"));
+		functionList.add(Kv.by("key", "printPriceTicket").set("title", "打印价签"));
+
 		TblOwnerStaff tblOwnerStaff = tblOwnerStaffService.selectById(id);
 		List<TblCategory> list = categoryService.findAllCategory(user);
 		MapWrapper map = new MapWrapper();
 		map.put("code", SUCCESS);
-		map.put("staff", BeanMapUtils.toMap(tblOwnerStaff, true));
-		map.put("function_list", tblOwnerStaff.getFunctionList());
+		map.put("staff", Lists.newArrayList(BeanMapUtils.toMap(tblOwnerStaff, true)));
+		map.put("function_list", functionList);
 		map.put("category_list", BeanMapUtils.toMap(true, list));
 		return warpObject(map);
 	}
 
+
+
 	/**
 	 * 添加或者编辑店员信息
+	 *
 	 * @return
 	 */
 	@RequestMapping("/v2/auth/staff/man")
@@ -245,6 +243,12 @@ public class WXSmallController extends BaseController {
 			}
 		}
 		return new ErrorTip(604, "参数为空");
+	}
+
+	public Object addOrUpdate(SessionUser user, @RequestBody StaffEditParam param, BindingResult result) throws Exception {
+		Validator.valid(result);
+		tblOwnerStaffService.saveOrUpdate(user,param);
+		return warpObject(render(true));
 	}
 
 	/**
@@ -276,8 +280,7 @@ public class WXSmallController extends BaseController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("v1/app/handover")
-	public Object getHandOverList(SessionUser user, HandoverParam param,
-			Page<HandOver> page) {
+	public Object getHandOverList(SessionUser user, HandoverParam param,Page<HandOver> page) {
 		@SuppressWarnings("unused")
 		List<HandOver> listData = null;
 		String startTime = (String) HttpKit.getRequest().getAttribute("start");
@@ -285,17 +288,17 @@ public class WXSmallController extends BaseController {
 		if (ToolUtil.isEmpty(endTime)) {
 			DateUtil.getTimeByDate(new Date());
 		}
-		Date startDate = DateUtil.getDateByTime(startTime);
-		Date endDate = DateUtil.getDateByTime(endTime);
 
-		param.setOptionat(endDate);
-		param.setOptionstart(startDate);
-		listData = (List<HandOver>) handOverService.getHandOver(param, user,
-				page);
-		if (listData.size() > 0) {
-			return listData;
+		if (!ToolUtil.isEmpty(startTime)) {
+			Date startDate = DateUtil.getDateByTime(startTime);
+			param.setOptionstart(startDate);
 		}
-		return null;
+		if (!ToolUtil.isEmpty(endTime)) {
+			Date endDate = DateUtil.getDateByTime(endTime);
+			param.setOptionat(endDate);
+		}
+		listData = handOverService.getHandOver(param, user,page);
+		return listData;
 	}
 
 	/**
@@ -352,24 +355,22 @@ public class WXSmallController extends BaseController {
 
 	/**
 	 * 标记订单状态
-	 * 
 	 * @param map
 	 */
-	@RequestMapping("v2/order/maintain")
-	public Tip signOrderStatus(@RequestBody Map<String, Object> map,
-			SessionUser user) {
-		if (ToolUtil.isNotEmpty(map)) {
-			if (ToolUtil.isNotEmpty(map.get("orderNo"))
-					&& ToolUtil.isNotEmpty(map.get("status"))) {
-				boolean isSuccess = tblOrderService.updateStatus(user,
-						map.get("orderNo").toString(), map.get("status")
-								.toString());
-				if (isSuccess) {
-					return new SuccessTip();
-				}
-			}
+	@RequestMapping(value = "v2/order/maintain",method = RequestMethod.POST)
+	public Object signOrderStatus(@RequestBody Map<String, Object> map,SessionOwnerUser user) {
+		String no = map.get("orderNO").toString();
+		String status = map.get("status").toString();
+		TblOrder order = tblOrderService.findByNo(user, no);
+		TblOwner owner = tblOwnerService.find(user);
+		Object reason = map.get("reason");
+		try {
+			boolean b = tblOrderService.updateOwnerOrder(user, status, order, owner, reason == null ? "" : reason.toString());
+			return warpObject(render(b));
+		} catch (WxErrorException e) {
+			e.printStackTrace();
+			return warpObject(render(false, e.getMessage()));
 		}
-		return new ErrorTip(604, "订单状态更新失败");
 	}
 
 	/**
@@ -482,19 +483,30 @@ public class WXSmallController extends BaseController {
 	}
 	
 	/**
-	 * 根据商品ID、商品编码获取商品详情
+	 * 根据商品ID、获取商品详情
 	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET)
-    public Object getGoodsDetail(SessionUser user,Id id) throws Exception {
-		TblGoods goods = goodsService.findById(Long.parseLong(id.getId()));
+	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET,params = "id")
+    public Object getGoodsDetail(String id) throws Exception {
+		TblGoods goods = goodsService.findById(Long.parseLong(id));
 		return Lists.newArrayList(BeanMapUtils.toMap(goods, true));
+	}
+
+	/**
+	 * 根据商品code、获取商品详情
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET,params = "code")
+	public Object getGoodsDetailByCode(SessionOwnerUser user,String code) throws Exception {
+		List<TblGoods> goods = goodsService.findByCode(user, code);
+		return BeanMapUtils.toMap(true, goods);
 	}
 	
 	/**
 	 * 编辑商品信息
 	 */
-	@RequestMapping("v1/auth/goods/edit")
+	@RequestMapping(value = "v1/auth/goods/edit",method = RequestMethod.POST)
 	public Object editGoods(@RequestBody TblGoods tblgoods){
 		MapWrapper map = new MapWrapper();
 		goodsService.updateById(tblgoods);
@@ -505,27 +517,22 @@ public class WXSmallController extends BaseController {
 	/**
 	 * 扫码添加商品
 	 */
-	@RequestMapping("v2/auth/goods/addByScan")
-	public Object addByScan(TblGoods tblgoods){
-		if(ToolUtil.isNotEmpty(tblgoods)){
-			if(goodsService.insert(tblgoods)){
-				return new SuccessTip();
-			};
-		}
-		return new ErrorTip(604,"商品编辑失败");
+	public Object addByScan(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
+		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
+		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
+		boolean b = goodsService.addByScan(user, g, s);
+		return warpObject(render(b));
 	} 
 	/**
 	 * 
 	 * 手动添加商品
 	 */
-	@RequestMapping("v2/auth/goods/addByHand")
-	public Object addByHand(TblGoods tblgoods){
-		if(ToolUtil.isNotEmpty(tblgoods)){	
-			if(goodsService.insert(tblgoods)){
-				return new SuccessTip();
-			};
-		}
-		return new ErrorTip(604,"商品编辑失败");
+	@RequestMapping(value = "v2/auth/goods/addByHand",method = RequestMethod.POST)
+	public Object addByHand(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
+		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
+		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
+		boolean b = goodsService.addByHand(user, g, s);
+		return warpObject(render(b));
 	}
 	/**
 	 *29 商品置顶
@@ -569,7 +576,7 @@ public class WXSmallController extends BaseController {
 	}
 	/**
 	 * 根据商品编码查询商品库
-	 * @param code
+	 * @param map
 	 */
 	public Object getGoodsRepositoryByCode(@RequestParam Map<String,Object> map){
 		if(ToolUtil.isNotEmpty(map)){
@@ -621,17 +628,62 @@ public class WXSmallController extends BaseController {
 			};
 		}
 		return new ErrorTip(600,"新增小票失败");
+	}
+	public Object addSmallBill(SessionUser user,@RequestBody OrderDiffParam param,BindingResult result){
+		Validator.valid(result);
+		boolean b = diffService.create(user, param);
+		return warpObject(render(b));
 	} 
     /**
      * 极光im初始化
      */
 	@RequestMapping("im/init")
 	public Object getPayLoad(){
-		Map<String,Object> map = new HashMap<String, Object>();
-		map = WXUtils.getPayLoad();
+		Map<String, Object> map = WXUtils.getPayLoad();
 		map.put("code", "success");
 		return map;
 	}
-	
-	
+
+	/**
+	 * 商家退款接口
+	 * @param user
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value = "v1/auth/order/refund",method = RequestMethod.POST)
+	public Object getRefund(SessionOwnerUser user,@RequestBody OrderRefundParam param){
+		try {
+			boolean	refund = tblOrderService.refund(user, param);
+			return warpObject(render(refund));
+		} catch (WxPayException e) {
+			return warpObject(render(false,e.getErrCodeDes()));
+		}
+	}
+
+
+	/**
+	 * 获取商家待发货订单总数
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = "v2/orders/count",method = RequestMethod.GET)
+	public Object orderCount(SessionOwnerUser user){
+		int i = tblOrderService.selectCount(new EntityWrapper<>(new TblOrder().setOwner(user.getOwner()).setStatus(TblOrder.STATUS_1)));
+		MapWrapper map = new MapWrapper();
+		map.put("count", i);
+		return warpObject(map);
+
+	}
+
+
+	/**
+	 * 订单退差价
+	 * @return
+	 */
+	@RequestMapping(value = "/order/refund",method = RequestMethod.POST)
+	public Object refundDiff(SessionOwnerUser user,OrderRefundParam param){
+		boolean b = tblOrderService.refundDiff(user, param);
+		return warpObject(render(b));
+	}
+
 }

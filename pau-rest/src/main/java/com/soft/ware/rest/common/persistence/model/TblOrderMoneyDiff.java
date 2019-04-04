@@ -61,6 +61,17 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
     //退款信息
     private String refundResponse;
 
+
+    public Long getId(){
+        return id;
+    }
+
+    public TblOrderMoneyDiff setId(Long id){
+        this.id = id;
+        return this;
+    }
+
+
     public String getNo(){
         return no;
     }
@@ -81,95 +92,99 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
         return orderNo;
     }
 
-    public void setOrderNo( String orderNo){
+    public TblOrderMoneyDiff setOrderNo( String orderNo){
         this.orderNo = orderNo;
+        return this;
     }
     public BigDecimal getMoney(){
         return money;
     }
 
-    public void setMoney( BigDecimal money){
+    public TblOrderMoneyDiff setMoney( BigDecimal money){
         this.money = money;
+        return this;
     }
     public BigDecimal getMoneyDiff(){
         return moneyDiff;
     }
 
-    public void setMoneyDiff( BigDecimal moneyDiff){
+    public TblOrderMoneyDiff setMoneyDiff( BigDecimal moneyDiff){
         this.moneyDiff = moneyDiff;
+        return this;
     }
     public String getPic(){
         return pic;
     }
 
-    public void setPic( String pic){
+    public TblOrderMoneyDiff setPic( String pic){
         this.pic = pic;
+        return this;
     }
     public Date getCreatedAt(){
         return createdAt;
     }
 
-    public void setCreatedAt( Date createdAt){
+    public TblOrderMoneyDiff setCreatedAt( Date createdAt){
         this.createdAt = createdAt;
+        return this;
     }
     public Integer getStatus(){
         return status;
     }
 
-    public void setStatus(Integer status){
+    public TblOrderMoneyDiff setStatus( Integer status){
         this.status = status;
+        return this;
     }
     public Date getPayAt(){
         return payAt;
     }
 
-    public void setPayAt( Date payAt){
+    public TblOrderMoneyDiff setPayAt( Date payAt){
         this.payAt = payAt;
+        return this;
     }
     public String getPayResponse(){
         return payResponse;
     }
 
-    public void setPayResponse( String payResponse){
+    public TblOrderMoneyDiff setPayResponse( String payResponse){
         this.payResponse = payResponse;
+        return this;
     }
     public String getRefundBy(){
         return refundBy;
     }
 
-    public void setRefundBy( String refundBy){
+    public TblOrderMoneyDiff setRefundBy( String refundBy){
         this.refundBy = refundBy;
+        return this;
     }
     public Date getRefundAt(){
         return refundAt;
     }
 
-    public void setRefundAt( Date refundAt){
+    public TblOrderMoneyDiff setRefundAt( Date refundAt){
         this.refundAt = refundAt;
+        return this;
     }
     public Integer getRefundStatus(){
         return refundStatus;
     }
 
-    public void setRefundStatus( Integer refundStatus){
+    public TblOrderMoneyDiff setRefundStatus( Integer refundStatus){
         this.refundStatus = refundStatus;
+        return this;
     }
     public String getRefundResponse(){
         return refundResponse;
     }
 
-    public void setRefundResponse( String refundResponse){
+    public TblOrderMoneyDiff setRefundResponse( String refundResponse){
         this.refundResponse = refundResponse;
+        return this;
     }
 
-
-    public  Long getId(){
-        return id;
-    }
-
-    public  void setId(Long id){
-        this.id = id;
-    }
 
 
     @Override

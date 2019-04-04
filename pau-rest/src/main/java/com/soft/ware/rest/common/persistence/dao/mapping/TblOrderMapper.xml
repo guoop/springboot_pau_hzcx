@@ -52,36 +52,35 @@
 
     <sql id="findListCondition">
         <if test="source != null">
-            and o.source in
+            and a.source in
             <foreach collection="source" item="id" index="index" open="(" close=")" separator=",">
                 #{id}
             </foreach>
         </if>
         <if test="param.status != null">
-            and o.status in
+            and a.status in
             <foreach collection="param.statusArray" item="id" index="index" open="(" close=")" separator=",">
                 #{id}
             </foreach>
         </if>
         <!--根据买家用户查询-->
         <if test="user.openId != null">
-            and o.created_by in (#{user.openId})
+            and a.created_by in (#{user.openId})
         </if>
     </sql>
     <select id="findListCount" resultType="java.lang.Long">
-        select count(1) from tbl_order o where o.owner = #{user.owner}
+        select count(1) from tbl_order a where a.owner = #{user.owner}
         <include refid="findListCondition"/>
     </select>
     <select id="findList" resultType="java.util.Map">
-        select o.* from tbl_order o where  o.owner = #{user.owner}
+        select a.id, a.no, a.source, a.pickup_no, a.pickup_time, a.money_channel, a.money, a.freight, a.created_at, a.settlement_by, a.goods, a.status, a.refund_status, a.cancel_by,
+        b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus
+        from tbl_order a left outer join tbl_order_money_diff b on a.owner = b.owner and a.no = b.order_no
+        where a.owner = #{user.owner}
         <include refid="findListCondition"/>
-        order by pay_at,created_at desc
+        order by a.created_at desc
         <include refid="com.soft.ware.rest.common.persistence.dao.TblGoodsMapper.limit"/>
     </select>
-    <select id="findByNo" resultType="com.soft.ware.rest.common.persistence.model.TblOrder">
-        select o.* from tbl_order o where o.no = #{no} and o.owner = #{user.owner} and o.created_by = #{user.openId}
-    </select>
-
     <update id="updateStatusByNo" parameterType="int">
         update table tbl_order o set o.status = #{status} where o.no = #{no} and o.owner = #{user.owner}
     </update>
@@ -129,6 +128,16 @@
 		b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus, b.refund_by as diffRefundBy, b.refund_at as diffRefundAt, b.refund_status as diffRefundStatus, b.refund_response as diffRefundResponse
 		from tbl_order a left outer join tbl_order_money_diff b on a.owner = b.owner and a.no = b.order_no
 		where a.owner = #{user.owner} and a.no = #{no}
+    </select>
+    <select id="findOrderMapByNo" resultType="map">
+		select a.no, a.source, a.pickup_no, a.pickup_time, a.money_channel, a.money, a.freight, a.pay_money, a.pay_at, a.created_at, a.settlement_by,
+		a.consignee_name, a.consignee_mobile, a.consignee_address,
+		a.goods, a.status, a.remark,
+		a.confirm_by, a.confirm_at, a.distribution_by, a.distribution_at, a.done_by, a.done_at,
+		a.cancel_by, a.cancel_at, a.cancel_reason, a.refund_by, a.refund_at, a.refund_reason, a.refund_money, a.refund_status,
+		b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus
+		from tbl_order a left outer join tbl_order_money_diff b on a.owner = b.owner and a.no = b.order_no
+		where a.no = #{no} and a.owner = #{user.owner} and a.created_by = #{user.openId}
     </select>
 
 </mapper>

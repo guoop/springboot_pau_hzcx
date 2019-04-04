@@ -1,15 +1,14 @@
 package com.soft.ware.core.aop;
 
+import com.soft.ware.core.base.tips.ErrorTip;
+import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.exception.PauExceptionEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.soft.ware.core.base.tips.ErrorTip;
-import com.soft.ware.core.exception.PauException;
-import com.soft.ware.core.exception.PauExceptionEnum;
 
 /**
  * 全局的的异常拦截器（拦截所有的控制器）（带有@RequestMapping注解的方法上都会拦截）
@@ -22,10 +21,14 @@ public class BaseControllerExceptionHandler {
      * 拦截业务异常
      */
     @ExceptionHandler(PauException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ErrorTip notFount(PauException e) {
         log.error("业务异常:", e);
+        //todo yancc 是否让前端改，httpClient.js
+        if (e.getCode() != 0) {
+            return new ErrorTip("fail", e.getMessage());
+        }
         return new ErrorTip(e.getCode(), e.getMessage());
     }
 

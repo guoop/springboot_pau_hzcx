@@ -3,6 +3,8 @@ package com.soft.ware.rest.modular.auth.util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+
 @Repository
 public class WXContants {
 
@@ -68,6 +70,11 @@ public class WXContants {
 	public static final String JG_MASTER_SECRET = "0da6b113a07bd3454d798bdb";
 	//网关
 	public static final String JG_GATEWAY = "https://api.im.jpush.cn";
+
+	//默认日期时间格式
+	public static final String date_format = "YYYY-MM-DD HH:mm:ss";
+	//默认金额显示，格式
+	public static final int big_decimal_sale = BigDecimal.ROUND_HALF_UP;
 
 
 	public String getCustomerPayHost() {

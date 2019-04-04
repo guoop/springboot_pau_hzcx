@@ -1,5 +1,6 @@
 package com.soft.ware.core.base.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
@@ -12,10 +13,9 @@ import com.soft.ware.core.util.FileUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +24,10 @@ import javax.servlet.http.HttpSession;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Map;
 
 public class BaseController {
@@ -137,5 +141,68 @@ public class BaseController {
             return new FailWrapper(msg);
         }
     }
+
+
+    /**
+     * 使用post 重定向
+     * @param request
+     * @param response
+     * @param url
+     * @param params
+     * @throws IOException
+     */
+    public void postRedirect(HttpServletRequest request, HttpServletResponse response,String url, Map<String,String> params,Map<String,String> headers) throws IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
+        out.println("<HTML>");
+        out.println(" <HEAD><TITLE>sender</TITLE></HEAD>");
+        out.println(" <BODY>");
+        out.println("<form name=\"submitForm\" action=\""+url+"\" method=\"post\">");
+        String value;
+        for (String s : params.keySet()) {
+            value = params.get(s);
+            if(value==null) value = "";
+            out.println("<input type=\"hidden\" name=\"" + s + "\" value=\"" + value + "\"/>");
+        }
+        out.println("</from>");
+        out.println("<script>window.document.submitForm.submit();</script>");
+        out.println(" </BODY>");
+        out.println("</HTML>");
+        out.flush();
+        out.close();
+    }
+
+
+    public Object restRedirect(RestTemplate restTemplate,String url,Map<String, String> params, HttpServletRequest request,String... headers){
+        MultiValueMap<String,String> hs = new HttpHeaders();
+        Enumeration<String> names = request.getParameterNames();
+        String name;
+        while (names.hasMoreElements()) {
+            name = names.nextElement();
+            params.put(name, request.getParameter(name));
+        }
+        if (headers != null) {
+            for (String header : headers) {
+                hs.put(header, Arrays.asList(request.getHeader(header)));
+            }
+        }
+        HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), hs);
+        ResponseEntity<String> entity = restTemplate.postForEntity(url, http, String.class);
+        if (entity.getStatusCodeValue() == 200) {
+            return JSON.parseObject(entity.getBody(), Map.class);
+        }
+        return null;
+    }
+
+
+    public String getBasePath(HttpServletRequest request){
+        String path = request.getContextPath();
+        String port = request.getServerPort() == 80 ? "" : ":"+request.getServerPort() + "";
+        if(path.equals("/")) path = "";
+        String basePath = request.getScheme() + "s://" + request.getServerName() + port + path;
+        return basePath;
+    }
+
 
 }

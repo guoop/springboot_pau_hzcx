@@ -5,6 +5,8 @@ import com.soft.ware.core.util.SpringContextHolder;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionOwner;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
@@ -28,7 +30,7 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return methodParameter.getParameterType() == SessionUser.class;
+        return SessionOwner.class.isAssignableFrom(methodParameter.getParameterType());
     }
 
     /**
@@ -45,17 +47,26 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
         HttpServletRequest req = HttpKit.getRequest();
         TblOwnerService ownerService = SpringContextHolder.getBean(TblOwnerService.class);
         if (req.getServletPath().startsWith("/customer")) {
-            //买家端用户
-            String appId = WXUtils.getAppId(req);
-            TblOwner owner = ownerService.findByAppId(appId);
-            SessionUser user = new SessionUser(SessionUser.type_customer, owner.getOwner());
-            String openId = req.getHeader("Hzcx-User");
-            user.setAppId(appId);
-            user.setId(openId);
-            user.setOpenId(openId);
-            user.setUsername(openId);
-            user.setOwner(user.getOwner());
-            return user;
+            if (SessionUser.class == methodParameter.getParameterType()) {
+                //买家端用户
+                String appId = WXUtils.getAppId(req);
+                TblOwner owner = ownerService.findByAppId(appId);
+                SessionUser user = new SessionUser(owner.getOwner());
+                String openId = req.getHeader("Hzcx-User");
+                user.setAppId(appId);
+                user.setId(openId);
+                user.setOpenId(openId);
+                user.setUsername(openId);
+                user.setOwner(user.getOwner());
+                return user;
+            } else if(SessionOwner.class == methodParameter.getParameterType()) {
+                //买家端用户
+                String appId = WXUtils.getAppId(req);
+                TblOwner o = ownerService.findByAppId(appId);
+                SessionOwner owner = new SessionOwner(o.getOwner());
+                return owner;
+            }
+
         }  else {
             //收银端用户/商家端用户
             Object claims = request.getAttribute("claims",0);
@@ -63,20 +74,31 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
                 DefaultClaims c = (DefaultClaims) claims;
                 String username = (String)c.get("sub");
                 AuthService authService = SpringContextHolder.getBean(AuthService.class);
-                TblOwnerStaff user = authService.findByUsername(username);
-                if (user != null) {
-                    SessionUser u = new SessionUser(SessionUser.type_staff, user.getOwner());
+                if (methodParameter.getParameterType() == SessionOwnerUser.class) {
+                    TblOwnerStaff user = authService.findByUsername(username);
+                    SessionOwnerUser u = new SessionOwnerUser(user.getOwner());
+                    u.setId(user.getId().toString() + "");
+                    u.setOwner(user.getOwner());
+                    u.setUsername(user.getPhone());
+                    return u;
+                } else if(methodParameter.getParameterType() == SessionUser.class) {
+                    //todo yancc 计划删掉,商户端应该不支持
+                    TblOwnerStaff user = authService.findByUsername(username);
+                    SessionUser u = new SessionUser(user.getOwner());
                     u.setId(user.getId().toString() + "");
                     u.setOwner(user.getOwner());
                     if (req.getServletPath().startsWith("/owner")) {
                         //小程序用户
                         String openId = req.getHeader("Hzcx-User");
-                        u.setType(SessionUser.type_owner);
                         u.setOpenId(openId);
                         u.setUsername(user.getPhone());
                         u.setAppId(WXContants.OWNER_APP_ID);
                     }
                     return u;
+                }else{
+                    TblOwnerStaff user = authService.findByUsername(username);
+                    SessionOwner owner = new SessionOwner(user.getOwner());
+                    return owner;
                 }
             }
             RequestParam param = methodParameter.getParameterAnnotation(RequestParam.class);
@@ -85,6 +107,8 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             }
             return null;
         }
+
+        return null;
 
     }
 }

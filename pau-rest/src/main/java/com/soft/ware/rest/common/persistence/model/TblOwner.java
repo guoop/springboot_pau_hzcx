@@ -77,19 +77,32 @@ public class TblOwner extends Model<TblOwner> {
     //该字段已废弃（运费的默认说明）
     private String defaultFeeDesc;
 
+
+    public Long getId(){
+        return id;
+    }
+
+    public TblOwner setId(Long id){
+        this.id = id;
+        return this;
+    }
+
+
     public String getShopId(){
         return shopId;
     }
 
-    public void setShopId( String shopId){
+    public TblOwner setShopId( String shopId){
         this.shopId = shopId;
+        return this;
     }
     public String getShopSecret(){
         return shopSecret;
     }
 
-    public void setShopSecret( String shopSecret){
+    public TblOwner setShopSecret( String shopSecret){
         this.shopSecret = shopSecret;
+        return this;
     }
     public String getAppId(){
         return appId;
@@ -103,186 +116,203 @@ public class TblOwner extends Model<TblOwner> {
         return appSecret;
     }
 
-    public void setAppSecret( String appSecret){
+    public TblOwner setAppSecret( String appSecret){
         this.appSecret = appSecret;
+        return this;
     }
     public String getAppName(){
         return appName;
     }
 
-    public void setAppName( String appName){
+    public TblOwner setAppName( String appName){
         this.appName = appName;
+        return this;
     }
     public String getAppQr(){
         return appQr;
     }
 
-    public void setAppQr( String appQr){
+    public TblOwner setAppQr( String appQr){
         this.appQr = appQr;
+        return this;
     }
     public String getOwner(){
         return owner;
     }
 
-    public void setOwner( String owner){
+    public TblOwner setOwner( String owner){
         this.owner = owner;
+        return this;
     }
     public String getName(){
         return name;
     }
 
-    public void setName( String name){
+    public TblOwner setName( String name){
         this.name = name;
+        return this;
     }
     public String getPhone(){
         return phone;
     }
 
-    public void setPhone( String phone){
+    public TblOwner setPhone( String phone){
         this.phone = phone;
+        return this;
     }
     public String getAddress(){
         return address;
     }
 
-    public void setAddress( String address){
+    public TblOwner setAddress( String address){
         this.address = address;
+        return this;
     }
     public String getDescription(){
         return description;
     }
 
-    public void setDescription( String description){
+    public TblOwner setDescription( String description){
         this.description = description;
+        return this;
     }
     public String getVideoUrl(){
         return videoUrl;
     }
 
-    public void setVideoUrl( String videoUrl){
+    public TblOwner setVideoUrl( String videoUrl){
         this.videoUrl = videoUrl;
+        return this;
     }
     public String getTimeBegin(){
         return timeBegin;
     }
 
-    public void setTimeBegin( String timeBegin){
+    public TblOwner setTimeBegin( String timeBegin){
         this.timeBegin = timeBegin;
+        return this;
     }
     public String getTimeEnd(){
         return timeEnd;
     }
 
-    public void setTimeEnd( String timeEnd){
+    public TblOwner setTimeEnd( String timeEnd){
         this.timeEnd = timeEnd;
+        return this;
     }
     public String getDefaultDesc(){
         return defaultDesc;
     }
 
-    public void setDefaultDesc( String defaultDesc){
+    public TblOwner setDefaultDesc( String defaultDesc){
         this.defaultDesc = defaultDesc;
+        return this;
     }
     public String getDefaultRefundReason(){
         return defaultRefundReason;
     }
 
-    public void setDefaultRefundReason( String defaultRefundReason){
+    public TblOwner setDefaultRefundReason( String defaultRefundReason){
         this.defaultRefundReason = defaultRefundReason;
+        return this;
     }
     public Integer getDelivery(){
         return delivery;
     }
 
-    public void setDelivery( Integer delivery){
+    public TblOwner setDelivery( Integer delivery){
         this.delivery = delivery;
+        return this;
     }
     public BigDecimal getDeliveryMoney(){
         return deliveryMoney;
     }
 
-    public void setDeliveryMoney( BigDecimal deliveryMoney){
+    public TblOwner setDeliveryMoney( BigDecimal deliveryMoney){
         this.deliveryMoney = deliveryMoney;
+        return this;
     }
     public Integer getDeliveryLessMoney(){
         return deliveryLessMoney;
     }
 
-    public void setDeliveryLessMoney( Integer deliveryLessMoney){
+    public TblOwner setDeliveryLessMoney( Integer deliveryLessMoney){
         this.deliveryLessMoney = deliveryLessMoney;
+        return this;
     }
     public Integer getDeliveryGreatMoney(){
         return deliveryGreatMoney;
     }
 
-    public void setDeliveryGreatMoney( Integer deliveryGreatMoney){
+    public TblOwner setDeliveryGreatMoney( Integer deliveryGreatMoney){
         this.deliveryGreatMoney = deliveryGreatMoney;
+        return this;
     }
     public Integer getDeliveryDistance(){
         return deliveryDistance;
     }
 
-    public void setDeliveryDistance( Integer deliveryDistance){
+    public TblOwner setDeliveryDistance( Integer deliveryDistance){
         this.deliveryDistance = deliveryDistance;
+        return this;
     }
     public Integer getReachPay(){
         return reachPay;
     }
 
-    public void setReachPay( Integer reachPay){
+    public TblOwner setReachPay( Integer reachPay){
         this.reachPay = reachPay;
+        return this;
     }
     public Integer getSelfPickup(){
         return selfPickup;
     }
 
-    public void setSelfPickup( Integer selfPickup){
+    public TblOwner setSelfPickup( Integer selfPickup){
         this.selfPickup = selfPickup;
+        return this;
     }
     public String getOrderPhone(){
         return orderPhone;
     }
 
-    public void setOrderPhone( String orderPhone){
+    public TblOwner setOrderPhone( String orderPhone){
         this.orderPhone = orderPhone;
+        return this;
     }
     public Date getUpdatedAt(){
         return updatedAt;
     }
 
-    public void setUpdatedAt( Date updatedAt){
+    public TblOwner setUpdatedAt( Date updatedAt){
         this.updatedAt = updatedAt;
+        return this;
     }
     public String getUpdatedBy(){
         return updatedBy;
     }
 
-    public void setUpdatedBy( String updatedBy){
+    public TblOwner setUpdatedBy( String updatedBy){
         this.updatedBy = updatedBy;
+        return this;
     }
     public BigDecimal getDefaultFee(){
         return defaultFee;
     }
 
-    public void setDefaultFee( BigDecimal defaultFee){
+    public TblOwner setDefaultFee( BigDecimal defaultFee){
         this.defaultFee = defaultFee;
+        return this;
     }
     public String getDefaultFeeDesc(){
         return defaultFeeDesc;
     }
 
-    public void setDefaultFeeDesc( String defaultFeeDesc){
+    public TblOwner setDefaultFeeDesc( String defaultFeeDesc){
         this.defaultFeeDesc = defaultFeeDesc;
+        return this;
     }
 
-
-    public  Long getId(){
-        return id;
-    }
-
-    public  void setId(Long id){
-        this.id = id;
-    }
 
 
     @Override

@@ -1,21 +1,16 @@
 package com.soft.ware.rest.modular.handover.service.impl;
 
-import com.soft.ware.core.support.HttpKit;
-import com.soft.ware.core.util.DateUtil;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.core.util.ToolUtil;
+import com.soft.ware.rest.common.persistence.dao.HandOverMapper;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
+import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
-
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.soft.ware.rest.common.persistence.dao.HandOverMapper;
-import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -78,7 +73,7 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object getHandOver(HandoverParam param,SessionUser user,Page page) {
+	public List<HandOver> getHandOver(HandoverParam param,SessionUser user,Page page) {
 		List<HandOver> list = null;
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("owner", user.getOwner());
@@ -88,11 +83,7 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 		map.put("page", page.getPage());
 		if(ToolUtil.isNotEmpty(param.getOptionat())&&ToolUtil.isNotEmpty(param.getOptionstart())){
 			list = (List<HandOver>) overMapper.getHandOverList(map);
-			if(list.size() > 0){
-				return list;
-			}
 		}
-		
-		return null;
+		return list;
 	}
 }

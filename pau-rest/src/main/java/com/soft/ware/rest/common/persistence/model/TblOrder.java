@@ -36,8 +36,6 @@ public class TblOrder extends Model<TblOrder> {
     public static Integer MONEY_CHANNEL_4 = 4;
     //：银联）
     public static Integer MONEY_CHANNEL_5 = 5;
-    //-
-    public static Integer STATUS_03 = -3;
     //：配送中；
     public static Integer STATUS_2 = 2;
     //：待商家确认（在线支付支付成功、货到付款下单成功）；
@@ -48,6 +46,12 @@ public class TblOrder extends Model<TblOrder> {
     public static Integer STATUS_3 = 3;
     //：商家确认接单（主要用于配送前及时提醒买家商家已接单））
     public static Integer STATUS_10 = 10;
+    //手动取消
+    public static Integer STATUS_01 = -1;
+    //过期失效
+    public static Integer STATUS_02 = -2;
+    //已删除
+    public static Integer STATUS_03 = -3;
     //-
     public static String CANCEL_BY_01 = "-1";
     //：处理中；

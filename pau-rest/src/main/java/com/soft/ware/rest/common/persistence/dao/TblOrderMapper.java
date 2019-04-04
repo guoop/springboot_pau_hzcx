@@ -17,8 +17,6 @@ public interface TblOrderMapper extends BaseMapper<TblOrder> {
 
     List<Map> findList(@Param("user") SessionUser owner, @Param("page") Page page, @Param("param") OrderPageParam param, @Param("source") Integer... source);
 
-    TblOrder findByNo(@Param("user") SessionUser user, @Param("no") String no);
-
     int updateStatusByNo(@Param("user") SessionUser user, @Param("no") String no, @Param("status") String status);
 
     int customerDelete(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
@@ -32,4 +30,6 @@ public interface TblOrderMapper extends BaseMapper<TblOrder> {
     long findOwnerOrderListCount(@Param("user") SessionUser user, @Param("param") OrderPageParam param);
 
     Map findOwnerOrder(@Param("user") SessionUser user, @Param("no") String no);
+
+    List<Map> findOrderMapByNo(@Param("user") SessionUser user, @Param("no") String no);
 }
