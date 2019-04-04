@@ -1,9 +1,14 @@
 package com.soft.ware.rest.modular.auth.validator.impl;
 
-import com.soft.ware.core.support.HttpKit;
+import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.ToolUtil;
+import com.soft.ware.rest.common.exception.BizExceptionEnum;
+import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
+import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,23 +20,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimpleValidator implements IReqValidator {
 
-    private static String USER_NAME = "15639004097";
-
-    private static String PASSWORD = "admin";
+    @Autowired
+    private TblOwnerStaffService tblOwnerStaffService;
 
     @Override
     public boolean validate(Credence credence) {
-
-        String userName = credence.getCredenceName();
         String password = credence.getCredenceCode();
         String phone = credence.getPhoneName();
-        String user = (String) HttpKit.getRequest().getSession().getAttribute(phone);
-        if(user != null && user.equals(password)){
-        	return true;
-        }else if(USER_NAME.equals(userName) && PASSWORD.equals(password)){
-        	 return true;
-        }else{
-        	 return false;
+        TblOwnerStaff staff = tblOwnerStaffService.findByPhone(phone);
+        if (!ToolUtil.isEmpty(password) && ToolUtil.isEmpty(phone)) {
+            password = PasswordUtils.encode(phone, password);
+            return phone.equals(password) && password.equals(staff.getPassword());
         }
+
+        if (TblOwnerStaff.status_1.equals(staff.getStatus())) {
+            throw new PauException(BizExceptionEnum.USER_DISABLED);
+        }
+
+        if (TblOwnerStaff.status_2.equals(staff.getStatus())) {
+            throw new PauException(BizExceptionEnum.USER_DELETED);
+        }
+        return false;
     }
 }

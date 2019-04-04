@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * 认证的请求dto
@@ -9,8 +10,11 @@ import com.soft.ware.rest.modular.auth.validator.dto.Credence;
  * @Date 2017/8/24 14:00
  */
 public class AuthRequest implements Credence {
+    @NotBlank
     private String phone;
+    @NotBlank
 	private String userName;
+    @NotBlank
     private String password;
 
    

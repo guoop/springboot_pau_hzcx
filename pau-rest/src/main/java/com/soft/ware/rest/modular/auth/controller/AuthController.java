@@ -69,22 +69,22 @@ public class AuthController extends BaseController {
 
     /**
      * 收银appDenglu
-     * @param authRequest
+     * @param params
      * @return
      */
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/x-www-form-urlencoded"})
-    public Object createAuthenticationToken(@Valid AuthRequest authRequest, HttpServletRequest request, BindingResult result) {
+    public Object createAuthenticationToken(@Valid AuthRequest params, BindingResult result) {
         Validator.valid(result);
-    	 boolean validate = false;
-        if(ToolUtil.isNotEmpty(authRequest.getPhone())){
-        	validate = reqValidator.validate(authRequest);
+    	boolean validate;
+        if(ToolUtil.isNotEmpty(params.getPhone())){
+        	validate = reqValidator.validate(params);
         }else{
-        	validate = reqValidator.validate(authRequest);
+        	validate = reqValidator.validate(params);
         }
         if (validate) {
             final String randomKey = jwtTokenUtil.getRandomKey();
-            final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
-            return returnTokenParams(authRequest,token,randomKey);
+            final String token = jwtTokenUtil.generateToken(params.getUserName(), randomKey);
+            return returnTokenParams(params,token,randomKey);
         }else{
         	throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }

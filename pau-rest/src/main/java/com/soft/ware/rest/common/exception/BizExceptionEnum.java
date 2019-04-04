@@ -16,7 +16,9 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      */
     TOKEN_EXPIRED(700, "token过期"),
     TOKEN_ERROR(700, "token验证失败"),
-    
+    USER_DISABLED(700, "账户被禁用"),
+    USER_DELETED(700, "账户不存在或被删除"),
+
     PARAME_ERROR(400,"参数错误"),
 
     /**

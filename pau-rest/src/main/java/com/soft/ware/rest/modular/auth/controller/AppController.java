@@ -14,11 +14,13 @@ import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.auth.util.WXUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -100,6 +102,15 @@ public class AppController extends BaseController {
     }
 
 
+    /**
+     * 极光im初始化
+     */
+    @RequestMapping("/im/init")
+    public Object getPayLoad(HttpServletResponse response){
+        //todo yancc 是否删除
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return render().setAll(WXUtils.getPayLoad());
+    }
 
 
 }
