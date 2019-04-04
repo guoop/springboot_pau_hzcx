@@ -14,8 +14,8 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.base.warpper.ListWrapper;
-import com.soft.ware.core.base.warpper.MapWrapper;
 import com.soft.ware.core.util.DateUtil;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.*;
@@ -400,10 +400,7 @@ public class WXSmallCustomerController  extends BaseController {
     @RequestMapping(value = "/customer/v1/wxpay/unifiedorder")
     public Object unifiedorder(SessionUser user,@RequestBody UnifiedorderParam param, HttpServletRequest request) {
         if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
-            MapWrapper wrapper = new MapWrapper();
-            wrapper.put("code", "false");
-            wrapper.put("msg", "请完善预留手机号");
-            return super.warpObject(wrapper);
+            return render(false, "请完善预留手机号");
         }
         String no = param.getOrderNO();
         Integer source  = param.getSource();
@@ -433,8 +430,7 @@ public class WXSmallCustomerController  extends BaseController {
             total_fee = order.getMoney().multiply(BigDecimal.valueOf(100)).intValue();
         }
         WxPayUnifiedOrderRequest req = buildPayReq(user, out_trade_no, total_fee, notify_url, body, attach, spbill_create_ip);
-        MapWrapper map = buildPayMap(owner, req);
-        return warpObject(map);
+        return buildPayView(owner, req);
     }
 
     /**
@@ -445,9 +441,7 @@ public class WXSmallCustomerController  extends BaseController {
     @RequestMapping(value = {"/customer/v1/order"},method = RequestMethod.POST)
     public Object order(SessionUser user,@RequestBody CartParam param) {
         TblOrder order = orderService.createMiniAppOrder(user, param);
-        MapWrapper map = new MapWrapper();
-        map.put("orderNO", order.getNo());
-        return warpObject(map);
+        return render().set("orderNO", order.getNo());
     }
 
 
@@ -579,7 +573,6 @@ public class WXSmallCustomerController  extends BaseController {
      */
     @RequestMapping(value = "/customer/v1/order/status",method = RequestMethod.GET)
     public Object orderFind(SessionUser user,String orderNO) throws WxPayException {
-        MapWrapper map = new MapWrapper();
         TblOwner owner = ownerService.find(user);
         WxPayService service = hzcxWxService.getWxPayService(owner);
         WxPayOrderQueryResult result = service.queryOrder(WxPayOrderQueryRequest.newBuilder().outTradeNo(orderNO).build());
@@ -593,10 +586,7 @@ public class WXSmallCustomerController  extends BaseController {
             e.printStackTrace();
             logger.error("前端查询订单，被动更新失败：订单号=" + orderNO);
         }
-        map.put("code", SUCCESS);
-        map.put("msg", "订单支付成功！");
-        map.put("total_fee", result.getTotalFee());
-        return warpObject(map);
+        return render(true, "订单支付成功！").set("total_fee", result.getTotalFee());
     }
 
     /**
@@ -622,8 +612,7 @@ public class WXSmallCustomerController  extends BaseController {
         // 订单价格 单位是 分
         Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
         WxPayUnifiedOrderRequest req = buildPayReq(user, no, total_fee, notify_url, body, remark, spbill_create_ip);
-        MapWrapper map = buildPayMap(owner, req);
-        return warpObject(map);
+        return  buildPayView(owner, req);
 
     }
 
@@ -641,25 +630,22 @@ public class WXSmallCustomerController  extends BaseController {
     }
 
 
-    public MapWrapper buildPayMap(TblOwner owner,WxPayUnifiedOrderRequest req){
-        MapWrapper map = new MapWrapper();
+    public Tip buildPayView(TblOwner owner,WxPayUnifiedOrderRequest req){
+        Kv<String,Object> tip;
         try {
             WxPayMpOrderResult res = hzcxWxService.getWxPayService(owner).createOrder(req);
-            map.put("msg", "操作成功");
-            map.put("status", "100");
-            map.put("out_trade_no", req.getOutTradeNo());
+            tip = render();
+            tip.set("out_trade_no", req.getOutTradeNo());
             // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数
-            map.put("nonceStr", res.getNonceStr());
-            map.put("timestamp", res.getTimeStamp());
-            map.put("package", res.getPackageValue());
-            map.put("paySign", res.getPaySign());
+            tip.set("nonceStr", res.getNonceStr());
+            tip.set("timestamp", res.getTimeStamp());
+            tip.set("package", res.getPackageValue());
+            tip.set("paySign", res.getPaySign());
         } catch (WxPayException e) {
             e.printStackTrace();
-            map.put("msg", e.getReturnMsg());
-            map.put("code", "error");
-            map.put("status", "102");
+            return render(false, e.getReturnMsg()).set("status", "102");
         }
-        return map;
+        return tip;
     }
     
 }

@@ -3,7 +3,7 @@ package com.soft.ware.rest.modular.auth.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.MapWrapper;
+import com.soft.ware.core.util.ResultView;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
@@ -36,9 +36,7 @@ public class WxController extends BaseController {
         String appId = WXUtils.getAppId(request);
         TblOwner owner = ownerService.findByAppId(appId);
         WxMaService service = hzcxWxService.getWxMaService(owner);
-        MapWrapper map = getOpenId(service, appId, code);
-        map.put("owner", BeanMapUtils.toMap(owner, true));
-        return warpObject(map);
+        return renderOpenId(service, appId, code).set("owner", BeanMapUtils.toMap(owner, true));
     }
 
     /**
@@ -52,15 +50,12 @@ public class WxController extends BaseController {
     public Object owner_wx_identifier(String code, HttpServletRequest request) throws Exception {
         String appId = WXContants.OWNER_APP_ID;
         WxMaService service = hzcxWxService.getWxMaService();
-        return warpObject(getOpenId(service, appId, code));
+        return renderOpenId(service, appId, code);
     }
 
-    public MapWrapper getOpenId(WxMaService service,String appId,String code) throws Exception {
+    public ResultView renderOpenId(WxMaService service, String appId, String code) throws Exception {
         WxMaJscode2SessionResult result = service.jsCode2SessionInfo(code);
-        MapWrapper map = new MapWrapper();
-        map.put("code", SUCCESS);
-        map.put("openid", result.getOpenid());
-        return map;
+        return render().set("openid", result.getOpenid());
     }
 
 

@@ -7,11 +7,11 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
-import com.soft.ware.core.base.warpper.MapWrapper;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ResultView;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.*;
@@ -137,9 +137,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping("/v1/self")
 	public Object getUserInfo(SessionUser user) throws Exception {
 		TblOwnerStaff u = tblOwnerStaffService.find(user);
-		MapWrapper wrapper = new MapWrapper();
-		wrapper.put("user", BeanMapUtils.toMap(u, true));
-		return warpObject(wrapper);
+		return render().set("user", BeanMapUtils.toMap(u, true));
 	}
 
 	/**
@@ -173,7 +171,7 @@ public class WXSmallController extends BaseController {
 	public Object updateOwner(SessionUser user) throws Exception {
 		TblOwner owner = tblOwnerService.find(user);
 		Map<String, Object> map = BeanMapUtils.toMap(owner, true,1);
-		return warpObject(new MapWrapper(map));
+		return render().setAll(map);
 	}
 
 	/**
@@ -182,10 +180,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping("v1/auth/staff/list")
 	public Object getStaffList(SessionUser user) throws Exception {
 		List<TblOwnerStaff> list = tblOwnerStaffService.selectAll(user);
-		MapWrapper map = new MapWrapper();
-		map.put("code", SUCCESS);
-		map.put("data", BeanMapUtils.toMap(true, list));
-		return warpObject(map);
+        return render().set("data", BeanMapUtils.toMap(true, list));
 	}
 
 	/**
@@ -193,7 +188,7 @@ public class WXSmallController extends BaseController {
 	 * @param id 店员id
 	 */
 	@RequestMapping("v2/auth/staff/index")
-	public Object getStaffDetail(SessionUser user,String id) throws Exception {
+	public Tip getStaffDetail(SessionUser user,String id) throws Exception {
 		// 用户权限信息
 		List<Map> functionList = Lists.newArrayList();
 		functionList.add(Kv.by("key", "configOrderPhone").set("title", "订单通知"));
@@ -210,12 +205,11 @@ public class WXSmallController extends BaseController {
 
 		TblOwnerStaff tblOwnerStaff = tblOwnerStaffService.selectById(id);
 		List<TblCategory> list = categoryService.findAllCategory(user);
-		MapWrapper map = new MapWrapper();
-		map.put("code", SUCCESS);
+        ResultView map = render();
 		map.put("staff", Lists.newArrayList(BeanMapUtils.toMap(tblOwnerStaff, true)));
 		map.put("function_list", functionList);
 		map.put("category_list", BeanMapUtils.toMap(true, list));
-		return warpObject(map);
+		return map;
 	}
 
 
@@ -300,9 +294,7 @@ public class WXSmallController extends BaseController {
 			param.setSql(" and length(cancel_by) = 11 ");
 		}
 		List<Map> list = tblOrderService.findOwnerOrderPage(user, page, param);
-		MapWrapper map = new MapWrapper();
-		map.put("orders", list);
-		return warpObject(map);
+        return render().set("orders", list);
 	}
 
 	/**
@@ -314,7 +306,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping("v2/orders/{no}")
 	public Object orderInfo(SessionUser user, @PathVariable String no){
 		Map map = tblOrderService.findOwnerOrder(user, no);
-		return warpObject(new MapWrapper(Kv.by("order", map)));
+		return render().set("order", map);
 	}
 
 	/**
@@ -325,9 +317,7 @@ public class WXSmallController extends BaseController {
 	public Object getOfflineOrderList(SessionUser user,Page page,OrderPageParam param) throws Exception {
 		List<Map<String, Object>> list = orderAppService.findPage(user, page, param);
 		list = BeanMapUtils.toMap(true, list, 3);
-		MapWrapper map = new MapWrapper();
-		map.put("orders",list);
-		return warpObject(map);
+        return render().set("orders", list);
 	}
 
 	/**
@@ -485,11 +475,8 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping(value = "v1/auth/goods/edit",method = RequestMethod.POST)
 	public Object editGoods(@RequestBody TblGoods tblgoods){
-		MapWrapper map = new MapWrapper();
 		goodsService.updateById(tblgoods);
-		map.put("code", SUCCESS);
-		map.put("id", tblgoods.getId());
-		return warpObject(map);
+        return render().set("id", tblgoods.getId());
 	}
 	/**
 	 * 扫码添加商品
@@ -639,9 +626,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping(value = "v2/orders/count",method = RequestMethod.GET)
 	public Object orderCount(SessionOwnerUser user){
 		int i = tblOrderService.selectCount(new EntityWrapper<>(new TblOrder().setOwner(user.getOwner()).setStatus(TblOrder.STATUS_1)));
-		MapWrapper map = new MapWrapper();
-		map.put("count", i);
-		return warpObject(map);
+        return render().set("count", i);
 
 	}
 

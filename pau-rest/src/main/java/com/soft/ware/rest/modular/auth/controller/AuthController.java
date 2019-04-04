@@ -2,9 +2,9 @@ package com.soft.ware.rest.modular.auth.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.MapWrapper;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.support.HttpKit;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
@@ -120,15 +120,13 @@ public class AuthController extends BaseController {
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(phone, randomKey);
 
-        MapWrapper map = new MapWrapper();
-        map.put("code", SUCCESS);
-        map.put("msg", "认证通过");
-        map.put("token", token);
-        map.put("payload", WXUtils.getPayLoad());
-        map.put("user", BeanMapUtils.toMap(user, true));
-        map.put("owner", user.getOwner());
+        Kv<String,Object> map = render(true,"认证通过");
+        map.set("token", token);
+        map.set("payload", WXUtils.getPayLoad());
+        map.set("user", BeanMapUtils.toMap(user, true));
+        map.set("owner", user.getOwner());
         HttpKit.getRequest().setAttribute("owner", user.getOwner());
-        return warpObject(map);
+        return map;
     }
 
     protected Object returnTokenParams(AuthRequest authRequest,String token,String randomKey) {

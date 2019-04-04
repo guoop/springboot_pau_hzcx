@@ -1,6 +1,4 @@
 package com.soft.ware.core.util;
-
-import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
 
 import java.util.Collection;
@@ -20,36 +18,14 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         this.map = map;
     }
 
-    public static Kv<String,Object> view(boolean result){
-        if (result) {
-            SuccessTip s = new SuccessTip();
-            return Kv.obj().set("code", s.getCode()).set("msg", s.getMsg());
-        } else {
-            SuccessTip s = new SuccessTip();
-            return Kv.obj().set("code", s.getCode()).set("msg", s.getMsg());
-        }
-    }
-
-    public static Kv<String,Object> view(boolean result,String msg){
-        if (result) {
-            SuccessTip s = new SuccessTip(msg);
-            return Kv.obj().set("code", s.getCode()).set("msg", s.getMsg());
-        } else {
-            SuccessTip s = new SuccessTip(msg);
-            return Kv.obj().set("code",s.getCode()).set("msg", msg);
-        }
-    }
-
 
     public static <K,V> Kv<K,V> init(){
-        Kv kv = new Kv<>(new LinkedHashMap<>());
-        return kv;
+        return new Kv<>(new LinkedHashMap<>());
     }
 
     public static Kv<String,Object> obj(){
-        LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
-        Kv kv = new Kv(map);
-        return kv;
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        return new Kv<>(map);
     }
 
     public static <K,V> Kv<K,V> by(K k, V v){
@@ -59,7 +35,12 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
     }
 
     public Kv<K,V> set(K k,V v){
-        map.put(k, v);
+       map.put(k, v);
+       return this;
+    }
+
+    public Kv setAll(Map<K,V> map){
+        this.map.putAll(map);
         return this;
     }
 
