@@ -98,7 +98,7 @@ public class WXSmallController extends BaseController {
 		String s = vs.get(WXContants.loginCodePrefix + phone);
 		if (s != null) {
 			//todo yancc
-			return warpObject(render(true));
+			return render();
 		}
 		Map<String, Object> map = new HashMap<>();
 		List<String> list = new ArrayList<>();
@@ -111,10 +111,10 @@ public class WXSmallController extends BaseController {
 		map.put("sig", ToolUtil.getSHA256StrJava("appkey=" + WXContants.TENCENTMSG_APPKEY + "&random=142536&time=" + map.get("time") + "&mobile=" + phone));
 		ResponseEntity<String> result = restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map, String.class);
 		if(result.getStatusCodeValue() != 200 ){
-		  	return warpObject(render(false,"短信地址请求失败"));
+		  	return render(false,"短信地址请求失败");
 		}
 		vs.set(WXContants.loginCodePrefix + phone, msgCode, WXContants.loginCodeExpire, TimeUnit.SECONDS);
-		return warpObject(render(true));
+		return render(true);
 }
 
 	/**
@@ -160,7 +160,7 @@ public class WXSmallController extends BaseController {
 		owner.setId(o.getId());
 		//todo yancc 修改配送设置需要前端，改  setDelivery.wxml 文件 owner.delivery === ‘1’ 改为 owner.delivery == '1'
 		boolean b = tblOwnerService.updateById(owner);
-		return warpObject(render(b));
+		return render(b);
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class WXSmallController extends BaseController {
 	public Object addOrUpdate(SessionUser user, @RequestBody StaffEditParam param, BindingResult result) throws Exception {
 		Validator.valid(result);
 		tblOwnerStaffService.saveOrUpdate(user,param);
-		return warpObject(render(true));
+		return render();
 	}
 
 	/**
@@ -343,10 +343,10 @@ public class WXSmallController extends BaseController {
 		Object reason = map.get("reason");
 		try {
 			boolean b = tblOrderService.updateOwnerOrder(user, status, order, owner, reason == null ? "" : reason.toString());
-			return warpObject(render(b));
+			return render(b);
 		} catch (WxErrorException e) {
 			e.printStackTrace();
-			return warpObject(render(false, e.getMessage()));
+			return render(false, e.getMessage());
 		}
 	}
 
@@ -447,7 +447,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping(value = "v1/auth/category/sort",method = RequestMethod.POST)
 	public Object sortCategory(@RequestBody CategorySortParam param) {
 		boolean isSuccess = categoryService.updateSort(param);
-		return warpObject(render(isSuccess));
+		return render(isSuccess);
 	}
 
 	/**
@@ -499,7 +499,7 @@ public class WXSmallController extends BaseController {
 		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
 		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
 		boolean b = goodsService.addByScan(user, g, s);
-		return warpObject(render(b));
+		return render(b);
 	} 
 	/**
 	 * 
@@ -510,7 +510,7 @@ public class WXSmallController extends BaseController {
 		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
 		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
 		boolean b = goodsService.addByHand(user, g, s);
-		return warpObject(render(b));
+		return render(b);
 	}
 	/**
 	 *29 商品置顶
@@ -539,7 +539,7 @@ public class WXSmallController extends BaseController {
 			param.setStatus(TblGoods.status_1 + "");
 			isSuccess = goodsService.updateGoodsStatus(user, param);
 		}
-		return warpObject(render(isSuccess));
+		return render(isSuccess);
 	}
 	
 	/**
@@ -550,7 +550,7 @@ public class WXSmallController extends BaseController {
 	public Object delGoods(TblGoods goods){
 		goods.setIsDelete(TblGoods.is_delete_1);
 		boolean b = goodsService.updateById(goods);
-		return warpObject(render(b));
+		return render(b);
 	}
 	/**
 	 * 根据商品编码查询商品库
@@ -602,7 +602,7 @@ public class WXSmallController extends BaseController {
 	public Object addSmallBill(SessionUser user,@RequestBody OrderDiffParam param,BindingResult result){
 		Validator.valid(result);
 		boolean b = diffService.create(user, param);
-		return warpObject(render(b));
+		return render(b);
 	} 
     /**
      * 极光im初始化
@@ -624,9 +624,9 @@ public class WXSmallController extends BaseController {
 	public Object getRefund(SessionOwnerUser user,@RequestBody OrderRefundParam param){
 		try {
 			boolean	refund = tblOrderService.refund(user, param);
-			return warpObject(render(refund));
+			return render(refund);
 		} catch (WxPayException e) {
-			return warpObject(render(false,e.getErrCodeDes()));
+			return render(false,e.getErrCodeDes());
 		}
 	}
 
@@ -653,7 +653,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping(value = "/order/refund",method = RequestMethod.POST)
 	public Object refundDiff(SessionOwnerUser user,OrderRefundParam param){
 		boolean b = tblOrderService.refundDiff(user, param);
-		return warpObject(render(b));
+		return render(b);
 	}
 
 }

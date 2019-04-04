@@ -3,7 +3,6 @@ package com.soft.ware.rest.modular.wxsmall;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
-
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryRequest;
@@ -13,8 +12,6 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.tips.ErrorTip;
-import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.base.warpper.MapWrapper;
@@ -28,9 +25,7 @@ import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
 import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
-
 import me.chanjar.weixin.common.error.WxErrorException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,7 +33,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -316,7 +310,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "/customer/v1/orders/{no}",method = RequestMethod.POST)
-    public Object orders(SessionUser user,@PathVariable String no,@RequestBody OrderUpdateParam param) throws WxErrorException {
+    public Tip orders(SessionUser user,@PathVariable String no,@RequestBody OrderUpdateParam param) throws WxErrorException {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TblOrder order = orderService.findByNo(user, no);
         long current = System.currentTimeMillis();
@@ -393,7 +387,7 @@ public class WXSmallCustomerController  extends BaseController {
             order.setConsigneeMobile(param.getTelephone());
         }
         boolean update = orderService.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner()).setStatus(order.getStatus())));
-        return warpObject(render(update));
+        return render(update);
     }
 
     /**
@@ -462,14 +456,14 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      */
     @RequestMapping(value = "/customer/v1/order/address",method = RequestMethod.POST)
-    public Object orderAddressUpdate(SessionUser user,@RequestBody OrderAddressUpdateParam param){
+    public Tip orderAddressUpdate(SessionUser user,@RequestBody OrderAddressUpdateParam param){
         TblOrder order = orderService.findByNo(user, param.getOrderNO());
         TblAddress address = addressService.findById(user, param.getAddressID());
         order.setConsigneeMobile(address.getTelephone());
         order.setConsigneeName(address.getName());
         order.setConsigneeAddress(address.getProvince() + "  " + address.getDetail());
         boolean update = orderService.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner()).setStatus(TblOrder.STATUS_0)));
-        return warpObject(render(update));
+        return render(update);
     }
 
     /**
@@ -481,7 +475,7 @@ public class WXSmallCustomerController  extends BaseController {
     @RequestMapping(value = "/customer/v1/order/delete",method = RequestMethod.POST)
     public Object deleteOrder(SessionUser user,@RequestBody OrderDeleteParam param){
         boolean b = orderService.customerDelete(user, param);
-        return warpObject(render(b));
+        return render(b);
     }
 
     /**
@@ -493,7 +487,7 @@ public class WXSmallCustomerController  extends BaseController {
     @RequestMapping(value = "/customer/v1/order/cancel",method = RequestMethod.POST)
     public Object cancelOrder(SessionUser user,@RequestBody OrderDeleteParam param){
         boolean b = orderService.customerCancel(user, param);
-        return warpObject(render(b));
+        return render(b);
     }
 
     /**
@@ -530,7 +524,7 @@ public class WXSmallCustomerController  extends BaseController {
     public Object addressDel(SessionUser user,@RequestBody Id id){
         TblAddress address = addressService.findById(user, Integer.valueOf(id.getId()));
         boolean b = addressService.deleteById(address.getId());
-        return warpObject(render(b));
+        return render(b);
     }
 
 
@@ -547,7 +541,7 @@ public class WXSmallCustomerController  extends BaseController {
             address.setOwner(user.getOpenId());
             address.setCreatedAt(new Date());
             boolean b = addressService.addAddress(user, address);
-            return warpObject(render(b));
+            return render(b);
         }else{
             TblAddress old = addressService.findById(user, address.getId());
             old.setName(address.getName());
@@ -556,7 +550,7 @@ public class WXSmallCustomerController  extends BaseController {
             old.setTelephone(address.getTelephone());
             old.setIsDefault(address.getIsDefault());
             boolean b = addressService.updateAddress(user, address);
-            return warpObject(render(b));
+            return render(b);
         }
     }
 
@@ -572,7 +566,7 @@ public class WXSmallCustomerController  extends BaseController {
         question.setOwner(user.getOwner());
         question.setCreatedAt(new Date());
         boolean b = questionService.add(question);
-        return warpObject(render(b));
+        return render(b);
     }
 
 

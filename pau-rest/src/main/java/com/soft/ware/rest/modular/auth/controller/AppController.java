@@ -1,7 +1,6 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.rest.common.persistence.model.TblAppBase;
 import com.soft.ware.rest.common.persistence.model.TblAppVersion;
 import com.soft.ware.rest.common.persistence.model.TblCategory;
@@ -94,7 +93,7 @@ public class AppController extends BaseController {
     @RequestMapping(value = "/user/order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user,AddOrderParam param){
         TblOrder order = tblOrderService.createOrder(user,param);
-        return super.warpObject(new SuccessWrapper(new HashMap<>()));
+        return render();
     }
 
 

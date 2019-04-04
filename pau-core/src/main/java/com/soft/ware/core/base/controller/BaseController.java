@@ -4,11 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.warpper.BaseControllerWarpper;
-import com.soft.ware.core.base.warpper.FailWrapper;
-import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.core.page.PageInfoBT;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.FileUtil;
+import com.soft.ware.core.util.Kv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -123,25 +122,7 @@ public class BaseController {
         return new ResponseEntity<byte[]>(fileBytes, headers, HttpStatus.CREATED);
     }
 
-    public BaseControllerWarpper render(boolean result){
-        if (result) {
-            return new SuccessWrapper();
-        } else {
-            return new FailWrapper();
-        }
-    }
 
-
-    public BaseControllerWarpper render(boolean result,String msg){
-        if (result) {
-            return new SuccessWrapper(msg);
-        } else {
-            return new FailWrapper(msg);
-        }
-    }
-
-
-/*
     public Kv<String,Object> render(){
         return render(true);
     }
@@ -157,7 +138,6 @@ public class BaseController {
     public Kv<String,Object> render(Page page){
         return render().set("page",page);
     }
-*/
 
 
     /**

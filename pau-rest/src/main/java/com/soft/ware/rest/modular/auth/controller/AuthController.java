@@ -109,13 +109,13 @@ public class AuthController extends BaseController {
         String appId = service.getWxMaConfig().getAppid();
         TblOwnerStaff user = tblOwnerStaffService.findByPhone(phone);
         if (user == null) {
-            return warpObject(render(false, "用户不存在"));
+            return render(false, "用户不存在");
         }
         if (TblOwnerStaff.status_1.equals(user.getStatus())) {
-            return warpObject(render(false, "账户被禁用"));
+            return render(false, "账户被禁用");
         }
         if (TblOwnerStaff.status_2.equals(user.getStatus())) {
-            return warpObject(render(false, "账户不存在"));
+            return render(false, "账户不存在");
         }
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(phone, randomKey);

@@ -1,8 +1,6 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.FailWrapper;
-import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderUpdateStatusParam;
@@ -96,7 +94,7 @@ public class OrderController extends BaseController {
     public Object updateStatus(SessionUser user, OrderUpdateStatusParam param, BindingResult error){
         Validator.valid(error);
         boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
-        return result ? warpObject(new SuccessWrapper()) : warpObject(new FailWrapper());
+        return render(result);
     }
 
     /**
