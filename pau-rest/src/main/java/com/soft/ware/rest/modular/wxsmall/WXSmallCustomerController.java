@@ -32,6 +32,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -596,7 +597,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @return 该接口逻辑和微信下单接口逻辑一样，返回结果也一样
      */
     @RequestMapping(value = "/customer/v2/diff/wxpay/unifiedorder",method = RequestMethod.POST)
-    public Object diff(SessionUser user, @RequestBody DiffParam param, HttpServletRequest request, BindingResult result) {
+    public Object diff(SessionUser user, @RequestBody @Valid DiffParam param, HttpServletRequest request, BindingResult result) {
         Validator.valid(result);
         String no = param.getDiffNO();
         TblOrderMoneyDiff diff = orderMoneyDiffService.findByNo(user, no);

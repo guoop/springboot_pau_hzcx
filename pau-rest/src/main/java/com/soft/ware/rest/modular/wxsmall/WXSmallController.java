@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -220,7 +221,7 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/v2/auth/staff/man")
-	public Object addOrUpdate(SessionUser user, @RequestBody StaffEditParam param, BindingResult result) throws Exception {
+	public Object addOrUpdate(SessionUser user, @RequestBody @Valid StaffEditParam param, BindingResult result) throws Exception {
 		Validator.valid(result);
 		tblOwnerStaffService.saveOrUpdate(user,param);
 		return render();
@@ -586,7 +587,7 @@ public class WXSmallController extends BaseController {
 	 * pic：小票图片URL
 	 */
 	@RequestMapping("v2/order/money/diff")
-	public Object addSmallBill(SessionUser user,@RequestBody OrderDiffParam param,BindingResult result){
+	public Object addSmallBill(SessionUser user,@RequestBody @Valid OrderDiffParam param,BindingResult result){
 		Validator.valid(result);
 		boolean b = diffService.create(user, param);
 		return render(b);

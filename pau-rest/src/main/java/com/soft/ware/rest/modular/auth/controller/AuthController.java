@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * 请求验证的
@@ -72,7 +73,7 @@ public class AuthController extends BaseController {
      * @return
      */
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/x-www-form-urlencoded"})
-    public Object createAuthenticationToken(AuthRequest authRequest,HttpServletRequest request,BindingResult result) {
+    public Object createAuthenticationToken(@Valid AuthRequest authRequest, HttpServletRequest request, BindingResult result) {
         Validator.valid(result);
     	 boolean validate = false;
         if(ToolUtil.isNotEmpty(authRequest.getPhone())){
@@ -96,7 +97,7 @@ public class AuthController extends BaseController {
      * @return
      */
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/json"})
-    public Object maLogin(@RequestBody AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
+    public Object maLogin(@RequestBody @Valid AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
         Validator.valid(result);
         String phone = param.getPhone();
         String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);

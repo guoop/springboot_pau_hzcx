@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class OrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/user/order/maintain",method = RequestMethod.POST)
-    public Object updateStatus(SessionUser user, OrderUpdateStatusParam param, BindingResult error){
+    public Object updateStatus(SessionUser user, @Valid OrderUpdateStatusParam param, BindingResult error){
         Validator.valid(error);
         boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
         return render(result);
