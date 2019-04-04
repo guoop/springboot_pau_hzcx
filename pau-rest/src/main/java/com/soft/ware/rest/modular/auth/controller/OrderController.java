@@ -2,15 +2,13 @@ package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderBackParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderUpdateStatusParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.validator.Validator;
-import com.soft.ware.rest.modular.auth.wrapper.OrderBackParam;
-import com.soft.ware.rest.modular.auth.wrapper.OrderPageWrapper;
-import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,10 +61,7 @@ public class OrderController extends BaseController {
             }
         }
         List<Map> list = orderService.findPage(user, page, param, TblOrder.SOURCE_1);
-        Map<String, Object> map = new HashMap<>();
-        map.put("code", SUCCESS);
-        map.put("orders",list);
-        return super.warpObject(new OrderPageWrapper(map));
+        return render().set("orders", list);
     }
 
 
@@ -81,8 +76,7 @@ public class OrderController extends BaseController {
         HashMap<Object, Object> map = new HashMap<>();
         TblOrder order = orderService.findByNo(user, no);
         map.put("code", SUCCESS);
-        map.put("order", order);
-        return super.warpObject(new OrderWrapper(map));
+        return render().set("order", order);
     }
 
 

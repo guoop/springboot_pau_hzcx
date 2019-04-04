@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import com.soft.ware.core.base.controller.BaseController;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.common.persistence.model.TblAppBase;
 import com.soft.ware.rest.common.persistence.model.TblAppVersion;
 import com.soft.ware.rest.common.persistence.model.TblCategory;
@@ -13,14 +14,11 @@ import com.soft.ware.rest.modular.auth.service.TblCategoryService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.auth.wrapper.AppVersionWrapper;
-import com.soft.ware.rest.modular.auth.wrapper.CategoryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,10 +48,7 @@ public class AppController extends BaseController {
     @RequestMapping(value = "/user/category/list")
     public Object goods(SessionUser user){
         List<TblCategory> list = categoryService.findAllCategory(user);
-        Map<String, Object> map = new HashMap<>();
-        map.put("code",SUCCESS);
-        map.put("data", list);
-        return super.warpObject(new CategoryWrapper(map));
+        return render().set("data", list);
 
     }
 
@@ -100,15 +95,8 @@ public class AppController extends BaseController {
     @RequestMapping(value = "/version/check",method = RequestMethod.GET)
     public Object appVersion(){
         TblAppVersion v = appVersionService.findLast(TblAppBase.PLATFORM_CODE_APP_ANDROID);
-        Map<String, Object> map = new HashMap<>();
-        map.put("code", SUCCESS);
-        map.put("force", v.getIsForce());
-        Map<String, Object> newVersion = new HashMap<String,Object>();
-        newVersion.put("download_url", v.getDownloadUrl());
-        newVersion.put("description", v.getDescription());
-        newVersion.put("version", v.getVersion());
-        map.put("newVersion", newVersion);
-        return super.warpObject(new AppVersionWrapper(map));
+        Kv<String, String> kv = Kv.by("download_url", v.getDownloadUrl()).set("description", v.getDescription()).set("version", v.getVersion());
+        return render().set("force", v.getIsForce()).set("newVersion", kv);
     }
 
 

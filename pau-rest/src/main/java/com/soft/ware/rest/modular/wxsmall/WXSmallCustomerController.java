@@ -16,6 +16,7 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ResultView;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.*;
@@ -23,8 +24,6 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.validator.Validator;
-import com.soft.ware.rest.modular.auth.wrapper.CarWrapper;
-import com.soft.ware.rest.modular.auth.wrapper.OrderWrapper;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,7 +244,7 @@ public class WXSmallCustomerController  extends BaseController {
         }
 
 
-        Map<Object, Object> map = new HashMap<>();
+        ResultView map = render();
         if ("all".equals(flag)) {
             map.put("goods", maps);
         }
@@ -254,7 +253,7 @@ public class WXSmallCustomerController  extends BaseController {
         map.put("reachDeliveryMoney", reachDeliveryMoney);
         map.put("actualFee", actualFee.setScale(2, round));
         map.put("actualMoney", goodsMoney.add(actualFee).setScale(2, round));
-        return super.warpObject(new CarWrapper(map));
+        return map;
     }
 
 
@@ -286,7 +285,7 @@ public class WXSmallCustomerController  extends BaseController {
             param.setStatus(Integer.MAX_VALUE+"");
         }
         List<Map> list = orderService.findPage(user, page, param, TblOrder.SOURCE_0, TblOrder.SOURCE_2);
-        return warpObject(new OrderWrapper(list));
+        return warpObject(new ListWrapper(list));
     }
 
 
@@ -300,7 +299,7 @@ public class WXSmallCustomerController  extends BaseController {
     @RequestMapping(value = "/customer/v2/orders/{no}",method = RequestMethod.GET)
     public Object orders(SessionUser user,@PathVariable String no) {
         List<Map> list = orderService.findOrderMapByNo(user, no);
-        return warpObject(new OrderWrapper(list));
+        return warpObject(new ListWrapper(list));
     }
 
     /**

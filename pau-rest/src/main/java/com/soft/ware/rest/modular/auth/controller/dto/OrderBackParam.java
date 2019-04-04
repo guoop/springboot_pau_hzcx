@@ -1,4 +1,4 @@
-package com.soft.ware.rest.modular.auth.wrapper;
+package com.soft.ware.rest.modular.auth.controller.dto;
 
 import java.math.BigDecimal;
 

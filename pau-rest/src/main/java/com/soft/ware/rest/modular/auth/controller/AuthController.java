@@ -5,6 +5,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ResultView;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
@@ -22,7 +23,6 @@ import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.Validator;
-import com.soft.ware.rest.modular.auth.wrapper.AuthWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.BindingResult;
@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 请求验证的
@@ -137,16 +135,14 @@ public class AuthController extends BaseController {
             }
     		 TblOwner owner = ownerService.find(user.getOwner());
              AuthResponse resp = new AuthResponse(token, randomKey);
-             Map<String,Object> map = new HashMap<>();
-             map.put("code", SUCCESS);
-             map.put("payload", WXUtils.getPayLoad());
-             map.put("token", resp.getToken());
-             map.put("owner", user.getOwner());
+             ResultView view = render();
+             view.put("payload", WXUtils.getPayLoad());
+             view.put("token", resp.getToken());
+             view.put("owner", user.getOwner());
              HttpKit.getRequest().setAttribute("owner", user.getOwner());
-             map.put("app_name", owner.getAppName());
-             map.put("app_qr", owner.getAppName());
-             return super.warpObject(new AuthWrapper(map));
-    		
+             view.put("app_name", owner.getAppName());
+             view.put("app_qr", owner.getAppName());
+             return view;
     	} else {
     		throw new PauException(BizExceptionEnum.NO_USER);
     	}
