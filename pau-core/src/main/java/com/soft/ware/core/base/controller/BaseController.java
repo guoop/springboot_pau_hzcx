@@ -2,12 +2,14 @@ package com.soft.ware.core.base.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.soft.ware.core.base.tips.SuccessTip;
+import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.base.warpper.BaseControllerWarpper;
 import com.soft.ware.core.base.warpper.FailWrapper;
 import com.soft.ware.core.base.warpper.SuccessWrapper;
 import com.soft.ware.core.page.PageInfoBT;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.FileUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +21,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseController {
 
@@ -35,8 +40,6 @@ public class BaseController {
     protected static String REDIRECT = "redirect:";
     protected static String FORWARD = "forward:";
 
-    protected static SuccessTip SUCCESS_TIP = new SuccessTip();
-    
 
     protected HttpServletRequest getHttpServletRequest() {
         return HttpKit.getRequest();

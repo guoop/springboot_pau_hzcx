@@ -1,0 +1,232 @@
+2019-04-03 15:24:32,965 [INFO] [restartedMain] org.pau.web.AppStart [StartupInfoLogger.java : 48] Starting AppStart on Win7-2019RCVMNQ with PID 11400 (D:\Git\project\HZCX\pau-parent\pau-web\target\classes started by Administrator in D:\Git\project\HZCX\pau-parent\pau-web)
+2019-04-03 15:24:32,967 [INFO] [restartedMain] org.pau.web.AppStart [SpringApplication.java : 597] The following profiles are active: dev
+2019-04-03 15:24:33,025 [INFO] [restartedMain] o.s.b.c.e.AnnotationConfigEmbeddedWebApplicationContext [AbstractApplicationContext.java : 583] Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@558df361: startup date [Wed Apr 03 15:24:33 CST 2019]; root of context hierarchy
+2019-04-03 15:24:34,190 [INFO] [restartedMain] o.s.beans.factory.support.DefaultListableBeanFactory [DefaultListableBeanFactory.java : 828] Overriding bean definition for bean 'dataSource' with a different definition: replacing [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Dbcp; factoryMethodName=dataSource; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Dbcp.class]] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Tomcat; factoryMethodName=dataSource; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Tomcat.class]]
+2019-04-03 15:24:34,220 [WARN] [restartedMain] org.mybatis.spring.mapper.ClassPathMapperScanner [ClassPathMapperScanner.java : 166] No MyBatis mapper was found in '[org.pau.web]' package. Please check your configuration.
+2019-04-03 15:24:34,303 [INFO] [restartedMain] o.s.data.repository.config.RepositoryConfigurationDelegate [RepositoryConfigurationDelegate.java : 165] Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-04-03 15:24:34,336 [INFO] [restartedMain] o.s.data.repository.config.RepositoryConfigurationDelegate [RepositoryConfigurationDelegate.java : 165] Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-04-03 15:24:34,908 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'pauProperties' of type [org.pau.web.config.PauProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:24:34,909 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'webConfig' of type [org.pau.web.config.WebConfig$$EnhancerBySpringCGLIB$$56fd32a7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:24:35,026 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'druidStatPointcut' of type [org.springframework.aop.support.JdkRegexpMethodPointcut] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:24:35,038 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'druidStatInterceptor' of type [com.alibaba.druid.support.spring.stat.DruidStatInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:24:35,045 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'druidStatAdvisor' of type [org.springframework.aop.support.DefaultPointcutAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:24:35,076 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$abe4ca2a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:24:35,456 [INFO] [restartedMain] o.s.b.context.embedded.tomcat.TomcatEmbeddedServletContainer [TomcatEmbeddedServletContainer.java : 89] Tomcat initialized with port(s): 8080 (http)
+2019-04-03 15:24:35,468 [INFO] [restartedMain] org.apache.catalina.core.StandardService [DirectJDKLog.java : 179] Starting service [Tomcat]
+2019-04-03 15:24:35,470 [INFO] [restartedMain] org.apache.catalina.core.StandardEngine [DirectJDKLog.java : 179] Starting Servlet Engine: Apache Tomcat/8.5.23
+2019-04-03 15:24:35,608 [INFO] [localhost-startStop-1] o.a.catalina.core.ContainerBase.[Tomcat].[localhost].[/] [DirectJDKLog.java : 179] Initializing Spring embedded WebApplicationContext
+2019-04-03 15:24:35,609 [INFO] [localhost-startStop-1] org.springframework.web.context.ContextLoader [EmbeddedWebApplicationContext.java : 276] Root WebApplicationContext: initialization completed in 2584 ms
+2019-04-03 15:24:35,804 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.ServletRegistrationBean [ServletRegistrationBean.java : 190] Mapping servlet: 'statViewServlet' to [/druid/*]
+2019-04-03 15:24:35,806 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.ServletRegistrationBean [ServletRegistrationBean.java : 190] Mapping servlet: 'dispatcherServlet' to [/]
+2019-04-03 15:24:35,809 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'characterEncodingFilter' to: [/*]
+2019-04-03 15:24:35,810 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2019-04-03 15:24:35,810 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2019-04-03 15:24:35,810 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'requestContextFilter' to: [/*]
+2019-04-03 15:24:35,810 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 271] Mapping filter: 'webStatFilter' to urls: [/*]
+2019-04-03 15:24:35,811 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 271] Mapping filter: 'xssFilter' to urls: [/*]
+2019-04-03 15:24:36,567 [INFO] [restartedMain] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean [LocalContainerEntityManagerFactoryBean.java : 356] Building JPA container EntityManagerFactory for persistence unit 'default'
+2019-04-03 15:24:36,584 [INFO] [restartedMain] org.hibernate.jpa.internal.util.LogHelper [LogHelper.java : 31] HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2019-04-03 15:24:36,674 [INFO] [restartedMain] org.hibernate.Version [Version.java : 37] HHH000412: Hibernate Core {5.0.12.Final}
+2019-04-03 15:24:36,677 [INFO] [restartedMain] org.hibernate.cfg.Environment [Environment.java : 213] HHH000206: hibernate.properties not found
+2019-04-03 15:24:36,678 [INFO] [restartedMain] org.hibernate.cfg.Environment [Environment.java : 317] HHH000021: Bytecode provider name : javassist
+2019-04-03 15:24:36,730 [INFO] [restartedMain] org.hibernate.annotations.common.Version [JavaReflectionManager.java : 66] HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2019-04-03 15:24:36,884 [INFO] [restartedMain] org.hibernate.dialect.Dialect [Dialect.java : 156] HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2019-04-03 15:24:37,164 [INFO] [restartedMain] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean [AbstractEntityManagerFactoryBean.java : 392] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-04-03 15:24:37,703 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerAdapter [RequestMappingHandlerAdapter.java : 534] Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@558df361: startup date [Wed Apr 03 15:24:33 CST 2019]; root of context hierarchy
+2019-04-03 15:24:37,801 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerMapping [AbstractHandlerMethodMapping.java : 543] Mapped "{[/test]}" onto public java.lang.String org.pau.web.controller.TestController.test()
+2019-04-03 15:24:37,805 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerMapping [AbstractHandlerMethodMapping.java : 543] Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2019-04-03 15:24:37,806 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerMapping [AbstractHandlerMethodMapping.java : 543] Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2019-04-03 15:24:37,846 [INFO] [restartedMain] o.s.web.servlet.handler.SimpleUrlHandlerMapping [AbstractUrlHandlerMapping.java : 362] Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2019-04-03 15:24:37,847 [INFO] [restartedMain] o.s.web.servlet.handler.SimpleUrlHandlerMapping [AbstractUrlHandlerMapping.java : 362] Mapped URL path [/static/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2019-04-03 15:24:37,902 [INFO] [restartedMain] o.s.web.servlet.handler.SimpleUrlHandlerMapping [AbstractUrlHandlerMapping.java : 362] Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2019-04-03 15:24:38,279 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1230] Found 1 Process Engine Configurators in total:
+2019-04-03 15:24:38,280 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1232] class org.flowable.spring.configurator.SpringIdmEngineConfigurator (priority:100000)
+2019-04-03 15:24:38,280 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1242] Executing beforeInit() of class org.flowable.spring.configurator.SpringIdmEngineConfigurator (priority:100000)
+2019-04-03 15:24:39,132 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1361] Executing configure() of class org.flowable.spring.configurator.SpringIdmEngineConfigurator (priority:100000)
+2019-04-03 15:24:39,257 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on identity with resource org/flowable/idm/db/create/flowable.mysql.create.identity.sql
+2019-04-03 15:24:39,258 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:40,594 [INFO] [restartedMain] org.flowable.idm.engine.impl.IdmEngineImpl [IdmEngineImpl.java : 51] IdmEngine default created
+2019-04-03 15:24:40,613 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on common with resource org/flowable/db/create/flowable.mysql.create.common.sql
+2019-04-03 15:24:40,613 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:40,792 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on identitylink with resource org/flowable/identitylink/service/db/create/flowable.mysql.create.identitylink.sql
+2019-04-03 15:24:40,792 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:41,156 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on identitylink.history with resource org/flowable/identitylink/service/db/create/flowable.mysql.create.identitylink.history.sql
+2019-04-03 15:24:41,157 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:41,321 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on task with resource org/flowable/task/service/db/create/flowable.mysql.create.task.sql
+2019-04-03 15:24:41,322 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:41,634 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on task.history with resource org/flowable/task/service/db/create/flowable.mysql.create.task.history.sql
+2019-04-03 15:24:41,635 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:42,009 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on variable with resource org/flowable/variable/service/db/create/flowable.mysql.create.variable.sql
+2019-04-03 15:24:42,010 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:42,297 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on variable.history with resource org/flowable/variable/service/db/create/flowable.mysql.create.variable.history.sql
+2019-04-03 15:24:42,298 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:42,667 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on job with resource org/flowable/job/service/db/create/flowable.mysql.create.job.sql
+2019-04-03 15:24:42,668 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:43,513 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on engine with resource org/flowable/db/create/flowable.mysql.create.engine.sql
+2019-04-03 15:24:43,513 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:47,884 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 201] performing create on history with resource org/flowable/db/create/flowable.mysql.create.history.sql
+2019-04-03 15:24:47,885 [INFO] [restartedMain] o.f.e.common.impl.db.AbstractSqlScriptBasedDbSchemaManager [AbstractSqlScriptBasedDbSchemaManager.java : 217] Found MySQL: majorVersion=5 minorVersion=7
+2019-04-03 15:24:49,276 [INFO] [restartedMain] org.flowable.engine.impl.ProcessEngineImpl [ProcessEngineImpl.java : 84] ProcessEngine default created
+2019-04-03 15:24:49,287 [INFO] [restartedMain] o.f.job.service.impl.asyncexecutor.AbstractAsyncExecutor [AbstractAsyncExecutor.java : 114] Starting up the async job executor [org.flowable.spring.SpringAsyncExecutor].
+2019-04-03 15:24:49,290 [INFO] [Thread-6] o.f.j.service.impl.asyncexecutor.AcquireAsyncJobsDueRunnable [AcquireAsyncJobsDueRunnable.java : 52] starting to acquire async jobs due
+2019-04-03 15:24:49,291 [INFO] [Thread-7] o.f.job.service.impl.asyncexecutor.AcquireTimerJobsRunnable [AcquireTimerJobsRunnable.java : 50] starting to acquire async jobs due
+2019-04-03 15:24:49,293 [INFO] [Thread-8] o.f.job.service.impl.asyncexecutor.ResetExpiredJobsRunnable [ResetExpiredJobsRunnable.java : 56] starting to reset expired jobs
+2019-04-03 15:24:49,367 [INFO] [restartedMain] org.flowable.engine.impl.cmd.ValidateV5EntitiesCmd [ValidateV5EntitiesCmd.java : 43] Total of v5 deployments found: 0
+2019-04-03 15:24:50,886 [WARN] [restartedMain] o.s.boot.devtools.autoconfigure.OptionalLiveReloadServer [OptionalLiveReloadServer.java : 62] Unable to start LiveReload server
+2019-04-03 15:24:50,941 [INFO] [restartedMain] o.s.jmx.export.annotation.AnnotationMBeanExporter [MBeanExporter.java : 431] Registering beans for JMX exposure on startup
+2019-04-03 15:24:50,979 [ERROR] [restartedMain] org.apache.coyote.http11.Http11NioProtocol [DirectJDKLog.java : 181] Failed to start end point associated with ProtocolHandler ["http-nio-8080"]
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method)
+	at sun.nio.ch.Net.bind(Net.java:433)
+	at sun.nio.ch.Net.bind(Net.java:425)
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223)
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74)
+	at org.apache.tomcat.util.net.NioEndpoint.bind(NioEndpoint.java:210)
+	at org.apache.tomcat.util.net.AbstractEndpoint.start(AbstractEndpoint.java:990)
+	at org.apache.coyote.AbstractProtocol.start(AbstractProtocol.java:635)
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:1022)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	at org.apache.catalina.core.StandardService.addConnector(StandardService.java:225)
+	at org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer.addPreviouslyRemovedConnectors(TomcatEmbeddedServletContainer.java:250)
+	at org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer.start(TomcatEmbeddedServletContainer.java:193)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.startEmbeddedServletContainer(EmbeddedWebApplicationContext.java:297)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.finishRefresh(EmbeddedWebApplicationContext.java:145)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:546)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.refresh(EmbeddedWebApplicationContext.java:122)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:693)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:360)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1118)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1107)
+	at org.pau.web.AppStart.main(AppStart.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+2019-04-03 15:24:50,980 [ERROR] [restartedMain] org.apache.catalina.core.StandardService [DirectJDKLog.java : 181] Failed to start connector [Connector[HTTP/1.1-8080]]
+org.apache.catalina.LifecycleException: Failed to start component [Connector[HTTP/1.1-8080]]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:167)
+	at org.apache.catalina.core.StandardService.addConnector(StandardService.java:225)
+	at org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer.addPreviouslyRemovedConnectors(TomcatEmbeddedServletContainer.java:250)
+	at org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer.start(TomcatEmbeddedServletContainer.java:193)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.startEmbeddedServletContainer(EmbeddedWebApplicationContext.java:297)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.finishRefresh(EmbeddedWebApplicationContext.java:145)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:546)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.refresh(EmbeddedWebApplicationContext.java:122)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:693)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:360)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:303)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1118)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1107)
+	at org.pau.web.AppStart.main(AppStart.java:17)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+Caused by: org.apache.catalina.LifecycleException: service.getName(): "Tomcat";  Protocol handler start failed
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:1031)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+	... 18 common frames omitted
+Caused by: java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method)
+	at sun.nio.ch.Net.bind(Net.java:433)
+	at sun.nio.ch.Net.bind(Net.java:425)
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223)
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74)
+	at org.apache.tomcat.util.net.NioEndpoint.bind(NioEndpoint.java:210)
+	at org.apache.tomcat.util.net.AbstractEndpoint.start(AbstractEndpoint.java:990)
+	at org.apache.coyote.AbstractProtocol.start(AbstractProtocol.java:635)
+	at org.apache.catalina.connector.Connector.startInternal(Connector.java:1022)
+	... 19 common frames omitted
+2019-04-03 15:24:50,993 [INFO] [restartedMain] org.apache.catalina.core.StandardService [DirectJDKLog.java : 179] Stopping service [Tomcat]
+2019-04-03 15:24:51,013 [INFO] [restartedMain] o.s.b.a.logging.AutoConfigurationReportLoggingInitializer [AutoConfigurationReportLoggingInitializer.java : 101] 
+
+Error starting ApplicationContext. To display the auto-configuration report re-run your application with 'debug' enabled.
+2019-04-03 15:24:51,017 [ERROR] [restartedMain] o.s.boot.diagnostics.LoggingFailureAnalysisReporter [LoggingFailureAnalysisReporter.java : 42] 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+The Tomcat connector configured to listen on port 8080 failed to start. The port may already be in use or the connector may be misconfigured.
+
+Action:
+
+Verify the connector's configuration, identify and stop any process that's listening on port 8080, or configure this application to listen on another port.
+
+2019-04-03 15:24:51,019 [INFO] [restartedMain] o.s.b.c.e.AnnotationConfigEmbeddedWebApplicationContext [AbstractApplicationContext.java : 984] Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@558df361: startup date [Wed Apr 03 15:24:33 CST 2019]; root of context hierarchy
+2019-04-03 15:24:51,023 [INFO] [restartedMain] o.s.jmx.export.annotation.AnnotationMBeanExporter [MBeanExporter.java : 449] Unregistering JMX-exposed beans on shutdown
+2019-04-03 15:24:51,023 [INFO] [restartedMain] o.f.job.service.impl.asyncexecutor.AbstractAsyncExecutor [AbstractAsyncExecutor.java : 162] Shutting down the async job executor [org.flowable.spring.SpringAsyncExecutor].
+2019-04-03 15:24:51,024 [INFO] [flowable-acquire-timer-jobs] o.f.job.service.impl.asyncexecutor.AcquireTimerJobsRunnable [AcquireTimerJobsRunnable.java : 116] stopped async job due acquisition
+2019-04-03 15:24:51,024 [INFO] [flowable-acquire-async-jobs] o.f.j.service.impl.asyncexecutor.AcquireAsyncJobsDueRunnable [AcquireAsyncJobsDueRunnable.java : 79] stopped async job due acquisition
+2019-04-03 15:24:51,024 [INFO] [flowable-reset-expired-jobs] o.f.job.service.impl.asyncexecutor.ResetExpiredJobsRunnable [ResetExpiredJobsRunnable.java : 104] stopped resetting expired jobs
+2019-04-03 15:24:51,026 [INFO] [restartedMain] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean [AbstractEntityManagerFactoryBean.java : 563] Closing JPA EntityManagerFactory for persistence unit 'default'
+2019-04-03 15:25:09,808 [INFO] [restartedMain] org.pau.web.AppStart [StartupInfoLogger.java : 48] Starting AppStart on Win7-2019RCVMNQ with PID 11580 (D:\Git\project\HZCX\pau-parent\pau-web\target\classes started by Administrator in D:\Git\project\HZCX\pau-parent\pau-web)
+2019-04-03 15:25:09,809 [INFO] [restartedMain] org.pau.web.AppStart [SpringApplication.java : 597] The following profiles are active: dev
+2019-04-03 15:25:09,853 [INFO] [restartedMain] o.s.b.c.e.AnnotationConfigEmbeddedWebApplicationContext [AbstractApplicationContext.java : 583] Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@393d9310: startup date [Wed Apr 03 15:25:09 CST 2019]; root of context hierarchy
+2019-04-03 15:25:11,101 [INFO] [restartedMain] o.s.beans.factory.support.DefaultListableBeanFactory [DefaultListableBeanFactory.java : 828] Overriding bean definition for bean 'dataSource' with a different definition: replacing [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Dbcp; factoryMethodName=dataSource; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Dbcp.class]] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration$Tomcat; factoryMethodName=dataSource; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Tomcat.class]]
+2019-04-03 15:25:11,128 [WARN] [restartedMain] org.mybatis.spring.mapper.ClassPathMapperScanner [ClassPathMapperScanner.java : 166] No MyBatis mapper was found in '[org.pau.web]' package. Please check your configuration.
+2019-04-03 15:25:11,208 [INFO] [restartedMain] o.s.data.repository.config.RepositoryConfigurationDelegate [RepositoryConfigurationDelegate.java : 165] Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-04-03 15:25:11,241 [INFO] [restartedMain] o.s.data.repository.config.RepositoryConfigurationDelegate [RepositoryConfigurationDelegate.java : 165] Multiple Spring Data modules found, entering strict repository configuration mode!
+2019-04-03 15:25:11,804 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'pauProperties' of type [org.pau.web.config.PauProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:25:11,805 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'webConfig' of type [org.pau.web.config.WebConfig$$EnhancerBySpringCGLIB$$a54fb683] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:25:11,909 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'druidStatPointcut' of type [org.springframework.aop.support.JdkRegexpMethodPointcut] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:25:11,919 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'druidStatInterceptor' of type [com.alibaba.druid.support.spring.stat.DruidStatInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:25:11,925 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'druidStatAdvisor' of type [org.springframework.aop.support.DefaultPointcutAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:25:11,950 [INFO] [restartedMain] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker [PostProcessorRegistrationDelegate.java : 327] Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$fa374e06] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2019-04-03 15:25:12,390 [INFO] [restartedMain] o.s.b.context.embedded.tomcat.TomcatEmbeddedServletContainer [TomcatEmbeddedServletContainer.java : 89] Tomcat initialized with port(s): 8080 (http)
+2019-04-03 15:25:12,403 [INFO] [restartedMain] org.apache.catalina.core.StandardService [DirectJDKLog.java : 179] Starting service [Tomcat]
+2019-04-03 15:25:12,405 [INFO] [restartedMain] org.apache.catalina.core.StandardEngine [DirectJDKLog.java : 179] Starting Servlet Engine: Apache Tomcat/8.5.23
+2019-04-03 15:25:12,556 [INFO] [localhost-startStop-1] o.a.catalina.core.ContainerBase.[Tomcat].[localhost].[/] [DirectJDKLog.java : 179] Initializing Spring embedded WebApplicationContext
+2019-04-03 15:25:12,557 [INFO] [localhost-startStop-1] org.springframework.web.context.ContextLoader [EmbeddedWebApplicationContext.java : 276] Root WebApplicationContext: initialization completed in 2705 ms
+2019-04-03 15:25:12,747 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.ServletRegistrationBean [ServletRegistrationBean.java : 190] Mapping servlet: 'statViewServlet' to [/druid/*]
+2019-04-03 15:25:12,749 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.ServletRegistrationBean [ServletRegistrationBean.java : 190] Mapping servlet: 'dispatcherServlet' to [/]
+2019-04-03 15:25:12,753 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'characterEncodingFilter' to: [/*]
+2019-04-03 15:25:12,753 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2019-04-03 15:25:12,754 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2019-04-03 15:25:12,754 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 258] Mapping filter: 'requestContextFilter' to: [/*]
+2019-04-03 15:25:12,754 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 271] Mapping filter: 'webStatFilter' to urls: [/*]
+2019-04-03 15:25:12,754 [INFO] [localhost-startStop-1] org.springframework.boot.web.servlet.FilterRegistrationBean [AbstractFilterRegistrationBean.java : 271] Mapping filter: 'xssFilter' to urls: [/*]
+2019-04-03 15:25:13,469 [INFO] [restartedMain] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean [LocalContainerEntityManagerFactoryBean.java : 356] Building JPA container EntityManagerFactory for persistence unit 'default'
+2019-04-03 15:25:13,486 [INFO] [restartedMain] org.hibernate.jpa.internal.util.LogHelper [LogHelper.java : 31] HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2019-04-03 15:25:13,572 [INFO] [restartedMain] org.hibernate.Version [Version.java : 37] HHH000412: Hibernate Core {5.0.12.Final}
+2019-04-03 15:25:13,575 [INFO] [restartedMain] org.hibernate.cfg.Environment [Environment.java : 213] HHH000206: hibernate.properties not found
+2019-04-03 15:25:13,577 [INFO] [restartedMain] org.hibernate.cfg.Environment [Environment.java : 317] HHH000021: Bytecode provider name : javassist
+2019-04-03 15:25:13,629 [INFO] [restartedMain] org.hibernate.annotations.common.Version [JavaReflectionManager.java : 66] HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2019-04-03 15:25:13,780 [INFO] [restartedMain] org.hibernate.dialect.Dialect [Dialect.java : 156] HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2019-04-03 15:25:14,054 [INFO] [restartedMain] o.s.orm.jpa.LocalContainerEntityManagerFactoryBean [AbstractEntityManagerFactoryBean.java : 392] Initialized JPA EntityManagerFactory for persistence unit 'default'
+2019-04-03 15:25:14,559 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerAdapter [RequestMappingHandlerAdapter.java : 534] Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@393d9310: startup date [Wed Apr 03 15:25:09 CST 2019]; root of context hierarchy
+2019-04-03 15:25:14,655 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerMapping [AbstractHandlerMethodMapping.java : 543] Mapped "{[/test]}" onto public java.lang.String org.pau.web.controller.TestController.test()
+2019-04-03 15:25:14,658 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerMapping [AbstractHandlerMethodMapping.java : 543] Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2019-04-03 15:25:14,658 [INFO] [restartedMain] o.s.w.s.mvc.method.annotation.RequestMappingHandlerMapping [AbstractHandlerMethodMapping.java : 543] Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2019-04-03 15:25:14,713 [INFO] [restartedMain] o.s.web.servlet.handler.SimpleUrlHandlerMapping [AbstractUrlHandlerMapping.java : 362] Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2019-04-03 15:25:14,714 [INFO] [restartedMain] o.s.web.servlet.handler.SimpleUrlHandlerMapping [AbstractUrlHandlerMapping.java : 362] Mapped URL path [/static/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2019-04-03 15:25:14,763 [INFO] [restartedMain] o.s.web.servlet.handler.SimpleUrlHandlerMapping [AbstractUrlHandlerMapping.java : 362] Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2019-04-03 15:25:15,087 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1230] Found 1 Process Engine Configurators in total:
+2019-04-03 15:25:15,087 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1232] class org.flowable.spring.configurator.SpringIdmEngineConfigurator (priority:100000)
+2019-04-03 15:25:15,087 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1242] Executing beforeInit() of class org.flowable.spring.configurator.SpringIdmEngineConfigurator (priority:100000)
+2019-04-03 15:25:15,868 [INFO] [restartedMain] org.flowable.engine.impl.cfg.ProcessEngineConfigurationImpl [ProcessEngineConfigurationImpl.java : 1361] Executing configure() of class org.flowable.spring.configurator.SpringIdmEngineConfigurator (priority:100000)
+2019-04-03 15:25:15,982 [INFO] [restartedMain] org.flowable.idm.engine.impl.IdmEngineImpl [IdmEngineImpl.java : 51] IdmEngine default created
+2019-04-03 15:25:16,015 [INFO] [restartedMain] org.flowable.engine.impl.ProcessEngineImpl [ProcessEngineImpl.java : 84] ProcessEngine default created
+2019-04-03 15:25:16,021 [INFO] [restartedMain] o.f.job.service.impl.asyncexecutor.AbstractAsyncExecutor [AbstractAsyncExecutor.java : 114] Starting up the async job executor [org.flowable.spring.SpringAsyncExecutor].
+2019-04-03 15:25:16,022 [INFO] [Thread-6] o.f.j.service.impl.asyncexecutor.AcquireAsyncJobsDueRunnable [AcquireAsyncJobsDueRunnable.java : 52] starting to acquire async jobs due
+2019-04-03 15:25:16,022 [INFO] [Thread-7] o.f.job.service.impl.asyncexecutor.AcquireTimerJobsRunnable [AcquireTimerJobsRunnable.java : 50] starting to acquire async jobs due
+2019-04-03 15:25:16,022 [INFO] [Thread-8] o.f.job.service.impl.asyncexecutor.ResetExpiredJobsRunnable [ResetExpiredJobsRunnable.java : 56] starting to reset expired jobs
+2019-04-03 15:25:16,062 [INFO] [restartedMain] org.flowable.engine.impl.cmd.ValidateV5EntitiesCmd [ValidateV5EntitiesCmd.java : 43] Total of v5 deployments found: 0
+2019-04-03 15:25:16,577 [INFO] [restartedMain] o.s.boot.devtools.autoconfigure.OptionalLiveReloadServer [OptionalLiveReloadServer.java : 58] LiveReload server is running on port 35729
+2019-04-03 15:25:16,631 [INFO] [restartedMain] o.s.jmx.export.annotation.AnnotationMBeanExporter [MBeanExporter.java : 431] Registering beans for JMX exposure on startup
+2019-04-03 15:25:16,691 [INFO] [restartedMain] o.s.b.context.embedded.tomcat.TomcatEmbeddedServletContainer [TomcatEmbeddedServletContainer.java : 201] Tomcat started on port(s): 8080 (http)
+2019-04-03 15:25:16,697 [INFO] [restartedMain] org.pau.web.AppStart [StartupInfoLogger.java : 57] Started AppStart in 7.353 seconds (JVM running for 7.871)
+2019-04-03 15:25:21,099 [INFO] [http-nio-8080-exec-1] o.a.catalina.core.ContainerBase.[Tomcat].[localhost].[/] [DirectJDKLog.java : 179] Initializing Spring FrameworkServlet 'dispatcherServlet'
+2019-04-03 15:25:21,099 [INFO] [http-nio-8080-exec-1] org.springframework.web.servlet.DispatcherServlet [FrameworkServlet.java : 489] FrameworkServlet 'dispatcherServlet': initialization started
+2019-04-03 15:25:21,132 [INFO] [http-nio-8080-exec-1] org.springframework.web.servlet.DispatcherServlet [FrameworkServlet.java : 508] FrameworkServlet 'dispatcherServlet': initialization completed in 33 ms
+2019-04-03 15:25:21,177 [WARN] [http-nio-8080-exec-1] org.springframework.web.servlet.PageNotFound [DispatcherServlet.java : 1176] No mapping found for HTTP request with URI [/WEB-INF/view/index] in DispatcherServlet with name 'dispatcherServlet'
+2019-04-03 15:25:23,865 [WARN] [http-nio-8080-exec-5] org.springframework.web.servlet.PageNotFound [DispatcherServlet.java : 1176] No mapping found for HTTP request with URI [/WEB-INF/view/index] in DispatcherServlet with name 'dispatcherServlet'

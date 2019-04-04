@@ -1,4 +1,4 @@
-package com.soft.ware.core.datasource;
+package org.pau.web.config.properties;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;

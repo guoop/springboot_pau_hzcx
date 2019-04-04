@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
+import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.base.warpper.MapWrapper;
 import com.soft.ware.core.exception.PauException;
@@ -21,6 +22,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -236,7 +239,7 @@ public class WXSmallController extends BaseController {
 				isSuccess = tblOwnerStaffService.insert(tblOwnerStaff);
 			}
 			if (isSuccess) {
-				return SUCCESS_TIP;
+				return new SuccessTip();
 			} else {
 				return new ErrorTip(608, "插入或者更新失败");
 			}
@@ -253,7 +256,7 @@ public class WXSmallController extends BaseController {
 			return new ErrorTip(605, "参数不能为空");
 		}
 		if (tblOwnerStaffService.deleteById(id)) {
-			return SUCCESS_TIP;
+			return new SuccessTip();
 		}
 		;
 		return new ErrorTip(606, "删除失败");
@@ -362,7 +365,7 @@ public class WXSmallController extends BaseController {
 						map.get("orderNo").toString(), map.get("status")
 								.toString());
 				if (isSuccess) {
-					return SUCCESS_TIP;
+					return new SuccessTip();
 				}
 			}
 		}
@@ -434,7 +437,7 @@ public class WXSmallController extends BaseController {
 			isSuccess = categoryService.insert(tblCategory);
 		}
 		if (isSuccess) {
-			return SUCCESS_TIP;
+			return new SuccessTip();
 		}
 		return new ErrorTip(604, "分类新增或者更新失败");
 	}
@@ -451,7 +454,7 @@ public class WXSmallController extends BaseController {
 				isSuccess = categoryService
 						.deleteById(map.get("id").toString());
 				if (isSuccess) {
-					return SUCCESS_TIP;
+					return new SuccessTip();
 				} 
 			}
 		}
@@ -481,6 +484,7 @@ public class WXSmallController extends BaseController {
 	/**
 	 * 根据商品ID、商品编码获取商品详情
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET)
     public Object getGoodsDetail(SessionUser user,Id id) throws Exception {
 		TblGoods goods = goodsService.findById(Long.parseLong(id.getId()));
@@ -505,7 +509,7 @@ public class WXSmallController extends BaseController {
 	public Object addByScan(TblGoods tblgoods){
 		if(ToolUtil.isNotEmpty(tblgoods)){
 			if(goodsService.insert(tblgoods)){
-				return SUCCESS_TIP;
+				return new SuccessTip();
 			};
 		}
 		return new ErrorTip(604,"商品编辑失败");
@@ -518,7 +522,7 @@ public class WXSmallController extends BaseController {
 	public Object addByHand(TblGoods tblgoods){
 		if(ToolUtil.isNotEmpty(tblgoods)){	
 			if(goodsService.insert(tblgoods)){
-				return SUCCESS_TIP;
+				return new SuccessTip();
 			};
 		}
 		return new ErrorTip(604,"商品编辑失败");
@@ -532,7 +536,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping("v1/auth/goods/top")
 	public Object goodsTop(){
 		
-		return SUCCESS_TIP;
+		return new SuccessTip();
 	}
 	/**
 	 * 更新商品上下架
@@ -586,7 +590,7 @@ public class WXSmallController extends BaseController {
 		if(ToolUtil.isNotEmpty(goods)){
 			boolean isSuccess = goodsService.updateById(goods);
 			if(isSuccess){
-				return SUCCESS_TIP;
+				return new SuccessTip();
 			}
 		}
 		return new ErrorTip(600,"商品调价失败");
@@ -598,7 +602,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping("v2/auth/goods/storage")
 	public Object goodsStorage(@RequestBody Map<String,Object> map){
 		if(tblGoodsStorageService.adjustGoodsRepository(map)){
-			return SUCCESS_TIP;
+			return new SuccessTip();
 		}
 		return new ErrorTip(600,"调库存失败");
 		
@@ -613,7 +617,7 @@ public class WXSmallController extends BaseController {
 	public Object addSmallBill(TblOrderMoneyDiff tbl){
 		if(ToolUtil.isNotEmpty(tbl)){
 			if(tblOrderMoneyDiffService.insert(tbl)){
-				return SUCCESS_TIP;
+				return new SuccessTip();
 			};
 		}
 		return new ErrorTip(600,"新增小票失败");

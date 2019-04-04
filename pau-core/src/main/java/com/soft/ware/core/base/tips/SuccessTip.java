@@ -9,4 +9,10 @@ public class SuccessTip extends Tip {
 		super.code = 200;
 		super.message = "操作成功";
 	}
+	
+	
+	
+
+
+	
 }

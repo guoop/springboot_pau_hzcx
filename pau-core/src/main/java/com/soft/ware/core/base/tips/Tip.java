@@ -1,10 +1,14 @@
 package com.soft.ware.core.base.tips;
 
+import java.util.Map;
+
 /**
  * 返回给前台的提示（最终转化为json形式）
  */
 public abstract class Tip {
-
+	
+	
+	private Object data; 
     protected int code;
     protected String message;
 
