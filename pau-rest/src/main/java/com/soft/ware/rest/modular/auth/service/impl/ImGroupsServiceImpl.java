@@ -31,6 +31,7 @@ public class ImGroupsServiceImpl extends BaseService<ImGroupsMapper,ImGroups> im
         ImGroups old = findByUsername(g.getOwnerUsername());
         int row;
         if (old == null) {
+            g.setOwnerUsername(g.getOwnerUsername());
             g.setId(IdGenerator.getId());
             g.setCreateTime(new Date());
             row = mapper.insert(g);

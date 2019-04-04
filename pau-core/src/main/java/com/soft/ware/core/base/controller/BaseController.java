@@ -141,6 +141,25 @@ public class BaseController {
     }
 
 
+/*
+    public Kv<String,Object> render(){
+        return render(true);
+    }
+
+    public Kv<String,Object> render(boolean result){
+        return Kv.view(result);
+    }
+
+    public Kv<String,Object> render(boolean result, String msg){
+        return Kv.view(result, msg);
+    }
+
+    public Kv<String,Object> render(Page page){
+        return render().set("page",page);
+    }
+*/
+
+
     /**
      * 使用post 重定向
      * @param request

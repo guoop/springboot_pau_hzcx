@@ -113,7 +113,6 @@ public class ImServiceImpl implements ImService {
                         addToGroup(user, g, u);
                         groupsService.saveOrUpdate(user,g);
                     }
-                    //todo yancc 添加到数据库
                     logger.info("极光用户:{}被添加",username);
                 } else {
                     //更新用户
@@ -122,7 +121,6 @@ public class ImServiceImpl implements ImService {
                     updateUser(user,username, kv);
                     u = getUser(username);
                     imUserService.saveOrUpdate(user,u);
-                    //todo yancc 更新到数据库
                     logger.info("极光用户:{}被更新",username);
                     u = getUser(username);
                     ImGroups g = requireOwnerGroup(user, owner, type);
@@ -164,16 +162,13 @@ public class ImServiceImpl implements ImService {
             List<Kv<String, ?>> params = Lists.newArrayList();
             params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName()));
             //创建群主
-            //todo yancc 同步到数据库
             u = addUser(user, params);
             //创建群组
-            //todo yancc 同步到数据库
             return addGroup(user, owner, type);
         } else {
             List<ImGroups> gs = getGroup(u);
             if (gs.isEmpty()) {
                 //创建群组
-                //todo yancc 同步到数据库
                 return addGroup(user, owner, type);
             }
             //todo yancc 是否考虑多个群
@@ -265,7 +260,7 @@ public class ImServiceImpl implements ImService {
 
     private MultiValueMap<String,String> getJpushHeaders(){
         MultiValueMap<String,String> headers = new HttpHeaders();
-        headers.put("Content-type", Lists.newArrayList("application/json; charset=UTF-8"));
+        headers.put("Content-type", Lists.newArrayList("application/json; charset=utf-8"));
         headers.put("Authorization", Lists.newArrayList("Basic " + Base64.getEncoder().encodeToString((WXContants.JG_APPKEY + ":" + WXContants.JG_MASTER_SECRET).getBytes())));
         return headers;
     }
@@ -315,7 +310,7 @@ public class ImServiceImpl implements ImService {
             Kv<String, Object> params = buildBaseMsg(group, g, body);
             HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
             ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/messages", http, String.class);
-            if (entity.getStatusCodeValue() == 200) {
+            if (entity.getStatusCodeValue() == 200 || entity.getStatusCodeValue() == 201) {
                 logger.info(log + " 通知发送成功: "+JSON.toJSONString(params));
             } else {
                 logger.info(log + " 通知发送失败：" + JSON.toJSONString(params));
@@ -332,7 +327,7 @@ public class ImServiceImpl implements ImService {
      * @return
      */
     private String buildUsername(TblOwnerStaff u,ImGroupType type){
-        return u.getOwner() + "-" + type + "-" + u.getPhone();
+        return u.getOwner() + "-" + type.getSeparator() + "-" + u.getPhone();
     }
 
     /**
@@ -412,7 +407,11 @@ public class ImServiceImpl implements ImService {
         String username = buildOwnerGroupUsername(owner,type);
         Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
         ResponseEntity<String> entity = post("/v1/groups/", params);
-        return JSON.parseObject(entity.getBody(), ImGroups.class);
+        ImGroups imGroups = JSON.parseObject(entity.getBody(), ImGroups.class);
+        if (imGroups != null) {
+            imGroups.setOwnerUsername(username);
+        }
+        return imGroups;
     }
 
     /**
@@ -436,7 +435,11 @@ public class ImServiceImpl implements ImService {
     private List<ImGroups> getGroup(ImUser user)  {
         try {
             ResponseEntity<String> entity = get("/v1/users/" + user.getUsername() + "/groups/");
-            return JSON.parseArray(entity.getBody(), ImGroups.class);
+            List<ImGroups> imGroups = JSON.parseArray(entity.getBody(), ImGroups.class);
+            for (ImGroups g : imGroups) {
+                g.setOwnerUsername(user.getUsername());
+            }
+            return imGroups;
         } catch (Exception e) {
             e.printStackTrace();
             return Lists.newArrayList();

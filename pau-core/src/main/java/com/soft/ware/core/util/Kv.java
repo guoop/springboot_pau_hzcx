@@ -1,11 +1,14 @@
 package com.soft.ware.core.util;
 
+import com.soft.ware.core.base.tips.SuccessTip;
+import com.soft.ware.core.base.tips.Tip;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Kv<K,V> implements Map<K,V> {
+public class Kv<K,V> extends Tip implements Map<K,V>  {
 
     private Map<K,V> map;
 
@@ -15,6 +18,26 @@ public class Kv<K,V> implements Map<K,V> {
 
     public Kv(Map<K, V> map) {
         this.map = map;
+    }
+
+    public static Kv<String,Object> view(boolean result){
+        if (result) {
+            SuccessTip s = new SuccessTip();
+            return Kv.obj().set("code", s.getCode()).set("msg", s.getMsg());
+        } else {
+            SuccessTip s = new SuccessTip();
+            return Kv.obj().set("code", s.getCode()).set("msg", s.getMsg());
+        }
+    }
+
+    public static Kv<String,Object> view(boolean result,String msg){
+        if (result) {
+            SuccessTip s = new SuccessTip(msg);
+            return Kv.obj().set("code", s.getCode()).set("msg", s.getMsg());
+        } else {
+            SuccessTip s = new SuccessTip(msg);
+            return Kv.obj().set("code",s.getCode()).set("msg", msg);
+        }
     }
 
 
