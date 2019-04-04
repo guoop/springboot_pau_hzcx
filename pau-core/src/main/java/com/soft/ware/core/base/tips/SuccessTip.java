@@ -16,4 +16,10 @@ public class SuccessTip extends Tip {
 		super.code = BaseController.SUCCESS;
 		super.msg = msg;
 	}
+	
+	
+	
+
+
+	
 }
