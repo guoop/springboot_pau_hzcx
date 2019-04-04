@@ -1,28 +1,28 @@
 package com.soft.ware.core.base.tips;
 
-import java.util.Map;
-
 /**
  * 返回给前台的提示（最终转化为json形式）
  */
 public abstract class Tip {
 	
 	
-    protected int code;
-    protected String message;
-	public int getCode() {
+    protected String code;
+    protected String msg;
+
+	public String getCode() {
 		return code;
 	}
-	public void setCode(int code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
 
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
 
 }

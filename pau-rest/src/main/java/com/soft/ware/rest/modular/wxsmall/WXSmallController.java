@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -227,24 +226,6 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/v2/auth/staff/man")
-	public Tip addOrUpdate(@RequestBody TblOwnerStaff tblOwnerStaff) {
-		Boolean isSuccess;
-		if (ToolUtil.isEmpty(tblOwnerStaff)) {
-			if (ToolUtil.isEmpty(tblOwnerStaff.getId())) {
-				isSuccess = tblOwnerStaffService
-						.updateAllColumnById(tblOwnerStaff);
-			} else {
-				isSuccess = tblOwnerStaffService.insert(tblOwnerStaff);
-			}
-			if (isSuccess) {
-				return new SuccessTip();
-			} else {
-				return new ErrorTip(608, "插入或者更新失败");
-			}
-		}
-		return new ErrorTip(604, "参数为空");
-	}
-
 	public Object addOrUpdate(SessionUser user, @RequestBody StaffEditParam param, BindingResult result) throws Exception {
 		Validator.valid(result);
 		tblOwnerStaffService.saveOrUpdate(user,param);
@@ -256,13 +237,9 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("v1/auth/staff/del")
 	public Tip del(String id) {
-		if (ToolUtil.isEmpty(id)) {
-			return new ErrorTip(605, "参数不能为空");
-		}
 		if (tblOwnerStaffService.deleteById(id)) {
 			return new SuccessTip();
 		}
-		;
 		return new ErrorTip(606, "删除失败");
 	}
 
@@ -517,6 +494,7 @@ public class WXSmallController extends BaseController {
 	/**
 	 * 扫码添加商品
 	 */
+	@RequestMapping("v2/auth/goods/addByScan")
 	public Object addByScan(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
 		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
 		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
@@ -621,14 +599,6 @@ public class WXSmallController extends BaseController {
 	 * pic：小票图片URL
 	 */
 	@RequestMapping("v2/order/money/diff")
-	public Object addSmallBill(TblOrderMoneyDiff tbl){
-		if(ToolUtil.isNotEmpty(tbl)){
-			if(tblOrderMoneyDiffService.insert(tbl)){
-				return new SuccessTip();
-			};
-		}
-		return new ErrorTip(600,"新增小票失败");
-	}
 	public Object addSmallBill(SessionUser user,@RequestBody OrderDiffParam param,BindingResult result){
 		Validator.valid(result);
 		boolean b = diffService.create(user, param);
