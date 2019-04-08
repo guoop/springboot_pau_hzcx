@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.goods.dao.TSupplierMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TSupplier">
+        <id column="id" property="id" />
+        <result column="phone" property="phone" />
+        <result column="addrress" property="addrress" />
+        <result column="detail_address" property="detailAddress" />
+        <result column="status" property="status" />
+        <result column="owner_id" property="ownerId" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, phone, addrress, detail_address AS detailAddress, status, owner_id AS ownerId, name
+    </sql>
+
+</mapper>

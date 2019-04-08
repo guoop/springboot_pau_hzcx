@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.goods.dao.TGoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TGoods">
+        <id column="id" property="id" />
+        <result column="category_id" property="categoryId" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="unit_id" property="unitId" />
+        <result column="price" property="price" />
+        <result column="pics" property="pics" />
+        <result column="description" property="description" />
+        <result column="created_time" property="createdTime" />
+        <result column="creater" property="creater" />
+        <result column="owner_id" property="ownerId" />
+        <result column="status" property="status" />
+        <result column="sells" property="sells" />
+        <result column="sort" property="sort" />
+        <result column="is_delete" property="isDelete" />
+        <result column="source" property="source" />
+        <result column="top_time" property="topTime" />
+        <result column="is_promotion" property="isPromotion" />
+        <result column="storage_id" property="storageId" />
+        <result column="spec_id" property="specId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, category_id AS categoryId, name, code, unit_id AS unitId, price, pics, description, created_time AS createdTime, creater, owner_id AS ownerId, status, sells, sort, is_delete AS isDelete, source, top_time AS topTime, is_promotion AS isPromotion, storage_id AS storageId, spec_id AS specId
+    </sql>
+
+</mapper>

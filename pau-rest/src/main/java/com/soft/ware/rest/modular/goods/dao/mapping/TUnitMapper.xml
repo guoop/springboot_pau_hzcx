@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.modular.system.dao.TUnitMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.modular.system.model.TUnit">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="owner_id" property="ownerId" />
+        <result column="sort" property="sort" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, owner_id AS ownerId, sort, create_time AS createTime, creater
+    </sql>
+
+</mapper>
