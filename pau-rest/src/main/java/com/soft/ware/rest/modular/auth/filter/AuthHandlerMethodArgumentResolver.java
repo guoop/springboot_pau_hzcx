@@ -3,15 +3,15 @@ package com.soft.ware.rest.modular.auth.filter;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.SpringContextHolder;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.AuthService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.core.MethodParameter;
@@ -45,13 +45,14 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest request, WebDataBinderFactory webDataBinderFactory) throws Exception {
         HttpServletRequest req = HttpKit.getRequest();
-        TblOwnerService ownerService = SpringContextHolder.getBean(TblOwnerService.class);
+        ITOwnerService ownerService = SpringContextHolder.getBean(ITOwnerService.class);
+        //ITOwnerService ownerService = SpringContextHolder.getBean(ISWxAppService.class);
         if (req.getServletPath().startsWith("/customer")) {
             if (SessionUser.class == methodParameter.getParameterType()) {
                 //买家端用户
                 String appId = WXUtils.getAppId(req);
-                TblOwner owner = ownerService.findByAppId(appId);
-                SessionUser user = new SessionUser(owner.getOwner());
+                TOwner owner = ownerService.findByAppId(appId);
+                SessionUser user = new SessionUser(owner.getId());
                 String openId = req.getHeader("Hzcx-User");
                 user.setAppId(appId);
                 user.setId(openId);
@@ -62,8 +63,8 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             } else if(SessionOwner.class == methodParameter.getParameterType()) {
                 //买家端用户
                 String appId = WXUtils.getAppId(req);
-                TblOwner o = ownerService.findByAppId(appId);
-                SessionOwner owner = new SessionOwner(o.getOwner());
+                TOwner o = ownerService.findByAppId(appId);
+                SessionOwner owner = new SessionOwner(o.getId());
                 return owner;
             }
 

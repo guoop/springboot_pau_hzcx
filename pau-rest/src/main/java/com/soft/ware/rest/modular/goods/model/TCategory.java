@@ -19,6 +19,21 @@ public class TCategory extends Model<TCategory> {
 
     private static final long serialVersionUID = 1L;
 
+
+    //：未删除；
+    public static Integer is_delete_0 = 0;
+    //：已删除）
+    public static Integer is_delete_1 = 1;
+    //：显示；
+    public static Integer status_0 = 0;
+    //：不显示；）
+    public static Integer status_1 = 1;
+    //：否；
+    public static Integer is_system_0 = 0;
+    //：是），系统类目不允许执行任何操作（比如香烟类目）
+    public static Integer is_system_1 = 1;
+
+
     private String id;
     /**
      * 分类名称
@@ -106,16 +121,18 @@ public class TCategory extends Model<TCategory> {
         return isDetele;
     }
 
-    public void setIsDetele(Integer isDetele) {
+    public TCategory setIsDetele(Integer isDetele) {
         this.isDetele = isDetele;
+        return this;
     }
 
     public String getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public TCategory setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+        return  this;
     }
 
     public Integer getStatus() {

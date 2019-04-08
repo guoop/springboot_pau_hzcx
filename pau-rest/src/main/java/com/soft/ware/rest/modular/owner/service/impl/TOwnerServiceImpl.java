@@ -17,4 +17,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TOwnerServiceImpl extends ServiceImpl<TOwnerMapper, TOwner> implements ITOwnerService {
 
+    private TOwnerMapper mapper;
+
+    @Override
+    public TOwner findByAppId(String appId) {
+        //return mapper.selectOne(new TOwner().setAppId(appId));
+        return null;
+    }
 }

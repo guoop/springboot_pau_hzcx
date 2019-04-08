@@ -13,4 +13,5 @@ import com.soft.ware.rest.modular.owner.model.TOwner;
  */
 public interface ITOwnerService extends IService<TOwner> {
 
+    TOwner findByAppId(String appId);
 }

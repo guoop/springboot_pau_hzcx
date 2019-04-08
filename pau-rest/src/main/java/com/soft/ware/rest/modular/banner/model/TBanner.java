@@ -15,6 +15,21 @@ public class TBanner extends Model<TBanner> {
 
     private static final long serialVersionUID = 1L;
 
+
+    //：内链；
+    public static Integer type_0 = 0;
+    //：外链；
+    public static Integer type_1 = 1;
+    //：静态展示）
+    public static Integer type_2 = 2;
+    //：显示；
+    public static Integer status_0 = 0;
+    //：不显示；
+    public static Integer status_1 = 1;
+    //：已删除）
+    public static Integer status_2 = 2;
+
+
     @TableId(value = "id", type = IdType.UUID)
     private String id;
 
