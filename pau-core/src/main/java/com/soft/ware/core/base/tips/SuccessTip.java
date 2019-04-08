@@ -12,9 +12,23 @@ public class SuccessTip extends Tip {
 		super.msg = "操作成功";
 	}
 
+	/**
+	 * 封装成功的信息
+	 * @param msg
+	 */
 	public SuccessTip(String msg){
 		super.code = BaseController.SUCCESS;
 		super.msg = msg;
+	}
+
+	/**
+	 *  封装成功的数据
+	 * @param data
+	 */
+	public SuccessTip(Object data){
+		super.code = BaseController.SUCCESS;
+		super.msg = "操作成功" ;
+        super.data = data;
 	}
 	
 	

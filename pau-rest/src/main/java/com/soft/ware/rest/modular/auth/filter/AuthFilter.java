@@ -76,6 +76,8 @@ public class AuthFilter extends OncePerRequestFilter {
         whitePrefixUrlSet.add("/owner/share/code");
         whitePrefixUrlSet.add("/hello/api");
         whitePrefixUrlSet.add("/swagger-ui.html");
+        whitePrefixUrlSet.add("/owner/vi/get-owner-info");
+        whitePrefixUrlSet.add("/owner/v1/share/code");
 
     }
 
