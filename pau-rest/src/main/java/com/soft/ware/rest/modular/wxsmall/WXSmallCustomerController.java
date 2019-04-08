@@ -87,7 +87,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "/customer/v1/banner/list")
+    //@RequestMapping(value = "/customer/v1/banner/list")
     public Object banners(SessionUser user){
         List<TblBanner> list = bannerService.findBannerByOwner(user.getOwner());
         Map<String, Object> map = new HashMap<>();
