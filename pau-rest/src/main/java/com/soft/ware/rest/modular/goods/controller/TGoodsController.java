@@ -1,12 +1,9 @@
-package com.soft.ware.rest.modular.wxsmall;
+package com.soft.ware.rest.modular.goods.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/owner/v1")
-public class NewWXSmallController {
-
-
-
+public class TGoodsController {
 }

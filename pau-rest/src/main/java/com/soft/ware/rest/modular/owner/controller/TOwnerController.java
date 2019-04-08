@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/owner/v1")
-public class OwnerController extends BaseController {
+public class TOwnerController extends BaseController {
 
 
 

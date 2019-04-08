@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.soft.ware.modular.system.dao.TOrderMapper">
+<mapper namespace="com.soft.ware.rest.modular.order.dao.TOrderMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.soft.ware.modular.system.model.TOrder">
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order.model.TOrder">
         <id column="id" property="id" />
         <result column="order_no" property="orderNo" />
         <result column="source" property="source" />

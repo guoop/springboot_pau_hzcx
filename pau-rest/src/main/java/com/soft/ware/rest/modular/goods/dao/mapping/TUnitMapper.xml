@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.soft.ware.modular.system.dao.TUnitMapper">
+<mapper namespace="com.soft.ware.rest.modular.goods.dao.TUnitMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.soft.ware.modular.system.model.TUnit">
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TUnit">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="owner_id" property="ownerId" />
