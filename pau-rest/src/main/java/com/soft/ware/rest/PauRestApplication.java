@@ -13,12 +13,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 
 
 @SpringBootApplication(scanBasePackages = {"com.soft.ware"})
+@EnableWebMvc
 public class PauRestApplication extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {
@@ -51,5 +53,7 @@ public class PauRestApplication extends WebMvcConfigurerAdapter {
         template.afterPropertiesSet();
         return template;
     }
+
+
     
 }

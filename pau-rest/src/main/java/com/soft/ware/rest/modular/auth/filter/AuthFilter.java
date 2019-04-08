@@ -74,6 +74,9 @@ public class AuthFilter extends OncePerRequestFilter {
         whitePrefixUrlSet.add("/customer/v1/goods/");
         whitePrefixUrlSet.add("/customer/v1/address/");
         whitePrefixUrlSet.add("/owner/share/code");
+        whitePrefixUrlSet.add("/hello/api");
+        whitePrefixUrlSet.add("/swagger-ui.html");
+
     }
 
     @Override

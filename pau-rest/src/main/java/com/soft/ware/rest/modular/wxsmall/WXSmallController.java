@@ -22,6 +22,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
+import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
