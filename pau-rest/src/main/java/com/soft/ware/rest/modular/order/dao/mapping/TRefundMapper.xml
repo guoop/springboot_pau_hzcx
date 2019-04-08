@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.order.dao.TRefundMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order.model.TRefund">
+        <result column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="reason" property="reason" />
+        <result column="status" property="status" />
+        <result column="order_money" property="orderMoney" />
+        <result column="response" property="response" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no AS orderNo, reason, status, order_money AS orderMoney, response, create_time AS createTime, creater
+    </sql>
+
+</mapper>
