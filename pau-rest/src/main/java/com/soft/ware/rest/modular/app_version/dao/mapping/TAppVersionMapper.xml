@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.app_version.dao.TAppVersionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.app_version.model.TAppVersion">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="name" property="name" />
+        <result column="platform" property="platform" />
+        <result column="version_main" property="versionMain" />
+        <result column="version_secondary" property="versionSecondary" />
+        <result column="version_bug" property="versionBug" />
+        <result column="version" property="version" />
+        <result column="is_force" property="isForce" />
+        <result column="download_url" property="downloadUrl" />
+        <result column="description" property="description" />
+        <result column="created_time" property="createdTime" />
+        <result column="creater" property="creater" />
+        <result column="update_time" property="updateTime" />
+        <result column="updater" property="updater" />
+    </resultMap>
+
+</mapper>

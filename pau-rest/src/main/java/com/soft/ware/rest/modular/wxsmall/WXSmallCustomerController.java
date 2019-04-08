@@ -101,7 +101,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "/customer/v1/category/list")
+    //@RequestMapping(value = "/customer/v1/category/list")
     public Object category(SessionUser user){
         List<TblCategory> list =  categoryService.findAllCategory(user);
         return list;

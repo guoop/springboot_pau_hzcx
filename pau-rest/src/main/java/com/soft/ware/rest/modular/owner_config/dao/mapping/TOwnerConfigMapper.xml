@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.owner_config.dao.TOwnerConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.owner_config.model.TOwnerConfig">
+        <id column="id" property="id" />
+        <result column="owner_id" property="ownerId" />
+        <result column="is_delivery" property="isDelivery" />
+        <result column="is_self_pickup" property="isSelfPickup" />
+        <result column="is_reach_pay" property="isReachPay" />
+        <result column="delivery_money" property="deliveryMoney" />
+        <result column="delivery_less_money" property="deliveryLessMoney" />
+        <result column="delivery_great_money" property="deliveryGreatMoney" />
+        <result column="delivery_distance" property="deliveryDistance" />
+        <result column="order_phone" property="orderPhone" />
+    </resultMap>
+
+</mapper>

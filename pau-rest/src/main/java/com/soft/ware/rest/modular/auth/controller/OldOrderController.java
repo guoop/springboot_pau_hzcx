@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class OrderController extends BaseController {
+public class OldOrderController extends BaseController {
 
 
     @Autowired

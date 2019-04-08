@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.owner_temp.dao.TOwnerTempMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.owner_temp.model.TOwnerTemp">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="shop_secret" property="shopSecret" />
+        <result column="app_id" property="appId" />
+        <result column="app_secret" property="appSecret" />
+        <result column="app_name" property="appName" />
+        <result column="app_qr" property="appQr" />
+        <result column="owner_id" property="ownerId" />
+        <result column="acct_name" property="acctName" />
+        <result column="acct_pwd" property="acctPwd" />
+        <result column="company_name" property="companyName" />
+        <result column="company_license" property="companyLicense" />
+        <result column="company_code" property="companyCode" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="mailbox" property="mailbox" />
+        <result column="wx_api_card" property="wxApiCard" />
+        <result column="msg_tmplate" property="msgTmplate" />
+        <result column="created_time" property="createdTime" />
+        <result column="creater" property="creater" />
+        <result column="owner_data_status" property="ownerDataStatus" />
+        <result column="wxapp_data_status" property="wxappDataStatus" />
+        <result column="owner_data_auditor" property="ownerDataAuditor" />
+        <result column="owner_data_time" property="ownerDataTime" />
+        <result column="wxapp_data_auditor" property="wxappDataAuditor" />
+        <result column="wxapp_data_time" property="wxappDataTime" />
+        <result column="owner_refuser" property="ownerRefuser" />
+        <result column="owner_refuser_time" property="ownerRefuserTime" />
+        <result column="owner_refuser_reason" property="ownerRefuserReason" />
+        <result column="wxapp_refuser" property="wxappRefuser" />
+        <result column="wxapp_refuser_time" property="wxappRefuserTime" />
+        <result column="wxapp_refuser_reason" property="wxappRefuserReason" />
+        <result column="owner_is_valid" property="ownerIsValid" />
+        <result column="is_verify" property="isVerify" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.goods_storage.dao.TGoodsStorageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage">
+        <id column="id" property="id" />
+        <result column="owner_id" property="ownerId" />
+        <result column="goods_id" property="goodsId" />
+        <result column="single_price" property="singlePrice" />
+        <result column="before_storage" property="beforeStorage" />
+        <result column="after_storage" property="afterStorage" />
+        <result column="in_money" property="inMoney" />
+        <result column="baseline" property="baseline" />
+        <result column="before_baseline" property="beforeBaseline" />
+        <result column="in_time" property="inTime" />
+        <result column="in_amount" property="inAmount" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+</mapper>
