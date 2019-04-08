@@ -74,7 +74,7 @@ public class AuthController extends BaseController {
      */
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/x-www-form-urlencoded"})
     public Object createAuthenticationToken(@Valid AuthRequest params, BindingResult result) {
-        Validator.valid(result);
+       // Validator.valid(result);
     	boolean validate;
         if(ToolUtil.isNotEmpty(params.getPhone())){
         	validate = reqValidator.validate(params);
@@ -97,8 +97,8 @@ public class AuthController extends BaseController {
      * @return
      */
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/json"})
-    public Object maLogin(@RequestBody @Valid AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
-        Validator.valid(result);
+    public Object maLogin(@RequestBody AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
+        //Validator.valid(result);
         String phone = param.getPhone();
         String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
    /*     if (!param.getPassword().equals(s)) {
