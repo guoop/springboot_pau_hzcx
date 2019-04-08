@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.modular.system.dao.TOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.modular.system.model.TOrder">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="source" property="source" />
+        <result column="pickup_no" property="pickupNo" />
+        <result column="pickup_time" property="pickupTime" />
+        <result column="money_channel" property="moneyChannel" />
+        <result column="order_money" property="orderMoney" />
+        <result column="run_money" property="runMoney" />
+        <result column="pay_money" property="payMoney" />
+        <result column="pay_time" property="payTime" />
+        <result column="pay_response" property="payResponse" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+        <result column="settlementer" property="settlementer" />
+        <result column="owner_id" property="ownerId" />
+        <result column="address_id" property="addressId" />
+        <result column="goods_id" property="goodsId" />
+        <result column="version" property="version" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, goods_id AS goodsId, version, status, remark
+    </sql>
+
+</mapper>
