@@ -1,5 +1,9 @@
 package com.soft.ware.core.util;
 
+import org.springframework.util.CollectionUtils;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ResultView extends Kv<String,Object> {
@@ -33,6 +37,10 @@ public class ResultView extends Kv<String,Object> {
     @Override
     public ResultView set(String s, Object o) {
         return (ResultView) super.set(s, o);
+    }
+
+    public ResultView setOne(String key, List<Map<String,Object>> list){
+        return (ResultView) super.set(key, CollectionUtils.isEmpty(list) ? new LinkedHashMap<>() : list.get(0));
     }
 
     @Override

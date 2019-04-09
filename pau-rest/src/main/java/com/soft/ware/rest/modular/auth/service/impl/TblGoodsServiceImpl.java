@@ -50,7 +50,6 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
     @Override
     public TblGoods findById(Long id) {
         return tblGoodsMapper.selectOne(new TblGoods().setId(id));
-
     }
 
     @Override

@@ -30,6 +30,10 @@
     <sql id="Base_Column_List">
         id, category_id AS categoryId, name, code, unit_id AS unitId, price, pics, description, created_time AS createdTime, creater, owner_id AS ownerId, status, sells, sort, is_delete AS isDelete, source, top_time AS topTime, is_promotion AS isPromotion, storage_id AS storageId, spec_id AS specId
     </sql>
+    <sql id="alias_columns">
+        g.id,g.category_id,g.name,g.code,g.unit_id,g.price,g.pics,g.description,g.created_time,g.creater,g.owner_id,g.status,g.sells,g.sort,g.is_delete,g.source,g.top_time,g.is_promotion,g.storage_id,g.spec_id
+        ,u.name measurement_unit
+    </sql>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
@@ -43,8 +47,8 @@
     </sql>
 
     <select id="findPage" resultType="java.util.Map">
-        select g.id,g.category_id,g.name,g.code,g.unit_id,g.price,g.pics,g.description,g.created_time,g.creater,g.owner_id,g.status,g.sells,g.sort,g.is_delete,g.source,g.top_time,g.is_promotion,g.storage_id,g.spec_id
-        ,u.name measurement_unit
+        select
+        <include refid="alias_columns"/>
         from t_goods g left join t_unit u on u.id = g.unit_id where g.owner_id = #{owner} and g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
         <include refid="findPageCondition"/>
         order by sort asc
@@ -53,6 +57,14 @@
     <select id="findPageCount" resultType="long">
         select count(1) from t_goods g where g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
         <include refid="findPageCondition"/>
+    </select>
+    <select id="find" resultType="java.util.Map">
+        select
+        <include refid="alias_columns"/>
+        from t_goods g left join t_unit u on u.id = g.unit_id
+        <if test="map.id != null and map.id != ''">
+            g.id = #{g.id}
+        </if>
     </select>
 
 </mapper>

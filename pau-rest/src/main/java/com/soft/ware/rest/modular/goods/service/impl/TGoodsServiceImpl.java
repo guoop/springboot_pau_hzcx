@@ -33,4 +33,10 @@ public class TGoodsServiceImpl extends ServiceImpl<TGoodsMapper, TGoods> impleme
         page.setTotal(count);
         return mapper.findPage(user.getOwner(), param, page);
     }
+
+    @Override
+    public List<Map<String,Object>> find(Map<String, Object> map) {
+        return mapper.find(map);
+    }
+
 }

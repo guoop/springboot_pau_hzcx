@@ -126,7 +126,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/customer/v1/goods/{id}")
+    //@RequestMapping(value = "/customer/v1/goods/{id}")
     public Object goods(@PathVariable Long id) throws Exception {
        TblGoods goods = goodsService.findById(id);
         List<TblGoods> list = new ArrayList<>();

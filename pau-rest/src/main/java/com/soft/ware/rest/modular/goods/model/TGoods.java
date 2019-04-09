@@ -116,8 +116,9 @@ public class TGoods extends Model<TGoods> {
         return id;
     }
 
-    public void setId(String id) {
+    public TGoods setId(String id) {
         this.id = id;
+        return this;
     }
 
     public Long getCategoryId() {
