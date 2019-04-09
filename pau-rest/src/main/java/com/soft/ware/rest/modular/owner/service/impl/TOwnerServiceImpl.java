@@ -29,8 +29,11 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     }
 
     @Override
-    public TOwner findByAppId(String appId) {
+        public TOwner findByAppId(String appId) {
         //return mapper.selectOne(new TOwner().setAppId(appId));
+
+
+        //.................
         return null;
     }
 }
