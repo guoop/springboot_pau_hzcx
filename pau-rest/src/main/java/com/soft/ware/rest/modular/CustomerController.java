@@ -5,7 +5,6 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -45,7 +44,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @RequestMapping(value = "banner/list")
-    public Tip banners(SessionOwner owner){
+    public Tip banners(SessionUser owner){
         List<TBanner> list = bannerService.findBannerByOwner(owner);
         return render().set("list", list);
     }

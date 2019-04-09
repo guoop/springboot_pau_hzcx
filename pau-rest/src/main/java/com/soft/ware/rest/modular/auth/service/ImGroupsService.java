@@ -2,7 +2,7 @@ package com.soft.ware.rest.modular.auth.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.model.ImGroups;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 
 public interface ImGroupsService extends IService<ImGroups> {
 
@@ -12,7 +12,7 @@ public interface ImGroupsService extends IService<ImGroups> {
      * @param g
      * @return
      */
-    boolean saveOrUpdate(SessionOwnerUser user, ImGroups g);
+    boolean saveOrUpdate(SessionUser user, ImGroups g);
 
     /**
      * 删除群组，根据ownerUsername
@@ -20,5 +20,5 @@ public interface ImGroupsService extends IService<ImGroups> {
      * @param ownerUsername
      * @return
      */
-    boolean deleteByUsername(SessionOwnerUser user, String ownerUsername);
+    boolean deleteByUsername(SessionUser user, String ownerUsername);
 }

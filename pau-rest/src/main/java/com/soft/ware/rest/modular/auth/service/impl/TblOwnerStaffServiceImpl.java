@@ -73,7 +73,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
             //添加店员信息
             s = new TblOwnerStaff();
             param.update(s);
-            s.setOwner(user.getOwner());
+            s.setOwner(user.getOwnerId());
             s.setCreatedAt(new Date());
             Integer row = mapper.insert(s);
             //添加到im群组
@@ -87,7 +87,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
             //修改店员信息
             param.update(s);
             //全部更新
-            if (!s.getOwner().equals(user.getOwner())) {
+            if (!s.getOwner().equals(user.getOwnerId())) {
                 throw new PauException(BizExceptionEnum.ERROR);
             }
             Integer row = mapper.updateAllColumnById(s);
@@ -115,7 +115,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
 
     @Override
     public List<TblOwnerStaff> selectAll(SessionUser user) {
-        return mapper.selectList(new EntityWrapper<TblOwnerStaff>().eq("owner", user.getOwner()).ne("status", TblOwnerStaff.status_2));
+        return mapper.selectList(new EntityWrapper<TblOwnerStaff>().eq("owner", user.getOwnerId()).ne("status", TblOwnerStaff.status_2));
     }
 
 }

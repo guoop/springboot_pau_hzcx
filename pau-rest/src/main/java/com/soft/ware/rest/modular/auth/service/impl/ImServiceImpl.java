@@ -6,7 +6,6 @@ import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.persistence.model.*;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
 import com.soft.ware.rest.modular.auth.service.ImService;
@@ -78,7 +77,7 @@ public class ImServiceImpl implements ImService {
      * @param goods
      */
     @Override
-    public void sendAddGoodsNotify(SessionOwnerUser user, TblGoods goods) {
+    public void sendAddGoodsNotify(SessionUser user, TblGoods goods) {
         Kv<String, Object> body = Kv.obj().set("code", "add_goods").set("handlerBy", user.getName()).set("goods", goods);
         sendNotify(user, body,"商品添加");
     }
@@ -93,7 +92,7 @@ public class ImServiceImpl implements ImService {
      * @throws Exception
      */
     @Override
-    public void syncUsers(SessionOwnerUser user,TblOwner owner, TblOwnerStaff... ss) throws Exception {
+    public void syncUsers(SessionUser user,TblOwner owner, TblOwnerStaff... ss) throws Exception {
         ImGroupType type = ImGroupType.STAFF;//极光小程序用户
         List<Kv<String, ?>> params = Lists.newArrayList();
         String username;
@@ -117,7 +116,7 @@ public class ImServiceImpl implements ImService {
                 } else {
                     //更新用户
                     Kv<String,?> kv = Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(s.getName()) ? s.getPhone() : s.getName());
-                    u.setOwnerId(user.getOwner());
+                    u.setOwnerId(user.getOwnerId());
                     updateUser(user,username, kv);
                     u = getUser(username);
                     imUserService.saveOrUpdate(user,u);
@@ -154,7 +153,7 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @return
      */
-    private ImGroups requireOwnerGroup(SessionOwnerUser user,TblOwner owner,ImGroupType type){
+    private ImGroups requireOwnerGroup(SessionUser user,TblOwner owner,ImGroupType type){
         String username = buildOwnerGroupUsername(owner,type);
         ImUser u = getUser(username);
         if (u == null) {
@@ -294,7 +293,7 @@ public class ImServiceImpl implements ImService {
      * @param body 消息体
      * @param log  日志前缀
      */
-    private void sendNotify(SessionOwnerUser user,Kv<String,Object> body,String log){
+    private void sendNotify(SessionUser user,Kv<String,Object> body,String log){
         List<TblOwnerGroups> groups = ownerGroupsService.find(user, TblOwnerGroups.type_0);
         for (TblOwnerGroups group : groups) {
             ImGroups g = JSON.parseObject(group.getBody(), ImGroups.class);
@@ -347,7 +346,7 @@ public class ImServiceImpl implements ImService {
      * @param params
      * @return
      */
-    private ImUser addUser(SessionOwnerUser user,List<Kv<String,?>> params) {
+    private ImUser addUser(SessionUser user,List<Kv<String,?>> params) {
         ResponseEntity<String> entity = post("/v1/users", params);
         List<ImUser> users = JSON.parseArray(entity.getBody(), ImUser.class);
         if (users == null || users.isEmpty()) {
@@ -362,7 +361,7 @@ public class ImServiceImpl implements ImService {
      * @param params
      * @throws Exception
      */
-    private void updateUser(SessionOwnerUser user,String username,Kv<String,?> params) throws Exception {
+    private void updateUser(SessionUser user,String username,Kv<String,?> params) throws Exception {
         //todo yancc 是否需要重置密码
         put("/v1/users/" + username, params);
     }
@@ -403,7 +402,7 @@ public class ImServiceImpl implements ImService {
      * @param type 群组类型
      * @return
      */
-    private ImGroups addGroup(SessionOwnerUser user, TblOwner owner,ImGroupType type){
+    private ImGroups addGroup(SessionUser user, TblOwner owner,ImGroupType type){
         String username = buildOwnerGroupUsername(owner,type);
         Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
         ResponseEntity<String> entity = post("/v1/groups/", params);
@@ -454,7 +453,7 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @throws Exception
      */
-    private void updateGroup(SessionOwnerUser user,TblOwner owner,ImGroupType type) throws Exception {
+    private void updateGroup(SessionUser user,TblOwner owner,ImGroupType type) throws Exception {
         Kv<String, String> params = Kv.by("owner_username", buildOwnerGroupUsername(owner, type)).set("name", owner.getName());
         put("/v1/groups", params);
     }
@@ -466,7 +465,7 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @throws Exception
      */
-    private void delGroup(SessionOwnerUser user,TblOwner owner,ImGroupType type) throws Exception {
+    private void delGroup(SessionUser user,TblOwner owner,ImGroupType type) throws Exception {
         del("/v1/groups/" + buildOwnerGroupUsername(owner, type));
     }
 
@@ -477,7 +476,7 @@ public class ImServiceImpl implements ImService {
      * @param group
      * @param u
      */
-    public void addToGroup(SessionOwnerUser user,ImGroups group, ImUser u) {
+    public void addToGroup(SessionUser user,ImGroups group, ImUser u) {
         Kv<String,?> params = Kv.by("add",Lists.newArrayList(u.getUsername()));
         post("/v1/groups/" + group.getGid() + "/members", params);
     }
@@ -489,7 +488,7 @@ public class ImServiceImpl implements ImService {
      * @param group
      * @param u
      */
-    public void delFromGroup(SessionOwnerUser user,ImGroups group, ImUser u) {
+    public void delFromGroup(SessionUser user,ImGroups group, ImUser u) {
         Kv<String,?> params = Kv.by("remove",Lists.newArrayList(u.getUsername()));
         post( "/v1/groups/" + group.getGid() + "/members", params);
     }

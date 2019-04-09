@@ -4,27 +4,18 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
-import com.soft.ware.core.util.DateUtil;
-import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 商户控制层
@@ -96,7 +87,7 @@ public class TOwnerController  extends BaseController {
      */
     @RequestMapping(value = "v1/info",method = RequestMethod.GET)
     public Tip updateOwner(SessionUser user) throws Exception {
-        TOwner owner = itOwnerService.selectById(user.getOwner());
+        TOwner owner = itOwnerService.selectById(user.getOwnerId());
         return new SuccessTip(owner);
     }
 

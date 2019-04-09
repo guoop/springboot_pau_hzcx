@@ -1,15 +1,13 @@
 package com.soft.ware.rest.config;
-import org.apache.catalina.filters.CorsFilter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.soft.ware.rest.config.properties.RestProperties;
 import com.soft.ware.rest.modular.auth.filter.AuthFilter;
 import com.soft.ware.rest.modular.auth.security.DataSecurityAction;
 import com.soft.ware.rest.modular.auth.security.impl.Base64SecurityAction;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

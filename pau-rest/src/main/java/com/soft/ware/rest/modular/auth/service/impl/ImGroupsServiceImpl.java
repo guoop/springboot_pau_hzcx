@@ -5,7 +5,7 @@ import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.common.persistence.dao.ImGroupsMapper;
 import com.soft.ware.rest.common.persistence.model.ImGroups;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class ImGroupsServiceImpl extends BaseService<ImGroupsMapper,ImGroups> im
 
 
     @Override
-    public boolean saveOrUpdate(SessionOwnerUser user, ImGroups g) {
+    public boolean saveOrUpdate(SessionUser user, ImGroups g) {
         ImGroups old = findByUsername(g.getOwnerUsername());
         int row;
         if (old == null) {
@@ -43,7 +43,7 @@ public class ImGroupsServiceImpl extends BaseService<ImGroupsMapper,ImGroups> im
     }
 
     @Override
-    public boolean deleteByUsername(SessionOwnerUser user, String ownerUsername) {
+    public boolean deleteByUsername(SessionUser user, String ownerUsername) {
         ImGroups g = findByUsername(ownerUsername);
         if (g != null) {
             return delete(new EntityWrapper<>(new ImGroups().setId(g.getId())));

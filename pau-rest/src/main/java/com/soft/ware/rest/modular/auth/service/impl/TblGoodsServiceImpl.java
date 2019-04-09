@@ -8,7 +8,9 @@ import com.soft.ware.rest.common.persistence.dao.TblGoodsMapper;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblGoodsStorage;
 import com.soft.ware.rest.common.persistence.model.TblRepository;
-import com.soft.ware.rest.modular.auth.controller.dto.*;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsUpdateParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsService;
 import com.soft.ware.rest.modular.auth.service.TblGoodsStorageService;
@@ -42,9 +44,9 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
 
     @Override
     public List<Map> findPage(SessionUser user, Page page, GoodsPageParam param) {
-        Long count = tblGoodsMapper.findPageCount(user.getOwner(), param);
+        Long count = tblGoodsMapper.findPageCount(user.getOwnerId(), param);
         page.setTotal(count);
-        return tblGoodsMapper.findPage(user.getOwner(), param, page);
+        return tblGoodsMapper.findPage(user.getOwnerId(), param, page);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
 	public boolean updateGoodsStatus(SessionUser user,GoodsUpdateParam param) {
         TblGoods goods = tblGoodsMapper.selectById(param.getId());
         goods.setStatus(Integer.valueOf(param.getStatus()));
-        Integer row = tblGoodsMapper.update(goods, new EntityWrapper<>(new TblGoods().setId(goods.getId()).setOwner(user.getOwner())));
+        Integer row = tblGoodsMapper.update(goods, new EntityWrapper<>(new TblGoods().setId(goods.getId()).setOwner(user.getOwnerId())));
         return row == 1;
     }
 
@@ -71,17 +73,17 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
     }
 
     @Override
-    public boolean updateStock(SessionOwnerUser user, List<String> ids, List<String> nums){
+    public boolean updateStock(SessionUser user, List<String> ids, List<String> nums){
         return tblGoodsMapper.updateStock(user, ids, nums);
     }
 
     @Override
-    public List<TblGoods> findByCode(SessionOwner user, String code) {
-        return tblGoodsMapper.selectList(new EntityWrapper<>(new TblGoods().setOwner(user.getOwner()).setCode(code)));
+    public List<TblGoods> findByCode(SessionUser user, String code) {
+        return tblGoodsMapper.selectList(new EntityWrapper<>(new TblGoods().setOwner(user.getOwnerId()).setCode(code)));
     }
 
     @Override
-    public boolean addByHand(SessionOwnerUser user, TblGoods g, TblGoodsStorage s) {
+    public boolean addByHand(SessionUser user, TblGoods g, TblGoodsStorage s) {
         Date date = new Date();
         List<TblGoods> list = this.findByCode(user, g.getCode());
         if (!list.isEmpty()) {
@@ -89,14 +91,14 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         }
         g.setCreatedAt(date);
         g.setCreatedBy(Long.valueOf(user.getId()));
-        g.setOwner(user.getOwner());
+        g.setOwner(user.getOwnerId());
         g.setStatus(TblGoods.status_1);
         g.setSortNum(1);
         g.setSource(TblGoods.source_2);
         g.setIsDelete(TblGoods.is_delete_0);
         if(this.insert(g)){
             imService.sendAddGoodsNotify(user, g);
-            s.setOwner(user.getOwner());
+            s.setOwner(user.getOwnerId());
             s.setGoodsId(g.getId());
             s.setBeforeBaseline(BigDecimal.ZERO);
             s.setCreatedAt(date);
@@ -109,7 +111,7 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
     }
 
     @Override
-    public boolean addByScan(SessionOwnerUser user, TblGoods g, TblGoodsStorage s) {
+    public boolean addByScan(SessionUser user, TblGoods g, TblGoodsStorage s) {
         Date date = new Date();
         List<TblGoods> list = this.findByCode(user, g.getCode());
         if (!list.isEmpty()) {
@@ -117,14 +119,14 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         }
         g.setCreatedAt(date);
         g.setCreatedBy(Long.valueOf(user.getId()));
-        g.setOwner(user.getOwner());
+        g.setOwner(user.getOwnerId());
         g.setStatus(TblGoods.status_1);
         g.setSortNum(1);
         g.setSource(TblGoods.source_1);
         g.setIsDelete(TblGoods.is_delete_0);
         if(this.insert(g)){
             imService.sendAddGoodsNotify(user, g);
-            s.setOwner(user.getOwner());
+            s.setOwner(user.getOwnerId());
             s.setGoodsId(g.getId());
             s.setBeforeBaseline(BigDecimal.ZERO);
             s.setCreatedAt(date);
@@ -150,7 +152,7 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         return false;
     }
 
-    private void notifyOwnerAddGoods(SessionOwnerUser user,TblGoods goods){
+    private void notifyOwnerAddGoods(SessionUser user,TblGoods goods){
         imService.sendAddGoodsNotify(user, goods);
     }
 

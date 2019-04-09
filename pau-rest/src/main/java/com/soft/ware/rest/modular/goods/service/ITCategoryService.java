@@ -1,7 +1,7 @@
 package com.soft.ware.rest.modular.goods.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwner;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 
 import java.util.List;
@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface ITCategoryService extends IService<TCategory> {
 
-    List<TCategory> findAllCategory(SessionOwner user);
+    List<TCategory> findAllCategory(SessionUser user);
 }

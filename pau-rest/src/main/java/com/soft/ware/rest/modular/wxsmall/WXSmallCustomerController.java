@@ -89,7 +89,7 @@ public class WXSmallCustomerController  extends BaseController {
      */
     //@RequestMapping(value = "/customer/v1/banner/list")
     public Object banners(SessionUser user){
-        List<TblBanner> list = bannerService.findBannerByOwner(user.getOwner());
+        List<TblBanner> list = bannerService.findBannerByOwner(user.getOwnerId());
         Map<String, Object> map = new HashMap<>();
         map.put("code", SUCCESS);
         return list;
@@ -140,8 +140,8 @@ public class WXSmallCustomerController  extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/customer/v1/goods/{id}",method = RequestMethod.GET,params = {"flag=goodsNO"})
-    public Object goodsByCode(SessionOwner owner,@PathVariable String id) throws Exception {
+    //@RequestMapping(value = "/customer/v1/goods/{id}",method = RequestMethod.GET,params = {"flag=goodsNO"})
+    public Object goodsByCode(SessionUser owner,@PathVariable String id) throws Exception {
         List<TblGoods> goods = goodsService.findByCode(owner,id);
         List<Map<String, Object>> maps = BeanMapUtils.toMap(true, goods);
         return warpObject(new ListWrapper(maps));
@@ -176,7 +176,7 @@ public class WXSmallCustomerController  extends BaseController {
         int[] nums = param.getNums();
 
         List<TblGoods> all = goodsService.findAll(user, param.getSids());
-        TblOwner owner = ownerService.find(user.getOwner());
+        TblOwner owner = ownerService.find(user.getOwnerId());
         long current = System.currentTimeMillis();
         TblGoods g;
         BigDecimal total = BigDecimal.ZERO;
@@ -386,7 +386,7 @@ public class WXSmallCustomerController  extends BaseController {
         if (StringUtils.isNotBlank(param.getTelephone())) {
             order.setConsigneeMobile(param.getTelephone());
         }
-        boolean update = orderService.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner()).setStatus(order.getStatus())));
+        boolean update = orderService.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId()).setStatus(order.getStatus())));
         return render(update);
     }
 
@@ -456,7 +456,7 @@ public class WXSmallCustomerController  extends BaseController {
         order.setConsigneeMobile(address.getTelephone());
         order.setConsigneeName(address.getName());
         order.setConsigneeAddress(address.getProvince() + "  " + address.getDetail());
-        boolean update = orderService.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner()).setStatus(TblOrder.STATUS_0)));
+        boolean update = orderService.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId()).setStatus(TblOrder.STATUS_0)));
         return render(update);
     }
 
@@ -557,7 +557,7 @@ public class WXSmallCustomerController  extends BaseController {
     @RequestMapping(value = "/customer/v1/question",method = RequestMethod.POST)
     public Object question(SessionUser user,@RequestBody TblQuestion question){
         question.setOpenId(user.getOpenId());
-        question.setOwner(user.getOwner());
+        question.setOwner(user.getOwnerId());
         question.setCreatedAt(new Date());
         boolean b = questionService.add(question);
         return render(b);

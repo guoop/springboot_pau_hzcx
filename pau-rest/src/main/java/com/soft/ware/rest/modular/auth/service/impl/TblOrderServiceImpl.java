@@ -79,7 +79,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     public TblOrder createOrder(SessionUser user, AddOrderParam param) {
         Date date = new Date();
         TblOrder o = new TblOrder();
-        o.setOwner(user.getOwner());
+        o.setOwner(user.getOwnerId());
 
         o.setNo(param.getNo());
         o.setMoneyChannel(param.getMoney_channel());
@@ -126,14 +126,8 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
      */
     @Override
     public TblOrder findByNo(SessionUser user,String no) {
-        return orderMapper.selectOne(new TblOrder().setNo(no).setCreatedBy(user.getOpenId()).setOwner(user.getOwner()));
+        return orderMapper.selectOne(new TblOrder().setNo(no).setCreatedBy(user.getOpenId()).setOwner(user.getOwnerId()));
     }
-
-    @Override
-    public TblOrder findByNo(SessionOwnerUser user, String no) {
-        return orderMapper.selectOne(new TblOrder().setNo(no).setOwner(user.getOwner()));
-    }
-
 
     @Override
     public boolean updateStatus(SessionUser user, String orderNO, String status) {
@@ -191,7 +185,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         int round = BigDecimal.ROUND_HALF_UP;
         //Map<String,Object> map = new HashMap<>();
         List<TblGoods> list = goodsService.findAll(user, param.getSids());
-        TblOwner owner = ownerService.find(user.getOwner());
+        TblOwner owner = ownerService.find(user.getOwnerId());
         List<TblAddress> addressList = addressService.findAll(user);
         long current = System.currentTimeMillis();
         //k 商品id， param 下标
@@ -261,7 +255,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         o.setPayMoney(goodsMoney.add(actualFee).setScale(2, round));
         o.setCreatedAt(new Date(current));
         o.setCreatedBy(user.getOpenId());
-        o.setOwner(user.getOwner());
+        o.setOwner(user.getOwnerId());
         o.setGoods(StringUtils.join(goodsStr, ","));
         o.setStatus(TblOrder.STATUS_0);
         if (!addressList.isEmpty()) {
@@ -332,7 +326,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public boolean updateOwnerOrder(SessionOwnerUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException {
+    public boolean updateOwnerOrder(SessionUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException {
         //todo yancc 更新成功后是否需要清除 redis 中的 formId
         String no = order.getNo();
         long current = System.currentTimeMillis();
@@ -353,10 +347,10 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             // 只允许取消货到付款、待商家确认的订单
             if (order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_1)  && order.getStatus().equals(TblOrder.STATUS_1)) {
                 order.setStatus(TblOrder.STATUS_01);
-                order.setCancelBy(user.getUsername());
+                order.setCancelBy(user.getPhone());
                 order.setCancelAt(date);
                 order.setCancelReason(reason);
-                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
                 logger.info("取消订单 - {}", order.getNo());
                 String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + no);
                 WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, order);
@@ -370,9 +364,9 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             // 只允许确认待商家确认的订单
             if (order.getStatus().equals(TblOrder.STATUS_1)) {
                 order.setStatus(TblOrder.STATUS_10);
-                order.setConfirmBy(user.getUsername());
+                order.setConfirmBy(user.getPhone());
                 order.setConfirmAt(date);
-                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
                 if (update) {
                     update = goodsService.updateStock(user, ids, nums);
                 }
@@ -388,9 +382,9 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             // 只允许对已经经过商家确认的订单进行配送
             if (order.getStatus().equals(TblOrder.STATUS_10)) {
                 order.setStatus(TblOrder.STATUS_2);
-                order.setDistributionBy(user.getUsername());
+                order.setDistributionBy(user.getPhone());
                 order.setDistributionAt(date);
-                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
                 if (order.getSource().equals(TblOrder.SOURCE_0)) {
                     logger.info("配送订单 - ", no);
                     String templateFormId = redisTemplate.opsForValue().get("ms:fit:" + no);
@@ -406,9 +400,9 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             // 只允许对配送中的订单进行标记完成操作
             if (order.getStatus().equals(TblOrder.SOURCE_2)) {
                 order.setStatus(TblOrder.STATUS_3);
-                order.setDoneBy(user.getUsername());
+                order.setDoneBy(user.getPhone());
                 order.setDoneAt(date);
-                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+                update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
             } else {
                 throw new PauException(BizExceptionEnum.ORDER_DONE_FAIL);
             }
@@ -425,7 +419,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public boolean refund(SessionOwnerUser user, OrderRefundParam param) throws WxPayException {
+    public boolean refund(SessionUser user, OrderRefundParam param) throws WxPayException {
         //todo yancc 更新成功后是否需要清除 redis 中的 formId
         int round = WXContants.big_decimal_sale;
         Date date = new Date();
@@ -459,11 +453,11 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         //先执行操作，在发送通知，发送失败可以回滚
         //todo yancc 需要添加 行锁
         order.setStatus(param.getRefundType().equals("all") ? -1 : 3);
-        order.setRefundBy(user.getUsername());
+        order.setRefundBy(user.getPhone());
         order.setRefundAt(date);
         order.setRefundReason(param.getRefundReason());
         order.setRefundMoney(refundMoney);
-        boolean update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwner())));
+        boolean update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
         if (update) {
             WxPayRefundRequest req = WxPayRefundRequest
                     .newBuilder()
@@ -479,7 +473,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             try{
                 // 全额退款则意味着取消订单
                 if ("all".equals(param.getRefundType())) {
-                    order.setCancelBy(user.getUsername());
+                    order.setCancelBy(user.getPhone());
                     order.setCancelAt(date);
                     order.setCancelReason(order.getRefundReason());
                 }
@@ -510,7 +504,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     }
 
     @Override
-    public boolean refundDiff(SessionOwnerUser user, OrderRefundParam param) {
+    public boolean refundDiff(SessionUser user, OrderRefundParam param) {
         Date date = new Date();
         String no = param.getOrder();
         TblOrder order = this.findByNo(user, no);
@@ -529,11 +523,11 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         }
 
         diff.setStatus(TblOrderMoneyDiff.status_1);
-        diff.setRefundBy(user.getUsername());
+        diff.setRefundBy(user.getPhone());
         diff.setRefundAt(date);
         diff.setRefundStatus(TblOrderMoneyDiff.refund_status_1);
         //todo yancc 需要乐观锁
-        boolean update = diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+        boolean update = diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwnerId())));
 
         try {
             if (update) {
@@ -566,10 +560,10 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             //todo yancc 需要乐观锁
             logger.info("订单差价退款失败,订单号{}，错误码{},错误原因{}", no, e.getErrCode(), e.getErrCodeDes());
             //退款失败
-            diff.setRefundBy(user.getUsername());
+            diff.setRefundBy(user.getPhone());
             diff.setRefundAt(date);
             diff.setRefundStatus(TblOrderMoneyDiff.refund_status_2);
-            diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+            diffService.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwnerId())));
             e.printStackTrace();
         }
 

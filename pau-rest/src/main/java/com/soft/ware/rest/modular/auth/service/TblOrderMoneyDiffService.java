@@ -5,7 +5,6 @@ import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDiffParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 
 public interface TblOrderMoneyDiffService extends IService<TblOrderMoneyDiff> {
@@ -17,7 +16,7 @@ public interface TblOrderMoneyDiffService extends IService<TblOrderMoneyDiff> {
      * @param diffNO
      * @return
      */
-    TblOrderMoneyDiff findByNo(SessionOwnerUser user, String diffNO);
+    TblOrderMoneyDiff findByNo(SessionUser user, String diffNO);
 
     /**
      * 根据订单查询差额订单
@@ -25,14 +24,14 @@ public interface TblOrderMoneyDiffService extends IService<TblOrderMoneyDiff> {
      * @param order
      * @return
      */
-    TblOrderMoneyDiff findByNo(SessionOwnerUser user, TblOrder order);
+    TblOrderMoneyDiff findByNo(SessionUser user, TblOrder order);
 
     /**
      * 创建差额订单
      * @param user
      * @param param
      */
-    boolean create(SessionOwnerUser user, OrderDiffParam param);
+    boolean create(SessionUser user, OrderDiffParam param);
 
     /**
      * 补差价付款

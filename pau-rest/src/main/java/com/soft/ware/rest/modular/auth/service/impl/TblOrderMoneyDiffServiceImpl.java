@@ -12,7 +12,6 @@ import com.soft.ware.rest.common.persistence.dao.TblOrderMoneyDiffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDiffParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOrderMoneyDiffService;
 import com.soft.ware.rest.modular.auth.service.TblOrderService;
@@ -36,17 +35,17 @@ public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffM
     private TblOrderService orderService;
 
     @Override
-    public TblOrderMoneyDiff findByNo(SessionOwnerUser user, String diffNO) {
-        return mapper.selectOne(new TblOrderMoneyDiff().setNo(diffNO).setOwner(user.getOwner()));
+    public TblOrderMoneyDiff findByNo(SessionUser user, String diffNO) {
+        return mapper.selectOne(new TblOrderMoneyDiff().setNo(diffNO).setOwner(user.getOwnerId()));
     }
 
     @Override
-    public TblOrderMoneyDiff findByNo(SessionOwnerUser user, TblOrder order) {
-        return mapper.selectOne(new TblOrderMoneyDiff().setOrderNo(order.getNo()).setOwner(user.getOwner()));
+    public TblOrderMoneyDiff findByNo(SessionUser user, TblOrder order) {
+        return mapper.selectOne(new TblOrderMoneyDiff().setOrderNo(order.getNo()).setOwner(user.getOwnerId()));
     }
 
     @Override
-    public boolean create(SessionOwnerUser user, OrderDiffParam param) {
+    public boolean create(SessionUser user, OrderDiffParam param) {
         Date date = new Date();
         TblOrder order = orderService.findByNo(user, param.getOrderNO());
         Integer status = order.getStatus();
@@ -59,7 +58,7 @@ public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffM
         if (diff == null) {
             diff = new TblOrderMoneyDiff();
             diff.setNo(IdGenerator.getId());
-            diff.setOwner(user.getOwner());
+            diff.setOwner(user.getOwnerId());
             diff.setOrderNo(order.getNo());
             diff.setMoney(param.getMoney());
 
@@ -72,7 +71,7 @@ public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffM
             diff.setMoney(param.getMoney());
             diff.setMoneyDiff(moneyDiff);
             diff.setPic(param.getPic());
-            return this.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwner())));
+            return this.update(diff, new EntityWrapper<>(new TblOrderMoneyDiff().setId(diff.getId()).setOwner(user.getOwnerId())));
         }
     }
 

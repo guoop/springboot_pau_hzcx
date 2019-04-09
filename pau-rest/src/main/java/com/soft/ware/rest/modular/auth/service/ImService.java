@@ -4,7 +4,6 @@ import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 
 public interface ImService {
@@ -20,12 +19,12 @@ public interface ImService {
      * @param user
      * @param ss
      */
-    void syncUsers(SessionOwnerUser user, TblOwner owner, TblOwnerStaff... ss) throws Exception;
+    void syncUsers(SessionUser user, TblOwner owner, TblOwnerStaff... ss) throws Exception;
 
     /**
      * 发送商品添加通知
      * @param user
      * @param goods
      */
-    void sendAddGoodsNotify(SessionOwnerUser user, TblGoods goods);
+    void sendAddGoodsNotify(SessionUser user, TblGoods goods);
 }

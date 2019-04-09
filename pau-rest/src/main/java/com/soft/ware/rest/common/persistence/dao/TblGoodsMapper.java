@@ -3,7 +3,6 @@ package com.soft.ware.rest.common.persistence.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import org.apache.ibatis.annotations.Param;
@@ -27,5 +26,5 @@ public interface TblGoodsMapper extends BaseMapper<TblGoods> {
      * @param nums
      * @return
      */
-    boolean updateStock(@Param("user") SessionOwnerUser user, @Param("ids") List<String> ids, @Param("nums") List<String> nums);
+    boolean updateStock(@Param("user") SessionUser user, @Param("ids") List<String> ids, @Param("nums") List<String> nums);
 }

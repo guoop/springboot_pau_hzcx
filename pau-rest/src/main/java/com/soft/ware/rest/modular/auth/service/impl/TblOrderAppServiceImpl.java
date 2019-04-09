@@ -25,9 +25,9 @@ public class TblOrderAppServiceImpl extends BaseService<TblOrderAppMapper,TblOrd
 
     @Override
     public List<Map<String, Object>> findPage(SessionUser user, Page page, OrderPageParam param) {
-        Integer count = mapper.selectCount(new EntityWrapper<>(new TblOrderApp().setOwner(user.getOwner())));
+        Integer count = mapper.selectCount(new EntityWrapper<>(new TblOrderApp().setOwner(user.getOwnerId())));
         page.setTotal(count);
-        List<Map<String, Object>> maps = mapper.selectMapsPage(new RowBounds((int) page.getOffset(), page.getLimit()), new EntityWrapper<>(new TblOrderApp().setOwner(user.getOwner())));
+        List<Map<String, Object>> maps = mapper.selectMapsPage(new RowBounds((int) page.getOffset(), page.getLimit()), new EntityWrapper<>(new TblOrderApp().setOwner(user.getOwnerId())));
         return maps;
     }
 }

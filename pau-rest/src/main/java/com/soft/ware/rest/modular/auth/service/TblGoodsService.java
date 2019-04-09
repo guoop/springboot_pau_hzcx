@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.dao.TblGoodsMapper;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblGoodsStorage;
-import com.soft.ware.rest.modular.auth.controller.dto.*;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsUpdateParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 
 import java.util.List;
@@ -41,14 +43,14 @@ public interface TblGoodsService extends IService<TblGoods> {
      * @param nums 商品数量
      * @return
      */
-    boolean updateStock(SessionOwnerUser user, List<String> ids, List<String> nums);
+    boolean updateStock(SessionUser user, List<String> ids, List<String> nums);
 
     /**
      * 查询商品详情，根据商品条码
      * @param code
      * @return
      */
-    List<TblGoods> findByCode(SessionOwner user, String code);
+    List<TblGoods> findByCode(SessionUser user, String code);
 
     /**
      * 手工添加商品
@@ -57,7 +59,7 @@ public interface TblGoodsService extends IService<TblGoods> {
      * @param s
      * @return
      */
-    boolean addByHand(SessionOwnerUser user, TblGoods g, TblGoodsStorage s);
+    boolean addByHand(SessionUser user, TblGoods g, TblGoodsStorage s);
 
     /**
      * 扫码添加商品
@@ -66,5 +68,5 @@ public interface TblGoodsService extends IService<TblGoods> {
      * @param s
      * @return
      */
-    boolean addByScan(SessionOwnerUser user, TblGoods g,TblGoodsStorage s);
+    boolean addByScan(SessionUser user, TblGoods g,TblGoodsStorage s);
 }

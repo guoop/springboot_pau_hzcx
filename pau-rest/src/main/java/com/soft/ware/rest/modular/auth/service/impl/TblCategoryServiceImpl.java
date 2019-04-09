@@ -21,7 +21,7 @@ public class TblCategoryServiceImpl extends BaseService<TblCategoryMapper,TblCat
 
     @Override
     public List<TblCategory> findAllCategory(SessionUser user) {
-        return tblCategoryMapper.finalAll(user.getOwner());
+        return tblCategoryMapper.finalAll(user.getOwnerId());
     }
 
 	@Override

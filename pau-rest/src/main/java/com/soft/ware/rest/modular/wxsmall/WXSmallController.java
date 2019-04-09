@@ -22,7 +22,6 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
-import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -327,7 +326,7 @@ public class WXSmallController extends BaseController {
 	 * @param map
 	 */
 	@RequestMapping(value = "v2/order/maintain",method = RequestMethod.POST)
-	public Object signOrderStatus(@RequestBody Map<String, Object> map,SessionOwnerUser user) {
+	public Object signOrderStatus(@RequestBody Map<String, Object> map,SessionUser user) {
 		String no = map.get("orderNO").toString();
 		String status = map.get("status").toString();
 		TblOrder order = tblOrderService.findByNo(user, no);
@@ -467,7 +466,7 @@ public class WXSmallController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "v2/goods/index",method = RequestMethod.GET,params = "code")
-	public Object getGoodsDetailByCode(SessionOwnerUser user,String code) throws Exception {
+	public Object getGoodsDetailByCode(SessionUser user,String code) throws Exception {
 		List<TblGoods> goods = goodsService.findByCode(user, code);
 		return BeanMapUtils.toMap(true, goods);
 	}
@@ -484,7 +483,7 @@ public class WXSmallController extends BaseController {
 	 * 扫码添加商品
 	 */
 	@RequestMapping("v2/auth/goods/addByScan")
-	public Object addByScan(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
+	public Object addByScan(SessionUser user,@RequestBody Map goods) throws Exception {
 		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
 		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
 		boolean b = goodsService.addByScan(user, g, s);
@@ -495,7 +494,7 @@ public class WXSmallController extends BaseController {
 	 * 手动添加商品
 	 */
 	@RequestMapping(value = "v2/auth/goods/addByHand",method = RequestMethod.POST)
-	public Object addByHand(SessionOwnerUser user,@RequestBody Map goods) throws Exception {
+	public Object addByHand(SessionUser user,@RequestBody Map goods) throws Exception {
 		TblGoods g = BeanMapUtils.toObject(goods, TblGoods.class, true);
 		TblGoodsStorage s = BeanMapUtils.toObject(goods, TblGoodsStorage.class, true);
 		boolean b = goodsService.addByHand(user, g, s);
@@ -610,7 +609,7 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "v1/auth/order/refund",method = RequestMethod.POST)
-	public Object getRefund(SessionOwnerUser user,@RequestBody OrderRefundParam param){
+	public Object getRefund(SessionUser user,@RequestBody OrderRefundParam param){
 		try {
 			boolean	refund = tblOrderService.refund(user, param);
 			return render(refund);
@@ -626,8 +625,8 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "v2/orders/count",method = RequestMethod.GET)
-	public Object orderCount(SessionOwnerUser user){
-		int i = tblOrderService.selectCount(new EntityWrapper<>(new TblOrder().setOwner(user.getOwner()).setStatus(TblOrder.STATUS_1)));
+	public Object orderCount(SessionUser user){
+		int i = tblOrderService.selectCount(new EntityWrapper<>(new TblOrder().setOwner(user.getOwnerId()).setStatus(TblOrder.STATUS_1)));
         return render().set("count", i);
 
 	}
@@ -638,7 +637,7 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value = "/order/refund",method = RequestMethod.POST)
-	public Object refundDiff(SessionOwnerUser user,OrderRefundParam param){
+	public Object refundDiff(SessionUser user,OrderRefundParam param){
 		boolean b = tblOrderService.refundDiff(user, param);
 		return render(b);
 	}

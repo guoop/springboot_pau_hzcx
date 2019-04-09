@@ -3,7 +3,6 @@ package com.soft.ware.rest.modular.auth.service.impl;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import org.springframework.stereotype.Service;
@@ -19,14 +18,14 @@ public class TblOwnerServiceImpl extends BaseService<TblOwnerMapper,TblOwner> im
     private TblOwnerMapper ownerMapper;
 
     @Override
-    public TblOwner find(SessionOwnerUser user) {
-        return ownerMapper.findOwnerByOwner(user.getOwner());
+    public TblOwner find(SessionUser user) {
+        return ownerMapper.findOwnerByOwner(user.getOwnerId());
     }
 
 
     @Override
     public TblOwner find(SessionUser customer, boolean all) {
-        TblOwner o = ownerMapper.findOwnerByOwner(customer.getOwner());
+        TblOwner o = ownerMapper.findOwnerByOwner(customer.getOwnerId());
         if (!all) {
             o.setId(null);
             o.setAppId(null);

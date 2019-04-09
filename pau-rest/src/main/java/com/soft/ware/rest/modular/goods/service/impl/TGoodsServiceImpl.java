@@ -29,9 +29,9 @@ public class TGoodsServiceImpl extends ServiceImpl<TGoodsMapper, TGoods> impleme
 
     @Override
     public List<Map> findPage(SessionUser user, Page page, GoodsPageParam param) {
-        Long count = mapper.findPageCount(user.getOwner(), param);
+        Long count = mapper.findPageCount(user.getOwnerId(), param);
         page.setTotal(count);
-        return mapper.findPage(user.getOwner(), param, page);
+        return mapper.findPage(user.getOwnerId(), param, page);
     }
 
     @Override

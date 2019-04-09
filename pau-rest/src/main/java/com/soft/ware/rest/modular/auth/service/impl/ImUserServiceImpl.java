@@ -5,7 +5,7 @@ import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.common.persistence.dao.ImUserMapper;
 import com.soft.ware.rest.common.persistence.model.ImUser;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +27,9 @@ public class ImUserServiceImpl extends BaseService<ImUserMapper,ImUser> implemen
 
 
     @Override
-    public boolean saveOrUpdate(SessionOwnerUser user, ImUser u) {
+    public boolean saveOrUpdate(SessionUser user, ImUser u) {
         ImUser old = findByUsername(u.getUsername());
-        u.setOwnerId(user.getOwner());
+        u.setOwnerId(user.getOwnerId());
         int row;
         if (old == null) {
             u.setId(IdGenerator.getId());
@@ -37,7 +37,7 @@ public class ImUserServiceImpl extends BaseService<ImUserMapper,ImUser> implemen
             u.setCreater(user.getName());
             row = mapper.insert(u);
         } else {
-            u.setOwnerId(user.getOwner());
+            u.setOwnerId(user.getOwnerId());
             u.setId(old.getId());
             row = mapper.updateById(u);
         }
@@ -47,10 +47,10 @@ public class ImUserServiceImpl extends BaseService<ImUserMapper,ImUser> implemen
     }
 
     @Override
-    public boolean deleteByUsername(SessionOwnerUser user, String username) {
+    public boolean deleteByUsername(SessionUser user, String username) {
         ImUser u = findByUsername(username);
         if (u != null) {
-            return delete(new EntityWrapper<>(new ImUser().setId(u.getId()).setOwnerId(user.getOwner())));
+            return delete(new EntityWrapper<>(new ImUser().setId(u.getId()).setOwnerId(user.getOwnerId())));
         }
         return false;
     }

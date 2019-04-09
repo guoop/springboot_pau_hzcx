@@ -42,14 +42,6 @@ public interface TblOrderService extends IService<TblOrder> {
 
 
     /**
-     * 根据订单号查询订单详情
-     * @param user
-     * @param no
-     * @return
-     */
-    TblOrder findByNo(SessionOwnerUser user, String no);
-
-    /**
      * 更新订单状态
      * @param user
      * @param orderNO
@@ -132,7 +124,7 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param reason 原因
      * @return
      */
-    boolean updateOwnerOrder(SessionOwnerUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException;
+    boolean updateOwnerOrder(SessionUser user, String status, TblOrder order, TblOwner owner,String reason) throws WxErrorException;
 
     /**
      * 商家退款
@@ -140,7 +132,7 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param param
      * @return
      */
-    boolean refund(SessionOwnerUser user, OrderRefundParam param) throws WxPayException;
+    boolean refund(SessionUser user, OrderRefundParam param) throws WxPayException;
 
     /**
      * 商家退差价
@@ -148,7 +140,7 @@ public interface TblOrderService extends IService<TblOrder> {
      * @param param
      * @return
      */
-    boolean refundDiff(SessionOwnerUser user, OrderRefundParam param);
+    boolean refundDiff(SessionUser user, OrderRefundParam param);
 
     /**
      * 根据订单号查询订单详细信息

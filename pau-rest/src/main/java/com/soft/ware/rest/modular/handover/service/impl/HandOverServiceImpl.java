@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.persistence.dao.HandOverMapper;
 import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
+import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.common.persistence.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +34,8 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
         TblOwnerStaff staff = staffMapper.selectById(user.getId());
         HandOver o = new HandOver();
         Date date = new Date();
-        o.setOwner(user.getOwner());
-        o.setUserPhone(user.getUsername());
+        o.setOwner(user.getOwnerId());
+        o.setUserPhone(user.getPhone());
         o.setUserName(staff.getName());
 
         o.setPospalcode(param.getPospalcode());
@@ -76,7 +76,7 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 	public List<HandOver> getHandOver(HandoverParam param,SessionUser user,Page page) {
 		List<HandOver> list = null;
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("owner", user.getOwner());
+		map.put("owner", user.getOwnerId());
 		map.put("startTime", param.getOptionstart());
 		map.put("endTime", param.getOptionat());
 		map.put("size", page.getLimit());

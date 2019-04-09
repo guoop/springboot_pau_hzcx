@@ -2,7 +2,7 @@ package com.soft.ware.rest.modular.auth.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionOwnerUser;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface TblOwnerGroupsService extends IService<TblOwnerGroups> {
      * @param type
      * @return
      */
-    List<TblOwnerGroups> find(SessionOwnerUser user, int type);
+    List<TblOwnerGroups> find(SessionUser user, int type);
 }
