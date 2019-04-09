@@ -23,6 +23,10 @@ import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.Validator;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.BindingResult;
@@ -53,13 +57,13 @@ public class AuthController extends BaseController {
     private AuthService authService;
 
     @Autowired
-    private TblOwnerService ownerService;
+    private ITOwnerService itOwnerService;
     
     @Autowired
     private JwtProperties jwtProperties;
 
     @Autowired
-    private TblOwnerStaffService tblOwnerStaffService;
+    private TOwnerStaffService tOwnerStaffService;
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
@@ -100,13 +104,15 @@ public class AuthController extends BaseController {
     public Object maLogin(@RequestBody AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
         //Validator.valid(result);
         String phone = param.getPhone();
-        String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
+        //调试验证码写成123456
+        //String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
+        String s = "123456";
    /*     if (!param.getPassword().equals(s)) {
             return warpObject(render(false, "验证码错误"));
         }*/
         WxMaService service = hzcxWxService.getWxMaService();
         String appId = service.getWxMaConfig().getAppid();
-        TblOwnerStaff user = tblOwnerStaffService.findByPhone(phone);
+        TOwnerStaff user = tOwnerStaffService.findByPhone(phone);
         if (user == null) {
             return render(false, "用户不存在");
         }
@@ -123,8 +129,8 @@ public class AuthController extends BaseController {
         map.set("token", token);
         map.set("payload", WXUtils.getPayLoad());
         map.set("user", BeanMapUtils.toMap(user, true));
-        map.set("owner", user.getOwner());
-        HttpKit.getRequest().setAttribute("owner", user.getOwner());
+        map.set("owner_id", user.getOwnerId());
+        HttpKit.getRequest().setAttribute("owner", user.getOwnerId());
         return map;
     }
 
@@ -134,15 +140,16 @@ public class AuthController extends BaseController {
     		if(ToolUtil.isEmpty(user)){
             	throw new PauException(BizExceptionEnum.NO_USER);
             }
-    		 TblOwner owner = ownerService.find(user.getOwner());
+
+    		 TOwner owner = itOwnerService.findByAppId(user.getOwner());
              AuthResponse resp = new AuthResponse(token, randomKey);
              ResultView view = render();
              view.put("payload", WXUtils.getPayLoad());
              view.put("token", resp.getToken());
-             view.put("owner", user.getOwner());
-             HttpKit.getRequest().setAttribute("owner", user.getOwner());
-             view.put("app_name", owner.getAppName());
-             view.put("app_qr", owner.getAppName());
+             view.put("owner_id", user.getOwner());
+             HttpKit.getRequest().setAttribute("owner_id", user.getOwner());
+            /* view.put("app_name", owner.getAppName());
+             view.put("app_qr", owner.getAppName());*/
              return view;
     	} else {
     		throw new PauException(BizExceptionEnum.NO_USER);

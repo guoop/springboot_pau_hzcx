@@ -14,4 +14,11 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
     @Resource
     private TOwnerStaffMapper mapper;
 
+    @Override
+    public TOwnerStaff findByPhone(String phone) {
+        TOwnerStaff staff = new TOwnerStaff();
+        staff.setPhone(phone);
+        return mapper.selectOne(staff);
+
+    }
 }
