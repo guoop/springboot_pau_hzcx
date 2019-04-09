@@ -131,18 +131,18 @@ public class AuthController extends BaseController {
 
     protected Object returnTokenParams(AuthRequest authRequest,String token,String randomKey) {
     	if(ToolUtil.isNotEmpty(authRequest.getPhone())){
-    		TblOwnerStaff user = authService.findByUsername(authRequest.getPhone());
+    		TOwnerStaff user = authService.findByUsername(authRequest.getPhone());
     		if(ToolUtil.isEmpty(user)){
             	throw new PauException(BizExceptionEnum.NO_USER);
             }
 
-    		 TOwner owner = itOwnerService.findByAppId(user.getOwner());
+    		 TOwner owner = itOwnerService.findByAppId(user.getOwnerId());
              AuthResponse resp = new AuthResponse(token, randomKey);
              ResultView view = render();
              view.put("payload", WXUtils.getPayLoad());
              view.put("token", resp.getToken());
-             view.put("owner_id", user.getOwner());
-             HttpKit.getRequest().setAttribute("owner_id", user.getOwner());
+             view.put("owner_id", user.getOwnerId());
+             HttpKit.getRequest().setAttribute("owner_id", user.getOwnerId());
             /* view.put("app_name", owner.getAppName());
              view.put("app_qr", owner.getAppName());*/
              return view;

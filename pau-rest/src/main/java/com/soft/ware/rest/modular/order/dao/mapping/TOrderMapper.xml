@@ -31,4 +31,33 @@
         id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, goods_id AS goodsId, version, status, remark
     </sql>
 
+    <sql id="Condition">
+        <if test="id != null and id != ''">
+            and id = #{id}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and orderNo = #{orderNo}
+        </if>
+        <if test="version != null and version != ''">
+            and version = #{version}
+        </if>
+        <if test="status != null and status != ''">
+            and status = #{status}
+        </if>
+        <if test="owner_id != null and owner_id != ''">
+            and owner_id = #{owner_id}
+        </if>
+        <if test="page != null">
+            limit #{page} 20
+        </if>
+    </sql>
+
+
+    <select id="selectOrderListByMap" parameterType="map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_order where 1=1
+        <include refid="Condition"/>
+
+    </select>
+
+
 </mapper>

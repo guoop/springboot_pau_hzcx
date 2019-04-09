@@ -85,7 +85,7 @@ public class TOwnerController  extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "v1/info",method = RequestMethod.GET)
+    @RequestMapping(value = "/info",method = RequestMethod.GET)
     public Tip updateOwner(SessionUser user) throws Exception {
         TOwner owner = itOwnerService.selectById(user.getOwnerId());
         return new SuccessTip(owner);
