@@ -21,5 +21,17 @@
     <sql id="Base_Column_List">
         id, name, phone, address, description, video_url AS videoUrl, begin_time AS beginTime, end_time AS endTime, default_desc AS defaultDesc, default_refund_reason AS defaultRefundReason, create_time AS createTime
     </sql>
+    <sql id="alias_columns">
+        w.id,w.name,w.phone,w.address,w.description,w.video_url,w.begin_time,w.end_time,w.default_desc,w.default_refund_reason,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') create_time
+
+    </sql>
+    <select id="find" resultType="java.util.Map">
+        select
+        <include refid="alias_columns"/>
+        from t_owner w where true
+        <if test="map.id != null and map.id != ''">
+            and w.id = #{map.id}
+        </if>
+    </select>
 
 </mapper>

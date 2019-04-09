@@ -8,6 +8,8 @@ import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,5 +35,10 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
         //return mapper.selectOne(new TOwner().setAppId(appId));
 
         return null;
+    }
+
+    @Override
+    public List<Map<String,Object>> find(Map<String, Object> map) {
+        return mapper.find(map);
     }
 }

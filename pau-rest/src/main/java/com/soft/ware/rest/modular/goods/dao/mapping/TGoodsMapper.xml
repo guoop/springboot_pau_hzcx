@@ -31,7 +31,7 @@
         id, category_id AS categoryId, name, code, unit_id AS unitId, price, pics, description, created_time AS createdTime, creater, owner_id AS ownerId, status, sells, sort, is_delete AS isDelete, source, top_time AS topTime, is_promotion AS isPromotion, storage_id AS storageId, spec_id AS specId
     </sql>
     <sql id="alias_columns">
-        g.id,g.category_id,g.name,g.code,g.unit_id,g.price,g.pics,g.description,g.created_time,g.creater,g.owner_id,g.status,g.sells,g.sort,g.is_delete,g.source,g.top_time,g.is_promotion,g.storage_id,g.spec_id
+        g.id,g.category_id,g.name,g.code,g.unit_id,g.price,g.pics,g.description,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') created_time,g.creater,g.owner_id,g.status,g.sells,g.sort,g.is_delete,g.source,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') top_time,g.is_promotion,g.storage_id,g.spec_id
         ,u.name measurement_unit
     </sql>
     <sql id="limit">

@@ -153,7 +153,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/customer/v1/shop")
+    //@RequestMapping(value = "/customer/v1/shop")
     public Object owner(SessionUser user) throws Exception {
         TblOwner o = ownerService.find(user);
         Map<String, Object> map = BeanMapUtils.toMap(o, true);

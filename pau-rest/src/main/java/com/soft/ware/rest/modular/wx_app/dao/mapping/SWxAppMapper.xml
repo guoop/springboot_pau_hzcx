@@ -12,4 +12,19 @@
         <result column="app_qr" property="appQr" />
     </resultMap>
 
+    <sql id="s_wx_app_alias_column">
+        swa.id,swa.owner_id,swa.app_id,swa.app_secret,swa.app_name,swa.app_qr
+    </sql>
+    <select id="find" resultType="java.util.Map">
+        select
+        <include refid="s_wx_app_alias_column"/>
+        from s_wx_app swa where true
+        <if test="map.id != null and map.id !=''">
+            swa.id = #{map.id}
+        </if>
+        <if test="map.ownerId != null and map.ownerId !=''">
+            swa.owner_id = #{map.ownerId}
+        </if>
+    </select>
+
 </mapper>

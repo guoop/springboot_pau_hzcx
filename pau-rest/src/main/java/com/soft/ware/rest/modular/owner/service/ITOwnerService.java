@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 商户信息 服务类
@@ -17,4 +20,6 @@ public interface ITOwnerService extends IService<TOwner> {
     TOwner find(SWxApp app);
 
     TOwner findByAppId(String appId);
+
+    List<Map<String,Object>> find(Map<String,Object> map);
 }

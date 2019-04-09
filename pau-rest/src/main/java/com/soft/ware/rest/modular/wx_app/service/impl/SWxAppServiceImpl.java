@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @Transactional
 public class SWxAppServiceImpl extends BaseService<SWxAppMapper,SWxApp> implements ISWxAppService {
@@ -24,5 +27,10 @@ public class SWxAppServiceImpl extends BaseService<SWxAppMapper,SWxApp> implemen
     @Override
     public SWxApp find(TblOwner owner) {
         return selectOne(new EntityWrapper<>(new SWxApp().setOwnerId(owner.getOwner())));
+    }
+
+    @Override
+    public List<Map<String,Object>> find(Map<String, Object> map) {
+        return mapper.find(map);
     }
 }
