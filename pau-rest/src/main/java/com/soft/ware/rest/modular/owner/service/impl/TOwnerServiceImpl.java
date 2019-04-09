@@ -27,4 +27,10 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     public TOwner find(SWxApp app) {
         return mapper.selectOne(new TOwner().setId(app.getOwnerId()));
     }
+
+    @Override
+    public TOwner findByAppId(String appId) {
+        //return mapper.selectOne(new TOwner().setAppId(appId));
+        return null;
+    }
 }

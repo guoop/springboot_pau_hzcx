@@ -16,4 +16,5 @@ public interface ITOwnerService extends IService<TOwner> {
 
     TOwner find(SWxApp app);
 
+    TOwner findByAppId(String appId);
 }
