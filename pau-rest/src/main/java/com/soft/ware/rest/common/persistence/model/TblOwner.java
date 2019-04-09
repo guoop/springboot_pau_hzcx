@@ -1,3 +1,4 @@
+
 package com.soft.ware.rest.common.persistence.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -9,9 +10,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 /**
   * 商户信息
 */
+
 @TableName("tbl_owner")
 public class TblOwner extends Model<TblOwner> {
 

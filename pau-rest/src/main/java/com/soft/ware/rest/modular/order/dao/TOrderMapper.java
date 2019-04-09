@@ -3,6 +3,11 @@ package com.soft.ware.rest.modular.order.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.modular.order.model.TOrder;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 线上订单信息 Mapper 接口
@@ -13,4 +18,6 @@ import com.soft.ware.rest.modular.order.model.TOrder;
  */
 public interface TOrderMapper extends BaseMapper<TOrder> {
 
+
+    List<TOrder> selectOrderListByMap(Map<String,Object> map);
 }

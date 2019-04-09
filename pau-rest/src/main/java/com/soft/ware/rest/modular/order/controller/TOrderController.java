@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,17 +28,18 @@ public class TOrderController extends BaseController {
 
     /**
      * 通过订单状态查询订单列表
+     *
      * @param param (订单状态）,page（页码）
-     * @return
-     * owner/v2/order 修改 owner/v1/orders/list
+     * @return owner/v2/order 修改 owner/v1/orders/list
      */
     @RequestMapping("/orders/list")
-    public Tip getOrderList(SessionUser user, @RequestParam Map<String,Object> param) {
-       param.put("owner_id",user.getOwnerId());
-       List<TOrder>  list = itOrderService.selectByMap(param);
-       if(list.size() > 0){
-           return new SuccessTip(list);
-       }
+    public Tip getOrderList(SessionUser user, @RequestParam Map<String, Object> param) {
+        param.put("owner_id", user.getOwnerId());
+        Map<String, Object> map = new HashMap<>();
+        List<TOrder> list = itOrderService.selectOrderListByMap(map);
+        if (list.size() > 0) {
+            return new SuccessTip(list);
+        }
         return new ErrorTip();
     }
     /**
@@ -52,6 +54,7 @@ public class TOrderController extends BaseController {
         int i = itOrderService.selectCount(new EntityWrapper<>(order));
         return new SuccessTip(i);
     }
+
 
 }
 

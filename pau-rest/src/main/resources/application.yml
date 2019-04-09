@@ -48,6 +48,8 @@ spring:
     database: 0
     host: 192.168.10.6
     port: 6379
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss #在实体时间类型上添加 @JsonFormat(pattern="yyyy-MM-dd HH:mm")
 logging:
   level.root: info
   level.com.soft.ware: debug

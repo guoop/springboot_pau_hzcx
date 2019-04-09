@@ -168,12 +168,12 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "v1/info",method = RequestMethod.GET)
+/*	@RequestMapping(value = "v1/info",method = RequestMethod.GET)
 	public Object updateOwner(SessionUser user) throws Exception {
-		TblOwner owner = tblOwnerService.find(user);
+		TblOwner owner = "";//tblOwnerService.find(user);
 		Map<String, Object> map = BeanMapUtils.toMap(owner, true,1);
 		return render().setAll(map);
-	}
+	}*/
 
 	/**
 	 * 获取店员列表

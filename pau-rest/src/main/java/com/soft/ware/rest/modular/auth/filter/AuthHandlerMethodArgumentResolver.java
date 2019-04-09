@@ -11,6 +11,7 @@ import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import io.jsonwebtoken.JwtException;
@@ -74,10 +75,10 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
                 AuthService authService = SpringContextHolder.getBean(AuthService.class);
                  if(methodParameter.getParameterType() == SessionUser.class) {
                     //todo yancc 计划删掉,商户端应该不支持
-                    TblOwnerStaff user = authService.findByUsername(username);
-                    SessionUser u = new SessionUser(user.getOwner());
+                    TOwnerStaff user = authService.findByUsername(username);
+                    SessionUser u = new SessionUser();
                     u.setId(user.getId().toString() + "");
-                    u.setOwnerId(user.getOwner());
+                    u.setOwnerId(user.getOwnerId());
                     if (req.getServletPath().startsWith("/owner")) {
                         //小程序用户
                         String openId = req.getHeader("Hzcx-User");
