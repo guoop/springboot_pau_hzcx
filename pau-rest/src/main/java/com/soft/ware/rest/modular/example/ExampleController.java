@@ -1,8 +1,6 @@
 package com.soft.ware.rest.modular.example;
 
 import com.soft.ware.rest.common.SimpleObject;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +33,11 @@ public class ExampleController {
      * @ApiImplicitParams：多个请求参数
      * ---------------------
      */
-    @ApiOperation(value = "测试api文档是否可用", notes = "test")
+    /*@ApiOperation(value = "测试api文档是否可用", notes = "test")
     @GetMapping("api")
     //@ApiImplicitParam(name = "id", value = "学生ID", paramType = "path", required = true, dataType = "Integer")
     public  ResponseEntity hello() {
         System.out.println("abcde");
         return ResponseEntity.ok("请求成功!");
-    }
+    }*/
 }

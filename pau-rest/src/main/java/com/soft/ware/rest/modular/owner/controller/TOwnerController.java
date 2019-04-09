@@ -64,7 +64,7 @@ public class TOwnerController  extends BaseController {
         String msgCode = ToolUtil.getRandomInt(6);
         ValueOperations<String, String> vs = redisTemplate.opsForValue();
         String s = vs.get(WXContants.loginCodePrefix + phone);
-        if (s != null) {
+       /* if (s != null) {
             //todo yancc
             return render();
         }
@@ -81,7 +81,7 @@ public class TOwnerController  extends BaseController {
         if (result.getStatusCodeValue() != 200) {
             return render(false, "短信地址请求失败");
         }
-        vs.set(WXContants.loginCodePrefix + phone, msgCode, WXContants.loginCodeExpire, TimeUnit.SECONDS);
+        vs.set(WXContants.loginCodePrefix + phone, msgCode, WXContants.loginCodeExpire, TimeUnit.SECONDS);*/
         return render(true);
     }
 

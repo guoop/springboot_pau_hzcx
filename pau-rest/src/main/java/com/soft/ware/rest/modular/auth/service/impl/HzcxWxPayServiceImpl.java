@@ -99,6 +99,7 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
         if (wxMaService != null) {
             return wxMaService;
         } else {
+
             wxMaService = new WxMaServiceImpl();
             WxMaInMemoryConfig config = new WxMaInMemoryConfig();
             config.setAppid(WXContants.OWNER_APP_ID);
