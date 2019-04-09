@@ -10,8 +10,10 @@ import io.jsonwebtoken.JwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,8 @@ import java.util.Set;
  * @author paulo
  * @Date 2017/8/24 14:04
  */
-public class AuthFilter extends OncePerRequestFilter {
+@Configuration
+public class AuthFilter extends OncePerRequestFilter implements Filter {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -75,8 +78,6 @@ public class AuthFilter extends OncePerRequestFilter {
         whitePrefixUrlSet.add("/customer/v1/address/");
         whitePrefixUrlSet.add("/owner/share/code");
         whitePrefixUrlSet.add("/hello/api");
-        whitePrefixUrlSet.add("/swagger-ui.html");
-        whitePrefixUrlSet.add("/owner/vi/get-owner-info");
         whitePrefixUrlSet.add("/owner/v1/share/code");
 
     }
@@ -88,7 +89,7 @@ public class AuthFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        for (String s : whitePrefixUrlSet) {
+       for (String s : whitePrefixUrlSet) {
             if (path.startsWith(s)) {
                 chain.doFilter(request, response);
                 return;

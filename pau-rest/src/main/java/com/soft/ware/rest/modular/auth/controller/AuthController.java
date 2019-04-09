@@ -130,7 +130,7 @@ public class AuthController extends BaseController {
         map.set("payload", WXUtils.getPayLoad());
         map.set("user", BeanMapUtils.toMap(user, true));
         map.set("owner_id", user.getOwnerId());
-        HttpKit.getRequest().setAttribute("owner", user.getOwnerId());
+        HttpKit.getRequest().setAttribute("owner_id", user.getOwnerId());
         return map;
     }
 

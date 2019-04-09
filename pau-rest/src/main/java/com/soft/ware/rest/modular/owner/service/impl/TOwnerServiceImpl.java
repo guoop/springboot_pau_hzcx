@@ -32,8 +32,6 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
         public TOwner findByAppId(String appId) {
         //return mapper.selectOne(new TOwner().setAppId(appId));
 
-
-        //.................
         return null;
     }
 }
