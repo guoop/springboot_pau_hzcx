@@ -1,7 +1,13 @@
 package com.soft.ware.rest.modular.goods.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.model.TGoods;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,4 +20,7 @@ import com.soft.ware.rest.modular.goods.model.TGoods;
  */
 public interface TGoodsMapper extends BaseMapper<TGoods> {
 
+    List<Map> findPage(@Param("owner") String owner, @Param("param") GoodsPageParam param, @Param("page") Page page);
+
+    Long findPageCount(@Param("owner") String owner, @Param("param") GoodsPageParam param);
 }

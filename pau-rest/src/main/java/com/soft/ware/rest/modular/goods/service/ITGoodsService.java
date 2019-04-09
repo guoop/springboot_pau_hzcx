@@ -1,7 +1,13 @@
 package com.soft.ware.rest.modular.goods.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.model.TGoods;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +19,5 @@ import com.soft.ware.rest.modular.goods.model.TGoods;
  */
 public interface ITGoodsService extends IService<TGoods> {
 
+    List<Map> findPage(SessionUser user, Page page, GoodsPageParam param);
 }

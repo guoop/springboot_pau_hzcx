@@ -115,7 +115,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param page
      * @return
      */
-    @RequestMapping(value = "/customer/v1/goods/list",method = RequestMethod.GET)
+    //@RequestMapping(value = "/customer/v1/goods/list",method = RequestMethod.GET)
     public Object goodsPage(GoodsPageParam param,SessionUser user, Page page) throws WxErrorException {
         List<Map> list = goodsService.findPage(user, page, param);
         return list;

@@ -29,6 +29,12 @@ public class TBanner extends Model<TBanner> {
     //：已删除）
     public static Integer status_2 = 2;
 
+    //：否；
+    public static Integer is_delete_0 = 0;
+    //：是）
+    public static Integer is_delete_1 = 1;
+
+
 
     @TableId(value = "id", type = IdType.UUID)
     private String id;

@@ -1,5 +1,7 @@
 package com.soft.ware.rest.modular.wx_app.service.impl;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.wx_app.dao.SWxAppMapper;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
@@ -14,4 +16,13 @@ public class SWxAppServiceImpl extends BaseService<SWxAppMapper,SWxApp> implemen
     @Resource
     private SWxAppMapper mapper;
 
+    @Override
+    public SWxApp findByAppId(String appId) {
+        return selectOne(new EntityWrapper<>(new SWxApp().setAppId(appId)));
+    }
+
+    @Override
+    public SWxApp find(TblOwner owner) {
+        return selectOne(new EntityWrapper<>(new SWxApp().setOwnerId(owner.getOwner())));
+    }
 }

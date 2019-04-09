@@ -20,6 +20,6 @@ public class TBannerServiceImpl extends BaseService<TBannerMapper,TBanner> imple
 
     @Override
     public List<TBanner> findBannerByOwner(SessionOwner owner) {
-        return mapper.selectList(new EntityWrapper<>(new TBanner().setIsDelete(TBanner.status_0).setOwnerId(owner.getOwner())));
+        return mapper.selectList(new EntityWrapper<>(new TBanner().setIsDelete(TBanner.is_delete_0).setOwnerId(owner.getOwner())));
     }
 }

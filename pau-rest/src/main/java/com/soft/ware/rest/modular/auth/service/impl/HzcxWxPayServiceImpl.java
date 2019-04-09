@@ -13,6 +13,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,21 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
             config.setSecret(owner.getAppSecret());
             service.setWxMaConfig(config);
             map2.put(owner.getAppId(), service);
+            return service;
+        }
+    }
+
+    @Override
+    public WxMaService getWxMaService(SWxApp app) {
+        if (map2.containsKey(app.getAppId())) {
+            return map2.get(app.getAppId());
+        } else {
+            WxMaService service = new WxMaServiceImpl();
+            WxMaInMemoryConfig config = new WxMaInMemoryConfig();
+            config.setAppid(app.getAppId());
+            config.setSecret(app.getAppSecret());
+            service.setWxMaConfig(config);
+            map2.put(app.getAppId(), service);
             return service;
         }
     }

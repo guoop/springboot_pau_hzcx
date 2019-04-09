@@ -76,8 +76,9 @@ public class TOwner extends Model<TOwner> {
         return id;
     }
 
-    public void setId(String id) {
+    public TOwner setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {

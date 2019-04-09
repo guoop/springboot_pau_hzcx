@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 
 public interface HzcxWxService {
 
@@ -22,6 +23,8 @@ public interface HzcxWxService {
      * @return
      */
     WxMaService getWxMaService(TblOwner owner);
+
+    WxMaService getWxMaService(SWxApp app);
 
     /**
      * 根据用户信息获取

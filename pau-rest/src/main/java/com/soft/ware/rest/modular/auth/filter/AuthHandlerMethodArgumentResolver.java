@@ -12,6 +12,8 @@ import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.core.MethodParameter;
@@ -45,13 +47,14 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest request, WebDataBinderFactory webDataBinderFactory) throws Exception {
         HttpServletRequest req = HttpKit.getRequest();
+        ISWxAppService appService = SpringContextHolder.getBean(ISWxAppService.class);
         ITOwnerService ownerService = SpringContextHolder.getBean(ITOwnerService.class);
-        //ITOwnerService ownerService = SpringContextHolder.getBean(ISWxAppService.class);
         if (req.getServletPath().startsWith("/customer")) {
             if (SessionUser.class == methodParameter.getParameterType()) {
                 //买家端用户
                 String appId = WXUtils.getAppId(req);
-                TOwner owner = ownerService.findByAppId(appId);
+                SWxApp app = appService.findByAppId(appId);
+                TOwner owner = ownerService.find(app);
                 SessionUser user = new SessionUser(owner.getId());
                 String openId = req.getHeader("Hzcx-User");
                 user.setAppId(appId);
@@ -63,9 +66,9 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             } else if(SessionOwner.class == methodParameter.getParameterType()) {
                 //买家端用户
                 String appId = WXUtils.getAppId(req);
-                TOwner o = ownerService.findByAppId(appId);
-                SessionOwner owner = new SessionOwner(o.getId());
-                return owner;
+                SWxApp app = appService.findByAppId(appId);
+                TOwner o = ownerService.find(app);
+                return new SessionOwner(o.getId());
             }
 
         }  else {
