@@ -7,6 +7,9 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
+import com.soft.ware.rest.common.persistence.model.TblOwner;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
@@ -83,6 +86,18 @@ public class TOwnerController  extends BaseController {
         }
         vs.set(WXContants.loginCodePrefix + phone, msgCode, WXContants.loginCodeExpire, TimeUnit.SECONDS);*/
         return render(true);
+    }
+
+    /**
+     * 获取商户信息
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "v1/info",method = RequestMethod.GET)
+    public Tip updateOwner(SessionUser user) throws Exception {
+        TOwner owner = itOwnerService.selectById(user.getOwner());
+        return new SuccessTip(owner);
     }
 
 }
