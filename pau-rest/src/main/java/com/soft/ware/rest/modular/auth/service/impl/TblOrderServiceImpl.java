@@ -343,15 +343,21 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         }
         //todo yancc 需要添加 行锁
         boolean update = false;
+        //如果订单状态是已取消！
         if ("cancel".equals(status)) {
             // 只允许取消货到付款、待商家确认的订单
+
+            //如果支付方式是货到付款  并且 订单状态是 待商家确认（在线支付支付成功、货到付款下单成功）
             if (order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_1)  && order.getStatus().equals(TblOrder.STATUS_1)) {
                 order.setStatus(TblOrder.STATUS_01);
                 order.setCancelBy(user.getPhone());
                 order.setCancelAt(date);
                 order.setCancelReason(reason);
+                //开始更新已取消的订单
                 update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
+                //订单号
                 logger.info("取消订单 - {}", order.getNo());
+                //
                 String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + no);
                 WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, order);
                 msg.getData().add(new WxMaTemplateData("keyword6", order.getCancelReason()));// 取消原因

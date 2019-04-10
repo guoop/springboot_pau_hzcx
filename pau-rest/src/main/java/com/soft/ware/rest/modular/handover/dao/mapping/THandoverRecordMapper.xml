@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.handover.dao.THandoverRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.handover.model.THandoverRecord">
+        <id column="id" property="id" />
+        <result column="owner_id" property="ownerId" />
+        <result column="staff_id" property="staffId" />
+        <result column="cash_register_id" property="cashRegisterId" />
+        <result column="sync_time" property="syncTime" />
+        <result column="order_num" property="orderNum" />
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="order_refund_num" property="orderRefundNum" />
+        <result column="order_return_num" property="orderReturnNum" />
+        <result column="order_money" property="orderMoney" />
+        <result column="order_refund_money" property="orderRefundMoney" />
+        <result column="order_return_money" property="orderReturnMoney" />
+        <result column="all_money" property="allMoney" />
+        <result column="odd_change_money" property="oddChangeMoney" />
+        <result column="member_recharge" property="memberRecharge" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, owner_id AS ownerId, staff_id AS staffId, cash_register_id AS cashRegisterId, sync_time AS syncTime, order_num AS orderNum, order_refund_num AS orderRefundNum, order_return_num AS orderReturnNum, order_money AS orderMoney, order_refund_money AS orderRefundMoney, order_return_money AS orderReturnMoney, all_money AS allMoney, odd_change_money AS oddChangeMoney, member_recharge AS memberRecharge, create_time AS createTime, creater
+    </sql>
+
+    <sql id="Condition">
+        <if test="owner_id != null and owner_id != ''">
+            and owner_id = #{owner_id}
+        </if>
+        <if test="staff_id != null and staff_id != ''">
+            and staff_id = #{staff_id}
+        </if>
+        <if test="startTime != null and endTime != null">
+            and startTime between  #{startTime} and #{endTime}
+        </if>
+        <if test="page != null and size != null">
+            limit #{page},#{size}
+        </if>
+
+
+    </sql>
+
+    <select id="getHandOver" parameterType="java.util.Map" resultMap="BaseResultMap">
+           select <include refid="Base_Column_List"/> from t_handover_record where 1=1
+           <include refid="Condition"/>
+    </select>
+
+</mapper>

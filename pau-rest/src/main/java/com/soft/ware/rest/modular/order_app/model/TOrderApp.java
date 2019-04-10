@@ -29,167 +29,34 @@ public class TOrderApp extends Model<TOrderApp> {
     //订单金额，即：买家购买商品的总价（优惠前）
     private BigDecimal money;
     //买家支付金额（优惠后）
-    @JSONField(name = "money_dpay")
-    private BigDecimal moneyDpay;
+    @JSONField(name = "money_pay")
+    private BigDecimal moneyPay;
     //实收金额（包含找零金额）
-    @JSONField(name = "money_shishou")
-    private BigDecimal moneyShishou;
+    @JSONField(name = "money_real_income")
+    private BigDecimal moneyRealIncome;
     //找零金额
-    @JSONField(name = "money_zhaol")
-    private BigDecimal moneyZhaol;
+    @JSONField(name = "money_change")
+    private BigDecimal moneyChange;
     //支付明细(支付方式_支付金钱,支付方式_支付金钱)
     @JSONField(name = "channel_pay")
     private String channelPay;
     //支付时间（即：订单在APP中的创建时间）
-    @JSONField(name = "pay_at", format = "YYYY-MM-DD HH:mm:ss")
-    private Date payAt;
+    @JSONField(name = "pay_time", format = "YYYY-MM-DD HH:mm:ss")
+    private Date payTime;
     //订单同步到云端的时间
-    @JSONField(name = "created_at", format = "YYYY-MM-DD HH:mm:ss")
-    private Date createdAt;
+    @JSONField(name = "create_time", format = "YYYY-MM-DD HH:mm:ss")
+    private Date createTime;
     //订单结算人（收银员标识）
-    @JSONField(name = "settlement_by")
-    private String settlementBy;
-    //所属人
-    private String owner;
-    //订单包含的商品信息（商品之间已英文逗号分隔，单个货物的的格式为：id__图片地址__名称__规格__数量__单价__总价）
-    private String goods;
+    @JSONField(name = "settlementer")
+    private String settlementer;
+    //商户唯一id
+    private String owner_id;
+    //订单包含的商品信息
+    private String goods_id;
     //订单状态（0：为正常；1：退单；2：反结账）
     private Integer status;
     //备注信息
     private String remark;
-
-
-    public Long getId(){
-        return id;
-    }
-
-    public TOrderApp setId(Long id){
-        this.id = id;
-        return this;
-    }
-
-
-    public String getNo(){
-        return no;
-    }
-
-    public TOrderApp setNo( String no){
-        this.no = no;
-        return this;
-    }
-    public Short getSource(){
-        return source;
-    }
-
-    public TOrderApp setSource( Short source){
-        this.source = source;
-        return this;
-    }
-    public String getMoneyChannel(){
-        return moneyChannel;
-    }
-
-    public TOrderApp setMoneyChannel( String moneyChannel){
-        this.moneyChannel = moneyChannel;
-        return this;
-    }
-    public BigDecimal getMoney(){
-        return money;
-    }
-
-    public TOrderApp setMoney( BigDecimal money){
-        this.money = money;
-        return this;
-    }
-    public BigDecimal getMoneyDpay(){
-        return moneyDpay;
-    }
-
-    public TOrderApp setMoneyDpay( BigDecimal moneyDpay){
-        this.moneyDpay = moneyDpay;
-        return this;
-    }
-    public BigDecimal getMoneyShishou(){
-        return moneyShishou;
-    }
-
-    public TOrderApp setMoneyShishou( BigDecimal moneyShishou){
-        this.moneyShishou = moneyShishou;
-        return this;
-    }
-    public BigDecimal getMoneyZhaol(){
-        return moneyZhaol;
-    }
-
-    public TOrderApp setMoneyZhaol( BigDecimal moneyZhaol){
-        this.moneyZhaol = moneyZhaol;
-        return this;
-    }
-    public String getChannelPay(){
-        return channelPay;
-    }
-
-    public TOrderApp setChannelPay( String channelPay){
-        this.channelPay = channelPay;
-        return this;
-    }
-    public Date getPayAt(){
-        return payAt;
-    }
-
-    public TOrderApp setPayAt( Date payAt){
-        this.payAt = payAt;
-        return this;
-    }
-    public Date getCreatedAt(){
-        return createdAt;
-    }
-
-    public TOrderApp setCreatedAt( Date createdAt){
-        this.createdAt = createdAt;
-        return this;
-    }
-    public String getSettlementBy(){
-        return settlementBy;
-    }
-
-    public TOrderApp setSettlementBy( String settlementBy){
-        this.settlementBy = settlementBy;
-        return this;
-    }
-    public String getOwner(){
-        return owner;
-    }
-
-    public TOrderApp setOwner( String owner){
-        this.owner = owner;
-        return this;
-    }
-    public String getGoods(){
-        return goods;
-    }
-
-    public TOrderApp setGoods( String goods){
-        this.goods = goods;
-        return this;
-    }
-    public Integer getStatus(){
-        return status;
-    }
-
-    public TOrderApp setStatus( Integer status){
-        this.status = status;
-        return this;
-    }
-    public String getRemark(){
-        return remark;
-    }
-
-    public TOrderApp setRemark( String remark){
-        this.remark = remark;
-        return this;
-    }
-
 
 
     @Override
@@ -197,26 +64,143 @@ public class TOrderApp extends Model<TOrderApp> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "TOrderApp{" +
-        "id=" + id +
-            ", no=" + no +
-            ", source=" + source +
-            ", moneyChannel=" + moneyChannel +
-            ", money=" + money +
-            ", moneyDpay=" + moneyDpay +
-            ", moneyShishou=" + moneyShishou +
-            ", moneyZhaol=" + moneyZhaol +
-            ", channelPay=" + channelPay +
-            ", payAt=" + payAt +
-            ", createdAt=" + createdAt +
-            ", settlementBy=" + settlementBy +
-            ", owner=" + owner +
-            ", goods=" + goods +
-            ", status=" + status +
-            ", remark=" + remark +
-        "}";
+    public Long getId() {
+        return id;
     }
 
+    public TOrderApp setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getNo() {
+        return no;
+    }
+
+    public TOrderApp setNo(String no) {
+        this.no = no;
+        return this;
+    }
+
+    public Short getSource() {
+        return source;
+    }
+
+    public TOrderApp setSource(Short source) {
+        this.source = source;
+        return this;
+    }
+
+    public String getMoneyChannel() {
+        return moneyChannel;
+    }
+
+    public TOrderApp setMoneyChannel(String moneyChannel) {
+        this.moneyChannel = moneyChannel;
+        return this;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public TOrderApp setMoney(BigDecimal money) {
+        this.money = money;
+        return this;
+    }
+
+    public BigDecimal getMoneyPay() {
+        return moneyPay;
+    }
+
+    public TOrderApp setMoneyPay(BigDecimal moneyPay) {
+        this.moneyPay = moneyPay;
+        return this;
+    }
+
+    public BigDecimal getMoneyRealIncome() {
+        return moneyRealIncome;
+    }
+
+    public TOrderApp setMoneyRealIncome(BigDecimal moneyRealIncome) {
+        this.moneyRealIncome = moneyRealIncome;
+        return  this;
+    }
+
+    public BigDecimal getMoneyChange() {
+        return moneyChange;
+    }
+
+    public TOrderApp setMoneyChange(BigDecimal moneyChange) {
+        this.moneyChange = moneyChange;
+        return this;
+    }
+
+    public String getChannelPay() {
+        return channelPay;
+    }
+
+    public TOrderApp setChannelPay(String channelPay) {
+        this.channelPay = channelPay;
+        return this;
+    }
+
+    public Date getPayTime() {
+        return payTime;
+    }
+
+    public TOrderApp setPayTime(Date payTime) {
+        this.payTime = payTime;
+        return this;
+    }
+
+    public Date getCreatedTime() {
+        return createTime;
+    }
+
+    public TOrderApp setCreatedTime(Date createdTime) {
+        this.createTime = createdTime;
+        return this;
+    }
+
+    public String getSettlementer() {
+        return settlementer;
+    }
+
+    public TOrderApp setSettlementer(String settlementer) {
+        this.settlementer = settlementer;
+        return this;
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
+    }
+
+    public String getGoods_id() {
+        return goods_id;
+    }
+
+    public void setGoods_id(String goods_id) {
+        this.goods_id = goods_id;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }
