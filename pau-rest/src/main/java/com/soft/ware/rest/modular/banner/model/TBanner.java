@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.banner.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -52,13 +52,13 @@ public class TBanner extends Model<TBanner> {
     //状态（0：显示；1：不显示；2：已删除）
     private Integer status;
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //创建时间
-    @JSONField(name = "created_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdTime;
     //是否删除
-    @JSONField(name = "is_delete")
+
     private Integer isDelete;
 
 

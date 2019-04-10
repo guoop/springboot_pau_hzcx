@@ -265,7 +265,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/customer/v2/orders")
+    //@RequestMapping(value = "/customer/v2/orders")
     public Object orders(SessionUser user,Page page, OrderPageParam param){
         // 所有订单
         if ("all".equals(param.getStatus())) {
@@ -297,7 +297,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param no
      * @return
      */
-    @RequestMapping(value = "/customer/v2/orders/{no}",method = RequestMethod.GET)
+    //@RequestMapping(value = "/customer/v2/orders/{no}",method = RequestMethod.GET)
     public Object orders(SessionUser user,@PathVariable String no) {
         List<Map> list = orderService.findOrderMapByNo(user, no);
         return warpObject(new ListWrapper(list));
@@ -397,7 +397,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/customer/v1/wxpay/unifiedorder")
+    @RequestMapping(value = "/customer/v1/wxpay/unifiedorder",method = RequestMethod.POST)
     public Object unifiedorder(SessionUser user,@RequestBody UnifiedorderParam param, HttpServletRequest request) {
         if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
             return render(false, "请完善预留手机号");
@@ -489,7 +489,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "/customer/v1/address")
+    //@RequestMapping(value = "/customer/v1/address",method = RequestMethod.GET)
     public Object address(SessionUser user) throws Exception {
         List<TblAddress> all = addressService.findAll(user);
         List<Map<String, Object>> maps = BeanMapUtils.toMap(true, all);
@@ -502,7 +502,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/customer/v1/address/{id}",method = RequestMethod.GET)
+    //@RequestMapping(value = "/customer/v1/address/{id}",method = RequestMethod.GET)
     public Object address(SessionUser user,@PathVariable int id){
         TblAddress address = addressService.findById(user, id);
         return address;
@@ -514,7 +514,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/customer/v1/address/del",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/address/del",method = RequestMethod.POST)
     public Object addressDel(SessionUser user,@RequestBody Id id){
         TblAddress address = addressService.findById(user, Integer.valueOf(id.getId()));
         boolean b = addressService.deleteById(address.getId());
@@ -529,7 +529,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param address
      * @return
      */
-    @RequestMapping(value = "/customer/v1/address/man",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/address/man",method = RequestMethod.POST)
     public Object address(SessionUser user,@RequestBody TblAddress address){
         if (address.getId() == null) {
             address.setOwner(user.getOpenId());
@@ -554,7 +554,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param user
      * @param question
      */
-    @RequestMapping(value = "/customer/v1/question",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/question",method = RequestMethod.POST)
     public Object question(SessionUser user,@RequestBody TblQuestion question){
         question.setOpenId(user.getOpenId());
         question.setOwner(user.getOwnerId());

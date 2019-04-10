@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.pay_way.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,14 +19,14 @@ public class TPayWay extends Model<TPayWay> {
     private String id;
 
     //交接班记录id
-    @JSONField(name = "handover_id")
+
     private String handoverId;
     //现金支付、聚合支付、银联支付（pos刷卡）、预存卡支付、其它支付
     private String type;
     //支付数量
     private Integer num;
     //是否删除
-    @JSONField(name = "is_delete")
+
     private Integer isDelete;
 
 

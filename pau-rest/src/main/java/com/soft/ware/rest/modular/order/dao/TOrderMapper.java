@@ -1,10 +1,12 @@
 package com.soft.ware.rest.modular.order.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import org.apache.ibatis.annotations.Param;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,4 +22,10 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
 
 
     List<TOrder> selectOrderListByMap(Map<String,Object> map);
+
+    Long findListCount(@Param("user") SessionUser user, @Param("param") OrderPageParam param, @Param("source") int... source);
+
+    List<Map> findList(@Param("user") SessionUser user, @Param("page") Page page, @Param("param") OrderPageParam param, @Param("source") int... source);
+
+    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
 }

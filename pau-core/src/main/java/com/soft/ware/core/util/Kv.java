@@ -28,6 +28,11 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return new Kv<>(map);
     }
 
+    public static Kv<String,Object> obj(String key,Object value){
+        return obj().set(key, value);
+    }
+
+
     public static <K,V> Kv<K,V> by(K k, V v){
         Kv<K,V> kv = new Kv<>(new LinkedHashMap<>());
         kv.put(k, v);

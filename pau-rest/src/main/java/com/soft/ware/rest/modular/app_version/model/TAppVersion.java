@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.app_version.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -25,31 +25,31 @@ public class TAppVersion extends Model<TAppVersion> {
     //平台类型（android：安卓；window：PC）
     private String platform;
     //主版本号
-    @JSONField(name = "version_main")
+
     private Integer versionMain;
     //次版本号
-    @JSONField(name = "version_secondary")
+
     private Integer versionSecondary;
     //修复版本号
-    @JSONField(name = "version_bug")
+
     private Integer versionBug;
     //版本号（5位主版本号.5位次版本号.5位修复版本号）
     private String version;
     //是否强制升级（0：否；1：是）
-    @JSONField(name = "is_force")
+
     private Integer isForce;
     //下载地址
-    @JSONField(name = "download_url")
+
     private String downloadUrl;
     //版本描述信息（HTML串）
     private String description;
     //创建时间
-    @JSONField(name = "created_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdTime;
     //创建人
     private String creater;
     //更新时间
-    @JSONField(name = "update_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date updateTime;
     //更新人
     private String updater;

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -28,7 +29,12 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
 
     @Override
     public List<TCategory> findAllCategory(SessionUser owner) {
-        return mapper.selectList(new EntityWrapper<>(new TCategory().setOwnerId(owner.getId()).setIsDetele(TCategory.is_delete_0)).orderBy("sort", true));
+        return mapper.selectList(new EntityWrapper<>(new TCategory().setOwnerId(owner.getOwnerId()).setIsDelete(TCategory.is_delete_0)).orderBy("sort", true));
+    }
+
+    @Override
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMaps(map);
     }
 
 }

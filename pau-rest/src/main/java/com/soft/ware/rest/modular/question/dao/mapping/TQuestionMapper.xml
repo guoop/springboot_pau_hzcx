@@ -20,5 +20,42 @@
     <sql id="Base_Column_List">
         id, name, phone, address, description, created_at AS createdAt, owner, open_id AS openId, account_info AS accountInfo, system_info AS systemInfo
     </sql>
-
+    <sql id="t_question_alias_columns">
+        tq.name,tq.phone,tq.address,tq.description,tq.created_at,tq.owner,tq.open_id,tq.account_info,tq.system_info
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        <include refid="t_question_alias_columns"/>
+        from t_question tq where true
+        <if test="map.id != null and map.id != ''">
+            and tq.id = #{map.id}
+        </if>
+        <if test="map.name != null and map.name != ''">
+            and tq.name = #{map.name}
+        </if>
+        <if test="map.phone != null and map.phone != ''">
+            and tq.phone = #{map.phone}
+        </if>
+        <if test="map.address != null and map.address != ''">
+            and tq.address = #{map.address}
+        </if>
+        <if test="map.description != null and map.description != ''">
+            and tq.description = #{map.description}
+        </if>
+        <if test="map.createdAt != null">
+            and tq.created_at = #{map.createdAt}
+        </if>
+        <if test="map.owner != null and map.owner != ''">
+            and tq.owner = #{map.owner}
+        </if>
+        <if test="map.openId != null and map.openId != ''">
+            and tq.open_id = #{map.openId}
+        </if>
+        <if test="map.accountInfo != null and map.accountInfo != ''">
+            and tq.account_info = #{map.accountInfo}
+        </if>
+        <if test="map.systemInfo != null and map.systemInfo != ''">
+            and tq.system_info = #{map.systemInfo}
+        </if>
+    </select>
 </mapper>

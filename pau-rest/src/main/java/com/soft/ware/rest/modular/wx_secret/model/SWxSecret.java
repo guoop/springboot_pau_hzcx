@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.wx_secret.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,13 +19,13 @@ public class SWxSecret extends Model<SWxSecret> {
     private String id;
 
     //微信支付商户号
-    @JSONField(name = "shop_no")
+
     private String shopNo;
     //微信支付密钥
-    @JSONField(name = "pay_key")
+
     private String payKey;
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
 
 

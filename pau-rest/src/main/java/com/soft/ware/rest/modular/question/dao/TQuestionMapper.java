@@ -2,6 +2,10 @@ package com.soft.ware.rest.modular.question.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.modular.question.model.TQuestion;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -12,5 +16,7 @@ import com.soft.ware.rest.modular.question.model.TQuestion;
  * @since 2019-04-08
  */
 public interface TQuestionMapper extends BaseMapper<TQuestion> {
+
+    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
 
 }

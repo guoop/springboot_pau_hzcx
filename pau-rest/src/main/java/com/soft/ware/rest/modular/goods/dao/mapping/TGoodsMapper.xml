@@ -61,9 +61,9 @@
     <select id="find" resultType="java.util.Map">
         select
         <include refid="alias_columns"/>
-        from t_goods g left join t_unit u on u.id = g.unit_id
+        from t_goods g left join t_unit u on u.id = g.unit_id where true
         <if test="map.id != null and map.id != ''">
-            g.id = #{g.id}
+        and g.id = #{map.id}
         </if>
     </select>
 

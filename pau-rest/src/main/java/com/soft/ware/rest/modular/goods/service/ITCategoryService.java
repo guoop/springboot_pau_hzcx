@@ -5,6 +5,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +18,6 @@ import java.util.List;
 public interface ITCategoryService extends IService<TCategory> {
 
     List<TCategory> findAllCategory(SessionUser user);
+
+    List<Map<String, Object>> findMaps(Map<String, Object> map);
 }

@@ -54,8 +54,8 @@ public class TCategory extends Model<TCategory> {
     /**
      * 是否删除
      */
-    @TableField("is_detele")
-    private Integer isDetele;
+    @TableField("is_delete")
+    private Integer isDelete;
     /**
      * 商户唯一id
      */
@@ -117,12 +117,12 @@ public class TCategory extends Model<TCategory> {
         this.sort = sort;
     }
 
-    public Integer getIsDetele() {
-        return isDetele;
+    public Integer getIsDelete() {
+        return isDelete;
     }
 
-    public TCategory setIsDetele(Integer isDetele) {
-        this.isDetele = isDetele;
+    public TCategory setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
         return this;
     }
 
@@ -172,7 +172,7 @@ public class TCategory extends Model<TCategory> {
         ", pid=" + pid +
         ", description=" + description +
         ", sort=" + sort +
-        ", isDetele=" + isDetele +
+        ", isDelete=" + isDelete +
         ", ownerId=" + ownerId +
         ", status=" + status +
         ", isSystem=" + isSystem +

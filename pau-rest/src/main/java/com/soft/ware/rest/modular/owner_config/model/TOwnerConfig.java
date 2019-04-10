@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.owner_config.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -20,31 +20,31 @@ public class TOwnerConfig extends Model<TOwnerConfig> {
     private String id;
 
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //'超市当前是否提供配送服务（0：否；1：是）'
-    @JSONField(name = "is_delivery")
+
     private Integer isDelivery;
     //'是否开启到店自提（0：否：1：是）'
-    @JSONField(name = "is_self_pickup")
+
     private Integer isSelfPickup;
     //'超市当前是否支持货到付款（0：否；1：是）'
-    @JSONField(name = "is_reach_pay")
+
     private Integer isReachPay;
     //'起配金额（元）'
-    @JSONField(name = "delivery_money")
+
     private BigDecimal deliveryMoney;
     //当用户订单金额小于起配金额时的配送费
-    @JSONField(name = "delivery_less_money")
+
     private BigDecimal deliveryLessMoney;
     //当用户订单金额大于等于起配金额时的配送费
-    @JSONField(name = "delivery_great_money")
+
     private BigDecimal deliveryGreatMoney;
     //最远配送距离（如果省略或等于0，则不考虑配送距离）
-    @JSONField(name = "delivery_distance")
+
     private Integer deliveryDistance;
     //设置订单接受消息的手机号
-    @JSONField(name = "order_phone")
+
     private String orderPhone;
 
 

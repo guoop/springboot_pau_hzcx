@@ -13,6 +13,7 @@ public interface ISWxAppService extends IService<SWxApp> {
 
     SWxApp find(TOwner owner);
 
-    List<Map<String,Object>> find(Map<String,Object> map);
+    Map<String,Object> findMap(Map<String, Object> appId);
 
+    List<Map<String, Object>> findMaps(Map<String, Object> map);
 }

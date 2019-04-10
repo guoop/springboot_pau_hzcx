@@ -1,6 +1,6 @@
 package com.soft.ware.rest.common.persistence.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -35,13 +35,13 @@ public class ImGroups extends Model<ImGroups> {
     //群组图像
     private String avatar;
     //商户下所创建的用户
-    @JSONField(name = "owner_username")
+
     private String ownerUsername;
     //创建时间
-    @JSONField(name = "create_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createTime;
     //更新时间
-    @JSONField(name = "update_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date updateTime;
 
 

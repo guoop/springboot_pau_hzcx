@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.owner_temp.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,40 +19,40 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     private String id;
 
     //微信支付商户号
-    @JSONField(name = "shop_id")
+
     private String shopId;
     //微信支付密钥
-    @JSONField(name = "shop_secret")
+
     private String shopSecret;
     //小程序ID
-    @JSONField(name = "app_id")
+
     private String appId;
     //app_secret
-    @JSONField(name = "app_secret")
+
     private String appSecret;
     //小程序名称
-    @JSONField(name = "app_name")
+
     private String appName;
     //小程序二维码URL
-    @JSONField(name = "app_qr")
+
     private String appQr;
     //商家在系统中的唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //官网登录账号
-    @JSONField(name = "acct_name")
+
     private String acctName;
     //官网登录密码
-    @JSONField(name = "acct_pwd")
+
     private String acctPwd;
     //企业名称
-    @JSONField(name = "company_name")
+
     private String companyName;
     //企业营业执照URL
-    @JSONField(name = "company_license")
+
     private String companyLicense;
     //企业信用代码
-    @JSONField(name = "company_code")
+
     private String companyCode;
     //商家姓名
     private String name;
@@ -61,57 +61,57 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     //邮箱地址
     private String mailbox;
     //微信商户平台API证书地址
-    @JSONField(name = "wx_api_card")
+
     private String wxApiCard;
     //模板消息ID对应的JSON字符串
-    @JSONField(name = "msg_tmplate")
+
     private String msgTmplate;
     //创建时间
-    @JSONField(name = "created_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdTime;
     //创建人
     private String creater;
     //商户资料状态（1：未提交审核；2：审核中；3：已通过审核；4：审核被拒）
-    @JSONField(name = "owner_data_status")
+
     private Integer ownerDataStatus;
     //小程序资料状态（1：未提交审核；2：审核中；3：已通过审核；4：审核被拒）
-    @JSONField(name = "wxapp_data_status")
+
     private Integer wxappDataStatus;
     //商户资料审核人
-    @JSONField(name = "owner_data_auditor")
+
     private String ownerDataAuditor;
     // 商户资料审核通过时间
-    @JSONField(name = "owner_data_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date ownerDataTime;
     //小程序审核人
-    @JSONField(name = "wxapp_data_auditor")
+
     private String wxappDataAuditor;
     //小程序审核时间
-    @JSONField(name = "wxapp_data_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date wxappDataTime;
     //商户资料拒绝人
-    @JSONField(name = "owner_refuser")
+
     private String ownerRefuser;
     //
-    @JSONField(name = "owner_refuser_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date ownerRefuserTime;
     //
-    @JSONField(name = "owner_refuser_reason")
+
     private String ownerRefuserReason;
     //
-    @JSONField(name = "wxapp_refuser")
+
     private String wxappRefuser;
     //小程序拒绝时间
-    @JSONField(name = "wxapp_refuser_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date wxappRefuserTime;
     //小程序拒绝原因
-    @JSONField(name = "wxapp_refuser_reason")
+
     private String wxappRefuserReason;
     //是否已完成配置
-    @JSONField(name = "owner_is_valid")
+
     private Integer ownerIsValid;
     //是否审核通过
-    @JSONField(name = "is_verify")
+
     private Integer isVerify;
 
 

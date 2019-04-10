@@ -38,7 +38,13 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     }
 
     @Override
-    public List<Map<String,Object>> find(Map<String, Object> map) {
-        return mapper.find(map);
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMap(map);
+    }
+
+    @Override
+    public Map<String, Object> findMap(Map<String, Object> map) {
+        List<Map<String, Object>> maps = findMaps(map);
+        return maps.isEmpty() ? null : maps.get(0);
     }
 }

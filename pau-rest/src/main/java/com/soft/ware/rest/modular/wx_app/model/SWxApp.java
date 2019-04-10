@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.wx_app.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,19 +19,19 @@ public class SWxApp extends Model<SWxApp> {
     private String id;
 
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //小程序appid
-    @JSONField(name = "app_id")
+
     private String appId;
     //小程序app秘钥
-    @JSONField(name = "app_secret")
+
     private String appSecret;
     //小程序应用名称
-    @JSONField(name = "app_name")
+
     private String appName;
     //小程序二维码URL
-    @JSONField(name = "app_qr")
+
     private String appQr;
 
 

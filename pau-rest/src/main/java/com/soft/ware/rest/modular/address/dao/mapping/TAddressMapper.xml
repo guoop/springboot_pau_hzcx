@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.address.dao.TAddressMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.address.model.TAddress">
+        <id column="id" property="id" />
+        <result column="phone" property="phone" />
+        <result column="owner_id" property="ownerId" />
+        <result column="name" property="name" />
+        <result column="province" property="province" />
+        <result column="detail" property="detail" />
+        <result column="is_default" property="isDefault" />
+        <result column="is_delete" property="isDelete" />
+        <result column="created_time" property="createdTime" />
+        <result column="creater" property="creater" />
+        <result column="deleted_time" property="deletedTime" />
+    </resultMap>
+
+
+    <sql id="t_address_alias_columns">
+        ta.phone,ta.owner_id,ta.name,ta.province,ta.detail,ta.is_default,ta.is_delete,ta.created_time,ta.creater,ta.deleted_time
+    </sql>
+    <update id="deleteDefaultAddress">
+        update tbl_address a set a.is_default = 0 where a.owner = #{user.openId}
+    </update>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        ta.id,
+        <include refid="t_address_alias_columns"/>
+        from t_address ta where true
+        <if test="map.id != null and map.id != ''">
+            and ta.id = #{map.id}
+        </if>
+        <if test="map.ownerId != null and map.ownerId != ''">
+            and ta.owner_id = #{map.ownerId}
+        </if>
+        <if test="map.isDefault != null">
+            and ta.is_default = #{map.isDefault}
+        </if>
+        <if test="map.isDelete != null">
+            and ta.is_delete = #{map.isDelete}
+        </if>
+        <if test="map.creater != null and map.creater != ''">
+            and ta.creater = #{map.creater}
+        </if>
+    </select>
+</mapper>

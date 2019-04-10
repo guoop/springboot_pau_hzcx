@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.order_app.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -24,30 +24,30 @@ public class TOrderApp extends Model<TOrderApp> {
     //订单来源（0：安卓收银机；1：Windows收银机）
     private Short source;
     //付款方式（1：现金支付；2：微信支付；3：支付宝支付；4；银联支付），多种支付方式以_分割
-    @JSONField(name = "money_channel")
+
     private String moneyChannel;
     //订单金额，即：买家购买商品的总价（优惠前）
     private BigDecimal money;
     //买家支付金额（优惠后）
-    @JSONField(name = "money_dpay")
+
     private BigDecimal moneyDpay;
     //实收金额（包含找零金额）
-    @JSONField(name = "money_shishou")
+
     private BigDecimal moneyShishou;
     //找零金额
-    @JSONField(name = "money_zhaol")
+
     private BigDecimal moneyZhaol;
     //支付明细(支付方式_支付金钱,支付方式_支付金钱)
-    @JSONField(name = "channel_pay")
+
     private String channelPay;
     //支付时间（即：订单在APP中的创建时间）
-    @JSONField(name = "pay_at", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date payAt;
     //订单同步到云端的时间
-    @JSONField(name = "created_at", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdAt;
     //订单结算人（收银员标识）
-    @JSONField(name = "settlement_by")
+
     private String settlementBy;
     //所属人
     private String owner;

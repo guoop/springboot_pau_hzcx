@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.customer_history.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,34 +19,34 @@ public class TCustomerHistory extends Model<TCustomerHistory> {
     private String id;
 
     //用户在微信里的唯一标识
-    @JSONField(name = "open_id")
+
     private String openId;
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //用户添加时间
-    @JSONField(name = "created_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdTime;
     //用户最后一次进入小程序的时间
-    @JSONField(name = "end_in_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date endInTime;
     //用户最后一次退出小程序的时间
-    @JSONField(name = "end_out_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date endOutTime;
     //'当前状态（in：使用小程序中；out：已退出小程序）'
-    @JSONField(name = "current_status")
+
     private String currentStatus;
     //地址名称
-    @JSONField(name = "address_name")
+
     private String addressName;
     //电话
-    @JSONField(name = "address_phone")
+
     private String addressPhone;
     //地址创建时间
-    @JSONField(name = "address_created_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date addressCreatedTime;
     //地址更新时间
-    @JSONField(name = "address_updated_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date addressUpdatedTime;
 
 

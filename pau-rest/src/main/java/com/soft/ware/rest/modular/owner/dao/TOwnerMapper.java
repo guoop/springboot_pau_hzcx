@@ -17,5 +17,5 @@ import java.util.Map;
  */
 public interface TOwnerMapper extends BaseMapper<TOwner> {
 
-    List<Map<String, Object>> find(@Param("map") Map<String, Object> map);
+    List<Map<String, Object>> findMap(@Param("map") Map<String, Object> map);
 }

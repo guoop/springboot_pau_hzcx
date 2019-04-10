@@ -9,7 +9,7 @@
         <result column="pid" property="pid" />
         <result column="description" property="description" />
         <result column="sort" property="sort" />
-        <result column="is_detele" property="isDetele" />
+        <result column="is_delete" property="isDelete" />
         <result column="owner_id" property="ownerId" />
         <result column="status" property="status" />
         <result column="is_system" property="isSystem" />
@@ -18,7 +18,23 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, pid, description, sort, is_detele AS isDetele, owner_id AS ownerId, status, is_system AS isSystem, category_icon_id AS categoryIconId
+        id, name, pid, description, sort, is_delete, owner_id, status, is_system, category_icon_id
     </sql>
+
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_category where true
+        <if test="map.ownerId != null and map.ownerId != ''">
+            and owner_id = #{map.ownerId}
+        </if>
+        <if test="map.pid == null">
+            and pid is null
+        </if>
+        <if test="map.pid !=null">
+            and pid is not null
+        </if>
+    </select>
+
 
 </mapper>

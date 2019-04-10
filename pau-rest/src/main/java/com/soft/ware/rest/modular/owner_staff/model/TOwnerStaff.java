@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.owner_staff.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,7 +19,7 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
     private String id;
 
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //用户姓名
     private String name;
@@ -28,16 +28,16 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
     //收银APP登录密码
     private String password;
     //创建时间
-    @JSONField(name = "created_at", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdAt;
     //用户拥有的功能列表（用于前端过滤）
-    @JSONField(name = "function_list")
+
     private String functionList;
     //用户拥有的URL列表（用于后端过滤）
-    @JSONField(name = "url_list")
+
     private String urlList;
     //用户可以管理的分类列表
-    @JSONField(name = "category_list")
+
     private String categoryList;
     //状态（0：正常；1：已禁用；2：已删除）
     private Integer status;

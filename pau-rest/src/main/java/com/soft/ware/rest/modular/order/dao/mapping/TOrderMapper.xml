@@ -52,12 +52,88 @@
         </if>
     </sql>
 
-
     <select id="selectOrderListByMap" parameterType="map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1
         <include refid="Condition"/>
 
     </select>
+    <sql id="findListCondition">
+        <if test="source != null">
+            and a.source in
+            <foreach collection="source" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="param.status != null">
+            and a.status in
+            <foreach collection="param.statusArray" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <!--根据买家用户查询-->
+        <if test="user.openId != null">
+            and a.creater in (#{user.openId})
+        </if>
+    </sql>
+    <select id="findListCount" resultType="java.lang.Long">
+        select count(1) from t_order a where a.owner_id = #{user.ownerId}
+        <include refid="findListCondition"/>
+    </select>
+    <select id="findList" resultType="java.util.Map">
+        select
+        a.id id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
+        ,b.pay_order_no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus
+        from t_order a left outer join t_order_money_diff b on a.owner_id = b.owner_id and a.order_no = b.order_no
+        where a.owner_id = #{user.ownerId}
+        <include refid="findListCondition"/>
+        order by a.create_time desc
+        <include refid="limit"/>
+    </select>
+    <sql id="limit">
+        limit #{page.size} offset #{page.offset}
+    </sql>
 
 
+    <sql id="t_order_alias_columns">
+        a.order_no,a.source,a.pickup_no,a.pickup_time,a.money_channel,a.order_money,a.run_money,a.pay_money,a.pay_time,a.pay_response,a.create_time,a.creater,a.settlementer,a.owner_id,a.address_id,a.goods_id,a.type,a.version,a.status,a.remark
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+    select
+    <include refid="t_order_alias_columns"/>
+    ,b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus, b.refund_by as diffRefundBy, b.refund_at as diffRefundAt, b.refund_status as diffRefundStatus, b.refund_response as diffRefundResponse
+    ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault,ta.is_delete isDelete,DATE_FORMAT(ta.created_time,'%Y-%m-%d %H:%i:%s') createdTime,ta.creater creater,DATE_FORMAT(ta.deleted_time,'%Y-%m-%d %H:%i:%s') deletedTime
+    ,tr.id id,tr.order_no orderNo,tr.reason reason,tr.status status,tr.order_money orderMoney,tr.response response,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') createTime,tr.creater creater
+    from t_order a
+    left join t_order_money_diff b on a.order_no = b.order_no
+    left join t_address ta on ta.id = a.address_id
+    left join t_refund tr on tr.order_no = a.order_no
+    where true
+    <if test="map.id != null and map.id != ''">
+        and a.id = #{map.id}
+    </if>
+    <if test="map.orderNo != null and map.orderNo != ''">
+        and a.order_no = #{map.order_no}
+    </if>
+    <if test="map.source != null and map.source != ''">
+        and a.source = #{map.source}
+    </if>
+    <if test="map.pickupNo != null and map.pickupNo != ''">
+        and a.pickup_no = #{map.pickup_no}
+    </if>
+    <if test="map.moneyChannel != null and map.moneyChannel != ''">
+        and a.money_channel = #{map.money_channel}
+    </if>
+    <if test="map.creater != null and map.creater != ''">
+        and a.creater = #{map.creater}
+    </if>
+    <if test="map.ownerId != null and map.ownerId != ''">
+        and a.owner_id = #{map.owner_id}
+    </if>
+    <if test="map.type != null and map.type != ''">
+        and a.type = #{map.type}
+    </if>
+    <if test="map.status != null and map.status != ''">
+        and a.status = #{map.status}
+    </if>
+    </select>
 </mapper>

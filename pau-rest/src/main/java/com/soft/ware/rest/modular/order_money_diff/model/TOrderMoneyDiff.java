@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.order_money_diff.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -20,36 +20,36 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     private String id;
 
     //支付订单号
-    @JSONField(name = "pay_order_no")
+
     private String payOrderNo;
     //商户唯一id
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //订单编号
-    @JSONField(name = "order_no")
+
     private String orderNo;
     //小票金额
     private BigDecimal money;
     //差价（小票金额-订单金额，如果为正数则需要买家补足差价，如果为负数则需要商家退款差价）
-    @JSONField(name = "money_diff")
+
     private BigDecimal moneyDiff;
     //小票图片地址
     private String pic;
     //创建时间
-    @JSONField(name = "created_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createdTime;
     //创建人
     private String creater;
     //状态（0：未补差价；1：已补差价）
     private Integer status;
     //支付成功时间
-    @JSONField(name = "pay_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date payTime;
     //支付信息
-    @JSONField(name = "pay_response")
+
     private String payResponse;
     //是否删除（0：不删除，1：删除）
-    @JSONField(name = "is_delete")
+
     private Integer isDelete;
 
 

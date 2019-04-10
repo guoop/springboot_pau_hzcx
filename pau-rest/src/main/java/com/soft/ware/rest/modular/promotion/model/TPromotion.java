@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.promotion.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -20,26 +20,26 @@ public class TPromotion extends Model<TPromotion> {
     private String id;
 
     //商品唯一标识
-    @JSONField(name = "goods_id")
+
     private String goodsId;
     //促销金额
     private BigDecimal money;
     //开始时间
-    @JSONField(name = "start_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date startTime;
     //结束时间
-    @JSONField(name = "end_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date endTime;
     //
-    @JSONField(name = "in_amount")
+
     private BigDecimal inAmount;
     //c创建时间
-    @JSONField(name = "create_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createTime;
     //创建人
     private String creater;
     //更新时间
-    @JSONField(name = "update_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date updateTime;
     //更新人
     private String updater;

@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.despatch.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -19,22 +19,22 @@ public class TDespatch extends Model<TDespatch> {
     private String id;
 
     //商户唯一标识
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //配送时间
-    @JSONField(name = "despatch_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date despatchTime;
     //配送电话
     private String phone;
     //配送状态（1待取货，2带配送，3配送中，4已完成，5已取消）
     private Integer status;
     //
-    @JSONField(name = "create_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createTime;
     //创建人
     private String creater;
     //是否删除（0：不删除，1：删除）
-    @JSONField(name = "is_delete")
+
     private Integer isDelete;
 
 

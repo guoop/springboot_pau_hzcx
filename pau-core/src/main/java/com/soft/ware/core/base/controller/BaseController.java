@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 public class BaseController {
@@ -122,6 +123,10 @@ public class BaseController {
         return new ResponseEntity<byte[]>(fileBytes, headers, HttpStatus.CREATED);
     }
 
+
+    public ResultView render(List<?> list){
+        return render().set("list", list);
+    }
 
     public ResultView render(){
         return render(true);

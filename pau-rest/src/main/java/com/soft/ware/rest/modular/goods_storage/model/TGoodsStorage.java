@@ -1,5 +1,5 @@
 package com.soft.ware.rest.modular.goods_storage.model;
-import com.alibaba.fastjson.annotation.JSONField;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -20,36 +20,36 @@ public class TGoodsStorage extends Model<TGoodsStorage> {
     private String id;
 
     //商户唯一id
-    @JSONField(name = "owner_id")
+
     private String ownerId;
     //商品唯一id
-    @JSONField(name = "goods_id")
+
     private String goodsId;
     //单个商品价格
-    @JSONField(name = "single_price")
+
     private BigDecimal singlePrice;
     //进货前库存
-    @JSONField(name = "before_storage")
+
     private BigDecimal beforeStorage;
     //进货后库存
-    @JSONField(name = "after_storage")
+
     private BigDecimal afterStorage;
     //进货金额
-    @JSONField(name = "in_money")
+
     private BigDecimal inMoney;
     //库存标准线
     private BigDecimal baseline;
     //进货前的库存标准线
-    @JSONField(name = "before_baseline")
+
     private BigDecimal beforeBaseline;
     //进货时间
-    @JSONField(name = "in_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date inTime;
     //进货数量
-    @JSONField(name = "in_amount")
+
     private BigDecimal inAmount;
     //创建时间
-    @JSONField(name = "create_time", format = "YYYY-MM-DD HH:mm:ss")
+
     private Date createTime;
     //创建人
     private String creater;

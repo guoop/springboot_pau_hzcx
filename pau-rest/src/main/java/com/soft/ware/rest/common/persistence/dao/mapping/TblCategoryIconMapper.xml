@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblAddressMapper">
+<mapper namespace="com.soft.ware.rest.common.persistence.dao.TblCategoryIconMapper">
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.common.persistence.model.TblAddress">
@@ -15,10 +15,5 @@
         <result column="is_deleted" property="isDeleted" />
         <result column="deleted_at" property="deletedAt" />
     </resultMap>
-    <select id="findAll" resultType="com.soft.ware.rest.common.persistence.model.TblAddress">
-      select id, `name`, telephone, province, detail, is_default from tbl_address where owner = #{user.openId} and is_deleted = 0 order by is_default desc,id desc
-    </select>
-    <delete id="deleteDefaultAddress">
-      update tbl_address a set a.is_default = 0 where a.owner = #{user.openId}
-    </delete>
+
 </mapper>

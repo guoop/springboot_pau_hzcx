@@ -8,5 +8,6 @@ import java.util.Map;
 
 public interface SWxAppMapper extends BaseMapper<SWxApp> {
 
-    List<Map<String,Object>> find(@Param("map") Map<String, Object> map);
+    List<Map<String,Object>> findMap(@Param("map") Map<String, Object> map);
+
 }
