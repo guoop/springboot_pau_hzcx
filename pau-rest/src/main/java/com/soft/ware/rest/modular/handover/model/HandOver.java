@@ -1,4 +1,4 @@
-package com.soft.ware.rest.common.persistence.model;
+package com.soft.ware.rest.modular.handover.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 

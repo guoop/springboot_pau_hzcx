@@ -95,7 +95,7 @@ public class AuthController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/json"})
+    @RequestMapping(value = "${jwt.auth-path}")
     public Object maLogin(@RequestBody AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
         //Validator.valid(result);
         String phone = param.getPhone();

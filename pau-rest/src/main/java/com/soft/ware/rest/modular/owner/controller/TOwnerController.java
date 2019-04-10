@@ -38,11 +38,10 @@ public class TOwnerController  extends BaseController {
      */
     @RequestMapping("get-owner-info")
     @ResponseBody
-    public Tip getOwnerInfo(@RequestParam String ownerId){
-
-       TOwner tOwner = itOwnerService.selectById(ownerId);
+    public Tip getOwnerInfo(SessionUser sessionUser){
+       TOwner tOwner = itOwnerService.selectById(sessionUser.getOwnerId());
        if(ToolUtil.isNotEmpty(tOwner)){
-           return new SuccessTip();
+           return new SuccessTip(tOwner);
        }
         return new ErrorTip();
     }
@@ -79,16 +78,23 @@ public class TOwnerController  extends BaseController {
         return render(true);
     }
 
+
     /**
-     * 获取商户信息
+     * 更新商户信息
      * @param user
+     * @param tOwner
      * @return
-     * @throws Exception
      */
-    @RequestMapping(value = "/info",method = RequestMethod.GET)
-    public Tip updateOwner(SessionUser user) throws Exception {
-        TOwner owner = itOwnerService.selectById(user.getOwnerId());
-        return new SuccessTip(owner);
+    @RequestMapping(value = "update/info",method = RequestMethod.POST)
+    public Tip updateOwner(SessionUser user,TOwner tOwner){
+        if(ToolUtil.isNotEmpty(tOwner) && ToolUtil.isNotEmpty(tOwner.getId())){
+            if(itOwnerService.updateById(tOwner)){
+                return new SuccessTip();
+            }
+        }
+        return new ErrorTip();
     }
+
+
 
 }

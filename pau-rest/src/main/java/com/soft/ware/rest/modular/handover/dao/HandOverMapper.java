@@ -1,7 +1,7 @@
-package com.soft.ware.rest.common.persistence.dao;
+package com.soft.ware.rest.modular.handover.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.soft.ware.rest.common.persistence.model.HandOver;
+import com.soft.ware.rest.modular.handover.model.HandOver;
 
 import java.util.Map;
 

@@ -9,17 +9,35 @@
         <result column="source" property="source" />
         <result column="money_channel" property="moneyChannel" />
         <result column="money" property="money" />
-        <result column="money_dpay" property="moneyDpay" />
-        <result column="money_shishou" property="moneyShishou" />
-        <result column="money_zhaol" property="moneyZhaol" />
+        <result column="money_pay" property="moneyPay" />
+        <result column="money_real_income" property="moneyRealIncome" />
+        <result column="money_change" property="moneyChange" />
         <result column="channel_pay" property="channelPay" />
-        <result column="pay_at" property="payAt" />
-        <result column="created_at" property="createdAt" />
-        <result column="settlement_by" property="settlementBy" />
-        <result column="owner" property="owner" />
-        <result column="goods" property="goods" />
+        <result column="pay_time" property="payTime" />
+        <result column="create_time" property="createTime" />
+        <result column="settlementer" property="settlementer" />
+        <result column="owner_id" property="owner_id" />
+        <result column="goods_id" property="goods_id" />
         <result column="status" property="status" />
         <result column="remark" property="remark" />
     </resultMap>
+
+    <sql id="Base_Column_List">
+        id,no,source,money_channel,money,money_pay,money_real_income,money_change,channel_pay,pay_time,create_time,settlementer,owner_id,goods_id,status
+    </sql>
+
+    <select id="getAppOrderList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from t_order_app where 1=1
+    <if test="id != null and id != ''">
+        and id = #{id}
+    </if>
+    <if test="owner_id != null and owner_id != ''">
+        and owner_id = #{owner_id}
+    </if>
+    <if test="page != null and page != ''">
+        limit #{page},20
+    </if>
+
+    </select>
 
 </mapper>

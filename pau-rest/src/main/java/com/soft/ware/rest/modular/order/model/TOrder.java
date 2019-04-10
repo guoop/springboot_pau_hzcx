@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.order.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -47,7 +48,7 @@ public class TOrder extends Model<TOrder> {
      * 取货时间（只有到店自取的订单有该字段）
      */
     @TableField("pickup_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+24",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pickupTime;
     /**
      * 付款方式（0：在线支付；1：货到付款；2：现金；3：微信；4：支付宝；5：银联）
@@ -73,7 +74,7 @@ public class TOrder extends Model<TOrder> {
      * 成功付款时间（如果是在线支付，则标识回调成功时间）
      */
     @TableField("pay_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+24",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date payTime;
     /**
      * 支付成功后的回调原始结果
@@ -84,7 +85,7 @@ public class TOrder extends Model<TOrder> {
      * 创建时间
      */
     @TableField("create_time")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+24",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     /**
      * 创建人

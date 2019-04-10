@@ -28,15 +28,16 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, goods_id AS goodsId, version, status, remark
+        id, order_no , source, pickup_no , pickup_time , money_channel , order_money , run_money , pay_money , pay_time, pay_response , create_time , creater, settlementer, owner_id , address_id , goods_id , version, status, remark
     </sql>
 
     <sql id="Condition">
+
         <if test="id != null and id != ''">
             and id = #{id}
         </if>
-        <if test="orderNo != null and orderNo != ''">
-            and orderNo = #{orderNo}
+        <if test="order_no != null and order_no != ''">
+            and order_no = #{order_no}
         </if>
         <if test="version != null and version != ''">
             and version = #{version}
@@ -48,13 +49,15 @@
             and owner_id = #{owner_id}
         </if>
         <if test="page != null">
-            limit #{page} 20
+            limit #{page},20
         </if>
+
     </sql>
 
-    <select id="selectOrderListByMap" parameterType="map" resultMap="BaseResultMap">
+
+    <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1
-        <include refid="Condition"/>
+         <include refid="Condition"></include>
 
     </select>
     <sql id="findListCondition">

@@ -22,6 +22,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
+import com.soft.ware.rest.modular.handover.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -238,18 +239,7 @@ public class WXSmallController extends BaseController {
 		return new ErrorTip(606, "删除失败");
 	}
 
-	/**
-	 * 获取交接班记录列表
-	 * 
-	 * @param start
-	 *            开始时间
-	 * @param end
-	 *            结束时间
-	 * @param page
-	 *            当前页
-	 * @param size
-	 *            页面条数
-	 */
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping("v1/app/handover")
 	public Object getHandOverList(SessionUser user, HandoverParam param,Page<HandOver> page) {
@@ -269,7 +259,7 @@ public class WXSmallController extends BaseController {
 			Date endDate = DateUtil.getDateByTime(endTime);
 			param.setOptionat(endDate);
 		}
-		listData = handOverService.getHandOver(param, user,page);
+		listData = null;//handOverService.getHandOver(param, user,page);
 		return listData;
 	}
 
@@ -500,12 +490,7 @@ public class WXSmallController extends BaseController {
 		boolean b = goodsService.addByHand(user, g, s);
 		return render(b);
 	}
-	/**
-	 *29 商品置顶
-	 *@param id
-	 *@param flag 是否置顶
-	 *@return code 'success'
-	 */
+
 	@RequestMapping("v1/auth/goods/top")
 	public Object goodsTop(){
 		
@@ -596,10 +581,9 @@ public class WXSmallController extends BaseController {
      * 极光im初始化
      */
 	@RequestMapping("im/init")
-	public Object getPayLoad(){
+	public Tip getPayLoad(){
 		Map<String, Object> map = WXUtils.getPayLoad();
-		map.put("code", "success");
-		return map;
+		return new SuccessTip(map);
 	}
 
 	/**
