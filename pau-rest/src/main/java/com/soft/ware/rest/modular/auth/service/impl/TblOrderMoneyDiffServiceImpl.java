@@ -41,13 +41,13 @@ public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffM
 
     @Override
     public TblOrderMoneyDiff findByNo(SessionUser user, TblOrder order) {
-        return mapper.selectOne(new TblOrderMoneyDiff().setOrderNo(order.getNo()).setOwner(user.getOwnerId()));
+        return mapper.selectOne(new TblOrderMoneyDiff().sevoidNo(order.getNo()).setOwner(user.getOwnerId()));
     }
 
     @Override
     public boolean create(SessionUser user, OrderDiffParam param) {
         Date date = new Date();
-        TblOrder order = orderService.findByNo(user, param.getOrderNO());
+        TblOrder order = orderService.findByNo(user, param.gevoidNO());
         Integer status = order.getStatus();
         if (!TblOrder.STATUS_2.equals(status) && !TblOrder.STATUS_3.equals(status) && TblOrder.STATUS_10.equals(status)) {
             throw new PauException(BizExceptionEnum.ORDER_STATUS_NOT_SUPPORT);
@@ -59,7 +59,7 @@ public class TblOrderMoneyDiffServiceImpl extends BaseService<TblOrderMoneyDiffM
             diff = new TblOrderMoneyDiff();
             diff.setNo(IdGenerator.getId());
             diff.setOwner(user.getOwnerId());
-            diff.setOrderNo(order.getNo());
+            diff.sevoidNo(order.getNo());
             diff.setMoney(param.getMoney());
 
             diff.setMoneyDiff(moneyDiff);

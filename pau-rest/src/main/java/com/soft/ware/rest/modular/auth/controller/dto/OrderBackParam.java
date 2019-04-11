@@ -17,11 +17,11 @@ public class OrderBackParam {
     private BigDecimal refundMoney;
 
 
-    public String getOrderNo() {
+    public String gevoidNo() {
         return orderNo;
     }
 
-    public void setOrderNo(String orderNo) {
+    public void sevoidNo(String orderNo) {
         this.orderNo = orderNo;
     }
 

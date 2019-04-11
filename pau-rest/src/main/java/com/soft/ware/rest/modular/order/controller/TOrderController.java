@@ -22,11 +22,11 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/order/v1")
+@RequestMapping("/owner/v1")
 public class TOrderController extends BaseController {
 
     @Autowired
-    private ITOrderService itOrderService;
+    private ITOrderService tOrderService;
     /**
      * 线下订单
      */
@@ -39,12 +39,13 @@ public class TOrderController extends BaseController {
      * @param param (订单状态）,page（页码）
      * @return owner/v2/order 修改 owner/v1/orders/list
      */
-    @RequestMapping("/orders/list")
-    public Tip getOrderList(SessionUser user, @RequestParam Map<String, Object> param) {
-        param.put("owner_id", user.getOwnerId());
-        param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
-        param.put("page",Integer.valueOf(param.get("page").toString()));
-        List<TOrder> list = itOrderService.selectOrderListByMap(param);
+    @RequestMapping(value = "/orders/list",method = RequestMethod.GET)
+    public Tip gevoidList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
+        param.put("owner_id", sessionUser.getOwnerId());
+        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+        param.put("page",0);
+        //param.put("page",Integer.valueOf(param.get("page").toString()));
+        List<TOrder> list = tOrderService.selectOrderListByMap(param);
         if (list.size() > 0) {
             return new SuccessTip(list);
         }
@@ -57,9 +58,7 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "/orders/count",method = RequestMethod.GET)
     public Tip orderCount(SessionUser user){
-        TOrder order = new TOrder();
-        order.setOwnerId(user.getOwnerId());
-        int i = itOrderService.selectCount(new EntityWrapper<>(order));
+        int i = tOrderService.selectCount(new EntityWrapper<>(  new TOrder().setOwnerId(user.getOwnerId())));
         return new SuccessTip(i);
     }
 
@@ -69,7 +68,7 @@ public class TOrderController extends BaseController {
      * @param sessionUser 当前商户
      * @return
      */
-    @RequestMapping(value = "app/orders")
+    @RequestMapping(value = "orders/app")
     public Tip getAppOrdersList(@RequestParam Map<String,Object> param,SessionUser sessionUser){
         param.put("owner_id",sessionUser.getOwnerId());
         param.put("page",Integer.valueOf(param.get("page").toString()));
@@ -78,11 +77,56 @@ public class TOrderController extends BaseController {
             return new SuccessTip(orderAppList);
         }
         return new ErrorTip();
+    }
 
+    /**
+     * 标记订单状态
+     * @param param orderNo订单编号 ，status订单状态， reason原因
+     * @param sessionUser 当前登录用户
+     * @return 通用提示
+     * @// TODO: 2019/4/11  paulo 暂时往后放
+     */
+    @RequestMapping(value = "orders/sign-status")
+    public Tip signStatus(@RequestParam Map<String,Object> param,SessionUser sessionUser){
+         param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+         param.get("orderNo").toString();
+         param.put("owner_id",sessionUser.getOwnerId());
 
-
+        return  new ErrorTip();
 
     }
+
+    /**
+     * 订单退款
+     * @param param orderNo 订单编号
+     * @param sessionUser  当前登录用户
+     * @// TODO: 2019/4/11 paulo 暂时往后放
+     */
+    @RequestMapping(value = "orders/refund")
+    public Tip ordersRefund(@RequestParam Map<String,Object> param,SessionUser sessionUser){
+        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+        param.get("orderNo").toString();
+        param.put("owner_id",sessionUser.getOwnerId());
+
+        return new ErrorTip();
+    }
+
+    /**
+     * 订单补差价退款
+     * @param param orderNo 订单编号
+     * @param sessionUser  当前登录用户
+     * @// TODO: 2019/4/11 paulo 暂时往后放
+     */
+    @RequestMapping(value = "orders/money-diff-refund")
+    public Tip ordersMoneyDiffRefund(@RequestParam Map<String,Object> param,SessionUser sessionUser){
+        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+        param.get("orderNo").toString();
+        param.put("owner_id",sessionUser.getOwnerId());
+
+        return new ErrorTip();
+    }
+
+
 
 
 

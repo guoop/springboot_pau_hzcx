@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 @Transactional
-public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp> implements TOrderAppService {
+public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper, TOrderApp> implements TOrderAppService {
 
     @Resource
     private TOrderAppMapper mapper;

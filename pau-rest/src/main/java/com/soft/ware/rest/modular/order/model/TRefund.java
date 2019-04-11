@@ -65,11 +65,11 @@ public class TRefund extends Model<TRefund> {
         this.id = id;
     }
 
-    public String getOrderNo() {
+    public String gevoidNo() {
         return orderNo;
     }
 
-    public void setOrderNo(String orderNo) {
+    public void sevoidNo(String orderNo) {
         this.orderNo = orderNo;
     }
 
@@ -89,11 +89,11 @@ public class TRefund extends Model<TRefund> {
         this.status = status;
     }
 
-    public String getOrderMoney() {
+    public String gevoidMoney() {
         return orderMoney;
     }
 
-    public void setOrderMoney(String orderMoney) {
+    public void sevoidMoney(String orderMoney) {
         this.orderMoney = orderMoney;
     }
 

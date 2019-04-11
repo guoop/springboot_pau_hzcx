@@ -12,11 +12,11 @@ public class OrderRefundParam {
     private String refundType;
     private BigDecimal refundMoney;
 
-    public String getOrder() {
+    public String gevoid() {
         return order;
     }
 
-    public void setOrder(String order) {
+    public void sevoid(String order) {
         this.order = order;
     }
 

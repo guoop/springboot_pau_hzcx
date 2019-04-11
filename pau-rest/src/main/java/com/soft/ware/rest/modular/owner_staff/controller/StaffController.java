@@ -23,13 +23,13 @@ import java.util.List;
  * 店员控制层
  */
 @RestController
-@RequestMapping("staff/v1")
+@RequestMapping("owner/v1")
 public class StaffController extends BaseController {
 
     @Autowired
     private TOwnerStaffService tOwnerStaffService;
 
-      @RequestMapping(value = "/updateOrAdd",method = RequestMethod.POST)
+      @RequestMapping(value = "staff/updateOrAdd",method = RequestMethod.POST)
        public Tip updateOrSave(SessionUser sessionUser, TOwnerStaff ownerStaff){
           Boolean isSuccess = false;
           if(ToolUtil.isNotEmpty(ownerStaff)){
@@ -51,7 +51,7 @@ public class StaffController extends BaseController {
      * @param id 店员id
      * @return
      */
-    @RequestMapping(value = "del",method = RequestMethod.GET)
+    @RequestMapping(value = "staff/del",method = RequestMethod.GET)
        public Tip Delete(@RequestParam String id){
               if(tOwnerStaffService.deleteById(id)){
                   return new SuccessTip();
@@ -64,7 +64,7 @@ public class StaffController extends BaseController {
      * @param sessionUser 当前登录的商户
      * @return
      */
-      @RequestMapping(value = "list")
+      @RequestMapping(value = "staff/list")
       public Tip getList(SessionUser sessionUser){
         TOwnerStaff staff = new TOwnerStaff();
         staff.setPassword(sessionUser.getOwnerId());
@@ -80,7 +80,7 @@ public class StaffController extends BaseController {
      * @param id 店员id
      * @return
      */
-      @RequestMapping("detail")
+      @RequestMapping("staff/detail")
       public Tip getStaffDetail(@RequestParam String id){
           TOwnerStaff staff = tOwnerStaffService.selectById(id);
           if(ToolUtil.isNotEmpty(staff)){
@@ -94,6 +94,7 @@ public class StaffController extends BaseController {
      * @param sessionUser 当前登录的用户基本信息
      * @// TODO: 2019/4/10  sessionUser.getId 有可能不是当前表的主键
      */
+    @RequestMapping("staff/get-info")
     public Tip getStaffInfo(SessionUser sessionUser){
         TOwnerStaff staff = tOwnerStaffService.selectById(sessionUser.getId());
         if(ToolUtil.isNotEmpty(staff)){

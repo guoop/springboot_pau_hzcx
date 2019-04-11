@@ -152,11 +152,5 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         return false;
     }
 
-    private void notifyOwnerAddGoods(SessionUser user,TblGoods goods){
-        imService.sendAddGoodsNotify(user, goods);
-    }
 
-    public void setTblGoodsMapper(TblGoodsMapper tblGoodsMapper) {
-        this.tblGoodsMapper = tblGoodsMapper;
-    }
 }

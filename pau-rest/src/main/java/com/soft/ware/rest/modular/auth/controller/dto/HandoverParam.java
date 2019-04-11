@@ -60,9 +60,9 @@ public class HandoverParam {
     //现金会员支付单数
     private Integer  momberpaynum;
     //第一笔收银订单时间
-    private Date  fistordertime;
+    private Date  fisvoidtime;
     //最后一笔订单时间
-    private Date  lastordertime;
+    private Date  lasvoidtime;
 
 
     public String getName() {
@@ -97,27 +97,27 @@ public class HandoverParam {
         this.optionat = optionat;
     }
 
-    public int getOrdernum() {
+    public int gevoidnum() {
         return ordernum;
     }
 
-    public void setOrdernum(Integer ordernum) {
+    public void sevoidnum(Integer ordernum) {
         this.ordernum = ordernum;
     }
 
-    public Integer getOrdertuinum() {
+    public Integer gevoidtuinum() {
         return ordertuinum;
     }
 
-    public void setOrdertuinum(Integer ordertuinum) {
+    public void sevoidtuinum(Integer ordertuinum) {
         this.ordertuinum = ordertuinum;
     }
 
-    public Integer getOrderreturnnum() {
+    public Integer gevoidreturnnum() {
         return orderreturnnum;
     }
 
-    public void setOrderreturnnum(Integer orderreturnnum) {
+    public void sevoidreturnnum(Integer orderreturnnum) {
         this.orderreturnnum = orderreturnnum;
     }
 
@@ -129,11 +129,11 @@ public class HandoverParam {
         this.allmoney = allmoney;
     }
 
-    public BigDecimal getOrdermoney() {
+    public BigDecimal gevoidmoney() {
         return ordermoney;
     }
 
-    public void setOrdermoney(BigDecimal ordermoney) {
+    public void sevoidmoney(BigDecimal ordermoney) {
         this.ordermoney = ordermoney;
     }
 
@@ -161,19 +161,19 @@ public class HandoverParam {
         this.membercz = membercz;
     }
 
-    public BigDecimal getOrdertuimoney() {
+    public BigDecimal gevoidtuimoney() {
         return ordertuimoney;
     }
 
-    public void setOrdertuimoney(BigDecimal ordertuimoney) {
+    public void sevoidtuimoney(BigDecimal ordertuimoney) {
         this.ordertuimoney = ordertuimoney;
     }
 
-    public BigDecimal getOrderreturnmoney() {
+    public BigDecimal gevoidreturnmoney() {
         return orderreturnmoney;
     }
 
-    public void setOrderreturnmoney(BigDecimal orderreturnmoney) {
+    public void sevoidreturnmoney(BigDecimal orderreturnmoney) {
         this.orderreturnmoney = orderreturnmoney;
     }
 
@@ -266,19 +266,19 @@ public class HandoverParam {
     }
 
 
-    public Date getFistordertime() {
-        return fistordertime;
+    public Date getFisvoidtime() {
+        return fisvoidtime;
     }
 
-    public void setFistordertime(Date fistordertime) {
-        this.fistordertime = fistordertime;
+    public void setFisvoidtime(Date fisvoidtime) {
+        this.fisvoidtime = fisvoidtime;
     }
 
-    public Date getLastordertime() {
-        return lastordertime;
+    public Date getLasvoidtime() {
+        return lasvoidtime;
     }
 
-    public void setLastordertime(Date lastordertime) {
-        this.lastordertime = lastordertime;
+    public void setLasvoidtime(Date lasvoidtime) {
+        this.lasvoidtime = lasvoidtime;
     }
 }

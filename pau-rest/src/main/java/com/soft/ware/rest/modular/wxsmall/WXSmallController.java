@@ -269,7 +269,7 @@ public class WXSmallController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("v2/orders")
-	public Object getOrderList(SessionUser user, Page page, OrderPageParam param) {
+	public Object gevoidList(SessionUser user, Page page, OrderPageParam param) {
 		String status = param.getStatus();
 		Kv<String, String> res = Kv.by("pay", "0")        // 已取消
 				.set("deliver", "1,10")// 待付款

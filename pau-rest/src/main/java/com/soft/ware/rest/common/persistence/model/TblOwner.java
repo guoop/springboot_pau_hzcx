@@ -275,11 +275,11 @@ public class TblOwner extends Model<TblOwner> {
         this.selfPickup = selfPickup;
         return this;
     }
-    public String getOrderPhone(){
+    public String gevoidPhone(){
         return orderPhone;
     }
 
-    public TblOwner setOrderPhone( String orderPhone){
+    public TblOwner sevoidPhone( String orderPhone){
         this.orderPhone = orderPhone;
         return this;
     }

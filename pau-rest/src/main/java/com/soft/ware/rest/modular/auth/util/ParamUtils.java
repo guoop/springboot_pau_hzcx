@@ -6,7 +6,7 @@ public class ParamUtils {
      * 订单状态的封装
      */
 
-    public static int getOrderStatus(String status){
+    public static int gevoidStatus(String status){
         switch (status){
             case "deliver":
                 return 1;

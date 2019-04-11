@@ -316,7 +316,7 @@ public class WXSmallCustomerController  extends BaseController {
         long current = System.currentTimeMillis();
         String pack = param.getPack();
         if (param.getMoneyChannel() == TblOrder.SOURCE_0) {
-            String tempKey = "ms:ppi:" + param.getOrderNO();
+            String tempKey = "ms:ppi:" + param.gevoidNO();
             redisTemplate.opsForValue().set(tempKey,pack,604800,TimeUnit.SECONDS);
             logger.debug("买家支付订单时保存PrepayID {} = {}",tempKey,pack);
             // 微信支付时发送模板消息
@@ -325,7 +325,7 @@ public class WXSmallCustomerController  extends BaseController {
             WxMaService service = hzcxWxService.getWxMaService(owner);
             List<WxMaTemplateData> msList = new ArrayList<>();
             // 订单编号
-            msList.add(new WxMaTemplateData("keyword1", param.getOrderNO()));
+            msList.add(new WxMaTemplateData("keyword1", param.gevoidNO()));
             // 下单时间
             msList.add(new WxMaTemplateData("keyword2", DateUtil.format(param.getCreated_at(),"YYYY-MM-DD HH:mm:ss")));
             // 订单金额
@@ -356,11 +356,11 @@ public class WXSmallCustomerController  extends BaseController {
         // 发送短信通知
         String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "order_phone");
         if (StringUtils.isNotBlank(phone)) {
-           smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.getOrderNO());
+           smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.gevoidNO());
         }
         // IM通知店铺
         imService.sendNewOrderNotify(user, order);
-        String tempKey = "ms:fit:" + param.getOrderNO();
+        String tempKey = "ms:fit:" + param.gevoidNO();
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800,TimeUnit.SECONDS);
         logger.info("买家支付订单时保存FormID {} = {}", tempKey, param.getFormID());
         // 标识订单来源
@@ -402,7 +402,7 @@ public class WXSmallCustomerController  extends BaseController {
         if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
             return render(false, "请完善预留手机号");
         }
-        String no = param.getOrderNO();
+        String no = param.gevoidNO();
         Integer source  = param.getSource();
         TblOrder order = orderService.findByNo(user,no);
         TblOwner owner = ownerService.find(user);
@@ -451,7 +451,7 @@ public class WXSmallCustomerController  extends BaseController {
      */
     @RequestMapping(value = "/customer/v1/order/address",method = RequestMethod.POST)
     public Tip orderAddressUpdate(SessionUser user,@RequestBody OrderAddressUpdateParam param){
-        TblOrder order = orderService.findByNo(user, param.getOrderNO());
+        TblOrder order = orderService.findByNo(user, param.gevoidNO());
         TblAddress address = addressService.findById(user, param.getAddressID());
         order.setConsigneeMobile(address.getTelephone());
         order.setConsigneeName(address.getName());

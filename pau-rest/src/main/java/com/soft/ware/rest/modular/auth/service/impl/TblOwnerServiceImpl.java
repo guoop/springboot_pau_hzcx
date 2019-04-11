@@ -34,7 +34,7 @@ public class TblOwnerServiceImpl extends BaseService<TblOwnerMapper,TblOwner> im
             o.setShopSecret(null);
             o.setDefaultDesc(null);
             o.setDefaultRefundReason(null);
-            o.setOrderPhone(null);
+            o.sevoidPhone(null);
         }
         return o;
     }
