@@ -27,4 +27,6 @@ public interface ITOrderService extends IService<TOrder> {
     List<Map<String,Object>> findMaps(Map<String,Object> map);
 
     Map<String,Object> findMap(Map<String,Object> map);
+
+    List<Map<String,Object>> selectOrdersListByMap(Map<String,Object> map);
 }

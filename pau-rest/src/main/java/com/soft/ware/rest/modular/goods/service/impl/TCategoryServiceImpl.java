@@ -37,4 +37,14 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
         return mapper.findMaps(map);
     }
 
+    @Override
+    public List<TCategory> selectParentCategoryList(Map<String, Object> map) {
+        return mapper.selectParentCategoryList(map);
+    }
+
+    @Override
+    public List<TCategory> selectChildrenCategoryList(Map<String, Object> map) {
+        return mapper.selectChildrenCategoryList(map);
+    }
+
 }

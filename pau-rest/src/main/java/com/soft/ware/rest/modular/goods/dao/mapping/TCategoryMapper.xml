@@ -18,7 +18,28 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, pid, description, sort, is_delete as isDelete, owner_id AS ownerId, status, is_system AS isSystem, category_icon_id
+        id, name, pid, description, sort, is_delete, owner_id, status, is_system, category_icon_id
+    </sql>
+
+    <sql id="Base_Column_Name_List">
+        id,name,sort,owner_id,status
+    </sql>
+
+    <sql id="Condition">
+
+        <if test="id != null and id != ''">
+            and id = #{id}
+        </if>
+        <if test="ownerId != null and ownerId != ''">
+            and owner_id = #{ownerId}
+        </if>
+        <if test="status != null and status != ''">
+            and status = #{status}
+        </if>
+        <if test="pid != null and pid != ''">
+            and pid = #{pid}
+        </if>
+
     </sql>
 
     <select id="findMaps" resultType="java.util.Map">
@@ -34,6 +55,17 @@
         <if test="map.pid !=null">
             and pid is not null
         </if>
+    </select>
+
+    <select id="selectParentCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_Name_List"/> from t_category where 1=1
+        and pid is null and is_delete = 0
+        <include refid="Condition"/>
+    </select>
+
+    <select id="selectChildrenCategoryList"  parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_category where 1=1 and is_delete = 0
+        <include refid="Condition"/>
     </select>
 
 

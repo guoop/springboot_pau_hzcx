@@ -28,4 +28,6 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
     List<Map> findList(@Param("user") SessionUser user, @Param("page") Page page, @Param("param") OrderPageParam param, @Param("source") int... source);
 
     List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
+
+    List<Map<String,Object>> selectOrdersListByMap(Map<String,Object> map);
 }

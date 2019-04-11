@@ -10,6 +10,7 @@ import com.soft.ware.rest.modular.order.service.ITOrderService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,24 @@ public class TOrderServiceImpl extends ServiceImpl<TOrderMapper, TOrder> impleme
     public Map<String, Object> findMap(Map<String, Object> map) {
         List<Map<String, Object>> maps = findMaps(map);
         return maps.isEmpty() ? null : maps.get(0);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectOrdersListByMap(Map<String, Object> map) {
+
+        List<Map<String,Object>> listMap = orderMapper.selectOrdersListByMap(map);
+        List<Map<String,Object>> resultList = new ArrayList<>();
+        if(listMap.size() > 0){
+            for (int i = 0; i < listMap.size(); i++) {
+                Map<String,Object>  resultMap = listMap.get(i);
+                if(resultMap.get("source").toString().equals("2")){
+                   resultMap.remove("address");
+                   resultMap.remove("addressId");
+                }
+                resultList.add(resultMap);
+            }
+        }
+        return resultList;
     }
 
 }
