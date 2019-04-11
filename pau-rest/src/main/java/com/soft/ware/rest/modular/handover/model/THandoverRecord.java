@@ -148,51 +148,51 @@ public class THandoverRecord extends Model<THandoverRecord> {
         this.syncTime = syncTime;
     }
 
-    public Integer getOrderNum() {
+    public Integer gevoidNum() {
         return orderNum;
     }
 
-    public void setOrderNum(Integer orderNum) {
+    public void sevoidNum(Integer orderNum) {
         this.orderNum = orderNum;
     }
 
-    public Integer getOrderRefundNum() {
+    public Integer gevoidRefundNum() {
         return orderRefundNum;
     }
 
-    public void setOrderRefundNum(Integer orderRefundNum) {
+    public void sevoidRefundNum(Integer orderRefundNum) {
         this.orderRefundNum = orderRefundNum;
     }
 
-    public Integer getOrderReturnNum() {
+    public Integer gevoidReturnNum() {
         return orderReturnNum;
     }
 
-    public void setOrderReturnNum(Integer orderReturnNum) {
+    public void sevoidReturnNum(Integer orderReturnNum) {
         this.orderReturnNum = orderReturnNum;
     }
 
-    public BigDecimal getOrderMoney() {
+    public BigDecimal gevoidMoney() {
         return orderMoney;
     }
 
-    public void setOrderMoney(BigDecimal orderMoney) {
+    public void sevoidMoney(BigDecimal orderMoney) {
         this.orderMoney = orderMoney;
     }
 
-    public BigDecimal getOrderRefundMoney() {
+    public BigDecimal gevoidRefundMoney() {
         return orderRefundMoney;
     }
 
-    public void setOrderRefundMoney(BigDecimal orderRefundMoney) {
+    public void sevoidRefundMoney(BigDecimal orderRefundMoney) {
         this.orderRefundMoney = orderRefundMoney;
     }
 
-    public BigDecimal getOrderReturnMoney() {
+    public BigDecimal gevoidReturnMoney() {
         return orderReturnMoney;
     }
 
-    public void setOrderReturnMoney(BigDecimal orderReturnMoney) {
+    public void sevoidReturnMoney(BigDecimal orderReturnMoney) {
         this.orderReturnMoney = orderReturnMoney;
     }
 

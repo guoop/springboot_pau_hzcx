@@ -127,8 +127,9 @@ public class TOrder extends Model<TOrder> {
         return type;
     }
 
-    public void setType(Integer type) {
+    public TOrder setType(Integer type) {
         this.type = type;
+        return this;
     }
 
     /**
@@ -141,160 +142,180 @@ public class TOrder extends Model<TOrder> {
         return id;
     }
 
-    public void setId(Long id) {
+    public TOrder setId(Long id) {
         this.id = id;
+        return  this;
     }
 
-    public String getOrderNo() {
+    public String gevoidNo() {
         return orderNo;
     }
 
-    public void setOrderNo(String orderNo) {
+    public TOrder sevoidNo(String orderNo) {
         this.orderNo = orderNo;
+        return this;
     }
 
     public Integer getSource() {
         return source;
     }
 
-    public void setSource(Integer source) {
+    public TOrder setSource(Integer source) {
         this.source = source;
+        return this;
     }
 
     public Long getPickupNo() {
         return pickupNo;
     }
 
-    public void setPickupNo(Long pickupNo) {
+    public TOrder setPickupNo(Long pickupNo) {
         this.pickupNo = pickupNo;
+        return this;
     }
 
     public Date getPickupTime() {
         return pickupTime;
     }
 
-    public void setPickupTime(Date pickupTime) {
+    public TOrder setPickupTime(Date pickupTime) {
         this.pickupTime = pickupTime;
+        return this;
     }
 
     public Integer getMoneyChannel() {
         return moneyChannel;
     }
 
-    public void setMoneyChannel(Integer moneyChannel) {
+    public TOrder setMoneyChannel(Integer moneyChannel) {
         this.moneyChannel = moneyChannel;
+        return this;
     }
 
-    public BigDecimal getOrderMoney() {
+    public BigDecimal gevoidMoney() {
         return orderMoney;
     }
 
-    public void setOrderMoney(BigDecimal orderMoney) {
+    public TOrder sevoidMoney(BigDecimal orderMoney) {
         this.orderMoney = orderMoney;
+        return this;
     }
 
     public BigDecimal getRunMoney() {
         return runMoney;
     }
 
-    public void setRunMoney(BigDecimal runMoney) {
+    public TOrder setRunMoney(BigDecimal runMoney) {
         this.runMoney = runMoney;
+        return this;
     }
 
     public BigDecimal getPayMoney() {
         return payMoney;
     }
 
-    public void setPayMoney(BigDecimal payMoney) {
+    public TOrder setPayMoney(BigDecimal payMoney) {
         this.payMoney = payMoney;
+        return this;
     }
 
     public Date getPayTime() {
         return payTime;
     }
 
-    public void setPayTime(Date payTime) {
+    public TOrder setPayTime(Date payTime) {
         this.payTime = payTime;
+        return this;
     }
 
     public String getPayResponse() {
         return payResponse;
     }
 
-    public void setPayResponse(String payResponse) {
+    public TOrder setPayResponse(String payResponse) {
         this.payResponse = payResponse;
+        return this;
     }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public TOrder setCreateTime(Date createTime) {
         this.createTime = createTime;
+        return this;
     }
 
     public String getCreater() {
         return creater;
     }
 
-    public void setCreater(String creater) {
+    public TOrder setCreater(String creater) {
         this.creater = creater;
+        return this;
     }
 
     public String getSettlementer() {
         return settlementer;
     }
 
-    public void setSettlementer(String settlementer) {
+    public TOrder setSettlementer(String settlementer) {
         this.settlementer = settlementer;
+        return this;
     }
 
     public String getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public TOrder setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+        return this;
     }
 
     public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId) {
+    public TOrder setAddressId(String addressId) {
         this.addressId = addressId;
+        return this;
     }
 
     public String getGoodsId() {
         return goodsId;
     }
 
-    public void setGoodsId(String goodsId) {
+    public TOrder setGoodsId(String goodsId) {
         this.goodsId = goodsId;
+        return this;
     }
 
     public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public TOrder setVersion(Integer version) {
         this.version = version;
+        return this;
     }
 
     public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public TOrder setStatus(Integer status) {
         this.status = status;
+        return this;
     }
 
     public String getRemark() {
         return remark;
     }
 
-    public void setRemark(String remark) {
+    public TOrder setRemark(String remark) {
         this.remark = remark;
+        return this;
     }
 
     @Override
@@ -304,7 +325,7 @@ public class TOrder extends Model<TOrder> {
 
     @Override
     public String toString() {
-        return "TOrder{" +
+        return "void{" +
         "id=" + id +
         ", orderNo=" + orderNo +
         ", source=" + source +

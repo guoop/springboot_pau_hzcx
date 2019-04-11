@@ -368,8 +368,8 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             }
         } else if ("confirm".equals(status)) {
             // 只允许确认待商家确认的订单
-            if (order.getStatus().equals(TblOrder.STATUS_1)) {
-                order.setStatus(TblOrder.STATUS_10);
+            if (order.getStatus().equals(TblOrder.STATUS_1)) { //如果当前订单状态是待商家确认订单
+                order.setStatus(TblOrder.STATUS_10);//那么订单状态设置商家确认订单
                 order.setConfirmBy(user.getPhone());
                 order.setConfirmAt(date);
                 update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
@@ -429,7 +429,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         //todo yancc 更新成功后是否需要清除 redis 中的 formId
         int round = WXContants.big_decimal_sale;
         Date date = new Date();
-        TblOrder order = this.findByNo(user, param.getOrder());
+        TblOrder order = this.findByNo(user, param.gevoid());
         if (!order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_0) || (!order.getStatus().equals(TblOrder.STATUS_1) && !order.getStatus().equals(TblOrder.STATUS_3))) {
             throw new PauException(BizExceptionEnum.ORDER_REFUND_NOT_SUPPORT);
         } else if (TblOrder.REFUND_STATUS_0.equals(order.getRefundStatus())) {
@@ -512,7 +512,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
     @Override
     public boolean refundDiff(SessionUser user, OrderRefundParam param) {
         Date date = new Date();
-        String no = param.getOrder();
+        String no = param.gevoid();
         TblOrder order = this.findByNo(user, no);
         TblOrderMoneyDiff diff = diffService.findByNo(user, order);
         TblOwner owner = ownerService.find(user);

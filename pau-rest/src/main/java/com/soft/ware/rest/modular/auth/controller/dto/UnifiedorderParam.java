@@ -13,11 +13,11 @@ public class UnifiedorderParam {
     private Integer source;
     private String telephone;
 
-    public String getOrderNO() {
+    public String gevoidNO() {
         return orderNO;
     }
 
-    public void setOrderNO(String orderNO) {
+    public void sevoidNO(String orderNO) {
         this.orderNO = orderNO;
     }
 

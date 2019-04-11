@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.soft.ware.rest.modular.order_money_diff.dao.TOrderMoneyDiffMapper">
+<mapper namespace="com.soft.ware.rest.modular.order_money_diff.dao.voidMoneyDiffMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff">
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order_money_diff.model.voidMoneyDiff">
         <id column="id" property="id" />
         <result column="pay_order_no" property="payOrderNo" />
         <result column="owner_id" property="ownerId" />

@@ -12,8 +12,8 @@
         <result column="sync_at" property="syncAt" />
         <result column="optionstart" property="optionStart" />
         <result column="optionat" property="optionAt" />
-        <result column="fistordertime" property="fistOrderTime" />
-        <result column="lastordertime" property="lastOrderTime" />
+        <result column="fisvoidtime" property="fisvoidTime" />
+        <result column="lasvoidtime" property="lasvoidTime" />
         <result column="ordernum" property="orderNum" />
         <result column="ordertuinum" property="ordertuinum" />
         <result column="orderreturnnum" property="orderReturnNum" />
@@ -37,7 +37,7 @@
     </resultMap>
     
     <sql id="Base_Column">
-      owner,user_phone,username,pospalcode,sync_at,optionstart,fistordertime,lastordertime,ordernum,ordertuinum
+      owner,user_phone,username,pospalcode,sync_at,optionstart,fisvoidtime,lasvoidtime,ordernum,ordertuinum
     ,orderreturnnum,allmoney,ordermoney,money_shishou,zhaoling,membercz,ordertuimoney,orderreturnmoney
     ,wxpay,wxpaynum,alipay,alipaynum,unionpay,unionpaynum,moneypay,moneypaynum,moneymemberpay,memberpaynum
     </sql>

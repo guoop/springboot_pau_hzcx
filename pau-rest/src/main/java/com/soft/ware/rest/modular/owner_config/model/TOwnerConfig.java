@@ -122,11 +122,11 @@ public class TOwnerConfig extends Model<TOwnerConfig> {
         this.deliveryDistance = deliveryDistance;
         return this;
     }
-    public String getOrderPhone(){
+    public String gevoidPhone(){
         return orderPhone;
     }
 
-    public TOwnerConfig setOrderPhone( String orderPhone){
+    public TOwnerConfig sevoidPhone( String orderPhone){
         this.orderPhone = orderPhone;
         return this;
     }

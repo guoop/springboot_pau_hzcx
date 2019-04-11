@@ -12,7 +12,7 @@ import java.util.Date;
   * 差价表
 */
 @TableName("t_order_money_diff")
-public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
+public class voidMoneyDiff extends Model<voidMoneyDiff> {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return id;
     }
 
-    public TOrderMoneyDiff setId(String id){
+    public voidMoneyDiff setId(String id){
         this.id = id;
         return this;
     }
@@ -67,7 +67,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return payOrderNo;
     }
 
-    public TOrderMoneyDiff setPayOrderNo( String payOrderNo){
+    public voidMoneyDiff setPayOrderNo( String payOrderNo){
         this.payOrderNo = payOrderNo;
         return this;
     }
@@ -75,15 +75,15 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return ownerId;
     }
 
-    public TOrderMoneyDiff setOwnerId( String ownerId){
+    public voidMoneyDiff setOwnerId( String ownerId){
         this.ownerId = ownerId;
         return this;
     }
-    public String getOrderNo(){
+    public String gevoidNo(){
         return orderNo;
     }
 
-    public TOrderMoneyDiff setOrderNo( String orderNo){
+    public voidMoneyDiff sevoidNo( String orderNo){
         this.orderNo = orderNo;
         return this;
     }
@@ -91,7 +91,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return money;
     }
 
-    public TOrderMoneyDiff setMoney( BigDecimal money){
+    public voidMoneyDiff setMoney( BigDecimal money){
         this.money = money;
         return this;
     }
@@ -99,7 +99,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return moneyDiff;
     }
 
-    public TOrderMoneyDiff setMoneyDiff( BigDecimal moneyDiff){
+    public voidMoneyDiff setMoneyDiff( BigDecimal moneyDiff){
         this.moneyDiff = moneyDiff;
         return this;
     }
@@ -107,7 +107,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return pic;
     }
 
-    public TOrderMoneyDiff setPic( String pic){
+    public voidMoneyDiff setPic( String pic){
         this.pic = pic;
         return this;
     }
@@ -115,7 +115,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return createdTime;
     }
 
-    public TOrderMoneyDiff setCreatedTime( Date createdTime){
+    public voidMoneyDiff setCreatedTime( Date createdTime){
         this.createdTime = createdTime;
         return this;
     }
@@ -123,7 +123,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return creater;
     }
 
-    public TOrderMoneyDiff setCreater( String creater){
+    public voidMoneyDiff setCreater( String creater){
         this.creater = creater;
         return this;
     }
@@ -131,7 +131,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return status;
     }
 
-    public TOrderMoneyDiff setStatus( Integer status){
+    public voidMoneyDiff setStatus( Integer status){
         this.status = status;
         return this;
     }
@@ -139,7 +139,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return payTime;
     }
 
-    public TOrderMoneyDiff setPayTime( Date payTime){
+    public voidMoneyDiff setPayTime( Date payTime){
         this.payTime = payTime;
         return this;
     }
@@ -147,7 +147,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return payResponse;
     }
 
-    public TOrderMoneyDiff setPayResponse( String payResponse){
+    public voidMoneyDiff setPayResponse( String payResponse){
         this.payResponse = payResponse;
         return this;
     }
@@ -155,7 +155,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return isDelete;
     }
 
-    public TOrderMoneyDiff setIsDelete( Integer isDelete){
+    public voidMoneyDiff setIsDelete( Integer isDelete){
         this.isDelete = isDelete;
         return this;
     }
@@ -169,7 +169,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
 
     @Override
     public String toString() {
-        return "TOrderMoneyDiff{" +
+        return "voidMoneyDiff{" +
         "id=" + id +
             ", payOrderNo=" + payOrderNo +
             ", ownerId=" + ownerId +

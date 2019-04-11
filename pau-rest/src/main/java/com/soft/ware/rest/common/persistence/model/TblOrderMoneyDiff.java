@@ -88,11 +88,11 @@ public class TblOrderMoneyDiff extends Model<TblOrderMoneyDiff> {
         this.owner = owner;
         return this;
     }
-    public String getOrderNo(){
+    public String gevoidNo(){
         return orderNo;
     }
 
-    public TblOrderMoneyDiff setOrderNo( String orderNo){
+    public TblOrderMoneyDiff sevoidNo( String orderNo){
         this.orderNo = orderNo;
         return this;
     }
