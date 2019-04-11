@@ -21,5 +21,7 @@ public interface ITGoodsService extends IService<TGoods> {
 
     List<Map> findPage(SessionUser user, Page page, GoodsPageParam param);
 
-    List<Map<String,Object>> find(Map<String, Object> map);
+    List<Map<String,Object>> findMaps(Map<String,Object> map);
+
+    Map<String,Object> findMap(Map<String,Object> map);
 }

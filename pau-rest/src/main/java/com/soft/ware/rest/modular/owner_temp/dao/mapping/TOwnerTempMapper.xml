@@ -40,4 +40,73 @@
         <result column="is_verify" property="isVerify" />
     </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, shop_id AS shopId, shop_secret AS shopSecret, app_id AS appId, app_secret AS appSecret, app_name AS appName, app_qr AS appQr, owner_id AS ownerId, acct_name AS acctName, acct_pwd AS acctPwd, company_name AS companyName, company_license AS companyLicense, company_code AS companyCode, name, phone, mailbox, wx_api_card AS wxApiCard, msg_tmplate AS msgTmplate, created_time AS createdTime, creater, owner_data_status AS ownerDataStatus, wxapp_data_status AS wxappDataStatus, owner_data_auditor AS ownerDataAuditor, owner_data_time AS ownerDataTime, wxapp_data_auditor AS wxappDataAuditor, wxapp_data_time AS wxappDataTime, owner_refuser AS ownerRefuser, owner_refuser_time AS ownerRefuserTime, owner_refuser_reason AS ownerRefuserReason, wxapp_refuser AS wxappRefuser, wxapp_refuser_time AS wxappRefuserTime, wxapp_refuser_reason AS wxappRefuserReason, owner_is_valid AS ownerIsValid, is_verify AS isVerify
+    </sql>
+    <sql id="t_owner_temp_alias_columns">
+        tot.shop_id AS shopId, tot.shop_secret AS shopSecret, tot.app_id AS appId, tot.app_secret AS appSecret, tot.app_name AS appName, tot.app_qr AS appQr, tot.owner_id AS ownerId, tot.acct_name AS acctName, tot.acct_pwd AS acctPwd, tot.company_name AS companyName, tot.company_license AS companyLicense, tot.company_code AS companyCode, tot.name, tot.phone, tot.mailbox, tot.wx_api_card AS wxApiCard, tot.msg_tmplate AS msgTmplate, tot.created_time AS createdTime, tot.creater, tot.owner_data_status AS ownerDataStatus, tot.wxapp_data_status AS wxappDataStatus, tot.owner_data_auditor AS ownerDataAuditor, tot.owner_data_time AS ownerDataTime, tot.wxapp_data_auditor AS wxappDataAuditor, tot.wxapp_data_time AS wxappDataTime, tot.owner_refuser AS ownerRefuser, tot.owner_refuser_time AS ownerRefuserTime, tot.owner_refuser_reason AS ownerRefuserReason, tot.wxapp_refuser AS wxappRefuser, tot.wxapp_refuser_time AS wxappRefuserTime, tot.wxapp_refuser_reason AS wxappRefuserReason, tot.owner_is_valid AS ownerIsValid, tot.is_verify AS isVerify
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        <include refid="t_owner_temp_alias_columns"/>
+        from t_owner_temp tot where true
+        <if test="map.id != null and map.id != ''">
+            and tot.id = #{map.id}
+        </if>
+        <if test="map.shopId != null and map.shopId != ''">
+            and tot.shop_id = #{map.shopId}
+        </if>
+        <if test="map.appId != null and map.appId != ''">
+            and tot.app_id = #{map.appId}
+        </if>
+        <if test="map.appSecret != null and map.appSecret != ''">
+            and tot.app_secret = #{map.appSecret}
+        </if>
+        <if test="map.appName != null and map.appName != ''">
+            and tot.app_name = #{map.appName}
+        </if>
+        <if test="map.appQr != null and map.appQr != ''">
+            and tot.app_qr = #{map.appQr}
+        </if>
+        <if test="map.ownerId != null and map.ownerId != ''">
+            and tot.owner_id = #{map.ownerId}
+        </if>
+        <if test="map.acctName != null and map.acctName != ''">
+            and tot.acct_name = #{map.acctName}
+        </if>
+        <if test="map.name != null and map.name != ''">
+            and tot.name = #{map.name}
+        </if>
+        <if test="map.phone != null and map.phone != ''">
+            and tot.phone = #{map.phone}
+        </if>
+        <if test="map.ownerDataStatus != null">
+            and tot.owner_data_status = #{map.ownerDataStatus}
+        </if>
+        <if test="map.wxappDataStatus != null">
+            and tot.wxapp_data_status = #{map.wxappDataStatus}
+        </if>
+        <if test="map.ownerDataAuditor != null and map.ownerDataAuditor != ''">
+            and tot.owner_data_auditor = #{map.ownerDataAuditor}
+        </if>
+        <if test="map.wxappDataAuditor != null and map.wxappDataAuditor != ''">
+            and tot.wxapp_data_auditor = #{map.wxappDataAuditor}
+        </if>
+        <if test="map.ownerRefuser != null and map.ownerRefuser != ''">
+            and tot.owner_refuser = #{map.ownerRefuser}
+        </if>
+        <if test="map.ownerRefuserReason != null and map.ownerRefuserReason != ''">
+            and tot.owner_refuser_reason = #{map.ownerRefuserReason}
+        </if>
+        <if test="map.wxappRefuser != null and map.wxappRefuser != ''">
+            and tot.wxapp_refuser = #{map.wxappRefuser}
+        </if>
+        <if test="map.ownerIsValid != null">
+            and tot.owner_is_valid = #{map.ownerIsValid}
+        </if>
+        <if test="map.isVerify != null">
+            and tot.is_verify = #{map.isVerify}
+        </if>
+    </select>
 </mapper>

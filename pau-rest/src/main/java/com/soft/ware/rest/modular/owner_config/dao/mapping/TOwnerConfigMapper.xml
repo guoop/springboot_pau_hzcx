@@ -16,4 +16,37 @@
         <result column="order_phone" property="orderPhone" />
     </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, owner_id AS ownerId, is_delivery AS isDelivery, is_self_pickup AS isSelfPickup, is_reach_pay AS isReachPay, delivery_money AS deliveryMoney, delivery_less_money AS deliveryLessMoney, delivery_great_money AS deliveryGreatMoney, delivery_distance AS deliveryDistance, order_phone AS orderPhone
+    </sql>
+    <sql id="t_owner_config_alias_columns">
+        toc.owner_id AS ownerId, toc.is_delivery AS isDelivery, toc.is_self_pickup AS isSelfPickup, toc.is_reach_pay AS isReachPay, toc.delivery_money AS deliveryMoney, toc.delivery_less_money AS deliveryLessMoney, toc.delivery_great_money AS deliveryGreatMoney, toc.delivery_distance AS deliveryDistance, toc.order_phone AS orderPhone
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        <include refid="t_owner_config_alias_columns"/>
+        from t_owner_config toc where true
+        <if test="map.id != null and map.id != ''">
+            and toc.id = #{map.id}
+        </if>
+        <if test="map.ownerId != null and map.ownerId != ''">
+            and toc.owner_id = #{map.ownerId}
+        </if>
+        <if test="map.isDelivery != null">
+            and toc.is_delivery = #{map.isDelivery}
+        </if>
+        <if test="map.isSelfPickup != null">
+            and toc.is_self_pickup = #{map.isSelfPickup}
+        </if>
+        <if test="map.isReachPay != null">
+            and toc.is_reach_pay = #{map.isReachPay}
+        </if>
+        <if test="map.deliveryDistance != null">
+            and toc.delivery_distance = #{map.deliveryDistance}
+        </if>
+        <if test="map.orderPhone != null and map.orderPhone != ''">
+            and toc.order_phone = #{map.orderPhone}
+        </if>
+    </select>
 </mapper>

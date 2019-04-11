@@ -18,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, pid, description, sort, is_delete as isDelete, owner_id AS ownerId, status, is_system AS isSystem, category_icon_id
+        id, name, pid, description, sort, is_delete as isDelete, owner_id AS ownerId, status, is_system AS isSystem, category_icon_id AS categoryIconId
     </sql>
 
     <select id="findMaps" resultType="java.util.Map">

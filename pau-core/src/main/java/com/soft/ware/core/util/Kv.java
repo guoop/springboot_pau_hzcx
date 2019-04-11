@@ -1,10 +1,9 @@
 package com.soft.ware.core.util;
+
 import com.soft.ware.core.base.tips.Tip;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class Kv<K,V> extends Tip implements Map<K,V>  {
 
@@ -44,7 +43,7 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
        return this;
     }
 
-    public Kv setAll(Map<K,V> map){
+    public Kv<K,V> setAll(Map<K,V> map){
         this.map.putAll(map);
         return this;
     }
@@ -73,6 +72,35 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
     public Long getLong(K k,Long def){
         Long i = getLong(k);
         return i == null ? def : i;
+    }
+
+    public Boolean getBoolean(K key) {
+        Object o = map.get(key);
+        if (o != null) {
+            return Boolean.valueOf(o.toString());
+        }
+        return null;
+    }
+
+    public Boolean getBoolean(K key, boolean def) {
+        return getBoolean(key) == null ? def : getBoolean(key);
+    }
+
+    public BigDecimal getBigDecimal(K key){
+        Object v = map.get(key);
+        if (v != null) {
+            return BigDecimal.valueOf(Double.valueOf(v.toString()));
+        }
+        return null;
+    }
+
+    public BigDecimal getBigDecimal(K key,BigDecimal def){
+        BigDecimal v = getBigDecimal(key);
+        return v == null ? def : v;
+    }
+
+    public List<?> getList(String key){
+        return (List<?>)map.get(key);
     }
 
     public Map<K,V> toMap(){
@@ -139,6 +167,18 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return map.entrySet();
     }
 
+    public static Kv<String,Object> toKv(Map<String,Object> map){
+        return Kv.obj().setAll(map);
+    }
+
+
+    public static List<Kv<String,Object>> toKvs(List<Map<String,Object>> maps){
+        List<Kv<String, Object>> list = new ArrayList<>();
+        for (Map<String, Object> m : maps) {
+            list.add(toKv(m));
+        }
+        return list;
+    }
 
 
 }

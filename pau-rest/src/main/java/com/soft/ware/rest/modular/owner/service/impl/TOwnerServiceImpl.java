@@ -1,6 +1,9 @@
 package com.soft.ware.rest.modular.owner.service.impl;
 
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.owner.dao.TOwnerMapper;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
@@ -46,5 +49,10 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     public Map<String, Object> findMap(Map<String, Object> map) {
         List<Map<String, Object>> maps = findMaps(map);
         return maps.isEmpty() ? null : maps.get(0);
+    }
+
+    @Override
+    public TOwner find(SessionUser user) throws Exception {
+        return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
     }
 }

@@ -5,6 +5,7 @@ import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.order.model.TOrder;
 
 public interface ImService {
 
@@ -20,6 +21,8 @@ public interface ImService {
      * @param ss
      */
     void syncUsers(SessionUser user, TblOwner owner, TblOwnerStaff... ss) throws Exception;
+
+    void sendNewOrderNotify(SessionUser user, TOrder order);
 
     /**
      * 发送商品添加通知

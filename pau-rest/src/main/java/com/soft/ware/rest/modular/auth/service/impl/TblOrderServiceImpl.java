@@ -190,9 +190,9 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         long current = System.currentTimeMillis();
         //k 商品id， param 下标
         Map<Long, Integer> m = new LinkedHashMap<>();
-        for (int i = 0; i < param.getIds().length; i++) {
+        for (int i = 0; i < param.getIds().size(); i++) {
             for (TblGoods g : list) {
-                if (g.getId().equals(param.getIds()[i])) {
+                if (g.getId().equals(param.getIds())) {
                     m.put(g.getId(), i);
                     g.setPics(g.getPics() == null ? "" : g.getPics());
                     g.setPics(g.getPics().split(",")[0]);

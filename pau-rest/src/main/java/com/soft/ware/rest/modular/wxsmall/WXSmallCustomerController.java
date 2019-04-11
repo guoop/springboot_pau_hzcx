@@ -168,14 +168,14 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/customer/v1/cart")
+    //@RequestMapping(value = "/customer/v1/cart")
     public Object owner(SessionUser user, @RequestParam(required = false,defaultValue = "all") String flag, CartParam param){
         int round = BigDecimal.ROUND_HALF_UP;
 
         String[] units = param.getUnits();
         int[] nums = param.getNums();
 
-        List<TblGoods> all = goodsService.findAll(user, param.getSids());
+        List<TblGoods> all = goodsService.findAll(user, null);
         TblOwner owner = ownerService.find(user.getOwnerId());
         long current = System.currentTimeMillis();
         TblGoods g;
@@ -309,7 +309,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/customer/v1/orders/{no}",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/orders/{no}",method = RequestMethod.POST)
     public Tip orders(SessionUser user,@PathVariable String no,@RequestBody OrderUpdateParam param) throws WxErrorException {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TblOrder order = orderService.findByNo(user, no);

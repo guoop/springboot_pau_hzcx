@@ -1,6 +1,9 @@
 package com.soft.ware.rest.modular.wx_app.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.wx_app.dao.SWxAppMapper;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
@@ -38,6 +41,11 @@ public class SWxAppServiceImpl extends BaseService<SWxAppMapper,SWxApp> implemen
     @Override
     public List<Map<String, Object>> findMaps(Map<String,Object> map) {
         return mapper.findMap(map);
+    }
+
+    @Override
+    public SWxApp find(SessionUser user) throws Exception {
+        return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), SWxApp.class);
     }
 
 }

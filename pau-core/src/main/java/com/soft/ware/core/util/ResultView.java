@@ -43,7 +43,7 @@ public class ResultView extends Kv<String,Object> {
     }
 
 
-    public ResultView remove(String key,String... keys){
+    public ResultView del(String key,String... keys){
         Map<String,Object> map = (Map<String, Object>)get(key);
         if (map != null) {
             for (String s : keys) {

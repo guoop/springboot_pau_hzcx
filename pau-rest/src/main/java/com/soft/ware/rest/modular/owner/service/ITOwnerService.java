@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.owner.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 
@@ -24,4 +25,6 @@ public interface ITOwnerService extends IService<TOwner> {
     List<Map<String,Object>> findMaps(Map<String,Object> map);
 
     Map<String,Object> findMap(Map<String,Object> map);
+
+    TOwner find(SessionUser user) throws Exception;
 }

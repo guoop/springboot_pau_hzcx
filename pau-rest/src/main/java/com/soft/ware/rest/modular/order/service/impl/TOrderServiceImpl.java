@@ -51,4 +51,47 @@ public class TOrderServiceImpl extends ServiceImpl<TOrderMapper, TOrder> impleme
         return maps.isEmpty() ? null : maps.get(0);
     }
 
+
+
+
+
+
+/*
+    @Override
+    public WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order){
+        StringBuilder goodsName = new StringBuilder();
+        String[] gs = order.getGoods().split(",");
+        int i = 0;
+        do {
+            String[] s = gs[i].split("__");
+            goodsName.append(",");
+            goodsName.append(s[2]);
+            if (i == 2) {
+                //最多拼接三个
+                break;
+            }
+            i++;
+        } while (i < gs.length && i < 3);
+        if (gs.length > 3) {
+            goodsName.append("...共").append(gs.length).append("种商品");
+        }
+        ArrayList<WxMaTemplateData> data = Lists.newArrayList();
+        data.add(new WxMaTemplateData("keyword1", order.getOrderNo()));// 订单编号
+        data.add(new WxMaTemplateData("keyword2", DateUtil.format(order.getCreateTime(), WXContants.date_format)));// 下单时间
+        data.add(new WxMaTemplateData("keyword3", order.getPayMoney().setScale(2, WXContants.big_decimal_sale) + ""));// 订单金额
+        data.add(new WxMaTemplateData("keyword4", goodsName.toString()));// 商品名称
+        data.add(new WxMaTemplateData("keyword5", order.getConsigneeName() + ' ' + order.getConsigneeMobile() + ' ' + order.getConsigneeAddress()));// 收货地址
+        WxMaTemplateMessage msg = WxMaTemplateMessage.builder()
+                .templateId(templateID)
+                .formId(fromID)
+                .toUser(order.getCreatedBy())
+                .page("pages/mine/index")
+                .data(data)
+                .build();
+        return msg;
+    }
+*/
+
+
+
 }

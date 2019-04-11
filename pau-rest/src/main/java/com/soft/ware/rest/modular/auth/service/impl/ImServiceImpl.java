@@ -12,6 +12,7 @@ import com.soft.ware.rest.modular.auth.service.ImService;
 import com.soft.ware.rest.modular.auth.service.ImUserService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerGroupsService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.order.model.TOrder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,12 +65,18 @@ public class ImServiceImpl implements ImService {
      * @param user
      * @param order
      */
+    @Deprecated
     @Override
     public void sendNewOrderNotify(SessionUser user, TblOrder order){
         Kv<String, Object> body = Kv.obj().set("code","new_order");
         sendNotify(user, body,"新订单到达");
     }
 
+    @Override
+    public void sendNewOrderNotify(SessionUser user, TOrder order){
+        Kv<String, Object> body = Kv.obj().set("code","new_order");
+        sendNotify(user, body,"新订单到达");
+    }
 
     /**
      * 发送添加商品通知

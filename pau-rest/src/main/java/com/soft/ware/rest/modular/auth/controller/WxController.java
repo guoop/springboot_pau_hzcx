@@ -39,12 +39,12 @@ public class WxController extends BaseController {
      * @return
      */
     @RequestMapping(value = {"/customer/v1/wx_identifier"})
-    public Object wx_identifier(String code, HttpServletRequest request) throws Exception {
+    public ResultView wx_identifier(String code, HttpServletRequest request) throws Exception {
         String appId = WXUtils.getAppId(request);
         Map<String, Object> app = appService.findMap(Kv.by("appId", appId));
-        Map<String, Object> owner = ownerService.findMap(Kv.by("id",app.get("owner_id")));
+        Map<String, Object> owner = ownerService.findMap(Kv.by("id",app.get("ownerId")));
         WxMaService service = hzcxWxService.getWxMaService(BeanMapUtils.toObject(app, SWxApp.class));
-        return renderOpenId(service, appId, code).set("owner", owner).merge("owner", app).remove("owner", "app_secret");
+        return renderOpenId(service, appId, code).set("owner", owner).merge("owner", app).del("owner", "app_secret");
     }
 
     /**

@@ -23,6 +23,9 @@
         <if test="map.id != null and map.id !=''">
             and swa.id = #{map.id}
         </if>
+        <if test="map.appId != null and map.appId !=''">
+            and swa.app_id = #{map.appId}
+        </if>
         <if test="map.ownerId != null and map.ownerId !=''">
             and swa.owner_id = #{map.ownerId}
         </if>

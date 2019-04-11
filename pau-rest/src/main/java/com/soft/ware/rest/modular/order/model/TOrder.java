@@ -1,6 +1,5 @@
 package com.soft.ware.rest.modular.order.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -24,6 +23,51 @@ import java.util.Date;
 public class TOrder extends Model<TOrder> {
 
     private static final long serialVersionUID = 1L;
+
+
+    //：微信小程序；
+    public static int SOURCE_0 = 0;
+    //：收银机；
+    public static int SOURCE_1 = 1;
+    //：到店自取订单）
+    public static int SOURCE_2 = 2;
+
+    //：在线支付；
+    public static Integer MONEY_CHANNEL_0 = 0;
+    //：货到付款；
+    public static Integer MONEY_CHANNEL_1 = 1;
+    //：现金；
+    public static Integer MONEY_CHANNEL_2 = 2;
+    //：微信；
+    public static Integer MONEY_CHANNEL_3 = 3;
+    //：支付宝；
+    public static Integer MONEY_CHANNEL_4 = 4;
+    //：银联）
+    public static Integer MONEY_CHANNEL_5 = 5;
+    //：配送中；
+    public static Integer STATUS_2 = 2;
+    //：待商家确认（在线支付支付成功、货到付款下单成功）；
+    public static Integer STATUS_1 = 1;
+    //：待付款（新建订单）；
+    public static Integer STATUS_0 = 0;
+    //：已完成（在线支付配送完成；货到付款付款功能）；
+    public static Integer STATUS_3 = 3;
+    //：商家确认接单（主要用于配送前及时提醒买家商家已接单））
+    public static Integer STATUS_10 = 10;
+    //手动取消
+    public static Integer STATUS_01 = -1;
+    //过期失效
+    public static Integer STATUS_02 = -2;
+    //已删除
+    public static Integer STATUS_03 = -3;
+    //-
+    public static String CANCEL_BY_01 = "-1";
+    //：处理中；
+    public static Integer REFUND_STATUS_0 = 0;
+    //：成功；
+    public static Integer REFUND_STATUS_1 = 1;
+    //：失败）
+    public static Integer REFUND_STATUS_2 = 2;
 
     /**
      * 自增主键
@@ -147,11 +191,11 @@ public class TOrder extends Model<TOrder> {
         return  this;
     }
 
-    public String gevoidNo() {
+    public String getOrderNo() {
         return orderNo;
     }
 
-    public TOrder sevoidNo(String orderNo) {
+    public TOrder setOrderNo(String orderNo) {
         this.orderNo = orderNo;
         return this;
     }

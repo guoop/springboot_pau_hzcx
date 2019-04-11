@@ -1,6 +1,6 @@
 package com.soft.ware.rest.modular.goods.service.impl;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @since 2019-04-08
  */
 @Service
-public class TGoodsServiceImpl extends ServiceImpl<TGoodsMapper, TGoods> implements ITGoodsService {
+public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> implements ITGoodsService {
 
     @Resource
     private TGoodsMapper mapper;
@@ -35,8 +35,15 @@ public class TGoodsServiceImpl extends ServiceImpl<TGoodsMapper, TGoods> impleme
     }
 
     @Override
-    public List<Map<String,Object>> find(Map<String, Object> map) {
-        return mapper.find(map);
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMaps(map);
     }
+
+    @Override
+    public Map<String, Object> findMap(Map<String, Object> map) {
+        List<Map<String, Object>> maps = findMaps(map);
+        return maps.isEmpty() ? null : maps.get(0);
+    }
+
 
 }

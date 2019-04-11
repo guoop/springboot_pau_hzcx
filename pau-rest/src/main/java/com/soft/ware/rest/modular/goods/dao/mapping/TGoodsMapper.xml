@@ -23,15 +23,22 @@
         <result column="top_time" property="topTime" />
         <result column="is_promotion" property="isPromotion" />
         <result column="storage_id" property="storageId" />
-        <result column="spec_id" property="specId" />
     </resultMap>
 
+    <resultMap id="spec" type="map" autoMapping="true">
+        <id column="id" property="id"/>
+    </resultMap>
+    <resultMap id="GoodsMap" type="map" autoMapping="true">
+        <id column="id" property="id"/>
+        <collection property="specs" javaType="arraylist" columnPrefix="spec_" resultMap="spec"/>
+    </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, category_id AS categoryId, name, code, unit_id AS unitId, price, pics, description, created_time AS createdTime, creater, owner_id AS ownerId, status, sells, sort, is_delete AS isDelete, source, top_time AS topTime, is_promotion AS isPromotion, storage_id AS storageId, spec_id AS specId
+        id, category_id AS categoryId, name, code, unit_id AS unitId, price, pics, description, created_time AS createdTime, creater, owner_id AS ownerId, status, sells, sort, is_delete AS isDelete, source, top_time AS topTime, is_promotion AS isPromotion, storage_id AS storageId
     </sql>
     <sql id="t_goods_alias_columns">
-        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') createdTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.is_promotion isPromotion,g.storage_id storageId,g.spec_id specId
+        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') createdTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.storage_id storageId
+        <!--,g.is_promotion isPromotion--> <!--删掉了 需要配合 t_promotion 才有意义-->
     </sql>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
@@ -45,11 +52,20 @@
         </if>
     </sql>
 
-    <select id="findPage" resultType="java.util.Map">
+    <select id="findPage" resultMap="GoodsMap">
         select
         g.id,
         <include refid="t_goods_alias_columns"/>
-        from t_goods g left join t_unit u on u.id = g.unit_id where g.owner_id = #{owner} and g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
+        ,tp.money promotionMoney,DATE_FORMAT(tp.start_time,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(tp.end_time,'%Y-%m-%d %H:%i:%s') endTime
+        ,(g.is_promotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
+        ,u.name measurementUnit
+        ,ts.name spec_name, ts.id spec_id
+        from t_goods g
+        left join t_unit u on u.id = g.unit_id
+        left join t_promotion tp on tp.goods_id = g.id
+        left join t_specs ts on ts.goods_id = g.id
+        where true
+        and g.owner_id = #{owner} and g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
         <include refid="findPageCondition"/>
         order by sort asc
         <include refid="limit"/>
@@ -58,14 +74,24 @@
         select count(1) from t_goods g where g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
         <include refid="findPageCondition"/>
     </select>
-    <select id="find" resultType="java.util.Map">
+    <select id="findMaps" resultType="java.util.Map" resultMap="GoodsMap">
         select
         g.id,
         <include refid="t_goods_alias_columns"/>
+        ,tp.money promotionMoney,DATE_FORMAT(tp.start_time,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(tp.end_time,'%Y-%m-%d %H:%i:%s') endTime
+        ,(g.is_promotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
         ,u.name measurementUnit
-        from t_goods g left join t_unit u on u.id = g.unit_id where true
+        ,ts.name spec_name, ts.id spec_id
+        from t_goods g
+        left join t_unit u on u.id = g.unit_id
+        left join t_promotion tp on tp.goods_id = g.id
+        left join t_specs ts on ts.goods_id = g.id
+        where true
         <if test="map.id != null and map.id != ''">
         and g.id = #{map.id}
+        </if>
+        <if test="map.ids != null and map.ids != ''">
+            and g.id = ${map.ids}
         </if>
     </select>
 

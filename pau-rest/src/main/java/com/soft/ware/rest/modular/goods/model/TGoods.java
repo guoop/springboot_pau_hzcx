@@ -21,6 +21,29 @@ public class TGoods extends Model<TGoods> {
 
     private static final long serialVersionUID = 1L;
 
+    //：未上架；
+    public static Integer status_0 = 0;
+    //：销售中；
+    public static Integer status_1 = 1;
+    //：已下架）
+    public static Integer status_2 = 2;
+    //：未删除；
+    public static Integer is_delete_0 = 0;
+    //：已删除）
+    public static Integer is_delete_1 = 1;
+    //：扫码添加；
+    public static Integer source_1 = 1;
+    //：小程序手工添加；
+    public static Integer source_2 = 2;
+    //：后台手工添加；
+    public static Integer source_3 = 3;
+    //：导入）
+    public static Integer source_4 = 4;
+    //：否；
+    public static Integer is_promotion_0 = 0;
+    //：是）
+    public static Integer is_promotion_1 = 1;
+
     /**
      * 主键
      */
@@ -105,11 +128,6 @@ public class TGoods extends Model<TGoods> {
      */
     @TableField("storage_id")
     private String storageId;
-    /**
-     * 规格表唯一id
-     */
-    @TableField("spec_id")
-    private String specId;
 
 
     public String getId() {
@@ -265,14 +283,6 @@ public class TGoods extends Model<TGoods> {
         this.storageId = storageId;
     }
 
-    public String getSpecId() {
-        return specId;
-    }
-
-    public void setSpecId(String specId) {
-        this.specId = specId;
-    }
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -300,7 +310,6 @@ public class TGoods extends Model<TGoods> {
         ", topTime=" + topTime +
         ", isPromotion=" + isPromotion +
         ", storageId=" + storageId +
-        ", specId=" + specId +
         "}";
     }
 }
