@@ -336,7 +336,7 @@ public class WXSmallController extends BaseController {
 	 * 
 	 * @param
 	 */
-	@RequestMapping("v1/category/list")
+	//@RequestMapping("v1/category/list")
 	public Object getCategoryList(SessionUser user) throws Exception {
 		List<TblCategory> list = categoryService.findAllCategory(user);
 		return BeanMapUtils.toMap(true, list);

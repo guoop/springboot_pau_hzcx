@@ -21,7 +21,7 @@ import java.util.Map;
 public interface TOrderMapper extends BaseMapper<TOrder> {
 
 
-    List<TOrder> selectOrderMapperListByMap(Map<String,Object> map);
+    List<TOrder> selectOrderListByMap(Map<String,Object> map);
 
     Long findListCount(@Param("user") SessionUser user, @Param("param") OrderPageParam param, @Param("source") int... source);
 

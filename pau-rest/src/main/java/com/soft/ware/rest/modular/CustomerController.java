@@ -18,7 +18,7 @@ import com.soft.ware.rest.modular.banner.model.TBanner;
 import com.soft.ware.rest.modular.banner.service.TBannerService;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
-import com.soft.ware.rest.modular.order.service.IvoidService;
+import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.question.model.TQuestion;
 import com.soft.ware.rest.modular.question.service.ITQuestionService;
@@ -53,7 +53,7 @@ public class CustomerController extends BaseController {
     private ISWxAppService appService;
 
     @Autowired
-    private IvoidService orderService;
+    private ITOrderService orderService;
 
     @Autowired
     private ITAddressService addressService;

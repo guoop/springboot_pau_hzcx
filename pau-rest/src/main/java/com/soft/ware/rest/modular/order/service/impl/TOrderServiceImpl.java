@@ -30,7 +30,7 @@ public class TOrderServiceImpl extends ServiceImpl<TOrderMapper, TOrder> impleme
 
     @Override
     public List<TOrder> selectOrderListByMap(Map<String, Object> param) {
-        return orderMapper.selecvOrderMapperListByMap(param);
+        return orderMapper.selectOrderListByMap(param);
     }
 
     @Override

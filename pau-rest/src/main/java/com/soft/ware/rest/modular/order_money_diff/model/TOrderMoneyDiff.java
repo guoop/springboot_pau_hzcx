@@ -12,7 +12,7 @@ import java.util.Date;
   * 差价表
 */
 @TableName("t_order_money_diff")
-public class voidMoneyDiff extends Model<voidMoneyDiff> {
+public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +57,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return id;
     }
 
-    public voidMoneyDiff setId(String id){
+    public TOrderMoneyDiff setId(String id){
         this.id = id;
         return this;
     }
@@ -67,7 +67,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return payOrderNo;
     }
 
-    public voidMoneyDiff setPayOrderNo( String payOrderNo){
+    public TOrderMoneyDiff setPayOrderNo( String payOrderNo){
         this.payOrderNo = payOrderNo;
         return this;
     }
@@ -75,15 +75,15 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return ownerId;
     }
 
-    public voidMoneyDiff setOwnerId( String ownerId){
+    public TOrderMoneyDiff setOwnerId( String ownerId){
         this.ownerId = ownerId;
         return this;
     }
-    public String gevoidNo(){
+    public String getOrderNo(){
         return orderNo;
     }
 
-    public voidMoneyDiff sevoidNo( String orderNo){
+    public TOrderMoneyDiff setOrderNo( String orderNo){
         this.orderNo = orderNo;
         return this;
     }
@@ -91,7 +91,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return money;
     }
 
-    public voidMoneyDiff setMoney( BigDecimal money){
+    public TOrderMoneyDiff setMoney( BigDecimal money){
         this.money = money;
         return this;
     }
@@ -99,7 +99,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return moneyDiff;
     }
 
-    public voidMoneyDiff setMoneyDiff( BigDecimal moneyDiff){
+    public TOrderMoneyDiff setMoneyDiff( BigDecimal moneyDiff){
         this.moneyDiff = moneyDiff;
         return this;
     }
@@ -107,7 +107,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return pic;
     }
 
-    public voidMoneyDiff setPic( String pic){
+    public TOrderMoneyDiff setPic( String pic){
         this.pic = pic;
         return this;
     }
@@ -115,7 +115,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return createdTime;
     }
 
-    public voidMoneyDiff setCreatedTime( Date createdTime){
+    public TOrderMoneyDiff setCreatedTime( Date createdTime){
         this.createdTime = createdTime;
         return this;
     }
@@ -123,7 +123,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return creater;
     }
 
-    public voidMoneyDiff setCreater( String creater){
+    public TOrderMoneyDiff setCreater( String creater){
         this.creater = creater;
         return this;
     }
@@ -131,7 +131,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return status;
     }
 
-    public voidMoneyDiff setStatus( Integer status){
+    public TOrderMoneyDiff setStatus( Integer status){
         this.status = status;
         return this;
     }
@@ -139,7 +139,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return payTime;
     }
 
-    public voidMoneyDiff setPayTime( Date payTime){
+    public TOrderMoneyDiff setPayTime( Date payTime){
         this.payTime = payTime;
         return this;
     }
@@ -147,7 +147,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return payResponse;
     }
 
-    public voidMoneyDiff setPayResponse( String payResponse){
+    public TOrderMoneyDiff setPayResponse( String payResponse){
         this.payResponse = payResponse;
         return this;
     }
@@ -155,7 +155,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
         return isDelete;
     }
 
-    public voidMoneyDiff setIsDelete( Integer isDelete){
+    public TOrderMoneyDiff setIsDelete( Integer isDelete){
         this.isDelete = isDelete;
         return this;
     }
@@ -169,7 +169,7 @@ public class voidMoneyDiff extends Model<voidMoneyDiff> {
 
     @Override
     public String toString() {
-        return "voidMoneyDiff{" +
+        return "TOrderMoneyDiff{" +
         "id=" + id +
             ", payOrderNo=" + payOrderNo +
             ", ownerId=" + ownerId +
