@@ -13,10 +13,11 @@
     </resultMap>
 
     <sql id="s_wx_app_alias_column">
-        swa.id,swa.owner_id,swa.app_id,swa.app_secret,swa.app_name,swa.app_qr
+        swa.owner_id ownerId,swa.app_id appId,swa.app_secret appSecret,swa.app_name appName,swa.app_qr appQr
     </sql>
     <select id="findMap" resultType="java.util.Map">
         select
+        id,
         <include refid="s_wx_app_alias_column"/>
         from s_wx_app swa where true
         <if test="map.id != null and map.id !=''">

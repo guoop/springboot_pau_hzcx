@@ -259,12 +259,8 @@ public class CustomerController extends BaseController {
      * @param user
      * @param question
      */
-    @RequestMapping(value = "/customer/v1/question",method = RequestMethod.POST)
+    @RequestMapping(value = "question",method = RequestMethod.POST)
     public Tip question(SessionUser user,@RequestBody TQuestion question){
-        question.setOpenId(user.getOpenId());
-        question.setOwner(user.getOwnerId());
-        question.setCreatedAt(new Date());
-
         boolean b = questionService.add(user,question);
         return render(b);
     }

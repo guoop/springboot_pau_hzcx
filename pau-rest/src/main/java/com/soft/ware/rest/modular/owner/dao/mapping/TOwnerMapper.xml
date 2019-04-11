@@ -21,10 +21,11 @@
         id, name, phone, address, description, video_url AS videoUrl, begin_time AS beginTime, end_time AS endTime, default_desc AS defaultDesc, default_refund_reason AS defaultRefundReason, create_time AS createTime
     </sql>
     <sql id="t_owner_alias_columns">
-        w.id,w.name,w.phone,w.address,w.description,w.video_url,w.begin_time,w.end_time,w.default_desc,w.default_refund_reason,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') create_time
+        w.name ,w.phone ,w.address ,w.description ,w.video_url videoUrl,w.begin_time beginTime,w.end_time endTime,w.default_desc defaultDesc,w.default_refund_reason defaultRefundReason,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') createTime
     </sql>
     <select id="findMap" resultType="java.util.Map">
         select
+        id,
         <include refid="t_owner_alias_columns"/>
         from t_owner w where true
         <if test="map.id != null and map.id != ''">

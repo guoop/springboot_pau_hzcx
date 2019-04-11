@@ -10,7 +10,7 @@
         <result column="address" property="address" />
         <result column="description" property="description" />
         <result column="created_at" property="createdAt" />
-        <result column="owner" property="owner" />
+        <result column="owner_id" property="ownerId" />
         <result column="open_id" property="openId" />
         <result column="account_info" property="accountInfo" />
         <result column="system_info" property="systemInfo" />
@@ -21,7 +21,7 @@
         id, name, phone, address, description, created_at AS createdAt, owner, open_id AS openId, account_info AS accountInfo, system_info AS systemInfo
     </sql>
     <sql id="t_question_alias_columns">
-        tq.name,tq.phone,tq.address,tq.description,tq.created_at,tq.owner,tq.open_id,tq.account_info,tq.system_info
+        tq.name, tq.phone, tq.address, tq.description, tq.created_at, tq.owner_id, tq.open_id, tq.account_info, tq.system_info
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select
@@ -33,29 +33,11 @@
         <if test="map.name != null and map.name != ''">
             and tq.name = #{map.name}
         </if>
-        <if test="map.phone != null and map.phone != ''">
-            and tq.phone = #{map.phone}
-        </if>
-        <if test="map.address != null and map.address != ''">
-            and tq.address = #{map.address}
-        </if>
-        <if test="map.description != null and map.description != ''">
-            and tq.description = #{map.description}
-        </if>
-        <if test="map.createdAt != null">
-            and tq.created_at = #{map.createdAt}
-        </if>
-        <if test="map.owner != null and map.owner != ''">
-            and tq.owner = #{map.owner}
+        <if test="map.ownerId != null and map.ownerId != ''">
+            and tq.owner_id = #{map.ownerId}
         </if>
         <if test="map.openId != null and map.openId != ''">
             and tq.open_id = #{map.openId}
-        </if>
-        <if test="map.accountInfo != null and map.accountInfo != ''">
-            and tq.account_info = #{map.accountInfo}
-        </if>
-        <if test="map.systemInfo != null and map.systemInfo != ''">
-            and tq.system_info = #{map.systemInfo}
         </if>
     </select>
 </mapper>

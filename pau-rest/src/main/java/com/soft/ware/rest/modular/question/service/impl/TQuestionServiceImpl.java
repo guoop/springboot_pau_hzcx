@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.question.service.impl;
 
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.question.dao.TQuestionMapper;
 import com.soft.ware.rest.modular.question.model.TQuestion;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +42,11 @@ public class TQuestionServiceImpl extends BaseService<TQuestionMapper,TQuestion>
 
     @Override
     public boolean add(SessionUser user,TQuestion question) {
+        question.setId(IdGenerator.getId());
+        question.setCreatedAt(new Date());
         question.setOpenId(user.getOpenId());
-        question.setOwner(user.getOwnerId());//todo yancc owner_id
-        return insert(question);
+        question.setOwnerId(user.getOwnerId());
+        return mapper.insert(question) == 1;
     }
 
 }

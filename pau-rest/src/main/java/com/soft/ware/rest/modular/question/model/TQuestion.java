@@ -2,7 +2,9 @@ package com.soft.ware.rest.modular.question.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -23,6 +25,7 @@ public class TQuestion extends Model<TQuestion> {
     /**
      * 主键id
      */
+    @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
      * 收货地址-收货人姓名
@@ -48,7 +51,8 @@ public class TQuestion extends Model<TQuestion> {
     /**
      * 店铺唯一标识
      */
-    private String owner;
+    @TableField("owner_id")
+    private String ownerId;
     /**
      * 获取的反馈人OpenID
      */
@@ -114,12 +118,12 @@ public class TQuestion extends Model<TQuestion> {
         this.createdAt = createdAt;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public TQuestion setOwnerId( String ownerId) {
+        this.ownerId = ownerId;return this;
     }
 
     public String getOpenId() {
@@ -160,7 +164,7 @@ public class TQuestion extends Model<TQuestion> {
         ", address=" + address +
         ", description=" + description +
         ", createdAt=" + createdAt +
-        ", owner=" + owner +
+        ", ownerId=" + ownerId +
         ", openId=" + openId +
         ", accountInfo=" + accountInfo +
         ", systemInfo=" + systemInfo +
