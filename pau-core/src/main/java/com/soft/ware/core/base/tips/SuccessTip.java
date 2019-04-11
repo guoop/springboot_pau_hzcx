@@ -28,7 +28,7 @@ public class SuccessTip extends Tip {
 	public SuccessTip(Object data){
 		super.code = BaseController.SUCCESS;
 		super.msg = "操作成功" ;
-        super.data = data;
+		super.data = data;
 	}
 	
 	

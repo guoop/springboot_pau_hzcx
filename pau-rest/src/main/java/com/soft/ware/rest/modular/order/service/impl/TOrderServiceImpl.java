@@ -51,6 +51,24 @@ public class TOrderServiceImpl extends ServiceImpl<TOrderMapper, TOrder> impleme
         return maps.isEmpty() ? null : maps.get(0);
     }
 
+    @Override
+    public List<Map<String, Object>> selectOrdersListByMap(Map<String, Object> map) {
+
+        List<Map<String,Object>> listMap = orderMapper.selectOrdersListByMap(map);
+        List<Map<String,Object>> resultList = new ArrayList<>();
+        if(listMap.size() > 0){
+            for (int i = 0; i < listMap.size(); i++) {
+                Map<String,Object>  resultMap = listMap.get(i);
+                if(resultMap.get("source").toString().equals("2")){
+                   resultMap.remove("address");
+                   resultMap.remove("addressId");
+                }
+                resultList.add(resultMap);
+            }
+        }
+        return resultList;
+    }
+
 
 
 

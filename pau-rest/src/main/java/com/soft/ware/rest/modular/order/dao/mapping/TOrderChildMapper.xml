@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.order.dao.TOrderChildMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order.model.TOrderChild">
+        <id column="id" property="id" />
+        <result column="order_id" property="orderId" />
+        <result column="goods_id" property="goodsId" />
+        <result column="goods_name" property="goodsName" />
+        <result column="goods_price" property="goodsPrice" />
+        <result column="goods_pic" property="goodsPic" />
+        <result column="goods_spec_id" property="goodsSpecId" />
+        <result column="goods_num" property="goodsNum" />
+        <result column="goods_unit_id" property="goodsUnitId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_id AS orderId, goods_id AS goodsId, goods_name AS goodsName, goods_price AS goodsPrice, goods_pic AS goodsPic, goods_spec_id AS goodsSpecId, goods_num AS goodsNum, goods_unit_id AS goodsUnitId
+    </sql>
+
+</mapper>

@@ -8,6 +8,8 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.order.model.TOrderChild;
+import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.TOrderAppService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +31,11 @@ public class TOrderController extends BaseController {
     @Autowired
     private ITOrderService tOrderService;
     /**
+     * 子订单服务
+     */
+    @Autowired
+    private ITOrderChildService itOrderChildService;
+    /**
      * 线下订单
      */
     @Autowired
@@ -35,18 +43,33 @@ public class TOrderController extends BaseController {
 
     /**
      * 通过订单状态查询订单列表
-     *
      * @param param (订单状态）,page（页码）
      * @return owner/v2/order 修改 owner/v1/orders/list
      */
     @RequestMapping(value = "/orders/list",method = RequestMethod.GET)
-    public Tip gevoidList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
+    public Tip getOrderList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
         param.put("owner_id", sessionUser.getOwnerId());
-        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString())  );
         param.put("page",0);
         //param.put("page",Integer.valueOf(param.get("page").toString()));
-        List<TOrder> list = tOrderService.selectOrderListByMap(param);
-        if (list.size() > 0) {
+        //List<TOrder> list = tOrderService.selectOrderListByMap(param);
+        List<Map<String,Object>> listMap = tOrderService.selectOrdersListByMap(param);
+        if (listMap.size() > 0) {
+            return new SuccessTip(listMap);
+        }
+        return new ErrorTip();
+    }
+
+    /**
+     *
+     * @param param orderNo 订单编号.orderId ,page 当前页
+     * @param sessionUser
+     * @return
+     */
+    public Tip getChildList(@RequestParam Map<String,Object> param ,SessionUser sessionUser){
+        param.put("owner_id",sessionUser.getOwnerId());
+        List<TOrderChild> list = itOrderChildService.selectOrderChildListByMap(param);
+        if(list.size() > 0){
             return new SuccessTip(list);
         }
         return new ErrorTip();

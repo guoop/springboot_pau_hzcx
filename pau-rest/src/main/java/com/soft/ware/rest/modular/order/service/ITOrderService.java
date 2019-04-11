@@ -28,5 +28,7 @@ public interface ITOrderService extends IService<TOrder> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
+    List<Map<String,Object>> selectOrdersListByMap(Map<String,Object> map);
+
    // WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order);
 }

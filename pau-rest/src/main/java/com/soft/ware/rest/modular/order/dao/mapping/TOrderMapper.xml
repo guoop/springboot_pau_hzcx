@@ -26,18 +26,22 @@
         <result column="remark" property="remark" />
     </resultMap>
 
+
+
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_no , source, pickup_no , pickup_time , money_channel , order_money , run_money , pay_money , pay_time, pay_response , create_time , creater, settlementer, owner_id , address_id , goods_id , version, status, remark
+        id, order_no as orderNo , source, pickup_no as pickupNo , pickup_time as pickupTime , money_channel as,moneyChannel , order_money as orderMoney, run_money as runMoney, pay_money as payMoney, pay_time as payTime , pay_response as payResponse, create_time as createTime, creater, settlementer, owner_id as ownerId, address_id as addressId, goods_id as goodsId, version, status, remark
     </sql>
+
 
     <sql id="Condition">
 
         <if test="id != null and id != ''">
             and id = #{id}
         </if>
-        <if test="order_no != null and order_no != ''">
-            and order_no = #{order_no}
+        <if test="orderNo != null and orderNo != ''">
+            and order_no = #{orderNo}
         </if>
         <if test="version != null and version != ''">
             and version = #{version}
@@ -98,7 +102,7 @@
 
 
     <sql id="t_order_alias_columns">
-        a.order_no,a.source,a.pickup_no,a.pickup_time,a.money_channel,a.order_money,a.run_money,a.pay_money,a.pay_time,a.pay_response,a.create_time,a.creater,a.settlementer,a.owner_id,a.address_id,a.goods_id,a.type,a.version,a.status,a.remark
+        a.order_no as orderNo,a.source,a.pickup_no as pickupNo,a.pickup_time as pickupTime,a.money_channel moneyChannel,a.order_money as orderMoney,a.run_money as runMoney,a.pay_money as payMoney,a.pay_time as payTime,a.pay_response as payResponse,a.create_time as createTime,a.creater,a.settlementer,a.owner_id as ownerId,a.address_id as addressId,a.goods_id as goodsId,a.type,a.version,a.status as ordrerStatus,a.remark
     </sql>
     <select id="findMaps" resultType="java.util.Map">
     select
@@ -138,5 +142,29 @@
     <if test="map.status != null and map.status != ''">
         and a.status = #{map.status}
     </if>
+    </select>
+
+    <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
+
+
+        select  <include refid="t_order_alias_columns"/>,b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
+        d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
+            from t_order a
+            LEFT JOIN t_address b
+            on a.address_id = b.id
+            LEFT JOIN t_refund c
+            on a.order_no = c.order_no
+            LEFT JOIN t_order_money_diff d
+            on a.order_no = d.order_no
+            where 1=1
+            <if test="status != null and status != ''">
+                and a.status = #{status}
+            </if>
+            <if test="owner_id != null and owner_id != ''">
+                and a.owner_id = #{owner_id}
+            </if>
+            <if test="page != null and page != ''">
+                limit #{page},20
+            </if>
     </select>
 </mapper>
