@@ -19,5 +19,20 @@
     <sql id="Base_Column_List">
         id, order_id AS orderId, goods_id AS goodsId, goods_name AS goodsName, goods_price AS goodsPrice, goods_pic AS goodsPic, goods_spec_id AS goodsSpecId, goods_num AS goodsNum, goods_unit_id AS goodsUnitId
     </sql>
+    <sql id="t_order_child_alias_columns">
+        toc.order_id AS orderId, toc.goods_id AS goodsId, toc.goods_name AS goodsName, toc.goods_price AS goodsPrice, toc.goods_pic AS goodsPic, toc.goods_spec_id AS goodsSpecId, toc.goods_num AS goodsNum, toc.goods_unit_id AS goodsUnitId
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="t_order_child_alias_columns"/>
+        from t_order_child toc where true
+        <if test="map.id != null and map.id != ''">
+            and toc.id = #{map.id}
+        </if>
+        <if test="map.orderId != null and map.orderId != ''">
+            and toc.order_id = #{map.orderId}
+        </if>
+    </select>
 
 </mapper>

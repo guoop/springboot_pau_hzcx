@@ -99,18 +99,36 @@
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
+    <sql id="map_limit">
+        <if test="map != null and map.page != null">
+            limit #{map.page.size} offset #{map.page.offset}
+        </if>
+    </sql>
+
 
 
     <sql id="t_order_alias_columns">
-        a.order_no as orderNo,a.source,a.pickup_no as pickupNo,a.pickup_time as pickupTime,a.money_channel moneyChannel,a.order_money as orderMoney,a.run_money as runMoney,a.pay_money as payMoney,a.pay_time as payTime,a.pay_response as payResponse,a.create_time as createTime,a.creater,a.settlementer,a.owner_id as ownerId,a.address_id as addressId,a.goods_id as goodsId,a.type,a.version,a.status as ordrerStatus,a.remark
+        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
     </sql>
-    <select id="findMaps" resultType="java.util.Map">
+    <resultMap id="orderMap" type="map" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="child_goodsId"/>
+        <result column="child_goodsPic"/>
+        <result column="child_goodsNum"/>
+        <result column="child_goodsPrice"/>
+        <result column="child_goodsName"/>
+        <collection property="goods" ofType="map" javaType="list" columnPrefix="child_" autoMapping="true"/>
+    </resultMap>
+    <select id="findMaps" resultType="java.util.Map" resultMap="orderMap">
     select
+    a.id id,
     <include refid="t_order_alias_columns"/>
-    ,b.no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus, b.refund_by as diffRefundBy, b.refund_at as diffRefundAt, b.refund_status as diffRefundStatus, b.refund_response as diffRefundResponse
+    ,b.pay_order_no diffNo,b.money ticketMoney,b.money_diff diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
     ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault,ta.is_delete isDelete,DATE_FORMAT(ta.created_time,'%Y-%m-%d %H:%i:%s') createdTime,ta.creater creater,DATE_FORMAT(ta.deleted_time,'%Y-%m-%d %H:%i:%s') deletedTime
     ,tr.id id,tr.order_no orderNo,tr.reason reason,tr.status status,tr.order_money orderMoney,tr.response response,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') createTime,tr.creater creater
+    ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum
     from t_order a
+    left join t_order_child oc on oc.order_id = a.id
     left join t_order_money_diff b on a.order_no = b.order_no
     left join t_address ta on ta.id = a.address_id
     left join t_refund tr on tr.order_no = a.order_no
@@ -119,16 +137,16 @@
         and a.id = #{map.id}
     </if>
     <if test="map.orderNo != null and map.orderNo != ''">
-        and a.order_no = #{map.order_no}
+        and a.order_no = #{map.orderNo}
     </if>
     <if test="map.source != null and map.source != ''">
         and a.source = #{map.source}
     </if>
     <if test="map.pickupNo != null and map.pickupNo != ''">
-        and a.pickup_no = #{map.pickup_no}
+        and a.pickup_no = #{map.pickupNo}
     </if>
     <if test="map.moneyChannel != null and map.moneyChannel != ''">
-        and a.money_channel = #{map.money_channel}
+        and a.money_channel = #{map.moneyChannel}
     </if>
     <if test="map.creater != null and map.creater != ''">
         and a.creater = #{map.creater}
@@ -142,12 +160,16 @@
     <if test="map.status != null and map.status != ''">
         and a.status = #{map.status}
     </if>
+    <if test="map.soruces != null and map.sources != ''">
+        and a.soruce in ${map.sources}
+    </if>
+    <include refid="map_limit"/>
     </select>
 
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
 
 
-        select  <include refid="t_order_alias_columns"/>,b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
+        select  a.id id,<include refid="t_order_alias_columns"/>,b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
             from t_order a
             LEFT JOIN t_address b

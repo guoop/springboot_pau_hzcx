@@ -397,7 +397,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/customer/v1/wxpay/unifiedorder",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/wxpay/unifiedorder",method = RequestMethod.POST)
     public Object unifiedorder(SessionUser user,@RequestBody UnifiedorderParam param, HttpServletRequest request) {
         if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
             return render(false, "请完善预留手机号");
@@ -438,7 +438,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      * @return
      */
-    @RequestMapping(value = {"/customer/v1/order"},method = RequestMethod.POST)
+    //@RequestMapping(value = {"/customer/v1/order"},method = RequestMethod.POST)
     public Object order(SessionUser user,@RequestBody CartParam param) {
         TblOrder order = orderService.createMiniAppOrder(user, param);
         return render().set("orderNO", order.getNo());

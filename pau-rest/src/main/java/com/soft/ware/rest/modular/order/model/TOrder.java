@@ -70,10 +70,10 @@ public class TOrder extends Model<TOrder> {
     public static Integer REFUND_STATUS_2 = 2;
 
     /**
-     * 自增主键
+     * 主键
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id", type = IdType.UUID)
+    private String id;
     /**
      * 订单编号
      */
@@ -182,13 +182,13 @@ public class TOrder extends Model<TOrder> {
     private String remark;
 
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public TOrder setId(Long id) {
+    public TOrder setId(String id) {
         this.id = id;
-        return  this;
+        return this;
     }
 
     public String getOrderNo() {
@@ -236,11 +236,11 @@ public class TOrder extends Model<TOrder> {
         return this;
     }
 
-    public BigDecimal gevoidMoney() {
+    public BigDecimal getOrderMoney() {
         return orderMoney;
     }
 
-    public TOrder sevoidMoney(BigDecimal orderMoney) {
+    public TOrder setOrderMoney(BigDecimal orderMoney) {
         this.orderMoney = orderMoney;
         return this;
     }
