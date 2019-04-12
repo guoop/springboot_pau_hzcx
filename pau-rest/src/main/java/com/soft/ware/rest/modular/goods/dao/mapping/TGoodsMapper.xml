@@ -33,7 +33,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, category_id AS categoryId, name, code, unit_id AS unitId, price, pics, description, created_time AS createdTime, creater, owner_id AS ownerId, status, sells, sort, is_delete AS isDelete, source, top_time AS topTime, is_promotion AS isPromotion, storage_id AS storageId
+        id, category_id , name, code, unit_id , price, pics, description, DATE_FORMAT(created_time,'%Y-%m-%d %H:%i:%s'), creater, owner_id , status, sells, sort, is_delete , source, top_time , is_promotion , storage_id
     </sql>
     <sql id="t_goods_alias_columns">
         g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') createdTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.storage_id storageId
@@ -93,5 +93,23 @@
             and g.id = ${map.ids}
         </if>
     </select>
+
+    <select id="selectTGoodsListByMap" parameterType="java.util.Map" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List"/> from t_goods
+        where 1=1
+        <if test="categoryId != null and categoryId != ''">
+            and category_id = #{categoryId}
+        </if>
+        <if test="owner_id != null and owner_id != ''">
+            and owner_id = #{owner_id}
+        </if>
+        <if test="goodsName != null and goodsName != ''">
+            and name like %#{goodsName}%
+        </if>
+        <if test="page != null and page != ''">
+            limit #{page},20
+        </if>
+    </select>
+
 
 </mapper>

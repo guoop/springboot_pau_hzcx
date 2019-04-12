@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -33,6 +34,15 @@ public class TCategory extends Model<TCategory> {
     //：是），系统类目不允许执行任何操作（比如香烟类目）
     public static Integer is_system_1 = 1;
 
+    List<TCategory> childCategory = null;
+
+    public List<TCategory> getChildCategory() {
+        return childCategory;
+    }
+
+    public void setChildCategory(List<TCategory> childCategory) {
+        this.childCategory = childCategory;
+    }
 
     private String id;
     /**
