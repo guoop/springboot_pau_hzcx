@@ -97,6 +97,11 @@
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
+    <sql id="map_limit">
+        <if test="map != null and map.page != null">
+            limit #{map.page.size} offset #{map.page.offset}
+        </if>
+    </sql>
 
 
     <sql id="t_order_alias_columns">

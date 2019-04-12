@@ -449,7 +449,7 @@ public class WXSmallCustomerController  extends BaseController {
      * 订单生成后，允许买家更改订单的收货地址
      * @param param
      */
-    @RequestMapping(value = "/customer/v1/order/address",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/order/address",method = RequestMethod.POST)
     public Tip orderAddressUpdate(SessionUser user,@RequestBody OrderAddressUpdateParam param){
         TblOrder order = orderService.findByNo(user, param.gevoidNO());
         TblAddress address = addressService.findById(user, param.getAddressID());

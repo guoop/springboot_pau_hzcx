@@ -226,7 +226,7 @@ public class TOrder extends Model<TOrder> {
         return orderMoney;
     }
 
-    public TOrder sevoidMoney(BigDecimal orderMoney) {
+    public TOrder setOrderMoney(BigDecimal orderMoney) {
         this.orderMoney = orderMoney;
         return this;
     }
