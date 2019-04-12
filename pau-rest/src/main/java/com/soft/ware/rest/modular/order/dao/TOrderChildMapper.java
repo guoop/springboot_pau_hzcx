@@ -3,6 +3,9 @@ package com.soft.ware.rest.modular.order.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  *  Mapper 接口
@@ -13,6 +16,5 @@ import com.soft.ware.rest.modular.order.model.TOrderChild;
  */
 public interface TOrderChildMapper extends BaseMapper<TOrderChild> {
 
-
-
+    List<Map> findMaps(Map<String, Object> map);
 }

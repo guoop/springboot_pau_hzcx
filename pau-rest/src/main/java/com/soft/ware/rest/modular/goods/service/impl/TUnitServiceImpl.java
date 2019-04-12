@@ -6,6 +6,8 @@ import com.soft.ware.rest.modular.goods.model.TUnit;
 import com.soft.ware.rest.modular.goods.service.ITUnitService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * <p>
  * 单位表 服务实现类
@@ -17,4 +19,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TUnitServiceImpl extends ServiceImpl<TUnitMapper, TUnit> implements ITUnitService {
 
+    @Resource
+    private TUnitMapper mapper;
 }

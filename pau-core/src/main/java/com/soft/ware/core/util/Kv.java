@@ -56,9 +56,35 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return null;
     }
 
+    public Integer requiredInt(K k){
+        Integer v = getInt(k);
+        if (v == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return v;
+    }
+
     public Integer getInt(K k,Integer def){
         Integer i = getInt(k);
         return i == null ? def : i;
+    }
+
+    public String getStr(K k){
+        V v = map.get(k);
+        return v == null ? null : v.toString();
+    }
+
+    public String requiredStr(K k){
+        String str = getStr(k);
+        if (str == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return str;
+    }
+
+    public String getStr(K k, String def) {
+        String s = getStr(k);
+        return s == null ? def : s;
     }
 
     public Long getLong(K k){
@@ -69,6 +95,15 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return null;
     }
 
+    public Long requiredLong(K k){
+        Long v = getLong(k);
+        if (v == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return v;
+    }
+
+
     public Long getLong(K k,Long def){
         Long i = getLong(k);
         return i == null ? def : i;
@@ -77,13 +112,54 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
     public Boolean getBoolean(K key) {
         Object o = map.get(key);
         if (o != null) {
-            return Boolean.valueOf(o.toString());
+            if (o instanceof Boolean) {
+                return (Boolean) o;
+            }
+            o = o + "";
+            if ("true".equals(key)) {
+                return true;
+            }
+            if ("false".equals(key)) {
+                return true;
+            }
+            if ("1".equals(o)) {
+                return true;
+            }
+            if ("0".equals(o)) {
+                return false;
+            }
         }
         return null;
     }
 
+    public boolean requiredBoolean(K k){
+        Boolean v = getBoolean(k);
+        if (v == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return v;
+    }
+
     public Boolean getBoolean(K key, boolean def) {
         return getBoolean(key) == null ? def : getBoolean(key);
+    }
+
+    /**
+     * 注意数据类型需要一至
+     * @param key
+     * @param trueValue
+     * @param falseValue
+     * @return
+     */
+    public Boolean getBoolean(K key,Object trueValue,Object falseValue){
+        V v = get(key);
+        if (trueValue.equals(v)) {
+            return true;
+        }
+        if (falseValue.equals(v)) {
+            return false;
+        }
+        return null;
     }
 
     public BigDecimal getBigDecimal(K key){
@@ -94,13 +170,38 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return null;
     }
 
+    public BigDecimal requiredBigDecimal(K k){
+        BigDecimal v = getBigDecimal(k);
+        if (v == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return v;
+    }
+
     public BigDecimal getBigDecimal(K key,BigDecimal def){
         BigDecimal v = getBigDecimal(key);
         return v == null ? def : v;
     }
 
-    public List<?> getList(String key){
-        return (List<?>)map.get(key);
+    public List<Kv<String,Object>> getKvs(K key){
+        V v = map.get(key);
+        if (v != null) {
+            if(v instanceof List){
+                List<Map<String,Object>> ls = (List)v;
+                return toKvs(ls);
+            }
+        }
+        return null;
+    }
+
+    public List<Kv<String,Object>> getRequiredList(K key){
+        List<Kv<String, Object>> list = getKvs(key);
+        return list == null ? new ArrayList<>() : list;
+    }
+
+    public List<Kv<String,Object>> getList(K key,List<Kv<String,Object>> list){
+        List<Kv<String, Object>> ls = getKvs(key);
+        return ls == null ? list : ls;
     }
 
     public Map<K,V> toMap(){

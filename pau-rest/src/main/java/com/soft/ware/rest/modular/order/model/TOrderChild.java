@@ -1,11 +1,14 @@
 package com.soft.ware.rest.modular.order.model;
 
-import java.io.Serializable;
-
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -23,6 +26,7 @@ public class TOrderChild extends Model<TOrderChild> {
     /**
      * 主键id
      */
+    @TableId(value = "id",type = IdType.UUID)
     private String id;
     /**
      * 订单id
@@ -64,6 +68,18 @@ public class TOrderChild extends Model<TOrderChild> {
      */
     @TableField("goods_unit_id")
     private String goodsUnitId;
+
+    /**
+     * 促销信息id
+     */
+    @TableField("goods_promotion_id")
+    private String goodsPromotionId;
+
+    /**
+     * 创建时间，为了排序
+     */
+    @TableField("create_time")
+    private Date createTime;
 
 
     public String getId() {
@@ -136,6 +152,22 @@ public class TOrderChild extends Model<TOrderChild> {
 
     public void setGoodsUnitId(String goodsUnitId) {
         this.goodsUnitId = goodsUnitId;
+    }
+
+    public String getGoodsPromotionId() {
+        return goodsPromotionId;
+    }
+
+    public void setGoodsPromotionId(String goodsPromotionId) {
+        this.goodsPromotionId = goodsPromotionId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     @Override

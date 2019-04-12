@@ -24,7 +24,19 @@ public interface HzcxWxService {
      */
     WxMaService getWxMaService(TblOwner owner);
 
+    /**
+     * 获取小程序 service
+     * @param app
+     * @return
+     */
     WxMaService getWxMaService(SWxApp app);
+
+    /**
+     * 获取微信支付service
+     * @param app
+     * @return
+     */
+    WxPayService getWxPayService(SWxApp app);
 
     /**
      * 根据用户信息获取

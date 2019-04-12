@@ -26,7 +26,7 @@ public class PayAfterOrderParam {
     //formID
     private String formID;
 
-    private String address;
+    private String addressId;
 
     public int getMoneyChannel() {
         return moneyChannel;
@@ -100,11 +100,11 @@ public class PayAfterOrderParam {
         this.formID = formID;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressId() {
+        return addressId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
     }
 }

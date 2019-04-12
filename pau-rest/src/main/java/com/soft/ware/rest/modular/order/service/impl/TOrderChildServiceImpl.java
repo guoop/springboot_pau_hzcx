@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.rest.modular.order.dao.TOrderChildMapper;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,5 +28,10 @@ public class TOrderChildServiceImpl extends ServiceImpl<TOrderChildMapper, TOrde
     public List<TOrderChild> selectOrderChildListByMap(Map<String, Object> map) {
 
         return null;
+    }
+
+    @Override
+    public List<Map> findMaps(Map<String, Object> map) {
+        return tOrderChildMapper.findMaps(map);
     }
 }

@@ -1,22 +1,27 @@
 package com.soft.ware.rest.modular;
 
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
+import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
+import com.github.binarywang.wxpay.constant.WxPayConstants;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.Tip;
-import com.soft.ware.core.base.warpper.ListWrapper;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ResultView;
+import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
-import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.Id;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.ImService;
 import com.soft.ware.rest.modular.auth.service.SmsService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.banner.model.TBanner;
 import com.soft.ware.rest.modular.banner.service.TBannerService;
@@ -24,15 +29,18 @@ import com.soft.ware.rest.modular.goods.controller.dto.CartParam;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
+import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
+import com.soft.ware.rest.modular.order.controller.dto.PayAfterOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
-import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
 import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
 import com.soft.ware.rest.modular.question.model.TQuestion;
 import com.soft.ware.rest.modular.question.service.ITQuestionService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
@@ -41,10 +49,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/customer/v1")
@@ -93,8 +105,11 @@ public class CustomerController extends BaseController {
     @Autowired
     private ImService imService;
 
-    //@Autowired
-    //private ISWxAppService appService;
+    @Autowired
+    private ITOrderChildService orderChildService;
+
+    @Autowired
+    private WXContants wxContants;
 
     /**
      * 首页横幅
@@ -202,8 +217,10 @@ public class CustomerController extends BaseController {
         } else {
             param.setStatus(Integer.MAX_VALUE+"");
         }
-        List<Map> list = orderService.findPage(user, page, param, TOrder.SOURCE_0, TOrder.SOURCE_2);
-        return warpObject(new ListWrapper(list));
+        List<Integer> sources = Lists.newArrayList(TOrder.SOURCE_0, TOrder.SOURCE_2);
+        Kv<String, Object> map = Kv.obj("creater", user.getOpenId()).set("page", page).set("sources", "'" + StringUtils.join(sources, "','") + "'");
+        List<Map<String, Object>> maps = orderService.findMaps(map);
+        return render(maps);
     }
 
 
@@ -216,7 +233,7 @@ public class CustomerController extends BaseController {
      */
     @RequestMapping(value = "orders/{no}",method = RequestMethod.GET)
     public Tip orders(SessionUser user,@PathVariable String no) {
-        Map<String, Object> map = orderService.findMap(Kv.obj("orderNo", no).set("user", user));
+        Map<String, Object> map = orderService.findMap(Kv.obj("orderNo", no).set("openId", user.getOpenId()));
         return render().set("order", map);
     }
 
@@ -288,6 +305,22 @@ public class CustomerController extends BaseController {
         }
     }
 
+    /**
+     * 订单生成后，允许买家更改订单的收货地址
+     * @param param
+     */
+    @RequestMapping(value = "order/address",method = RequestMethod.POST)
+    public Tip orderAddressUpdate(SessionUser user,@RequestBody Map<String,Object> param) throws Exception {
+        Kv<String, Object> kv = Kv.toKv(param);
+        String orderNo = kv.requiredStr("orderNo");
+        String addressId = kv.requiredStr("addressId");
+        kv.remove("addressId");
+        TOrder order = BeanMapUtils.toObject(orderService.findMap(kv.set("ownerId", user.getOwnerId()).set("creater", user.getOpenId())), TOrder.class);
+        order.setAddressId(addressId);
+        boolean update = orderService.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setOwnerId(user.getOwnerId()).setStatus(TOrder.STATUS_0)));
+        return render(update);
+    }
+
 
     /**
      * 意见反馈
@@ -305,22 +338,23 @@ public class CustomerController extends BaseController {
     /**
      * 查看购物车
      * @param user
-     * @param flag
+     * @param flag all/money
      * @param param
      * @return
      */
-    @RequestMapping(value = "cart")
-    public Tip owner(SessionUser user, @RequestParam(required = false,defaultValue = "all") String flag, @RequestBody CartParam param) throws Exception {
+    @RequestMapping(value = "cart",method = RequestMethod.POST)
+    public Tip owner(SessionUser user, @RequestParam(required = false,defaultValue = "all") String flag, @Valid @RequestBody CartParam param, BindingResult result) throws Exception {
+        Validator.valid(result);
         int round = BigDecimal.ROUND_HALF_UP;
         List<Integer> nums = param.getNums();
-        List<String> units = param.getUnits();//todo yancc unit id 需要查询转换
+        List<String> units = param.getUnits();
+        List<String> specs = param.getSpecs();//todo yancc unit id 需要查询转换
         String ids = "'" + StringUtils.join(param.getIds(), "','") + "'";
-        //查询所有订单
+        //查询订单所有商品
         List<Kv<String, Object>> all = Kv.toKvs(goodsService.findMaps(Kv.obj().set("ownerId", user.getOwnerId()).set("ids", ids)));
-        TOwner owner = BeanMapUtils.toObject(ownerService.findMap(Kv.by("id", user.getOwnerId())), TOwner.class);
         TOwnerConfig config = BeanMapUtils.toObject(ownerConfigService.findMap(Kv.obj().set("ownerId", user.getOwnerId())), TOwnerConfig.class);
         if (all.size() != nums.size() || all.size() != param.getIds().size()) {
-            render(false, "订单错误！");
+            return render(false, "订单错误！");
         }
         //商品信息
         Kv<String,Object> g;
@@ -335,11 +369,13 @@ public class CustomerController extends BaseController {
         BigDecimal promotionPrice = BigDecimal.ZERO;
         BigDecimal num;//商品数量
         BigDecimal goodsMoney;//商品总价（商品单价*商品数量）
+        Kv<String, Object> spec;
         for (int i = 0; i < all.size(); i++) {
             // 计算单个商品的总价（总价 = 购买数量 * 商品单价）
-            // let goodsMoney = parseInt(cartGoodsItems[2]) * parseFloat(result.price_unit);
             g = all.get(i);
-            isPromotion = g.getBoolean("isPromotion", false);
+            final String specId = specs.get(i);
+            spec = g.getRequiredList("specs").stream().filter(s -> s.get("id").equals(specId)).findFirst().orElse(Kv.obj());
+            isPromotion = g.getBoolean("isPromotion");
             price = g.getBigDecimal("price").setScale(2, round);
             num = BigDecimal.valueOf(nums.get(i));
             goodsMoney = num.multiply(price);
@@ -360,7 +396,8 @@ public class CustomerController extends BaseController {
                 m.put("pics", g.get("pics"));
                 m.put("measurementUnit",g.get("measurementUnit"));
                 m.put("price",price);
-                m.put("specifications",units.get(i));//todo yancc 要干什么
+                m.put("specName",spec.get("name"));
+                m.put("specId",spec.get("id"));
                 m.put("count", num.intValue());
                 m.put("total", goodsMoney.setScale(2,round));
                 m.put("status",g.get("status"));
@@ -370,7 +407,7 @@ public class CustomerController extends BaseController {
                    m.put("promotionMoney",promotionPrice);
                 }else{
                    //没有促销
-                   m.put("promotion_price", 0);
+                   m.put("promotionMoney", 0);
                 }
                 maps.add(m);
             }
@@ -407,11 +444,13 @@ public class CustomerController extends BaseController {
      * @param param
      * @return
      */
-/*
     @RequestMapping(value = "orders/{no}",method = RequestMethod.POST)
     public Tip orders(SessionUser user,@PathVariable String no,@RequestBody PayAfterOrderParam param) throws Exception {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj().set("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
+        TAddress address = BeanMapUtils.toObject(addressService.findMap(Kv.by("id", param.getAddressId())), TAddress.class);
+        List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
+        List<String> names = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
         long current = System.currentTimeMillis();
         String pack = param.getPack();
         SWxApp app = appService.find(user);
@@ -421,45 +460,20 @@ public class CustomerController extends BaseController {
             logger.debug("买家支付订单时保存PrepayID {} = {}",tempKey,pack);
             // 微信支付时发送模板消息
             String pay = ownerTempService.getTplId(user, "pay");
-            WxMaService service = hzcxWxService.getWxMaService(app);
-            List<WxMaTemplateData> msList = new ArrayList<>();
-            // 订单编号
-            msList.add(new WxMaTemplateData("keyword1", no));
-            // 下单时间
-            msList.add(new WxMaTemplateData("keyword2", DateUtil.format(param.getCreated_at(),"YYYY-MM-DD HH:mm:ss")));
-            // 订单金额
-            msList.add(new WxMaTemplateData("keyword3", order.getPayMoney() + "元"));
-            // 商品名称
-            msList.add(new WxMaTemplateData("keyword4", param.getGoodsName()));
-            // 收货地址
-            msList.add(new WxMaTemplateData("keyword5", param.getAddress()));
+            orderService.buildOrderTemplateMessage(pay, pack, order, names, address);
             // 备注信息
-            msList.add(new WxMaTemplateData("keyword6", "如有疑问，请进入小程序联系商家"));
-            orderService.buildOrderTemplateMessage(pay, pack, order);
-            // 微信支付时发送模板消息
-            service.getMsgService().sendTemplateMsg(WxMaTemplateMessage.builder()
-                    // 接收者（用户）的 openid
-                    .toUser(user.getOpenId())
-                    // 所需下发的模板消息的id
-                    .templateId(pay)
-                    // 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
-                    .page("/pages/mine/index")
-                    // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
-                    .formId(pack)
-                    // 模板内容，不填则下发空模板
-                    .data(msList)
-                    .formId(param.getFormID())
-                    .build());
-
+            WxMaTemplateMessage msg = orderService.buildOrderTemplateMessage(pay, pack, order, names, address);
+            msg.getData().add(new WxMaTemplateData("keyword6", "如有疑问，请进入小程序联系商家"));
+            hzcxWxService.getWxMaService(app).getMsgService().sendTemplateMsg(msg);
         }
         // 发送短信通知
         String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "order_phone");
         if (StringUtils.isNotBlank(phone)) {
-            smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.gevoidNO());
+            smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.getOrderNO());
         }
         // IM通知店铺
         imService.sendNewOrderNotify(user, order);
-        String tempKey = "ms:fit:" + param.gevoidNO();
+        String tempKey = "ms:fit:" + param.getOrderNO();
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800,TimeUnit.SECONDS);
         logger.info("买家支付订单时保存FormID {} = {}", tempKey, param.getFormID());
         // 标识订单来源
@@ -480,15 +494,108 @@ public class CustomerController extends BaseController {
         order.setMoneyChannel(param.getMoneyChannel());
         order.setRemark(param.getRemark());
         if (TOrder.MONEY_CHANNEL_1.equals(order.getMoneyChannel())) {
-            order.setStatus(TOrder.MONEY_CHANNEL_1);
-        }
-        if (StringUtils.isNotBlank(param.getTelephone())) {
-            order.setConsigneeMobile(param.getTelephone());
+            //货到付款等待商家确认
+            order.setStatus(TOrder.STATUS_1);
         }
         boolean update = orderService.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setOwnerId(user.getOwnerId()).setStatus(order.getStatus())));
         return render(update);
     }
-*/
+
+
+    /**
+     * 微信支付
+     * @param user
+     * @param param
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "wxpay/unifiedorder",method = RequestMethod.POST)
+    public Object unifiedorder(SessionUser user, @RequestBody UnifiedorderParam param, HttpServletRequest request) throws Exception {
+        if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
+            return render(false, "请完善预留手机号");
+        }
+        String no = param.gevoidNO();
+        TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
+        SWxApp app = appService.find(user);
+        boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(param.getSource());
+        // 获取客户端ip
+        String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
+        // 商品描述
+        String body = "购买商品";
+        // 支付成功的回调地址  可访问 不带参数
+        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPay();
+        String attach = "无";
+        if (source2) {
+            notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayPickup();
+            attach = no;
+        }
+        //http://jrebel.yanjiayu.cn:9001/ac521eea-5bfe-11e9-b358-00ff81941ac9
+        //http://idea.lanyus.com/3d64b43e-0da7-40a3-925a-844e5a57aea8
+        // 商户订单号
+        String out_trade_no = no;
+        if (source2) {
+            out_trade_no = param.getTelephone() + "" + order.getCreateTime().getTime();
+        }
+        // 订单价格 单位是 分
+        int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
+        if (source2) {
+            total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).intValue();
+        }
+        WxPayUnifiedOrderRequest req = buildPayReq(user, out_trade_no, total_fee, notify_url, body, attach, spbill_create_ip);
+        return buildPayView(app, req);
+    }
+
+
+
+    /**
+     * 小程序下单
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/order",method = RequestMethod.POST)
+    public Object order(SessionUser user,@RequestBody CreateOrderParam param) {
+        try {
+            TOrder order = orderService.createMiniAppOrder(user, param);
+            return render().set("orderNO", order.getOrderNo());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return render(false, e.getMessage());
+        }
+    }
+
+
+
+    public WxPayUnifiedOrderRequest buildPayReq(SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) {
+        return WxPayUnifiedOrderRequest
+                .newBuilder()
+                .body(body)
+                .attach(attach)
+                .notifyUrl(notifyUrl)
+                .openid(user.getOpenId())
+                .outTradeNo(no)
+                .spbillCreateIp(ip)
+                .tradeType(WxPayConstants.TradeType.JSAPI)
+                .totalFee(total_fee).build();
+    }
+
+
+    public Tip buildPayView(SWxApp app,WxPayUnifiedOrderRequest req){
+        Kv<String,Object> tip;
+        try {
+            WxPayMpOrderResult res = hzcxWxService.getWxPayService(app).createOrder(req);
+            tip = render();
+            tip.set("out_trade_no", req.getOutTradeNo());
+            // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数
+            tip.set("nonceStr", res.getNonceStr());
+            tip.set("timestamp", res.getTimeStamp());
+            tip.set("package", res.getPackageValue());
+            tip.set("paySign", res.getPaySign());
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            return render(false, e.getReturnMsg()).set("status", "102");
+        }
+        return tip;
+    }
 
 
 

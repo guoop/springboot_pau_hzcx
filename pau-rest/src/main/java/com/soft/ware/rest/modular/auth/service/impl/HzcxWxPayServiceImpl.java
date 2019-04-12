@@ -14,6 +14,8 @@ import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_secret.model.SWxSecret;
+import com.soft.ware.rest.modular.wx_secret.service.ISWxSecretService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,8 +41,14 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
     @Value(value = "${wx.pay.notify_url_customer_pay}")
     private String customerPay;
 
+    @Autowired
+    private ISWxSecretService secretService;
+
     private WxMaService wxMaService;
 
+
+
+    @Deprecated
     @Override
     public WxPayService getWxPayService(TblOwner owner) {
         if (map.containsKey(owner.getAppId())) {
@@ -62,7 +70,7 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
         }
     }
 
-
+    @Deprecated
     @Override
     public WxMaService getWxMaService(TblOwner owner){
         if (map2.containsKey(owner.getAppId())) {
@@ -94,6 +102,29 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
     }
 
     @Override
+    public WxPayService getWxPayService(SWxApp app) {
+        SWxSecret secret = secretService.find(app);
+        if (map.containsKey(app.getAppId())) {
+            return map.get(app.getAppId());
+        } else {
+            WxPayServiceImpl service = new WxPayServiceImpl();
+            WxPayConfig config = new WxPayConfig();
+            config.setAppId(app.getAppId());
+            config.setMchId(secret.getShopNo());//商户号
+            config.setNotifyUrl(customerPayHost + customerPay);
+            config.setMchKey(secret.getPayKey());
+            config.setTradeType(WxPayConstants.TradeType.JSAPI);
+            config.setSignType(WxPayConstants.SignType.MD5);
+            config.setKeyPath("classpath:p12/" + app.getOwnerId() + ".p12");
+            service.setConfig(config);
+            service.setEntPayService(new EntPayServiceImpl(service));
+            map.put(app.getAppId(), service);
+            return service;
+        }
+    }
+
+    @Deprecated
+    @Override
     public WxMaService getWxMaService(SessionUser user) {
         TblOwner owner = ownerService.findByAppId(user.getAppId());
         return getWxMaService(owner);
@@ -101,6 +132,7 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
 
 
 
+    @Deprecated
     @Override
     public WxPayService getWxPayService(SessionUser user) {
         TblOwner owner = ownerService.findByAppId(user.getAppId());
