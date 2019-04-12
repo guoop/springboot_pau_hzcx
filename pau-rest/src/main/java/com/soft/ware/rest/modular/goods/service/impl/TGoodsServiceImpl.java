@@ -45,5 +45,11 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         return maps.isEmpty() ? null : maps.get(0);
     }
 
+    @Override
+    public List<TGoods> selectTGoodsListByMap(Map<String, Object> map) {
+
+        return mapper.selectTGoodsListByMap(map);
+    }
+
 
 }

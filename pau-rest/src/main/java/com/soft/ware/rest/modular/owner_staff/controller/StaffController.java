@@ -29,7 +29,7 @@ public class StaffController extends BaseController {
     @Autowired
     private TOwnerStaffService tOwnerStaffService;
 
-      @RequestMapping(value = "staff/updateOrAdd",method = RequestMethod.POST)
+      @RequestMapping(value = "staff/addOrUpdate",method = RequestMethod.POST)
        public Tip updateOrSave(SessionUser sessionUser, TOwnerStaff ownerStaff){
           Boolean isSuccess = false;
           if(ToolUtil.isNotEmpty(ownerStaff)){

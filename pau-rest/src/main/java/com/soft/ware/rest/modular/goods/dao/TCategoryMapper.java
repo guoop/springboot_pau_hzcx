@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.goods.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,5 +23,7 @@ public interface TCategoryMapper extends BaseMapper<TCategory> {
     List<TCategory> selectParentCategoryList(Map<String,Object> map);
 
     List<TCategory> selectChildrenCategoryList(Map<String,Object> map);
+
+    boolean updateOrSort(CategorySortParam categorySortParam);
 
 }

@@ -25,7 +25,7 @@ import java.util.Map;
  * @Date 2019-03-20 11:46
  */
 @RestController
-@RequestMapping("/handover/v1")
+@RequestMapping("/owner/v1")
 public class HandoverController extends BaseController{
 	@Autowired
 	private ITHandoverRecordService itHandoverRecordService;
@@ -35,7 +35,7 @@ public class HandoverController extends BaseController{
 	 * @param sessionUser 当前登录的商户
 	 * @return
 	 */
-	@RequestMapping("getHandOver")
+	@RequestMapping("handover/get-handover")
 	public Tip getHandover(@RequestParam Map<String ,Object> param,SessionUser sessionUser){
 		param.put("owner_id",sessionUser.getOwnerId());
 		List<THandoverRecord> handoverRecordList = itHandoverRecordService.getHandOver(param);

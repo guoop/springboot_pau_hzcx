@@ -37,9 +37,9 @@ public class TOwnerController  extends BaseController {
      * @return
      */
     @RequestMapping("get-owner-info")
-    @ResponseBody
     public Tip getOwnerInfo(SessionUser sessionUser){
        TOwner tOwner = itOwnerService.selectById(sessionUser.getOwnerId());
+
        if(ToolUtil.isNotEmpty(tOwner)){
            return new SuccessTip(tOwner);
        }
@@ -81,16 +81,28 @@ public class TOwnerController  extends BaseController {
 
     /**
      * 更新商户信息
-     * @param user
-     * @param tOwner
      * @return
      */
     @RequestMapping(value = "update/info",method = RequestMethod.POST)
-    public Tip updateOwner(SessionUser user,TOwner tOwner){
-        if(ToolUtil.isNotEmpty(tOwner) && ToolUtil.isNotEmpty(tOwner.getId())){
-            if(itOwnerService.updateById(tOwner)){
-                return new SuccessTip();
+    public Tip updateOwner(@RequestBody Map<String,Object> param,SessionUser sessionUser){
+        TOwner tOwner = new TOwner();
+        tOwner.setId(sessionUser.getOwnerId());
+        if(ToolUtil.isNotEmpty(param)){
+            if(param.get("address") != null){
+                tOwner.setAddress(param.get("address").toString());
             }
+            if(param.get("description") != null){
+                tOwner.setDescription(param.get("description").toString());
+            }
+            if(param.get("beginTime") != null){
+                tOwner.setBeginTime(param.get("beginTime").toString());
+            }
+            if(param.get("endTime") != null){
+                tOwner.setEndTime(param.get("endTime").toString());
+            }
+           if(itOwnerService.updateById(tOwner)){
+               return new SuccessTip();
+           }
         }
         return new ErrorTip();
     }

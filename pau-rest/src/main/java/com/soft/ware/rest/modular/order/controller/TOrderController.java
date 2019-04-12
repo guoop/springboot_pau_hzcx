@@ -49,7 +49,7 @@ public class TOrderController extends BaseController {
     @RequestMapping(value = "/orders/list",method = RequestMethod.GET)
     public Tip getOrderList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
         param.put("owner_id", sessionUser.getOwnerId());
-        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString())  );
+        param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.put("page",0);
         //param.put("page",Integer.valueOf(param.get("page").toString()));
         //List<TOrder> list = tOrderService.selectOrderListByMap(param);
@@ -81,8 +81,11 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "/orders/count",method = RequestMethod.GET)
     public Tip orderCount(SessionUser user){
-        int i = tOrderService.selectCount(new EntityWrapper<>(  new TOrder().setOwnerId(user.getOwnerId())));
-        return new SuccessTip(i);
+        //tOrderService.findListCount();
+        TOrder tOrder = new TOrder();
+        tOrder.setOwnerId(user.getOwnerId());
+        int i = tOrderService.selectCount(new EntityWrapper<>(tOrder));
+        return new SuccessTip();
     }
 
     /**
@@ -111,7 +114,7 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "orders/sign-status")
     public Tip signStatus(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-         param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
          param.get("orderNo").toString();
          param.put("owner_id",sessionUser.getOwnerId());
 
@@ -127,7 +130,7 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "orders/refund")
     public Tip ordersRefund(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+        param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.get("orderNo").toString();
         param.put("owner_id",sessionUser.getOwnerId());
 
@@ -142,7 +145,7 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "orders/money-diff-refund")
     public Tip ordersMoneyDiffRefund(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-        param.put("status",ParamUtils.gevoidStatus(param.get("status").toString()));
+        param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.get("orderNo").toString();
         param.put("owner_id",sessionUser.getOwnerId());
 

@@ -27,4 +27,7 @@ public interface ITOwnerService extends IService<TOwner> {
     Map<String,Object> findMap(Map<String,Object> map);
 
     TOwner find(SessionUser user) throws Exception;
+
+    Map<String,Object> selectOwnerInfoByOwnerId(String ownerId);
+
 }

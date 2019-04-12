@@ -68,5 +68,26 @@
         <include refid="Condition"/>
     </select>
 
+    <update id="updateOrSort" parameterType="list">
+        UPDATE t_category
+        SET
+        status =
+        CASE id
+        <foreach collection="param.list" item="item">
+            WHEN #{item.id} THEN #{item.status}
+        </foreach>
+        END,
+        sort =
+        CASE id
+        <foreach collection="param.list" item="item">
+            WHEN #{item.id} THEN #{item.weights}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="param.list" close=")" open="(" item="item" separator="," index="index">
+            ${item.id}
+        </foreach>
+    </update>
+
 
 </mapper>

@@ -21,17 +21,15 @@
         <result column="owner_id" property="ownerId" />
         <result column="address_id" property="addressId" />
         <result column="goods_id" property="goodsId" />
+        <result column="type" property="type" />
         <result column="version" property="version" />
         <result column="status" property="status" />
         <result column="remark" property="remark" />
     </resultMap>
 
-
-
-
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_no as orderNo , source, pickup_no as pickupNo , pickup_time as pickupTime , money_channel as,moneyChannel , order_money as orderMoney, run_money as runMoney, pay_money as payMoney, pay_time as payTime , pay_response as payResponse, create_time as createTime, creater, settlementer, owner_id as ownerId, address_id as addressId, goods_id as goodsId, version, status, remark
+        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, goods_id AS goodsId, type, version, status, remark
     </sql>
 
 
@@ -102,7 +100,7 @@
 
 
     <sql id="t_order_alias_columns">
-        a.order_no as orderNo,a.source,a.pickup_no as pickupNo,a.pickup_time as pickupTime,a.money_channel moneyChannel,a.order_money as orderMoney,a.run_money as runMoney,a.pay_money as payMoney,a.pay_time as payTime,a.pay_response as payResponse,a.create_time as createTime,a.creater,a.settlementer,a.owner_id as ownerId,a.address_id as addressId,a.goods_id as goodsId,a.type,a.version,a.status as ordrerStatus,a.remark
+        a.order_no as orderNo,a.source,a.pickup_no as pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') as pickupTime,a.money_channel moneyChannel,a.order_money as orderMoney,a.run_money as runMoney,a.pay_money as payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') as payTime,a.pay_response as payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s')  as createTime,a.creater,a.settlementer,a.owner_id as ownerId,a.address_id as addressId,a.goods_id as goodsId,a.type,a.version,a.status as ordrerStatus,a.remark
     </sql>
     <select id="findMaps" resultType="java.util.Map">
     select

@@ -55,4 +55,10 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     public TOwner find(SessionUser user) throws Exception {
         return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
     }
+
+    @Override
+    public Map<String, Object> selectOwnerInfoByOwnerId(String ownerId) {
+
+        return mapper.selectOwnerInfoByOwnerId(ownerId);
+    }
 }
