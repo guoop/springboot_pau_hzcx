@@ -105,7 +105,7 @@
 
 
     <sql id="t_order_alias_columns">
-        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
+        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater ,a.settlementer ,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version ,a.status,a.remark
     </sql>
     <resultMap id="orderMap" type="map" autoMapping="true">
         <id column="id" property="id"/>
@@ -166,7 +166,8 @@
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
 
 
-        select  a.id id,<include refid="t_order_alias_columns"/>,b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
+        select  a.id id,<include refid="t_order_alias_columns"/>,  e.`name`goodsName, e.pics goodsPic,e.price goodsMoney,
+        e.`status` goodsStatus,b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
             from t_order a
             LEFT JOIN t_address b
@@ -175,6 +176,8 @@
             on a.order_no = c.order_no
             LEFT JOIN t_order_money_diff d
             on a.order_no = d.order_no
+            LEFT JOIN t_goods e
+            on a.goods_id = e.id
             where 1=1
             <if test="status != null and status != ''">
                 and a.status = #{status}

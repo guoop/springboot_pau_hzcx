@@ -7,6 +7,7 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.goods.controller.dto.GoodsParam;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods.service.*;
@@ -14,7 +15,9 @@ import com.soft.ware.rest.modular.icon.model.TIcon;
 import com.soft.ware.rest.modular.icon.service.TIconService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sun.security.krb5.internal.PAData;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,11 +130,10 @@ public class TGoodsController {
      * @return
      */
     @RequestMapping("goods/list")
-    public Tip getGoodsList(@RequestParam Map<String,Object> param, SessionUser sessionUser){
+    public Tip getGoodsList(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws ParseException {
         param.put("owner_id",sessionUser.getOwnerId());
         param.put("page",Integer.valueOf(param.get("page").toString()));
-        List<TGoods>  goodsList =  itGoodsService.selectTGoodsListByMap(param);
-        System.out.println(goodsList.size());
+        List<Map<String,Object>>  goodsList =  itGoodsService.selectTGoodsListByMap(param);
         if(goodsList.size() > 0){
             return new SuccessTip(goodsList);
         }
@@ -139,7 +141,7 @@ public class TGoodsController {
     }
     @RequestMapping("goods/detail")
     public Tip getGoodsDetail(@RequestParam String id){
-         TGoods goods = itGoodsService.selectById(id);
+       HashMap<String,Object> goods = itGoodsService.findById(id);
          if(goods != null){
              return new SuccessTip(goods);
          }
@@ -197,12 +199,48 @@ public class TGoodsController {
      * @param goods
      * @return
      */
+    @RequestMapping("goods/addByScan")
     public Tip addByScan(@RequestParam TGoods goods){
         if(itGoodsService.insert(goods)){
             return new SuccessTip();
         }
         return new ErrorTip();
     }
+
+    /**
+     * 商品置顶或者是商品上下架
+     * @param param id 商品主键,flag 是否置顶 yes置顶 No 不置顶| status 商品状态
+     * @param path top是商品置顶，upOrDown是商品上下架
+     * @return
+     */
+    @RequestMapping("goods/{path}")
+    public Tip goodsTop(@PathVariable("path") String path , @RequestBody Map<String,Object> param){
+        if(path.equals("top")){
+            if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
+                return  new SuccessTip();
+            }
+        }
+        if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
+            return new SuccessTip();
+        }
+        return new ErrorTip();
+    }
+
+    /**
+     * 删除商品
+     * @param id 主键id
+     * @return
+     */
+    @RequestMapping("goods/del")
+    public Tip goodsDel(String id){
+        if(itGoodsService.deleteById(id)){
+            return new SuccessTip();
+        }
+        return new ErrorTip();
+    }
+
+
+
 
 
 }

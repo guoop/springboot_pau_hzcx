@@ -3,9 +3,11 @@ package com.soft.ware.rest.modular.goods.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.goods.controller.dto.GoodsParam;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,5 +28,9 @@ public interface TGoodsMapper extends BaseMapper<TGoods> {
 
     List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
 
-    List<TGoods> selectTGoodsListByMap(Map<String,Object> map);
+    List<Map<String,Object>> selectTGoodsListByMap(Map<String,Object> map);
+
+    boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
+
+    HashMap<String,Object> findById(String id);
 }

@@ -5,8 +5,11 @@ import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.controller.dto.CartParam;
+import com.soft.ware.rest.modular.goods.controller.dto.GoodsParam;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,5 +29,9 @@ public interface ITGoodsService extends IService<TGoods> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
-    List<TGoods>  selectTGoodsListByMap(Map<String,Object> map);
+    List<Map<String,Object>>  selectTGoodsListByMap(Map<String,Object> map) throws ParseException;
+
+    boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
+
+    HashMap<String,Object> findById(String id);
 }

@@ -19,6 +19,6 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper, TOrderApp
 
     @Override
     public List<TOrderApp> getAppOrderList(Map<String, Object> map) {
-        return null;
+        return mapper.getAppOrderList(map);
     }
 }

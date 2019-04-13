@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +49,7 @@ public class TOrderController extends BaseController {
     public Tip getOrderList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
         param.put("owner_id", sessionUser.getOwnerId());
         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
-        param.put("page",0);
-        //param.put("page",Integer.valueOf(param.get("page").toString()));
+        param.put("page",Integer.valueOf(param.get("page").toString()));
         //List<TOrder> list = tOrderService.selectOrderListByMap(param);
         List<Map<String,Object>> listMap = tOrderService.selectOrdersListByMap(param);
         if (listMap.size() > 0) {
@@ -61,11 +59,11 @@ public class TOrderController extends BaseController {
     }
 
     /**
-     *
      * @param param orderNo 订单编号.orderId ,page 当前页
      * @param sessionUser
      * @return
      */
+    @RequestMapping("orders/child-order-list")
     public Tip getChildList(@RequestParam Map<String,Object> param ,SessionUser sessionUser){
         param.put("owner_id",sessionUser.getOwnerId());
         List<TOrderChild> list = itOrderChildService.selectOrderChildListByMap(param);
@@ -79,9 +77,8 @@ public class TOrderController extends BaseController {
      * @param user
      * @return
      */
-    @RequestMapping(value = "/orders/count",method = RequestMethod.GET)
+    @RequestMapping(value = "/orders/count")
     public Tip orderCount(SessionUser user){
-        //tOrderService.findListCount();
         TOrder tOrder = new TOrder();
         tOrder.setOwnerId(user.getOwnerId());
         int i = tOrderService.selectCount(new EntityWrapper<>(tOrder));
@@ -94,7 +91,7 @@ public class TOrderController extends BaseController {
      * @param sessionUser 当前商户
      * @return
      */
-    @RequestMapping(value = "orders/app")
+    @RequestMapping(value = "orders/app-list")
     public Tip getAppOrdersList(@RequestParam Map<String,Object> param,SessionUser sessionUser){
         param.put("owner_id",sessionUser.getOwnerId());
         param.put("page",Integer.valueOf(param.get("page").toString()));
