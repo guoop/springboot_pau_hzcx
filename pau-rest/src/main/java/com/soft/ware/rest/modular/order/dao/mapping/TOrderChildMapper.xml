@@ -24,14 +24,14 @@
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select
-        id,
+        toc.id,
         <include refid="t_order_child_alias_columns"/>
         from t_order_child toc where true
-        <if test="map.id != null and map.id != ''">
-            and toc.id = #{map.id}
+        <if test="params.id != null and map.id != ''">
+            and toc.id = #{params.id}
         </if>
-        <if test="map.orderId != null and map.orderId != ''">
-            and toc.order_id = #{map.orderId}
+        <if test="params.orderId != null and params.orderId != ''">
+            and toc.order_id = #{params.orderId}
         </if>
     </select>
 

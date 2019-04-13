@@ -81,7 +81,7 @@ public class TOrder extends Model<TOrder> {
     /**
      * 订单来源（0：微信小程序；1：收银机；2：到店自取订单）
      */
-    private Integer source;
+    private Short source;
     /**
      * 取货码（只有到店自取的订单有该字段）
      */
@@ -166,194 +166,199 @@ public class TOrder extends Model<TOrder> {
      * 备注信息
      */
     private String remark;
+    /**
+     * 取消人
+     */
+    private String canceler;
+    /**
+     * 取消时间
+     */
+    @TableField("cancel_time")
+    private Date cancelTime;
 
 
     public String getId() {
         return id;
     }
 
-    public TOrder setId(String id) {
-        this.id = id;
-        return this;
+    public TOrder setId(String id){
+        this.id = id;return this;
     }
 
     public String getOrderNo() {
         return orderNo;
     }
 
-    public TOrder setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-        return this;
+    public TOrder setOrderNo( String orderNo) {
+        this.orderNo = orderNo;return this;
     }
 
-    public Integer getSource() {
+    public Short getSource() {
         return source;
     }
 
-    public TOrder setSource(Integer source) {
-        this.source = source;
-        return this;
+    public TOrder setSource( Short source) {
+        this.source = source;return this;
     }
 
     public Long getPickupNo() {
         return pickupNo;
     }
 
-    public TOrder setPickupNo(Long pickupNo) {
-        this.pickupNo = pickupNo;
-        return this;
+    public TOrder setPickupNo( Long pickupNo) {
+        this.pickupNo = pickupNo;return this;
     }
 
     public Date getPickupTime() {
         return pickupTime;
     }
 
-    public TOrder setPickupTime(Date pickupTime) {
-        this.pickupTime = pickupTime;
-        return this;
+    public TOrder setPickupTime( Date pickupTime) {
+        this.pickupTime = pickupTime;return this;
     }
 
     public Integer getMoneyChannel() {
         return moneyChannel;
     }
 
-    public TOrder setMoneyChannel(Integer moneyChannel) {
-        this.moneyChannel = moneyChannel;
-        return this;
+    public TOrder setMoneyChannel( Integer moneyChannel) {
+        this.moneyChannel = moneyChannel;return this;
     }
 
     public BigDecimal getOrderMoney() {
         return orderMoney;
     }
 
-    public TOrder setOrderMoney(BigDecimal orderMoney) {
-        this.orderMoney = orderMoney;
-        return this;
+    public TOrder setOrderMoney( BigDecimal orderMoney) {
+        this.orderMoney = orderMoney;return this;
     }
 
     public BigDecimal getRunMoney() {
         return runMoney;
     }
 
-    public TOrder setRunMoney(BigDecimal runMoney) {
-        this.runMoney = runMoney;
-        return this;
+    public TOrder setRunMoney( BigDecimal runMoney) {
+        this.runMoney = runMoney;return this;
     }
 
     public BigDecimal getPayMoney() {
         return payMoney;
     }
 
-    public TOrder setPayMoney(BigDecimal payMoney) {
-        this.payMoney = payMoney;
-        return this;
+    public TOrder setPayMoney( BigDecimal payMoney) {
+        this.payMoney = payMoney;return this;
     }
 
     public Date getPayTime() {
         return payTime;
     }
 
-    public TOrder setPayTime(Date payTime) {
-        this.payTime = payTime;
-        return this;
+    public TOrder setPayTime( Date payTime) {
+        this.payTime = payTime;return this;
     }
 
     public String getPayResponse() {
         return payResponse;
     }
 
-    public TOrder setPayResponse(String payResponse) {
-        this.payResponse = payResponse;
-        return this;
+    public TOrder setPayResponse( String payResponse) {
+        this.payResponse = payResponse;return this;
     }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public TOrder setCreateTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
+    public TOrder setCreateTime( Date createTime) {
+        this.createTime = createTime;return this;
     }
 
     public String getCreater() {
         return creater;
     }
 
-    public TOrder setCreater(String creater) {
-        this.creater = creater;
-        return this;
+    public TOrder setCreater( String creater) {
+        this.creater = creater;return this;
     }
 
     public String getSettlementer() {
         return settlementer;
     }
 
-    public TOrder setSettlementer(String settlementer) {
-        this.settlementer = settlementer;
-        return this;
+    public TOrder setSettlementer( String settlementer) {
+        this.settlementer = settlementer;return this;
     }
 
     public String getOwnerId() {
         return ownerId;
     }
 
-    public TOrder setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-        return this;
+    public TOrder setOwnerId( String ownerId) {
+        this.ownerId = ownerId;return this;
     }
 
     public String getAddressId() {
         return addressId;
     }
 
-    public TOrder setAddressId(String addressId) {
-        this.addressId = addressId;
-        return this;
+    public TOrder setAddressId( String addressId) {
+        this.addressId = addressId;return this;
     }
 
     public String getGoodsId() {
         return goodsId;
     }
 
-    public TOrder setGoodsId(String goodsId) {
-        this.goodsId = goodsId;
-        return this;
+    public TOrder setGoodsId( String goodsId) {
+        this.goodsId = goodsId;return this;
     }
 
     public Integer getType() {
         return type;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public TOrder setType( Integer type) {
+        this.type = type;return this;
     }
 
     public Integer getVersion() {
         return version;
     }
 
-    public TOrder setVersion(Integer version) {
-        this.version = version;
-        return this;
+    public TOrder setVersion( Integer version) {
+        this.version = version;return this;
     }
 
     public Integer getStatus() {
         return status;
     }
 
-    public TOrder setStatus(Integer status) {
-        this.status = status;
-        return this;
+    public TOrder setStatus( Integer status) {
+        this.status = status;return this;
     }
 
     public String getRemark() {
         return remark;
     }
 
-    public TOrder setRemark(String remark) {
-        this.remark = remark;
-        return this;
+    public TOrder setRemark( String remark) {
+        this.remark = remark;return this;
+    }
+
+    public String getCanceler() {
+        return canceler;
+    }
+
+    public TOrder setCanceler( String canceler) {
+        this.canceler = canceler;return this;
+    }
+
+    public Date getCancelTime() {
+        return cancelTime;
+    }
+
+    public TOrder setCancelTime( Date cancelTime) {
+        this.cancelTime = cancelTime;return this;
     }
 
     @Override

@@ -10,8 +10,10 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
 import com.soft.ware.rest.modular.auth.service.ImService;
 import com.soft.ware.rest.modular.auth.service.ImUserService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerGroupsService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.goods.model.TGoods;
+import com.soft.ware.rest.modular.im_groups.model.SImGroups;
+import com.soft.ware.rest.modular.im_groups.service.ISImGroupsService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,7 +47,7 @@ public class ImServiceImpl implements ImService {
     private Logger logger = LoggerFactory.getLogger(ImServiceImpl.class);
 
     @Autowired
-    private TblOwnerGroupsService ownerGroupsService;
+    private ISImGroupsService imGroupsService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -67,16 +69,11 @@ public class ImServiceImpl implements ImService {
      */
     @Deprecated
     @Override
-    public void sendNewOrderNotify(SessionUser user, TblOrder order){
-        Kv<String, Object> body = Kv.obj().set("code","new_order");
-        sendNotify(user, body,"新订单到达");
-    }
-
-    @Override
     public void sendNewOrderNotify(SessionUser user, TOrder order){
         Kv<String, Object> body = Kv.obj().set("code","new_order");
         sendNotify(user, body,"新订单到达");
     }
+
 
     /**
      * 发送添加商品通知
@@ -84,7 +81,7 @@ public class ImServiceImpl implements ImService {
      * @param goods
      */
     @Override
-    public void sendAddGoodsNotify(SessionUser user, TblGoods goods) {
+    public void sendAddGoodsNotify(SessionUser user, TGoods goods) {
         Kv<String, Object> body = Kv.obj().set("code", "add_goods").set("handlerBy", user.getName()).set("goods", goods);
         sendNotify(user, body,"商品添加");
     }
@@ -282,7 +279,7 @@ public class ImServiceImpl implements ImService {
      * @param body
      * @return
      */
-    private Kv<String,Object> buildBaseMsg(TblOwnerGroups groups,ImGroups g,Kv<String,Object> body){
+    private Kv<String,Object> buildBaseMsg(SImGroups groups,ImGroups g,Kv<String,Object> body){
         Kv<String, Object> params = Kv.init();
         params.put("version", 1);
         params.put("target_type", "group");
@@ -301,8 +298,8 @@ public class ImServiceImpl implements ImService {
      * @param log  日志前缀
      */
     private void sendNotify(SessionUser user,Kv<String,Object> body,String log){
-        List<TblOwnerGroups> groups = ownerGroupsService.find(user, TblOwnerGroups.type_0);
-        for (TblOwnerGroups group : groups) {
+        List<SImGroups> groups = imGroupsService.find(user, TblOwnerGroups.type_0);
+        for (SImGroups group : groups) {
             ImGroups g = JSON.parseObject(group.getBody(), ImGroups.class);
             if (g == null) {
                 continue;

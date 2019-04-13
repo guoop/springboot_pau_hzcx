@@ -10,13 +10,13 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -29,8 +29,11 @@ public class WxController extends BaseController {
     @Autowired
     private ITOwnerService ownerService;
 
-    @Resource
+    @Autowired
     private ISWxAppService appService;
+
+    @Autowired
+    private ITOwnerConfigService configService;
 
 
     /**
@@ -44,7 +47,8 @@ public class WxController extends BaseController {
         Map<String, Object> app = appService.findMap(Kv.by("appId", appId));
         Map<String, Object> owner = ownerService.findMap(Kv.by("id",app.get("ownerId")));
         WxMaService service = hzcxWxService.getWxMaService(BeanMapUtils.toObject(app, SWxApp.class));
-        return renderOpenId(service, appId, code).set("owner", owner).merge("owner", app).del("owner", "app_secret");
+        Map<String, Object> config = configService.findMap(Kv.by("ownerId", app.get("ownerId")));
+        return renderOpenId(service, appId, code).set("owner", owner).merge("owner", app).merge("owner",config).del("owner", "app_secret");
     }
 
     /**

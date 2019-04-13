@@ -97,7 +97,7 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         g.setSource(TblGoods.source_2);
         g.setIsDelete(TblGoods.is_delete_0);
         if(this.insert(g)){
-            imService.sendAddGoodsNotify(user, g);
+            //imService.sendAddGoodsNotify(user, g);
             s.setOwner(user.getOwnerId());
             s.setGoodsId(g.getId());
             s.setBeforeBaseline(BigDecimal.ZERO);
@@ -125,7 +125,7 @@ public class TblGoodsServiceImpl extends BaseService<TblGoodsMapper,TblGoods> im
         g.setSource(TblGoods.source_1);
         g.setIsDelete(TblGoods.is_delete_0);
         if(this.insert(g)){
-            imService.sendAddGoodsNotify(user, g);
+            //imService.sendAddGoodsNotify(user, g);
             s.setOwner(user.getOwnerId());
             s.setGoodsId(g.getId());
             s.setBeforeBaseline(BigDecimal.ZERO);

@@ -4,9 +4,12 @@ import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
+import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
+import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.Tip;
@@ -34,6 +37,8 @@ import com.soft.ware.rest.modular.order.controller.dto.PayAfterOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
+import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
+import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
@@ -107,6 +112,9 @@ public class CustomerController extends BaseController {
 
     @Autowired
     private ITOrderChildService orderChildService;
+
+    @Autowired
+    private ITOrderMoneyDiffService orderMoneyDiffService;
 
     @Autowired
     private WXContants wxContants;
@@ -184,7 +192,8 @@ public class CustomerController extends BaseController {
     public Object owner(SessionUser user) {
         Map<String, Object> owner = ownerService.findMap(Kv.by("id", user.getOwnerId()));
         Map<String, Object> app = appService.findMap(Kv.by("ownerId", user.getOwnerId()));
-        return render().set("owner", owner).merge("owner", app);
+        Map<String, Object> config = ownerConfigService.findMap(Kv.by("ownerId", user.getOwnerId()));
+        return render().set("owner", owner).merge("owner", app).merge("owner", config).del("owner", "app_secret");
     }
 
 
@@ -218,7 +227,7 @@ public class CustomerController extends BaseController {
             param.setStatus(Integer.MAX_VALUE+"");
         }
         List<Integer> sources = Lists.newArrayList(TOrder.SOURCE_0, TOrder.SOURCE_2);
-        Kv<String, Object> map = Kv.obj("creater", user.getOpenId()).set("page", page).set("sources", "'" + StringUtils.join(sources, "','") + "'");
+        Kv<String, Object> map = Kv.obj("creater", user.getOpenId()).set("page", page).set("status",param.getStatus()).set("sources", "'" + StringUtils.join(sources, "','") + "'");
         List<Map<String, Object>> maps = orderService.findMaps(map);
         return render(maps);
     }
@@ -312,10 +321,10 @@ public class CustomerController extends BaseController {
     @RequestMapping(value = "order/address",method = RequestMethod.POST)
     public Tip orderAddressUpdate(SessionUser user,@RequestBody Map<String,Object> param) throws Exception {
         Kv<String, Object> kv = Kv.toKv(param);
-        String orderNo = kv.requiredStr("orderNo");
-        String addressId = kv.requiredStr("addressId");
+        String orderNo = kv.requiredStr("orderNO");
+        String addressId = kv.requiredStr("addressID");
         kv.remove("addressId");
-        TOrder order = BeanMapUtils.toObject(orderService.findMap(kv.set("ownerId", user.getOwnerId()).set("creater", user.getOpenId())), TOrder.class);
+        TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("orderNo", orderNo).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId())), TOrder.class);
         order.setAddressId(addressId);
         boolean update = orderService.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setOwnerId(user.getOwnerId()).setStatus(TOrder.STATUS_0)));
         return render(update);
@@ -448,7 +457,7 @@ public class CustomerController extends BaseController {
     public Tip orders(SessionUser user,@PathVariable String no,@RequestBody PayAfterOrderParam param) throws Exception {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj().set("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
-        TAddress address = BeanMapUtils.toObject(addressService.findMap(Kv.by("id", param.getAddressId())), TAddress.class);
+        TAddress address = BeanMapUtils.toObject(addressService.findMap(Kv.by("id",order.getAddressId())), TAddress.class);
         List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
         List<String> names = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
         long current = System.currentTimeMillis();
@@ -505,19 +514,19 @@ public class CustomerController extends BaseController {
     /**
      * 微信支付
      * @param user
-     * @param param
+     * @param map
      * @param request
      * @return
      */
     @RequestMapping(value = "wxpay/unifiedorder",method = RequestMethod.POST)
-    public Object unifiedorder(SessionUser user, @RequestBody UnifiedorderParam param, HttpServletRequest request) throws Exception {
-        if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
-            return render(false, "请完善预留手机号");
-        }
-        String no = param.gevoidNO();
+    public Object unifiedorder(SessionUser user, @RequestBody Map<String,Object> map, HttpServletRequest request) throws Exception {
+        Kv<String,Object> kv = Kv.toKv(map);
+        String no = kv.requiredStr("orderNO");
+        String source = kv.requiredStr("source");
+        String phone = kv.requiredStr("phone");
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
         SWxApp app = appService.find(user);
-        boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(param.getSource());
+        boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(source);
         // 获取客户端ip
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
         // 商品描述
@@ -534,7 +543,7 @@ public class CustomerController extends BaseController {
         // 商户订单号
         String out_trade_no = no;
         if (source2) {
-            out_trade_no = param.getTelephone() + "" + order.getCreateTime().getTime();
+            out_trade_no = phone + "" + order.getCreateTime().getTime();
         }
         // 订单价格 单位是 分
         int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
@@ -584,17 +593,101 @@ public class CustomerController extends BaseController {
         try {
             WxPayMpOrderResult res = hzcxWxService.getWxPayService(app).createOrder(req);
             tip = render();
-            tip.set("out_trade_no", req.getOutTradeNo());
+            tip.set("outTradeNo", req.getOutTradeNo());
             // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数
             tip.set("nonceStr", res.getNonceStr());
             tip.set("timestamp", res.getTimeStamp());
             tip.set("package", res.getPackageValue());
             tip.set("paySign", res.getPaySign());
+            tip.set("status", "100");
         } catch (WxPayException e) {
             e.printStackTrace();
             return render(false, e.getReturnMsg()).set("status", "102");
         }
         return tip;
+    }
+
+    /**
+     * 买家删除订单
+     * @param user
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "order/delete",method = RequestMethod.POST)
+    public Object deleteOrder(SessionUser user,@Valid @RequestBody OrderDeleteParam param,BindingResult result){
+        Validator.valid(result);
+        boolean b = orderService.customerDelete(user, param);
+        return render(b);
+    }
+
+    /**
+     * 买家取消订单
+     * @param user
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "order/cancel",method = RequestMethod.POST)
+    public Object cancelOrder(SessionUser user,@Valid @RequestBody OrderDeleteParam param,BindingResult result){
+        Validator.valid(result);
+        boolean b = orderService.customerCancel(user, param);
+        return render(b);
+    }
+
+
+
+    /**
+     * 前端查询某个订单的状态
+     * @param user
+     * @param orderNO
+     * @return
+     * @throws WxPayException
+     */
+    @RequestMapping(value = "order/status",method = RequestMethod.GET)
+    public Object orderFind(SessionUser user,String orderNO) throws Exception {
+        SWxApp app = appService.find(user);
+        WxPayService service = hzcxWxService.getWxPayService(app);
+        WxPayOrderQueryResult result = service.queryOrder(WxPayOrderQueryRequest.newBuilder().outTradeNo(orderNO).build());
+        try{
+            Map<String, Object> map = orderService.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", orderNO));
+            if (TblOrder.STATUS_0.equals(map.get("status"))) {
+                //orderService.update(result, user);
+                //todo yancc
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("前端查询订单，被动更新失败：订单号=" + orderNO);
+        }
+        return render(true, "订单支付成功！").set("total_fee", result.getTotalFee());
+    }
+
+
+
+    /**
+     * 补差价的二次支付下单
+     * 描述：一个订单，当商家补充了小票金额后，当小票金额大于订单已支付金额时，需要买家补齐差价。
+     * @param user 用户
+     * @param param 参数
+     * @return 该接口逻辑和微信下单接口逻辑一样，返回结果也一样
+     */
+    @RequestMapping(value = "diff/wxpay/unifiedorder",method = RequestMethod.POST)
+    public Object diff(SessionUser user, @RequestBody @Valid DiffParam param, HttpServletRequest request, BindingResult result) throws Exception {
+        Validator.valid(result);
+        String no = param.getDiffNO();
+        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("payOrderNo", no).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId()));
+        TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
+        SWxApp app = appService.find(user);
+        String remark = "无";
+        // 获取客户端ip
+        String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
+        // 商品描述
+        String body = "购买商品";
+        // 支付成功的回调地址  可访问 不带参数
+        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiff();
+        // 订单价格 单位是 分
+        Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
+        WxPayUnifiedOrderRequest req = buildPayReq(user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+        return  buildPayView(app, req);
+
     }
 
 

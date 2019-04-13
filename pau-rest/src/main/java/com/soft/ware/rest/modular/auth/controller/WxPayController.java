@@ -5,12 +5,13 @@ import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
-import com.soft.ware.rest.modular.auth.service.TblOrderMoneyDiffService;
-import com.soft.ware.rest.modular.auth.service.TblOrderService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
+import com.soft.ware.rest.modular.order.service.ITOrderService;
+import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,13 +24,17 @@ public class WxPayController extends BaseController {
     private HzcxWxService hzcxWxService;
 
     @Autowired
-    private TblOrderService orderService;
+    private ITOrderService orderService;
 
     @Autowired
-    private TblOwnerService ownerService;
+    private ITOwnerService ownerService;
 
     @Autowired
-    private TblOrderMoneyDiffService orderMoneyDiffService;
+    private ISWxAppService appService;
+
+    @Autowired
+    private ITOrderMoneyDiffService orderMoneyDiffService;
+
 
 
     /**
@@ -41,12 +46,12 @@ public class WxPayController extends BaseController {
     public String parseOrderNotifyResult(@RequestBody String xmlData) {
         try {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
-            TblOwner owner = ownerService.findByAppId(result.getAppid());
-            if (owner != null) {
-                SessionUser user = new SessionUser(owner.getOwner());
-                WxPayService service = hzcxWxService.getWxPayService(owner);
+            SWxApp app = appService.findByAppId(result.getAppid());
+            if (app != null) {
+                SessionUser user = new SessionUser(app.getId());
+                WxPayService service = hzcxWxService.getWxPayService(app);
                 result.checkResult(service, service.getConfig().getSignType(), false);
-                orderService.update(result, user, result.getOutTradeNo());
+                orderService.updatePayCallback(result, user, result.getOutTradeNo());
                 logger.info("商家配送支付回调成功：" + xmlData);
                 return WxPayNotifyResponse.success("成功");
             }
@@ -70,12 +75,12 @@ public class WxPayController extends BaseController {
     public String pickup(@RequestBody String xmlData) {
         try {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
-            TblOwner owner = ownerService.findByAppId(result.getAppid());
-            if (owner != null) {
-                SessionUser user = new SessionUser(owner.getOwner());
-                WxPayService service = hzcxWxService.getWxPayService(owner);
+            SWxApp app = appService.findByAppId(result.getAppid());
+            if (app != null) {
+                SessionUser user = new SessionUser(app.getOwnerId());
+                WxPayService service = hzcxWxService.getWxPayService(app);
                 result.checkResult(service, service.getConfig().getSignType(), false);
-                orderService.update(result, user, result.getAttach());
+                orderService.updatePayCallback(result, user, result.getAttach());
                 logger.info("到店自取支付回调成功：" + xmlData);
                 return WxPayNotifyResponse.success("成功");
             }
@@ -98,10 +103,10 @@ public class WxPayController extends BaseController {
     public String diff(@RequestBody String xmlData) {
         try {
             final WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
-            TblOwner owner = ownerService.findByAppId(result.getAppid());
-            if (owner != null) {
-                SessionUser user = new SessionUser(owner.getOwner());
-                WxPayService service = hzcxWxService.getWxPayService(owner);
+            SWxApp app = appService.findByAppId(result.getAppid());
+            if (app != null) {
+                SessionUser user = new SessionUser(app.getOwnerId());
+                WxPayService service = hzcxWxService.getWxPayService(app);
                 result.checkResult(service, service.getConfig().getSignType(), false);
                 orderMoneyDiffService.update(result, user);
                 logger.info("到店自取支付回调成功：" + xmlData);

@@ -85,10 +85,10 @@
         update table tbl_order o set o.status = #{status} where o.no = #{no} and o.owner = #{user.owner}
     </update>
     <update id="customerDelete">
-      update tbl_order set status = -3 where owner = #{user.owner} and no = #{param.no} and created_by = #{user.openId} and status in (-2, -1, 0, 3);
+      update tbl_order set status = -3 where owner = #{user.ownerId} and no = #{param.no} and created_by = #{user.openId} and status in (-2, -1, 0, 3);
     </update>
     <update id="customerCancel">
-		update tbl_order set status = -1, cancel_by = #{user.openId}, cancel_at = now() where owner = #{user.owner} and no = #{param.no} and created_by = #{user.id}
+		update tbl_order set status = -1, cancel_by = #{user.openId}, cancel_at = now() where owner = #{user.ownerId} and no = #{param.no} and created_by = #{user.id}
     </update>
     
     <select id="findOrderListByStatus" parameterType="map" resultMap="BaseResultMap">

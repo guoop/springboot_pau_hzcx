@@ -2,7 +2,9 @@ package com.soft.ware.rest.modular.order.service;
 
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.baomidou.mybatisplus.service.IService;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.rest.modular.address.model.TAddress;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -36,4 +38,10 @@ public interface ITOrderService extends IService<TOrder> {
     WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order,List<String> goodsNames, TAddress address);
 
     TOrder createMiniAppOrder(SessionUser user, CreateOrderParam param) throws Exception;
+
+    boolean updatePayCallback(WxPayOrderNotifyResult result, SessionUser user, String no) throws Exception;
+
+    boolean customerDelete(SessionUser user, OrderDeleteParam param);
+
+    boolean customerCancel(SessionUser user, OrderDeleteParam param);
 }

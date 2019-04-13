@@ -29,7 +29,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -359,7 +362,7 @@ public class WXSmallCustomerController  extends BaseController {
            smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.gevoidNO());
         }
         // IM通知店铺
-        imService.sendNewOrderNotify(user, order);
+        //imService.sendNewOrderNotify(user, order);
         String tempKey = "ms:fit:" + param.gevoidNO();
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800,TimeUnit.SECONDS);
         logger.info("买家支付订单时保存FormID {} = {}", tempKey, param.getFormID());
@@ -402,7 +405,7 @@ public class WXSmallCustomerController  extends BaseController {
         if (Integer.valueOf(2).equals(param.getSource()) && StringUtils.isBlank(param.getTelephone())) {
             return render(false, "请完善预留手机号");
         }
-        String no = param.gevoidNO();
+        String no = param.getOrderNO();
         Integer source  = param.getSource();
         TblOrder order = orderService.findByNo(user,no);
         TblOwner owner = ownerService.find(user);
@@ -466,7 +469,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/customer/v1/order/delete",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/order/delete",method = RequestMethod.POST)
     public Object deleteOrder(SessionUser user,@RequestBody OrderDeleteParam param){
         boolean b = orderService.customerDelete(user, param);
         return render(b);
@@ -478,7 +481,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/customer/v1/order/cancel",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v1/order/cancel",method = RequestMethod.POST)
     public Object cancelOrder(SessionUser user,@RequestBody OrderDeleteParam param){
         boolean b = orderService.customerCancel(user, param);
         return render(b);
@@ -571,7 +574,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      * @throws WxPayException
      */
-    @RequestMapping(value = "/customer/v1/order/status",method = RequestMethod.GET)
+    //@RequestMapping(value = "/customer/v1/order/status",method = RequestMethod.GET)
     public Object orderFind(SessionUser user,String orderNO) throws WxPayException {
         TblOwner owner = ownerService.find(user);
         WxPayService service = hzcxWxService.getWxPayService(owner);
@@ -596,7 +599,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @param param 参数
      * @return 该接口逻辑和微信下单接口逻辑一样，返回结果也一样
      */
-    @RequestMapping(value = "/customer/v2/diff/wxpay/unifiedorder",method = RequestMethod.POST)
+    //@RequestMapping(value = "/customer/v2/diff/wxpay/unifiedorder",method = RequestMethod.POST)
     public Object diff(SessionUser user, @RequestBody @Valid DiffParam param, HttpServletRequest request, BindingResult result) {
         Validator.valid(result);
         String no = param.getDiffNO();

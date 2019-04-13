@@ -2,6 +2,9 @@ package com.soft.ware.rest.modular.order.service.impl;
 
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
@@ -12,6 +15,7 @@ import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
@@ -224,6 +228,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             // 配送费取delivery_great_money
             actualFee = config.getDeliveryGreatMoney();
         }
+        actualFee = BigDecimal.ZERO;
         final String orderNO =  IdGenerator.getId();
         TOrder o = new TOrder();
         o.setId(IdGenerator.getId());
@@ -254,6 +259,46 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         redisTemplate.opsForValue().set(tempKey,param.getFormID(), 604800, TimeUnit.SECONDS);
         logger.debug("买家下单时保存FormID {tempKey} = {req.body.formID}", tempKey, param.getFormID());
         return o;
+    }
+
+
+    @Override
+    public boolean updatePayCallback(WxPayOrderNotifyResult result, SessionUser user, String no) throws Exception {
+        user.setOpenId(result.getOpenid());
+        TOrder order = BeanMapUtils.toObject(findMap(Kv.obj("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
+        Integer beforeStatus = order.getStatus();
+        order.setPayTime(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
+        order.setStatus(TOrder.STATUS_1);
+        Map<String, Object> map = BeanMapUtils.toMap(result, true);
+        order.setPayResponse(JSON.toJSONString(map));
+        Integer version = order.getVersion();
+        //todo yancc 订单更新失败怎么办
+        order.setVersion(order.getVersion() + 1);
+        Integer update = orderMapper.update(order, new EntityWrapper<TOrder>(new TOrder().setId(order.getId()).setStatus(beforeStatus).setVersion(version)));
+        if (update != 1) {
+            //这样做也没什么用，但是微信会尝试重新执行回调
+            throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean customerDelete(SessionUser user, OrderDeleteParam param) {
+        int i = orderMapper.customerDelete(user, param);
+        if (i == 1) {
+            return true;
+        } else {
+            throw new PauException(BizExceptionEnum.UPDATE_ERROR);
+        }
+    }
+
+    @Override
+    public boolean customerCancel(SessionUser user, OrderDeleteParam param) {
+        int i = orderMapper.customerCancel(user, param);
+        if (i != 1) {
+            throw new PauException(BizExceptionEnum.UPDATE_ERROR);
+        }
+        return true;
     }
 
 

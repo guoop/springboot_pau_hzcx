@@ -22,7 +22,7 @@
        phone ,owner_id ownerId,name ,province ,detail ,is_default isDefault,is_delete isDelete,DATE_FORMAT(ta.created_time,'%Y-%m-%d %H:%i:%s') createdTime,creater ,DATE_FORMAT(ta.deleted_time,'%Y-%m-%d %H:%i:%s') deletedTime
     </sql>
     <update id="deleteDefaultAddress">
-        update tbl_address a set a.is_default = 0 where a.owner = #{user.openId}
+        update t_address a set a.is_default = 0 where a.owner_id = #{user.openId}
     </update>
     <select id="findMaps" resultType="java.util.Map">
         select

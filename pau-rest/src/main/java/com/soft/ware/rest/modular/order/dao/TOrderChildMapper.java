@@ -2,6 +2,7 @@ package com.soft.ware.rest.modular.order.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -16,5 +17,5 @@ import java.util.Map;
  */
 public interface TOrderChildMapper extends BaseMapper<TOrderChild> {
 
-    List<Map> findMaps(Map<String, Object> map);
+    List<Map> findMaps(@Param("params") Map<String, Object> params);
 }

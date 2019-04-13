@@ -2,6 +2,7 @@ package com.soft.ware.rest.modular.auth.util;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
@@ -147,7 +148,11 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                     continue;
                 }
                 field.setAccessible(true);
-                field.set(obj, map.get(field.getName()));
+                if (field.getType() == java.util.Date.class && map.get(field.getName()) != null && map.get(field.getName()) instanceof java.lang.String) {
+                    field.set(obj, DateUtils.parseDate(map.get(field.getName()).toString(),"yyyy-MM-dd HH:mm:ss"));
+                } else {
+                    field.set(obj, map.get(field.getName()));
+                }
             }
         }
 

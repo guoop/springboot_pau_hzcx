@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.order.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -30,4 +31,8 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
     List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
 
     List<Map<String,Object>> selectOrdersListByMap(Map<String,Object> map);
+
+    int customerDelete(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
+
+    int customerCancel(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -50,12 +51,12 @@ public class TAddress extends Model<TAddress> {
 
     private Integer isDelete;
     //创建时间
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
     //创建人
     private String creater;
     //删除时间
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deletedTime;
 
 

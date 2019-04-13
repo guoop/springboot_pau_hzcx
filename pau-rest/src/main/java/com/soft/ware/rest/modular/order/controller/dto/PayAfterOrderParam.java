@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.order.controller.dto;
 
-import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 支付后订单调用参数
@@ -9,24 +10,21 @@ public class PayAfterOrderParam {
 
     //订单支付方式（0：在线支付；1：货到付款）
     private int moneyChannel;
-    //下单时间（发送模板消息使用）
-    private Date created_at;
     //商品名称（发送模板消息使用）
     private String goodsName;
     //订单备注信息（更新订单信息）
     private String remark;
     //订单来源（2：到店自提）
-    private Integer source;
+    private Short source;
     //订单号
     private String orderNO;
     //package
+    @JsonProperty(value = "package")
     private String pack;
     //是个long值
-    private Long pickup_time;
+    private Long pickupTime;
     //formID
     private String formID;
-
-    private String addressId;
 
     public int getMoneyChannel() {
         return moneyChannel;
@@ -34,14 +32,6 @@ public class PayAfterOrderParam {
 
     public void setMoneyChannel(int moneyChannel) {
         this.moneyChannel = moneyChannel;
-    }
-
-    public Date getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
     }
 
     public String getGoodsName() {
@@ -60,11 +50,11 @@ public class PayAfterOrderParam {
         this.remark = remark;
     }
 
-    public Integer getSource() {
+    public Short getSource() {
         return source;
     }
 
-    public void setSource(Integer source) {
+    public void setSource(Short source) {
         this.source = source;
     }
 
@@ -84,12 +74,12 @@ public class PayAfterOrderParam {
         this.pack = pack;
     }
 
-    public Long getPickup_time() {
-        return pickup_time;
+    public Long getPickupTime() {
+        return pickupTime;
     }
 
-    public void setPickup_time(Long pickup_time) {
-        this.pickup_time = pickup_time;
+    public void setPickupTime(Long pickupTime) {
+        this.pickupTime = pickupTime;
     }
 
     public String getFormID() {
@@ -98,13 +88,5 @@ public class PayAfterOrderParam {
 
     public void setFormID(String formID) {
         this.formID = formID;
-    }
-
-    public String getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
     }
 }

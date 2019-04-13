@@ -31,6 +31,9 @@
     <sql id="Base_Column_List">
         id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, goods_id AS goodsId, type, version, status, remark
     </sql>
+    <sql id="t_order_alias_columns">
+        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
+    </sql>
 
 
     <sql id="Condition">
@@ -104,9 +107,6 @@
     </sql>
 
 
-    <sql id="t_order_alias_columns">
-        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
-    </sql>
     <resultMap id="orderMap" type="map" autoMapping="true">
         <id column="id" property="id"/>
         <result column="child_goodsId"/>
@@ -149,16 +149,16 @@
         and a.creater = #{map.creater}
     </if>
     <if test="map.ownerId != null and map.ownerId != ''">
-        and a.owner_id = #{map.owner_id}
+        and a.owner_id = #{map.ownerId}
     </if>
     <if test="map.type != null and map.type != ''">
         and a.type = #{map.type}
     </if>
     <if test="map.status != null and map.status != ''">
-        and a.status = #{map.status}
+        and a.status in (${map.status})
     </if>
-    <if test="map.soruces != null and map.sources != ''">
-        and a.soruce in ${map.sources}
+    <if test="map.sources != null and map.sources != ''">
+        and a.source in (${map.sources})
     </if>
     <include refid="map_limit"/>
     </select>
@@ -186,4 +186,12 @@
                 limit #{page},20
             </if>
     </select>
+
+
+    <update id="customerDelete">
+        update t_order set status = -3 where owner_id = #{user.ownerId} and order_no = #{param.no} and creater = #{user.openId} and status in (-2, -1, 0, 3);
+    </update>
+    <update id="customerCancel">
+        update t_order set status = -1, canceler = #{user.openId}, cancel_time = now() where owner_id = #{user.ownerId} and order_no = #{param.no} and creater = #{user.openId} and status in (0, 1);
+    </update>
 </mapper>

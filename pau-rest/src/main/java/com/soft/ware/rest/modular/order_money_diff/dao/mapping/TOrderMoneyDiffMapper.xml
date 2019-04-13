@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.soft.ware.rest.modular.order_money_diff.dao.TOrderMoneyDiffMapper">
-
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff">
         <id column="id" property="id" />
@@ -19,4 +18,56 @@
         <result column="is_delete" property="isDelete" />
     </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pay_order_no AS payOrderNo, owner_id AS ownerId, order_no AS orderNo, money, money_diff AS moneyDiff, pic, created_time AS createdTime, creater, status, pay_time AS payTime, pay_response AS payResponse, is_delete AS isDelete
+    </sql>
+    <sql id="t_order_money_diff_alias_columns">
+        tomd.pay_order_no AS payOrderNo, tomd.owner_id AS ownerId, tomd.order_no AS orderNo, tomd.money, tomd.money_diff AS moneyDiff, tomd.pic, tomd.created_time AS createdTime, tomd.creater, tomd.status, tomd.pay_time AS payTime, tomd.pay_response AS payResponse, tomd.is_delete AS isDelete
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="t_order_money_diff_alias_columns"/>
+        from t_order_money_diff tomd where true
+        <if test="map.id != null and map.id != ''">
+            and tomd.id = #{map.id}
+        </if>
+        <if test="map.payOrderNo != null and map.payOrderNo != ''">
+            and tomd.pay_order_no = #{map.payOrderNo}
+        </if>
+        <if test="map.ownerId != null and map.ownerId != ''">
+            and tomd.owner_id = #{map.ownerId}
+        </if>
+        <if test="map.orderNo != null and map.orderNo != ''">
+            and tomd.order_no = #{map.orderNo}
+        </if>
+        <if test="map.money != null">
+            and tomd.money = #{map.money}
+        </if>
+        <if test="map.moneyDiff != null">
+            and tomd.money_diff = #{map.moneyDiff}
+        </if>
+        <if test="map.pic != null and map.pic != ''">
+            and tomd.pic = #{map.pic}
+        </if>
+        <if test="map.createdTime != null">
+            and tomd.created_time = #{map.createdTime}
+        </if>
+        <if test="map.creater != null and map.creater != ''">
+            and tomd.creater = #{map.creater}
+        </if>
+        <if test="map.status != null">
+            and tomd.status = #{map.status}
+        </if>
+        <if test="map.payTime != null">
+            and tomd.pay_time = #{map.payTime}
+        </if>
+        <if test="map.payResponse != null and map.payResponse != ''">
+            and tomd.pay_response = #{map.payResponse}
+        </if>
+        <if test="map.isDelete != null">
+            and tomd.is_delete = #{map.isDelete}
+        </if>
+    </select>
 </mapper>
