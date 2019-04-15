@@ -14,4 +14,5 @@ public class TGoodsStorageServiceImpl extends BaseService<TGoodsStorageMapper,TG
     @Resource
     private TGoodsStorageMapper mapper;
 
+
 }

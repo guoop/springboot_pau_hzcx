@@ -4,4 +4,7 @@ import com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage;
 
 public interface TGoodsStorageService extends IService<TGoodsStorage> {
 
+
+
+
 }

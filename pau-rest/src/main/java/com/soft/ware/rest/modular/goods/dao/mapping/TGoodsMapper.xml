@@ -109,7 +109,7 @@
     </select>
 
     <!--根据商品分类id查询所有商品列表-->
-    <select id="selectTGoodsListByMap" parameterType="java.util.Map" resultType="map" >
+    <select id="selectTGoodsListByMap" parameterType="map" resultType="java.util.HashMap" >
         select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.created_time createTime,b.start_time startTime,b.end_time endTime,c.`name` as specName ,d.`name` categoryName,
         e.after_storage stock ,e.baseline
         from t_goods a
@@ -124,12 +124,11 @@
         <if test="owner_id != null and owner_id != ''">
             and a.owner_id = #{owner_id}
         </if>
-        <if test="goodsName != null and goodsName != ''">
-            <![CDATA[
-            and a.name like %#{goodsName}% ]]>
+        <if test="name != null and name != ''">
+            and a.name like '%${name}%'
         </if>
         <if test="page != null and page != ''">
-            limit #{page},20
+             limit #{page},20
         </if>
     </select>
 
@@ -146,15 +145,13 @@
 
 <select id="findById"  parameterType="String" resultType="java.util.HashMap" >
      select a.id,a.name,a.code,a.unit_id unitId,a.`status`,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.created_time createTime,b.money as promotionMoney,b.start_time startTime,b.end_time endTime,c.`name` as specsName ,d.`name` categoryName,
-    e.after_storage stock ,e.baseline
+    IFNULL(e.after_storage,0) stock ,IFNULL(e.baseline,0)
     from t_goods a
         LEFT JOIN t_promotion b on a.id = b.goods_id
         LEFT JOIN (select GROUP_CONCAT(name) name,goods_id from t_specs GROUP BY goods_id) c on a.id = c.goods_id
         LEFT JOIN t_category d on a.category_id = d.id
         LEFT JOIN t_goods_storage e on a.id = e.goods_id
         where 1=1 and  a.id = #{id,jdbcType=VARCHAR}
-
-
 
 </select>
 

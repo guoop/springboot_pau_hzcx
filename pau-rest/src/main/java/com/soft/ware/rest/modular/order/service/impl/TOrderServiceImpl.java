@@ -11,6 +11,7 @@ import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.modular.address.model.TAddress;
@@ -41,10 +42,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -109,16 +107,22 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
     @Override
-    public List<Map<String, Object>> selectOrdersListByMap(Map<String, Object> map) {
+    public List<HashMap<String, Object>> selectOrdersListByMap(Map<String, Object> map) {
 
-        List<Map<String,Object>> listMap = orderMapper.selectOrdersListByMap(map);
-        List<Map<String,Object>> resultList = new ArrayList<>();
+        List<HashMap<String,Object>> listMap = orderMapper.selectOrdersListByMap(map);
+        List<HashMap<String,Object>> resultList = new ArrayList<>();
         if(listMap.size() > 0){
             for (int i = 0; i < listMap.size(); i++) {
-                Map<String,Object>  resultMap = listMap.get(i);
+                HashMap<String,Object>  resultMap = listMap.get(i);
                 if(resultMap.get("source").toString().equals("2")){
                    resultMap.remove("address");
                    resultMap.remove("addressId");
+                }
+                if(ToolUtil.isNotEmpty(resultMap.get("id").toString())){
+                    Map<String,Object> param = new HashMap<>();
+                    param.put("orderId",resultMap.get("id").toString());
+                    List<TOrderChild> orderChildList = orderChildService.selectOrderChildListByMap(param);
+                    resultMap.put("goodsList",orderChildList);
                 }
                 resultList.add(resultMap);
             }
@@ -299,6 +303,11 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             throw new PauException(BizExceptionEnum.UPDATE_ERROR);
         }
         return true;
+    }
+
+    @Override
+    public int selectOrderCount(String ownerId) {
+    return orderMapper.selectOrderCount(ownerId);
     }
 
 

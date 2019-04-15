@@ -11,6 +11,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public interface ITOrderService extends IService<TOrder> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
-    List<Map<String,Object>> selectOrdersListByMap(Map<String,Object> map);
+    List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map);
 
     WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order,List<String> goodsNames, TAddress address);
 
@@ -44,4 +45,6 @@ public interface ITOrderService extends IService<TOrder> {
     boolean customerDelete(SessionUser user, OrderDeleteParam param);
 
     boolean customerCancel(SessionUser user, OrderDeleteParam param);
+
+    int selectOrderCount(String ownerId);
 }

@@ -19,4 +19,9 @@
         <result column="creater" property="creater" />
     </resultMap>
 
+    <sql id="Base_Column_List" >
+        id,owner_id,goods_id,single_price,before_storage,after_storage,in_money,baseline,before_baseline,in_time,in_amount,create_time,creater
+    </sql>
+
+
 </mapper>

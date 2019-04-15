@@ -80,7 +80,18 @@ public class TOrderChild extends Model<TOrderChild> {
      */
     @TableField("create_time")
     private Date createTime;
+    /**
+     * 库存
+     */
+    private int stock;
 
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
 
     public String getId() {
         return id;

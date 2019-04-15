@@ -19,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, owner_id AS ownerId, name, phone, password, create_time AS createTime, function_list AS functionList, url_list AS urlList, category_list AS categoryList, status, description
+        id, owner_id , name, phone, password, create_time , function_list , url_list , category_list , status, description
     </sql>
 
 </mapper>

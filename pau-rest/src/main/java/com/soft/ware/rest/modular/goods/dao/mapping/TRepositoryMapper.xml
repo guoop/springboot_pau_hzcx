@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TRepository">
         <id column="id" property="id" />
-        <result column="goods_id" property="goodsId" />
+        <result column="goods_code" property="goodsId" />
         <result column="pics" property="pics" />
         <result column="is_delete" property="isDelete" />
         <result column="owner_id" property="ownerId" />
@@ -16,7 +16,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, goods_id AS goodsId, pics, is_delete AS isDelete, owner_id AS ownerId, supplier_id AS supplierId, type, remark
+        id, goods_id, pics, is_delete , owner_id , supplier_id, type, remark
     </sql>
 
+    <select id="selectRepositoryByGoodsCode"  resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_repository where code = #{code}
+    </select>
 </mapper>

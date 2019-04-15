@@ -16,4 +16,7 @@
         <result column="updater" property="updater" />
     </resultMap>
 
+<update id="updateByGoodsId">
+    update t_promotion set money = #{money} set end_time = #{endTime} where goods_id = #{goodsId}
+</update>
 </mapper>

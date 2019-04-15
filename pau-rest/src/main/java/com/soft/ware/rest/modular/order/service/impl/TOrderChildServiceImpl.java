@@ -26,8 +26,7 @@ public class TOrderChildServiceImpl extends ServiceImpl<TOrderChildMapper, TOrde
 
     @Override
     public List<TOrderChild> selectOrderChildListByMap(Map<String, Object> map) {
-
-        return null;
+        return tOrderChildMapper.selectOrderChildListByMap(map);
     }
 
     @Override

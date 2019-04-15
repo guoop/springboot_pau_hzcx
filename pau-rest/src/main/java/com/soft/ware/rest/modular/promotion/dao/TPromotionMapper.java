@@ -4,4 +4,6 @@ import com.soft.ware.rest.modular.promotion.model.TPromotion;
 
 public interface TPromotionMapper extends BaseMapper<TPromotion> {
 
+    boolean updateByGoodsId(TPromotion tPromotion);
+
 }

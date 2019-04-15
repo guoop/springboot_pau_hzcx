@@ -1,10 +1,10 @@
 package com.soft.ware.rest.modular.order.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.order.model.TOrder;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.beans.Transient;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,14 +48,29 @@ public class TOrderController extends BaseController {
      * @return owner/v2/order 修改 owner/v1/orders/list
      */
     @RequestMapping(value = "/orders/list",method = RequestMethod.GET)
+    @Transient
     public Tip getOrderList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
         param.put("owner_id", sessionUser.getOwnerId());
         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.put("page",Integer.valueOf(param.get("page").toString()));
         //List<TOrder> list = tOrderService.selectOrderListByMap(param);
-        List<Map<String,Object>> listMap = tOrderService.selectOrdersListByMap(param);
+        List<HashMap<String,Object>> listMap = tOrderService.selectOrdersListByMap(param);
         if (listMap.size() > 0) {
             return new SuccessTip(listMap);
+        }
+        return new ErrorTip();
+    }
+
+    /**
+     * 订单详情
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("order/detail")
+    public Tip orderDetail(String orderId){
+        TOrder tOrder = tOrderService.selectById(orderId);
+        if(ToolUtil.isNotEmpty(tOrder)){
+            return new SuccessTip(tOrder);
         }
         return new ErrorTip();
     }
@@ -79,10 +96,11 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "/orders/count")
     public Tip orderCount(SessionUser user){
-        TOrder tOrder = new TOrder();
-        tOrder.setOwnerId(user.getOwnerId());
-        int i = tOrderService.selectCount(new EntityWrapper<>(tOrder));
-        return new SuccessTip();
+        int orderCount = tOrderService.selectOrderCount(user.getOwnerId());
+        if(orderCount == 0 || orderCount > 0){
+            return new SuccessTip(orderCount);
+        }
+       return new ErrorTip();
     }
 
     /**
@@ -130,7 +148,6 @@ public class TOrderController extends BaseController {
         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.get("orderNo").toString();
         param.put("owner_id",sessionUser.getOwnerId());
-
         return new ErrorTip();
     }
 
@@ -148,7 +165,6 @@ public class TOrderController extends BaseController {
 
         return new ErrorTip();
     }
-
 
 
 

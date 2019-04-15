@@ -8,6 +8,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +31,11 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
 
     List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
 
-    List<Map<String,Object>> selectOrdersListByMap(Map<String,Object> map);
+    List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map);
 
     int customerDelete(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
 
     int customerCancel(@Param("user") SessionUser user, @Param("param") OrderDeleteParam param);
+
+    int selectOrderCount(String ownerId);
 }
