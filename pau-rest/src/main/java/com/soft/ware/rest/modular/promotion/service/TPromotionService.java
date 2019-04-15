@@ -4,4 +4,6 @@ import com.soft.ware.rest.modular.promotion.model.TPromotion;
 
 public interface TPromotionService extends IService<TPromotion> {
 
+    boolean updateByGoodsId(TPromotion tPromotion);
+
 }

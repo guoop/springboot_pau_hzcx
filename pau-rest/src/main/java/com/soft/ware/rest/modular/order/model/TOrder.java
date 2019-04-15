@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -67,6 +69,8 @@ public class TOrder extends Model<TOrder> {
     public static Integer REFUND_STATUS_1 = 1;
     //：失败）
     public static Integer REFUND_STATUS_2 = 2;
+
+
 
     /**
      * 自增主键
@@ -175,7 +179,18 @@ public class TOrder extends Model<TOrder> {
      */
     @TableField("cancel_time")
     private Date cancelTime;
+    /**
+     * 子订单
+     */
+    private List<TOrderChild> orderChildList = new ArrayList<>();
 
+    public List<TOrderChild> getOrderChildList() {
+        return orderChildList;
+    }
+
+    public void setOrderChildList(List<TOrderChild> orderChildList) {
+        this.orderChildList = orderChildList;
+    }
 
     public String getId() {
         return id;

@@ -123,11 +123,7 @@ public class TGoods extends Model<TGoods> {
      */
     @TableField("is_promotion")
     private Integer isPromotion;
-    /**
-     * 商品库表
-     */
-    @TableField("storage_id")
-    private String storageId;
+
 
 
     public String getId() {
@@ -275,14 +271,6 @@ public class TGoods extends Model<TGoods> {
         this.isPromotion = isPromotion;
     }
 
-    public String getStorageId() {
-        return storageId;
-    }
-
-    public void setStorageId(String storageId) {
-        this.storageId = storageId;
-    }
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -309,7 +297,6 @@ public class TGoods extends Model<TGoods> {
         ", source=" + source +
         ", topTime=" + topTime +
         ", isPromotion=" + isPromotion +
-        ", storageId=" + storageId +
         "}";
     }
 }

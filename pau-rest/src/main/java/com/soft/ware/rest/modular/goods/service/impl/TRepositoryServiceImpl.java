@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.rest.modular.goods.dao.TRepositoryMapper;
 import com.soft.ware.rest.modular.goods.model.TRepository;
 import com.soft.ware.rest.modular.goods.service.ITRepositoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -16,5 +19,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TRepositoryServiceImpl extends ServiceImpl<TRepositoryMapper, TRepository> implements ITRepositoryService {
+
+    @Resource
+    private TRepositoryMapper tRepositoryMapper;
+
+    @Override
+    public TRepository selectRepositoryByGoodsCode(String code) {
+        return tRepositoryMapper.selectRepositoryByGoodsCode(code);
+    }
 
 }

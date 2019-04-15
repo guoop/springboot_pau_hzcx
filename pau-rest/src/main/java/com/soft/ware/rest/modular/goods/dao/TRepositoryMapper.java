@@ -13,4 +13,6 @@ import com.soft.ware.rest.modular.goods.model.TRepository;
  */
 public interface TRepositoryMapper extends BaseMapper<TRepository> {
 
+    TRepository selectRepositoryByGoodsCode(String code);
+
 }

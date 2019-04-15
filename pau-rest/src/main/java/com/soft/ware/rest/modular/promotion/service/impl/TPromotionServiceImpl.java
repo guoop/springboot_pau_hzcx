@@ -14,4 +14,8 @@ public class TPromotionServiceImpl extends BaseService<TPromotionMapper,TPromoti
     @Resource
     private TPromotionMapper mapper;
 
+    @Override
+    public boolean updateByGoodsId(TPromotion tPromotion) {
+        return false;
+    }
 }

@@ -123,9 +123,9 @@ public class AuthController extends BaseController {
         Kv<String,Object> map = render(true,"认证通过");
         map.set("token", token);
         map.set("payload", WXUtils.getPayLoad());
-        map.set("user", BeanMapUtils.toMap(user, true));
-        map.set("owner_id", user.getOwnerId());
-        HttpKit.getRequest().setAttribute("owner_id", user.getOwnerId());
+        map.set("user", user);
+        map.set("ownerId", user.getOwnerId());
+        HttpKit.getRequest().setAttribute("ownerId", user.getOwnerId());
         return map;
     }
 

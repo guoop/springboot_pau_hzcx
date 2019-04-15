@@ -13,4 +13,6 @@ import com.soft.ware.rest.modular.goods.model.TRepository;
  */
 public interface ITRepositoryService extends IService<TRepository> {
 
+    TRepository selectRepositoryByGoodsCode(String code);
+
 }
