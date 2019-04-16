@@ -1,40 +1,31 @@
-package com.soft.ware.rest.modular.auth.controller;
+package com.soft.ware.rest.modular;
 
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.util.Kv;
-import com.soft.ware.rest.common.persistence.model.TblAppBase;
-import com.soft.ware.rest.common.persistence.model.TblAppVersion;
-import com.soft.ware.rest.common.persistence.model.TblCategory;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.service.TblAppVersionService;
-import com.soft.ware.rest.modular.auth.service.TblCategoryService;
-import com.soft.ware.rest.modular.auth.service.TblGoodsService;
-import com.soft.ware.rest.modular.auth.service.TblOrderService;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.auth.util.WXUtils;
+import com.soft.ware.rest.modular.goods.model.TCategory;
+import com.soft.ware.rest.modular.goods.service.ITCategoryService;
+import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-//@RestController
+@RestController
+@RequestMapping(value = "/user")
 public class AppController extends BaseController {
 
-    @Autowired
-    private TblCategoryService categoryService;
 
     @Autowired
-    private TblGoodsService goodsService;
+    private ITCategoryService categoryService;
 
     @Autowired
-    private TblOrderService tblOrderService;
+    private ITGoodsService goodsService;
 
-    @Autowired
-    private TblAppVersionService appVersionService;
 
 
     /**
@@ -44,17 +35,18 @@ public class AppController extends BaseController {
      * Authorization（格式为：Bearer + 一个空格 + token）
      * @return
      */
-    //@RequestMapping(value = "/user/category/list")
+    @RequestMapping(value = "category/list")
     public Object goods(SessionUser user){
-        List<TblCategory> list = categoryService.findAllCategory(user);
+        List<TCategory> list = categoryService.findAllCategory(user);
         return render().set("data", list);
-
     }
 
 
-    //@RequestMapping(value = "/user/goods")
+    @RequestMapping(value = "/user/goods")
     public Object userGoods(SessionUser user, Page page, GoodsPageParam param){
-        List<Map> list = goodsService.findPage(user, page, param);
+        Kv.obj("user", user);
+        //List<Map> list = goodsService.findMaps(user, page, param);
+        List<Map> list = null;
         page.setRecords(list);
         //todo  yancc 前端还不支持分页
         return list;
@@ -84,14 +76,15 @@ public class AppController extends BaseController {
      * goods拼接方式：1801__https://mp-owner-1251363375.cos.ap-guangzhou.myqcloud.com/1536655293256.jpg__馒头（每人限5袋）__-1__1__1.50__1.50
      * @return
      */
-    //@RequestMapping(value = "/user/order",method = RequestMethod.POST)
-    public Object addOrder(SessionUser user,AddOrderParam param){
+/*
+    @RequestMapping(value = "/user/order",method = RequestMethod.POST)
+    public Object addOrder(SessionUser user, AddOrderParam param){
         TblOrder order = tblOrderService.createOrder(user,param);
         return render();
     }
 
 
-    //@RequestMapping(value = "/version/check",method = RequestMethod.GET)
+    @RequestMapping(value = "/version/check",method = RequestMethod.GET)
     public Object appVersion(){
         TblAppVersion v = appVersionService.findLast(TblAppBase.PLATFORM_CODE_APP_ANDROID);
         Kv<String, String> kv = Kv.by("download_url", v.getDownloadUrl()).set("description", v.getDescription()).set("version", v.getVersion());
@@ -99,15 +92,18 @@ public class AppController extends BaseController {
     }
 
 
-    /**
+    */
+/**
      * 极光im初始化
-     */
-    //@RequestMapping("/im/init")
+     *//*
+
+    @RequestMapping("/im/init")
     public Object getPayLoad(HttpServletResponse response){
         //todo yancc 是否删除
         response.setHeader("Access-Control-Allow-Origin", "*");
         return render().setAll(WXUtils.getPayLoad());
     }
 
+*/
 
 }

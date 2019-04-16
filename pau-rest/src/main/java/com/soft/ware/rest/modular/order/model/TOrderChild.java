@@ -80,6 +80,10 @@ public class TOrderChild extends Model<TOrderChild> {
      */
     @TableField("create_time")
     private Date createTime;
+
+    @TableField("total_price")
+    private BigDecimal totalPrice;
+
     /**
      * 库存
      */
@@ -180,6 +184,14 @@ public class TOrderChild extends Model<TOrderChild> {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override

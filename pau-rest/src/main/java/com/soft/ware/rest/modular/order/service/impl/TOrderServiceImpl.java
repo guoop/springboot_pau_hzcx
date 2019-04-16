@@ -211,6 +211,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 c.setGoodsSpecId(spec.getStr("id"));
                 c.setGoodsUnitId(g.getStr("unitId"));
                 c.setGoodsName(g.getStr("name"));
+                c.setTotalPrice(total);
                 unit = unitService.selectById(c.getGoodsUnitId());
 
                 if (g.get("code") != null && g.get("code").toString().length() == 5) {

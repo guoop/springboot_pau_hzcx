@@ -102,10 +102,23 @@
         <if test="map.specId != null and map.specId != ''">
             and gs.id in (${map.specId})
         </if>
-        <if test="map.ids != null and map.ids != ''">
-            <!--很重要-->
-            order by field(g.id,${map.ids})
+        <if test="map.isDelete != null and map.isDelete != ''">
+            and g.is_delete = #{map.isDelete}
         </if>
+        <if test="map.beginTime != null">
+            and g.is_delete = #{map.isDelete}
+        </if>
+        <choose>
+            <when test="map.ids != null and map.ids != ''">
+                <!--很重要-->
+                order by field(g.id,${map.ids})
+            </when>
+            <otherwise>
+                <!--很重要-->
+                order by g.created_time desc
+            </otherwise>
+        </choose>
+        <!--<include refid="com.soft.ware.rest.modular.order.dao.TOrderMapper.map_limit"></include>-->
     </select>
 
     <!--根据商品分类id查询所有商品列表-->

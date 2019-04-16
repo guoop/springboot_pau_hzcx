@@ -106,6 +106,11 @@
     </sql>
 
 
+    <resultMap id="goodsMap" type="map" autoMapping="true">
+        <result column="spec_id"/>
+        <result column="spec_name"/>
+        <association property="specs" javaType="map" columnPrefix="spec_" autoMapping="true"/>
+    </resultMap>
     <resultMap id="orderMap" type="map" autoMapping="true">
         <id column="id" property="id"/>
         <result column="child_goodsId"/>
@@ -113,21 +118,27 @@
         <result column="child_goodsNum"/>
         <result column="child_goodsPrice"/>
         <result column="child_goodsName"/>
-        <collection property="goods" ofType="map" javaType="list" columnPrefix="child_" autoMapping="true"/>
+        <result column="child_totalPrice"/>
+        <result column="child_goodsSpec"/>
+        <result column="child_spec_id"/>
+        <result column="child_spec_name"/>
+        <collection property="goods" ofType="map" javaType="list" columnPrefix="child_" resultMap="goodsMap"/>
     </resultMap>
     <select id="findMaps" resultType="java.util.Map" resultMap="orderMap">
     select
     a.id id,
     <include refid="t_order_alias_columns"/>
     ,b.pay_order_no diffNo,b.money ticketMoney,b.money_diff diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
-    ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault,ta.is_delete isDelete,DATE_FORMAT(ta.created_time,'%Y-%m-%d %H:%i:%s') createdTime,ta.creater creater,DATE_FORMAT(ta.deleted_time,'%Y-%m-%d %H:%i:%s') deletedTime
-    ,tr.id id,tr.order_no orderNo,tr.reason reason,tr.status status,tr.order_money orderMoney,tr.response response,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') createTime,tr.creater creater
-    ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum
+    ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault
+    ,tr.order_no orderNo,tr.reason refundReason,tr.status refundStatus,tr.order_money orderMoney
+    ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
+    ,ts.id child_spec_id, ts.name child_spec_name
     from t_order a
     left join t_order_child oc on oc.order_id = a.id
     left join t_order_money_diff b on a.order_no = b.order_no
     left join t_address ta on ta.id = a.address_id
     left join t_refund tr on tr.order_no = a.order_no
+    left join t_specs ts on ts.id = oc.goods_spec_id
     where true
     <if test="map.id != null and map.id != ''">
         and a.id = #{map.id}
