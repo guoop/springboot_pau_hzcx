@@ -49,4 +49,11 @@ public interface ITOrderService extends IService<TOrder> {
     int selectOrderCount(String ownerId);
 
     TOrder selectOrderDetailById(String orderNo);
+
+    /**
+     * 支付时设置,收货人地址电话信息
+     * @param order
+     * @return
+     */
+    boolean updateByVersion(TOrder order);
 }

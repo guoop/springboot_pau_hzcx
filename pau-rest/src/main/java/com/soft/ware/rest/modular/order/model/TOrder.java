@@ -174,6 +174,15 @@ public class TOrder extends Model<TOrder> {
      */
     @TableField("cancel_time")
     private Date cancelTime;
+
+    /**
+     * 到店自提预留电话
+     */
+    private String phone;
+
+    @TableField("is_delete")
+    private Integer isDelete;
+
     /**
      * 子订单
      */
@@ -362,6 +371,22 @@ public class TOrder extends Model<TOrder> {
 
     public TOrder setCancelTime( Date cancelTime) {
         this.cancelTime = cancelTime;return this;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
     }
 
     @Override

@@ -76,7 +76,7 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
 
     public String requiredStr(K k){
         String str = getStr(k);
-        if (str == null) {
+        if (str == null || str.trim().isEmpty()) {
             throw new IllegalArgumentException(k + "不能为空");
         }
         return str;

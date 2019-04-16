@@ -15,7 +15,7 @@ public class PayAfterOrderParam {
     //订单备注信息（更新订单信息）
     private String remark;
     //订单来源（2：到店自提）
-    private Short source;
+    private Integer source;
     //订单号
     private String orderNO;
     //package
@@ -50,11 +50,11 @@ public class PayAfterOrderParam {
         this.remark = remark;
     }
 
-    public Short getSource() {
+    public Integer getSource() {
         return source;
     }
 
-    public void setSource(Short source) {
+    public void setSource(Integer source) {
         this.source = source;
     }
 

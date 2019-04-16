@@ -8,7 +8,6 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import org.apache.ibatis.annotations.Param;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,4 +40,6 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
     int selectOrderCount(String ownerId);
 
    TOrder selectOrderDetailById(String orderNo);
+
+    boolean updateOrderAddressAndPhone(SessionUser user, String id, String phone, Integer version);
 }

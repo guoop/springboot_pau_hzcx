@@ -212,7 +212,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 c.setGoodsSpecId(spec.getStr("id"));
                 c.setGoodsUnitId(g.getStr("unitId"));
                 c.setGoodsName(g.getStr("name"));
-                c.setTotalPrice(total);
+                c.setTotalPrice(param.getTotal(i));
                 unit = unitService.selectById(c.getGoodsUnitId());
 
                 if (g.get("code") != null && g.get("code").toString().length() == 5) {
@@ -245,8 +245,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         o.setCreateTime(new Date(current));
         o.setCreater(user.getOpenId());
         o.setOwnerId(user.getOwnerId());
-        o.setAddressId(param.getAddressId());
         o.setStatus(TOrder.STATUS_0);
+        o.setVersion(0);
         boolean result = false;
         for (TOrderChild oc : param.getGoods()) {
             oc.setOrderId(o.getId());
@@ -290,6 +290,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Override
     public boolean customerDelete(SessionUser user, OrderDeleteParam param) {
         int i = orderMapper.customerDelete(user, param);
+        //update t_order set status = -3 where owner_id = #{user.ownerId} and order_no = #{param.no} and creater = #{user.openId} and status in (-2, -1, 0, 3);
         if (i == 1) {
             return true;
         } else {
@@ -323,6 +324,13 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             }
         }
         return tOrder;
+    }
+
+    @Override
+    public boolean updateByVersion(TOrder order) {
+        Integer version = order.getVersion();
+        order.setVersion(version+1);
+        return super.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setVersion(version)));
     }
 
 

@@ -24,14 +24,15 @@
         <result column="version" property="version" />
         <result column="status" property="status" />
         <result column="remark" property="remark" />
+        <result column="is_delete" property="isDelete"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, type, version, status, remark
+        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, type, version, status, remark,is_delete
     </sql>
     <sql id="t_order_alias_columns">
-        a.id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark
+        a.id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark,a.is_delete isDelete
     </sql>
 
 
@@ -62,7 +63,6 @@
     <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1
          <include refid="Condition"></include>
-
     </select>
     <sql id="findListCondition">
         <if test="source != null">
@@ -122,6 +122,8 @@
         <result column="child_goodsSpec"/>
         <result column="child_spec_id"/>
         <result column="child_spec_name"/>
+        <result column="child_unitId"/>
+        <result column="child_unitName"/>
         <collection property="goods" ofType="map" javaType="list" columnPrefix="child_" resultMap="goodsMap"/>
     </resultMap>
     <select id="findMaps" resultType="java.util.Map" resultMap="orderMap">
@@ -133,12 +135,16 @@
     ,tr.order_no orderNo,tr.reason refundReason,tr.status refundStatus,tr.order_money orderMoney
     ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
     ,ts.id child_spec_id, ts.name child_spec_name
+    ,tu.id child_unitId, tu.name child_unitName
+    <!-- 查询库存信息 -->
+    ,((select ifnull(sum(ggss.in_amount),0) from t_goods_storage ggss where ggss.goods_id = oc.goods_id) - (select ifnull(sum(oocc.goods_num),0) from t_order_child oocc,t_order oo where oo.id = oocc.order_id and oo.status in (1,2,3,10)  and oocc.goods_id = oc.goods_id)) as storage
     from t_order a
     left join t_order_child oc on oc.order_id = a.id
     left join t_order_money_diff b on a.order_no = b.order_no
     left join t_address ta on ta.id = a.address_id
     left join t_refund tr on tr.order_no = a.order_no
     left join t_specs ts on ts.id = oc.goods_spec_id
+    left join t_unit tu on tu.id = oc.goods_unit_id
     where true
     <if test="map.id != null and map.id != ''">
         and a.id = #{map.id}
@@ -207,6 +213,9 @@
     </update>
     <update id="customerCancel">
         update t_order set status = -1, canceler = #{user.openId}, cancel_time = now() where owner_id = #{user.ownerId} and order_no = #{param.no} and creater = #{user.openId} and status in (0, 1);
+    </update>
+    <update id="updateOrderAddressAndPhone">
+        upd
     </update>
 
     <!--根据订单id查询订单 -->

@@ -341,7 +341,7 @@ public class CustomerController extends BaseController {
         kv.remove("addressId");
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("orderNo", orderNo).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId())), TOrder.class);
         order.setAddressId(addressId);
-        boolean update = orderService.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setOwnerId(user.getOwnerId()).setStatus(TOrder.STATUS_0)));
+        boolean update = orderService.updateByVersion(order);
         return render(update);
     }
 
@@ -439,6 +439,7 @@ public class CustomerController extends BaseController {
                 m.put("name", g.get("name"));
                 m.put("pics", g.get("pics"));
                 m.put("measurementUnit", g.get("measurementUnit"));
+                m.put("unitId", g.get("unitId"));
                 m.put("price", price);
                 m.put("specs", spec);
                 m.put("count", num.intValue());
@@ -484,7 +485,7 @@ public class CustomerController extends BaseController {
     /**
      * 描述：订单支付成功后，完成后续的订单逻辑，比如收集PrepayID，
      * 用于后续发送模板消息、向店家发送短信通知、发送极光消息推送等。
-     *
+     * //todo yancc 修改或删除这个方法
      * @param param
      * @return
      */
@@ -534,9 +535,9 @@ public class CustomerController extends BaseController {
             order.setPickupTime(null);
             order.setPickupNo(null);
         }
-        order.setSource(param.getSource());
-        order.setMoneyChannel(param.getMoneyChannel());
-        order.setRemark(param.getRemark());
+        //order.setSource(param.getSource().shortValue());
+        //order.setMoneyChannel(param.getMoneyChannel());
+        //order.setRemark(param.getRemark());
         if (TOrder.MONEY_CHANNEL_1.equals(order.getMoneyChannel())) {
             //货到付款等待商家确认
             order.setStatus(TOrder.STATUS_1);
@@ -558,8 +559,7 @@ public class CustomerController extends BaseController {
     public Object unifiedorder(SessionUser user, @RequestBody Map<String, Object> map, HttpServletRequest request) throws Exception {
         Kv<String, Object> kv = Kv.toKv(map);
         String no = kv.requiredStr("orderNO");
-        String source = kv.requiredStr("source");
-        String phone = kv.requiredStr("phone");
+        Integer source = kv.getInt("source");
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
         SWxApp app = appService.find(user);
         boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(source);
@@ -576,8 +576,12 @@ public class CustomerController extends BaseController {
         }
         // 商户订单号
         String out_trade_no = no;
+        order.setSource(source.shortValue());
         if (source2) {
+            String phone = kv.requiredStr("phone");
             out_trade_no = phone + "" + order.getCreateTime().getTime();
+            order.setPhone(phone);
+            orderService.updateByVersion(order);
         }
         // 订单价格 单位是 分
         int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
@@ -596,8 +600,9 @@ public class CustomerController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/order", method = RequestMethod.POST)
-    public Object order(SessionUser user, @RequestBody CreateOrderParam param) {
+    public Object order(SessionUser user, @RequestBody @Valid CreateOrderParam param,BindingResult result) {
         try {
+            Validator.valid(result);
             TOrder order = orderService.createMiniAppOrder(user, param);
             return render().set("orderNO", order.getOrderNo());
         } catch (Exception e) {

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.toolkit.IdWorker;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.SpringContextHolder;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
@@ -49,7 +48,7 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
         HttpServletRequest req = HttpKit.getRequest();
         ISWxAppService appService = SpringContextHolder.getBean(ISWxAppService.class);
         ITOwnerService ownerService = SpringContextHolder.getBean(ITOwnerService.class);
-        if (req.getServletPath().startsWith("/customer")) {
+        if (req.getServletPath().startsWith("/customer/")) {
             if (SessionUser.class == methodParameter.getParameterType()) {
                 //买家端用户
                 String appId = WXUtils.getAppId(req);

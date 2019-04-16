@@ -88,6 +88,8 @@
         ,(g.is_promotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
         ,u.name measurementUnit
         ,ts.name spec_name, ts.id spec_id
+        <!-- 查询库存信息 -->
+        ,((select ifnull(sum(ggss.in_amount),0) from t_goods_storage ggss where ggss.goods_id = g.id) - (select ifnull(sum(oocc.goods_num),0) from t_order_child oocc,t_order oo where oo.id = oocc.order_id and oo.status in (1,2,3,10)  and oocc.goods_id = g.id)) as storage
         from t_goods g
         left join t_unit u on u.id = g.unit_id
         left join t_promotion tp on tp.goods_id = g.id
@@ -109,12 +111,12 @@
             and g.is_delete = #{map.isDelete}
         </if>
         <choose>
+            <!--商品计算价格需要这个 in ids 排序 -->
             <when test="map.ids != null and map.ids != ''">
-                <!--很重要-->
                 order by field(g.id,${map.ids})
             </when>
             <otherwise>
-                <!--很重要-->
+                <!--普通列表查询-->
                 order by g.created_time desc
             </otherwise>
         </choose>
