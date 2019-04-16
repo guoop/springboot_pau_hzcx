@@ -134,6 +134,12 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                             field.set(obj, Boolean.valueOf(s));
                         } else if (field.getType() == Short.class){
                             field.set(obj, Short.valueOf(s));
+                        } else if(field.getType() == java.util.Date.class) {
+                            if (o instanceof String) {
+                                field.set(obj, DateUtils.parseDate(o.toString(), "yyyy-MM-dd HH:mm:ss"));
+                            } else {
+                                field.set(obj, s);
+                            }
                         } else {
                             logger.warn("未知类型:" + field.getType().getName());
                         }
@@ -148,10 +154,35 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                     continue;
                 }
                 field.setAccessible(true);
-                if (field.getType() == java.util.Date.class && map.get(field.getName()) != null && map.get(field.getName()) instanceof java.lang.String) {
-                    field.set(obj, DateUtils.parseDate(map.get(field.getName()).toString(),"yyyy-MM-dd HH:mm:ss"));
+                Object s = map.get(field.getName());
+                if (s != null) {
+                    if (field.getType() == String.class) {
+                        field.set(obj, s);
+                    }else if (field.getType() == Long.class) {
+                        field.set(obj, Long.valueOf(s.toString()));
+                    } else if (field.getType() == Integer.class) {
+                        field.set(obj,Integer.valueOf(s.toString()));
+                    } else if (field.getType() == BigDecimal.class) {
+                        field.set(obj, BigDecimal.valueOf(Double.valueOf(s.toString())));
+                    } else if (field.getType() == Float.class) {
+                        field.set(obj, Float.valueOf(s.toString()));
+                    } else if (field.getType() == Double.class) {
+                        field.set(obj, Double.valueOf(s.toString()));
+                    } else if (field.getType() == Boolean.class) {
+                        field.set(obj, Boolean.valueOf(s.toString()));
+                    } else if (field.getType() == Short.class){
+                        field.set(obj, Short.valueOf(s.toString()));
+                    } else if(field.getType() == java.util.Date.class) {
+                        if (s instanceof String) {
+                            field.set(obj, DateUtils.parseDate(map.get(field.getName()).toString(), "yyyy-MM-dd HH:mm:ss"));
+                        } else {
+                            field.set(obj, s);
+                        }
+                    } else {
+                        field.set(obj, map.get(field.getName()));
+                    }
                 } else {
-                    field.set(obj, map.get(field.getName()));
+                    field.set(obj, null);
                 }
             }
         }

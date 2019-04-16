@@ -83,6 +83,7 @@ public class TOrderChild extends Model<TOrderChild> {
     /**
      * 库存
      */
+    @TableField(exist = false)
     private int stock;
 
     public int getStock() {

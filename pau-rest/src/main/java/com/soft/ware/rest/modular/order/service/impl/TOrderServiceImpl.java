@@ -232,7 +232,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             // 配送费取delivery_great_money
             actualFee = config.getDeliveryGreatMoney();
         }
-        actualFee = BigDecimal.ZERO;
         final String orderNO =  IdGenerator.getId();
         TOrder o = new TOrder();
         o.setId(IdGenerator.getId());

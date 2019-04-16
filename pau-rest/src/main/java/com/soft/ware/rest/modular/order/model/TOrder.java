@@ -177,6 +177,7 @@ public class TOrder extends Model<TOrder> {
     /**
      * 子订单
      */
+    @TableField(exist = false)
     private List<TOrderChild> orderChildList = new ArrayList<>();
 
     public List<TOrderChild> getOrderChildList() {
