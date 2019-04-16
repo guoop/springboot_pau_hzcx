@@ -342,6 +342,8 @@ public class DateUtil {
     	long timestamp = cal.getTimeInMillis();
     	return String.valueOf(timestamp/1000);
 	}
+
+
 	
 	 /* 
      * 将时间转换为时间戳
@@ -357,10 +359,15 @@ public class DateUtil {
 
 
 	public static void main(String[] args) {
-		
-      System.out.println(timestampToDate());
-		System.out.println();
-		
+
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String timeFormat = sdf.format(parseDate("2019-01-01"));
+		System.out.println(timeFormat);
+
+      System.out.println(parse("2017-01-01","yyyy-MM-dd"));
+
+		System.out.println("---------------"+ parseDate("2019-01-01"));
 	}
 
 }

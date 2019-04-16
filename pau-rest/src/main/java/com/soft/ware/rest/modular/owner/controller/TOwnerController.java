@@ -38,7 +38,7 @@ public class TOwnerController  extends BaseController {
      */
     @RequestMapping("get-owner-info")
     public Tip getOwnerInfo(SessionUser sessionUser){
-       TOwner tOwner = itOwnerService.selectById(sessionUser.getOwnerId());
+       TOwner tOwner = itOwnerService.selectOwnerInfoByOwnerId(sessionUser.getOwnerId());
 
        if(ToolUtil.isNotEmpty(tOwner)){
            return new SuccessTip(tOwner);

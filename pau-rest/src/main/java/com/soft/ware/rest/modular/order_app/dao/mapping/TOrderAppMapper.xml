@@ -16,8 +16,8 @@
         <result column="pay_time" property="payTime" />
         <result column="create_time" property="createTime" />
         <result column="settlementer" property="settlementer" />
-        <result column="owner_id" property="owner_id" />
-        <result column="goods_id" property="goods_id" />
+        <result column="owner_id" property="ownerId" />
+        <result column="goods_id" property="goodsId" />
         <result column="status" property="status" />
         <result column="remark" property="remark" />
     </resultMap>

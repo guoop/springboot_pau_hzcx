@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.soft.ware.rest.modular.goods.model.TGoods;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -50,14 +51,31 @@ public class TOrderApp extends Model<TOrderApp> {
     @JSONField(name = "settlementer")
     private String settlementer;
     //商户唯一id
-    private String owner_id;
+    private String ownerId;
     //订单包含的商品信息
-    private String goods_id;
+    private String goodsId;
     //订单状态（0：为正常；1：退单；2：反结账）
     private Integer status;
     //备注信息
     private String remark;
+    //线下订单关联的商品信息
+    private TGoods tGoods = null;
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public TGoods gettGoods() {
+        return tGoods;
+    }
+
+    public void settGoods(TGoods tGoods) {
+        this.tGoods = tGoods;
+    }
 
     @Override
     protected Serializable pkVal() {
@@ -173,19 +191,19 @@ public class TOrderApp extends Model<TOrderApp> {
     }
 
     public String getOwner_id() {
-        return owner_id;
+        return ownerId;
     }
 
-    public void setOwner_id(String owner_id) {
-        this.owner_id = owner_id;
+    public void setOwner_id(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getGoods_id() {
-        return goods_id;
+        return goodsId;
     }
 
-    public void setGoods_id(String goods_id) {
-        this.goods_id = goods_id;
+    public void setGoods_id(String goodsId) {
+        this.goodsId = goodsId;
     }
 
     public Integer getStatus() {

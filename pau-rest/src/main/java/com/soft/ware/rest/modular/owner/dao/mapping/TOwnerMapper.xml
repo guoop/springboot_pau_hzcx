@@ -15,6 +15,7 @@
         <result column="default_desc" property="defaultDesc" />
         <result column="default_refund_reason" property="defaultRefundReason" />
         <result column="create_time" property="createTime" />
+        <result column="app_name" property="appName"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -33,8 +34,8 @@
         </if>
     </select>
 
-    <select id="selectOwnerInfoByOwnerId" resultType="java.util.Map">
-
-    </select>
+    <select id="selectOwnerInfoByOwnerId" resultType="com.soft.ware.rest.modular.owner.model.TOwner">
+        select <include refid="t_owner_alias_columns"/>,z.app_name as appName from t_owner w left join  s_wx_app z on w.id = z.owner_id where w.id = #{owner_id}
+     </select>
 
 </mapper>

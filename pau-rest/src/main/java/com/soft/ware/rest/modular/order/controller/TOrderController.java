@@ -63,12 +63,12 @@ public class TOrderController extends BaseController {
 
     /**
      * 订单详情
-     * @param orderId
+     * @param orderNo
      * @return
      */
     @RequestMapping("order/detail")
-    public Tip orderDetail(String orderId){
-        TOrder tOrder = tOrderService.selectById(orderId);
+    public Tip orderDetail(String orderNo){
+        TOrder tOrder = tOrderService.selectOrderDetailById(orderNo);
         if(ToolUtil.isNotEmpty(tOrder)){
             return new SuccessTip(tOrder);
         }

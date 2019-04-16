@@ -83,6 +83,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     private RedisTemplate<String,String> redisTemplate;
 
 
+
     @Override
     public List<TOrder> selectOrderListByMap(Map<String, Object> param) {
         return orderMapper.selectOrderListByMap(param);
@@ -308,6 +309,20 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Override
     public int selectOrderCount(String ownerId) {
     return orderMapper.selectOrderCount(ownerId);
+    }
+
+    @Override
+    public TOrder selectOrderDetailById(String orderNo) {
+        TOrder tOrder = orderMapper.selectOrderDetailById(orderNo);
+        if(ToolUtil.isNotEmpty(tOrder)){
+            Map<String,Object> param = new HashMap<>();
+            param.put("orderId",tOrder.getId());
+            List<TOrderChild>  childList = orderChildService.selectOrderChildListByMap(param);
+            if(childList.size() == 0 || childList.size() > 0){
+                tOrder.setOrderChildList(childList);
+            }
+        }
+        return tOrder;
     }
 
 
