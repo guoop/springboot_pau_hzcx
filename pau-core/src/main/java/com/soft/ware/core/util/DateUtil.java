@@ -357,6 +357,17 @@ public class DateUtil {
         return res;
     }
 
+	/**
+	 * 日期转换中文日期
+	 * @param date
+	 * @return
+	 */
+    public  static Date EngDateToChaData(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String timeFormat = sdf.format(date);
+		return DateUtil.parseDate(timestampToDate());
+	}
+
 
 	public static void main(String[] args) {
 

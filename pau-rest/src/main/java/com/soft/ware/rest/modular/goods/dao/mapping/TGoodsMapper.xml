@@ -122,7 +122,7 @@
     </select>
 
     <!--根据商品分类id查询所有商品列表-->
-    <select id="selectTGoodsListByMap" parameterType="map" resultType="java.util.HashMap" >
+    <select id="selectTGoodsListByMap"  resultType="java.util.HashMap" >
         select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.created_time createTime,b.start_time startTime,b.end_time endTime,c.`name` as specName ,d.`name` categoryName,
         e.after_storage stock ,e.baseline
         from t_goods a
@@ -131,23 +131,21 @@
         LEFT JOIN t_category d on a.category_id = d.id
         LEFT JOIN t_goods_storage e on a.id = e.goods_id
         where 1=1
-        <if test="categoryId != null and categoryId != ''">
-            and a.category_id = #{categoryId}
+        <if test="param.categoryId != null and param.categoryId != ''">
+            and a.category_id = #{param.categoryId}
         </if>
-        <if test="owner_id != null and owner_id != ''">
-            and a.owner_id = #{owner_id}
+        <if test="param.owner_id != null and param.owner_id != ''">
+            and a.owner_id = #{param.owner_id}
         </if>
-        <if test="name != null and name != ''">
-            and a.name like '%${name}%'
+        <if test="param.name != null and param.name != ''">
+            and a.name like '%${param.name}%'
         </if>
-        <if test="page != null and page != ''">
-             limit #{page},20
-        </if>
+       <include refid="limit"></include>
     </select>
 
     <update id="updateGoodsTopTimeOrStatus" parameterType="java.util.Map">
       <if test="top_time != null and top_time != ''">
-          update t_goods set top_time = #{tom_time} where id = #{id}
+          update t_goods set top_time = #{top_time} where id = #{id}
       </if>
       <if test="status != null and status != ''">
           update t_goods set status = #{status} where id = #{id}

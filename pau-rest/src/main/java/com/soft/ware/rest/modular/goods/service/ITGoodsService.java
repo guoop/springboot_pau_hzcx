@@ -29,7 +29,7 @@ public interface ITGoodsService extends IService<TGoods> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
-    List<Map<String,Object>>  selectTGoodsListByMap(Map<String,Object> map) throws ParseException;
+    List<Map<String,Object>>  selectTGoodsListByMap(Map<String,Object> map, Page page) throws ParseException;
 
     boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
 

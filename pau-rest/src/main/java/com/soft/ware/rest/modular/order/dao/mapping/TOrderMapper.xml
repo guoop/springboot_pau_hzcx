@@ -37,6 +37,7 @@
 
 
 
+
     <sql id="Condition">
         <if test="id != null and id != ''">
             and id = #{id}
@@ -59,11 +60,7 @@
 
     </sql>
 
-    <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from t_order where 1=1
-         <include refid="Condition"></include>
 
-    </select>
     <sql id="findListCondition">
         <if test="source != null">
             and a.source in
@@ -172,10 +169,12 @@
     </if>
     <include refid="map_limit"/>
     </select>
+    <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_order where 1=1
+        <include refid="Condition"></include>
 
+    </select>
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
-
-
         select  a.id id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
                 from t_order a
@@ -185,14 +184,14 @@
                 on a.order_no = c.order_no
                 LEFT JOIN t_order_money_diff d
                 on a.order_no = d.order_no
-                where 1=1
+                where 1=1 and a.source != 1
             <if test="status != null and status != ''">
                 and a.status = #{status}
             </if>
             <if test="owner_id != null and owner_id != ''">
                 and a.owner_id = #{owner_id}
             </if>
-            <if test="page != null and page != ''">
+            <if test="page != null ">
                 limit #{page},20
             </if>
     </select>
