@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.owner.model;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -71,6 +72,22 @@ public class TOwner extends Model<TOwner> {
     @TableField("create_time")
     private Date createTime;
 
+
+
+
+    public TOwner() {
+    }
+
+    @Transient
+    private String appName;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public String getId() {
         return id;

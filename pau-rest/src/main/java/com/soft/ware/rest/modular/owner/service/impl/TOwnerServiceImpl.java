@@ -57,7 +57,7 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     }
 
     @Override
-    public Map<String, Object> selectOwnerInfoByOwnerId(String ownerId) {
+    public TOwner selectOwnerInfoByOwnerId(String ownerId) {
 
         return mapper.selectOwnerInfoByOwnerId(ownerId);
     }

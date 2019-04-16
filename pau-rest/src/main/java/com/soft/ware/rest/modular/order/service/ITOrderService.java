@@ -47,4 +47,6 @@ public interface ITOrderService extends IService<TOrder> {
     boolean customerCancel(SessionUser user, OrderDeleteParam param);
 
     int selectOrderCount(String ownerId);
+
+    TOrder selectOrderDetailById(String orderNo);
 }

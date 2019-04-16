@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -177,6 +178,7 @@ public class TOrder extends Model<TOrder> {
     /**
      * 子订单
      */
+    @Transient
     private List<TOrderChild> orderChildList = new ArrayList<>();
 
     public List<TOrderChild> getOrderChildList() {
