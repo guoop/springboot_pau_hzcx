@@ -150,11 +150,6 @@ public class TOrder extends Model<TOrder> {
     @TableField("address_id")
     private String addressId;
     /**
-     * 订单包含的商品信息（商品之间已英文逗号分隔，单个货物的的格式为：id__图片地址__名称__规格__数量__单价__总价）
-     */
-    @TableField("goods_id")
-    private String goodsId;
-    /**
      * 订单类型只要出货就是一笔订单
      */
     private Integer type;
@@ -320,14 +315,6 @@ public class TOrder extends Model<TOrder> {
         this.addressId = addressId;return this;
     }
 
-    public String getGoodsId() {
-        return goodsId;
-    }
-
-    public TOrder setGoodsId( String goodsId) {
-        this.goodsId = goodsId;return this;
-    }
-
     public Integer getType() {
         return type;
     }
@@ -400,7 +387,6 @@ public class TOrder extends Model<TOrder> {
         ", settlementer=" + settlementer +
         ", ownerId=" + ownerId +
         ", addressId=" + addressId +
-        ", goodsId=" + goodsId +
         ", type=" + type +
         ", version=" + version +
         ", status=" + status +

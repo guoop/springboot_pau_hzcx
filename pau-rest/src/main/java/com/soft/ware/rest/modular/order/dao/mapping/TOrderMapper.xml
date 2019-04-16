@@ -20,7 +20,6 @@
         <result column="settlementer" property="settlementer" />
         <result column="owner_id" property="ownerId" />
         <result column="address_id" property="addressId" />
-        <result column="goods_id" property="goodsId" />
         <result column="type" property="type" />
         <result column="version" property="version" />
         <result column="status" property="status" />
@@ -29,10 +28,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, goods_id AS goodsId, type, version, status, remark
+        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, type, version, status, remark
     </sql>
     <sql id="t_order_alias_columns">
-        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
+        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark
     </sql>
 
 
@@ -89,7 +88,7 @@
     </select>
     <select id="findList" resultType="java.util.Map">
         select
-        a.id id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.goods_id goodsId,a.type type,a.version version,a.status status,a.remark remark
+        a.id id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark
         ,b.pay_order_no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus
         from t_order a left outer join t_order_money_diff b on a.owner_id = b.owner_id and a.order_no = b.order_no
         where a.owner_id = #{user.ownerId}
