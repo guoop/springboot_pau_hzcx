@@ -8,6 +8,7 @@ import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.controller.dto.GoodsParam;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.model.TGoods;
@@ -88,7 +89,7 @@ public class TGoodsController {
      * @return
      */
     @RequestMapping("category/list")
-    public Tip getCategoryList(@RequestParam Map<String,Object> param, SessionUser sessionUser){
+    public Tip getCategoryList(@RequestParam Map<String,Object> param, Page page, SessionUser sessionUser){
         param.put("owner_id",sessionUser.getOwnerId());
        List<TCategory> list = itCategoryService.selectParentCategoryList(param);
        if(list.size() > 0){
@@ -151,10 +152,10 @@ public class TGoodsController {
      * @return
      */
     @RequestMapping("goods/list")
-    public Tip getGoodsList(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws ParseException {
-            param.put("owner_id",sessionUser.getOwnerId());
-        param.put("page",Integer.valueOf(param.get("page").toString()));
-        List<Map<String,Object>>  goodsList =  itGoodsService.selectTGoodsListByMap(param);
+    public Tip getGoodsList(@RequestParam Map<String,Object> param,Page page ,SessionUser sessionUser) throws ParseException {
+        param.put("owner_id",sessionUser.getOwnerId());
+        page.setPage(Long.valueOf(param.get("page").toString()));
+        List<Map<String,Object>>  goodsList =  itGoodsService.selectTGoodsListByMap(param,page);
         if( goodsList.size()== 0||goodsList.size() > 0 ){
             return new SuccessTip(goodsList);
         }
@@ -238,12 +239,15 @@ public class TGoodsController {
     public Tip goodsTop(@PathVariable("path") String path , @RequestBody Map<String,Object> param){
         if(path.equals("top")){
             if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
+
                 return  new SuccessTip();
             }
+        }else{
+            if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
+                return new SuccessTip();
+            }
         }
-        if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
-            return new SuccessTip();
-        }
+
         return new ErrorTip();
     }
 

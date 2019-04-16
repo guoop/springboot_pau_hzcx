@@ -53,9 +53,11 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         return maps.isEmpty() ? null : maps.get(0);
     }
 
+
     @Override
-    public List<Map<String,Object>> selectTGoodsListByMap(Map<String, Object> map) throws ParseException {
-        List<Map<String,Object>> mapList = mapper.selectTGoodsListByMap(map);
+    public List<Map<String,Object>> selectTGoodsListByMap(Map<String, Object> param,Page page) throws ParseException {
+        List<Map<String,Object>> mapList = mapper.selectTGoodsListByMap(param,page);
+        page.setTotal(param.size());
         if(mapList.size() > 0){
             for (int i = 0; i < mapList.size(); i++) {
                 if(ToolUtil.isNotEmpty(mapList.get(i).get("endTime"))){

@@ -4,6 +4,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.beans.Transient;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,8 +133,9 @@ public class TOrderController extends BaseController {
     @RequestMapping(value = "orders/sign-status")
     public Tip signStatus(@RequestParam Map<String,Object> param,SessionUser sessionUser){
          param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
-         param.get("orderNo").toString();
          param.put("owner_id",sessionUser.getOwnerId());
+
+
 
         return  new ErrorTip();
 
