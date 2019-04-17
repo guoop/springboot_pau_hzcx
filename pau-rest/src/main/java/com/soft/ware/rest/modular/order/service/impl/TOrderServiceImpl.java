@@ -23,7 +23,6 @@ import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
-import com.soft.ware.rest.modular.address.service.impl.TAddressServiceImpl;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -47,10 +46,7 @@ import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
-import com.soft.ware.rest.modular.wx_secret.model.SWxSecret;
-import com.soft.ware.rest.modular.wx_secret.service.ISWxSecretService;
 import me.chanjar.weixin.common.error.WxErrorException;
-import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -58,7 +54,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -108,8 +103,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Autowired
     private ISWxAppService isWxAppService;
-    @Autowired
-    private HzcxWxService hzcxWxService;
 
 
 
@@ -381,6 +374,24 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         return super.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setVersion(version)));
     }
 
+
+
+    @Override
+    public WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException {
+        WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
+                .newBuilder()
+                .body(body)
+                .attach(attach)
+                .notifyUrl(notifyUrl)
+                .openid(user.getOpenId())
+                .outTradeNo(no)
+                .spbillCreateIp(ip)
+                .tradeType(WxPayConstants.TradeType.JSAPI)
+                .totalFee(total_fee).build();
+        return hzcxWxService.getWxPayService(app).createOrder(req);
+    }
+
+
     @Override
     public boolean orderSignStatu(SessionUser sessionUser,Map<String, Object> param) {
         boolean isSuccess = false;
@@ -450,24 +461,24 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 } else {
                     throw new PauException(BizExceptionEnum.ORDER_DONE_FAIL);
                 }
-            //手动取消
+                //手动取消
             case "cancal":
-               if(tOrder.getMoneyChannel() == TOrder.MONEY_CHANNEL_1 && tOrder.getMoneyChannel() == TOrder.STATUS_1) {
-                   try {
-                   tOrder.setStatus(TOrder.STATUS_1);
-                   tOrder.setCanceler(param.get("openId").toString());
-                   tOrder.setCancelTime(new Date());
-                   updateNum = orderMapper.updateById(tOrder);
-                   String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
-                   //订单下的子订单商品名称
-                   WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, tOrder,goodsNames,address);
-                   msg.getData().add(new WxMaTemplateData("keyword6",tOrder.getCancelReason()));// 取消原因
-                   msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
-                   service.getMsgService().sendTemplateMsg(msg);
-                   } catch (WxErrorException e) {
-                       e.printStackTrace();
-                   }
-               }
+                if(tOrder.getMoneyChannel() == TOrder.MONEY_CHANNEL_1 && tOrder.getMoneyChannel() == TOrder.STATUS_1) {
+                    try {
+                        tOrder.setStatus(TOrder.STATUS_1);
+                        tOrder.setCanceler(param.get("openId").toString());
+                        tOrder.setCancelTime(new Date());
+                        updateNum = orderMapper.updateById(tOrder);
+                        String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
+                        //订单下的子订单商品名称
+                        WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, tOrder,goodsNames,address);
+                        msg.getData().add(new WxMaTemplateData("keyword6",tOrder.getCancelReason()));// 取消原因
+                        msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
+                        service.getMsgService().sendTemplateMsg(msg);
+                    } catch (WxErrorException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
         }
         if(updateNum > 0){
@@ -476,22 +487,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         return false;
     }
 
-
-
-    @Override
-    public WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException {
-        WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
-                .newBuilder()
-                .body(body)
-                .attach(attach)
-                .notifyUrl(notifyUrl)
-                .openid(user.getOpenId())
-                .outTradeNo(no)
-                .spbillCreateIp(ip)
-                .tradeType(WxPayConstants.TradeType.JSAPI)
-                .totalFee(total_fee).build();
-        return hzcxWxService.getWxPayService(app).createOrder(req);
-    }
 
 
 }
