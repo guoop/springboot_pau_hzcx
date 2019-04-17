@@ -186,6 +186,99 @@ public class TOrder extends Model<TOrder> {
 
     @TableField("is_delete")
     private Integer isDelete;
+    /**
+     * 订单取消原因
+     */
+    @TableField("cancel_reason")
+    private String cancelReason;
+
+    /**
+     * 确认人
+     */
+    @TableField("confirmer")
+    private String confirmer;
+    /**
+     * 确认时间
+     */
+    @TableField("confirme_time")
+    private Date confirmTime;
+
+    /**
+     * 订单完成人
+     */
+    @TableField("doner")
+    private String doner;
+    /**
+     * 订单完成时间
+     */
+    @TableField("done_time")
+    private Date doneTime;
+    /**
+     * s配送人
+     */
+    @TableField("distributioner")
+    private String distributioner;
+    /**
+     * 配送时间
+     */
+    @TableField("distribution_time")
+    private Date distributionTime;
+
+    public String getDistributioner() {
+        return distributioner;
+    }
+
+    public void setDistributioner(String distributioner) {
+        this.distributioner = distributioner;
+    }
+
+    public Date getDistributionTime() {
+        return distributionTime;
+    }
+
+    public void setDistributionTime(Date distributionTime) {
+        this.distributionTime = distributionTime;
+    }
+
+    public String getConfirmer() {
+        return confirmer;
+    }
+
+    public void setConfirmer(String confirmer) {
+        this.confirmer = confirmer;
+    }
+
+    public Date getConfirmTime() {
+        return confirmTime;
+    }
+
+    public void setConfirmTime(Date confirmTime) {
+        this.confirmTime = confirmTime;
+    }
+
+    public String getDoner() {
+        return doner;
+    }
+
+    public void setDoner(String doner) {
+        this.doner = doner;
+    }
+
+    public Date getDoneTime() {
+        return doneTime;
+    }
+
+    public void setDoneTime(Date doneTime) {
+        this.doneTime = doneTime;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
 
     /**
      * 子订单

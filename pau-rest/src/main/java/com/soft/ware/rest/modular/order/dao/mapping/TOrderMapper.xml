@@ -25,6 +25,7 @@
         <result column="status" property="status" />
         <result column="remark" property="remark" />
         <result column="is_delete" property="isDelete"/>
+        <result column="cancel_reason" property="cancelReason"></result>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -32,7 +33,7 @@
         id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, type, version, status, remark,is_delete
     </sql>
     <sql id="t_order_alias_columns">
-        a.id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark,a.is_delete isDelete
+        a.id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark,a.phone,a.is_delete isDelete
     </sql>
 
 
@@ -179,7 +180,7 @@
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
 
 
-        select  a.id id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
+        select  a.id id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
                 from t_order a
                 LEFT JOIN t_address b
@@ -195,6 +196,7 @@
             <if test="owner_id != null and owner_id != ''">
                 and a.owner_id = #{owner_id}
             </if>
+                order by a.pay_time desc
             <if test="page != null ">
                 limit #{page},20
             </if>
@@ -213,8 +215,9 @@
     </update>
 
     <!--根据订单id查询订单 -->
-    <select id="selectOrderDetailById" resultType="com.soft.ware.rest.modular.order.model.TOrder">
-        select <include refid="t_order_alias_columns"/> from t_order a where a.order_no = #{orderNo}
+    <select id="selectOrderDetailById" resultType="java.util.Map">
+        select <include refid="t_order_alias_columns"/>
+      from t_order a where a.order_no = #{orderNo}
 
     </select>
 </mapper>

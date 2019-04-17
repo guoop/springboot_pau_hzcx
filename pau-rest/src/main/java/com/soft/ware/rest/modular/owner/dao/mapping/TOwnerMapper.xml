@@ -34,8 +34,12 @@
         </if>
     </select>
 
-    <select id="selectOwnerInfoByOwnerId" resultType="com.soft.ware.rest.modular.owner.model.TOwner">
-        select <include refid="t_owner_alias_columns"/>,z.app_name as appName from t_owner w left join  s_wx_app z on w.id = z.owner_id where w.id = #{owner_id}
+    <select id="selectOwnerInfoByOwnerId" resultType="map">
+        select <include refid="t_owner_alias_columns"/>,z.app_name as appName,s.delivery_distance as deliveryDistance,s.delivery_great_money as deliveryGreatMoney,s.delivery_less_money as deliveryLessMoney,s.delivery_money as deliveryMoney,s.is_delivery isDelivery
+        ,s.is_reach_pay as isReachPay,s.is_self_pickup as isSelfPickup,s.order_phone as orderPhone
+         from t_owner w left join  s_wx_app z on w.id = z.owner_id
+         left join t_owner_config s on w.id = s.owner_id
+         where w.id = #{owner_id}
      </select>
 
 </mapper>

@@ -39,7 +39,7 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
 
     int selectOrderCount(String ownerId);
 
-   TOrder selectOrderDetailById(String orderNo);
+   Map<String,Object> selectOrderDetailById(String orderNo);
 
     boolean updateOrderAddressAndPhone(SessionUser user, String id, String phone, Integer version);
 }

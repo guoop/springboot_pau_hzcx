@@ -14,6 +14,7 @@ import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.TOrderAppService;
+import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.beans.Transient;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +44,8 @@ public class TOrderController extends BaseController {
     @Autowired
     private TOrderAppService tOrderAppService;
 
+    @Autowired
+    private ITOrderMoneyDiffService itOrderMoneyDiffService;
     /**
      * 通过订单状态查询订单列表
      * @param param (订单状态）,page（页码）
@@ -71,7 +72,7 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping("order/detail")
     public Tip orderDetail(String orderNo){
-        TOrder tOrder = tOrderService.selectOrderDetailById(orderNo);
+        Map<String,Object> tOrder = tOrderService.selectOrderDetailById(orderNo);
         if(ToolUtil.isNotEmpty(tOrder)){
             return new SuccessTip(tOrder);
         }
@@ -132,11 +133,11 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "orders/sign-status")
     public Tip signStatus(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
          param.put("owner_id",sessionUser.getOwnerId());
-
-
-
+         param.put("openId",sessionUser.getOpenId());
+        if(tOrderService.orderSignStatu(sessionUser,param)){
+            return new SuccessTip();
+        }
         return  new ErrorTip();
 
     }
@@ -166,6 +167,9 @@ public class TOrderController extends BaseController {
         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.get("orderNo").toString();
         param.put("owner_id",sessionUser.getOwnerId());
+        Map<String,Object> map = itOrderMoneyDiffService.findMap(param);
+
+
 
         return new ErrorTip();
     }
