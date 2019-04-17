@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseService;
@@ -90,10 +91,22 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
     @Override
-    public List<Map> findPage(SessionUser user, Page page, OrderPageParam param, int... source) {
-        Long count = orderMapper.findListCount(user, param,source);
+    public List<Map<String,Object>> findPage(SessionUser user, Page page, OrderPageParam param, Integer... sources) {
+        Kv<String, Object> map = Kv.obj("creater", user.getOpenId())
+                .set("page", page)
+                .set("status", param.getStatus())
+                .set("isDelete",TOrder.is_delete_0)
+                .set("sources", "'" + StringUtils.join(sources, "','") + "'")
+                .set("orderBy", "a.create_time desc");
+        long count = findPageCount(user, param,sources);
         page.setTotal(count);
-        return orderMapper.findList(user, page, param,source);
+        return findMaps(map);
+    }
+
+    @Override
+    public long findPageCount(SessionUser user, OrderPageParam param, Integer... sources){
+        Wrapper<TOrder> wrapper = new EntityWrapper<>(new TOrder().setOwnerId(user.getOwnerId()).setCreater(user.getOpenId()).setIsDelete(TOrder.is_delete_0)).in("status", param.getStatus()).in("source", sources);
+        return selectCount(wrapper);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class TRefund extends Model<TRefund> {
     /**
      * 退款状态（0：处理中；1：成功；2：失败）
      */
-    private String status;
+    private Integer status;
     /**
      * 订单金额
      */
@@ -81,11 +81,11 @@ public class TRefund extends Model<TRefund> {
         this.reason = reason;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

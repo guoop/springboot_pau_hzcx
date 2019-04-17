@@ -51,7 +51,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -162,7 +161,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @RequestMapping(value = "goods/list", method = RequestMethod.GET)
-    public Tip goodsPage(GoodsPageParam param, SessionUser user, Page page) throws WxErrorException {
+    public Tip goodsPage(GoodsPageParam param, SessionUser user, Page page) {
         List<Map> list = goodsService.findPage(user, page, param);
         return render().set("list", list);
     }
@@ -237,10 +236,13 @@ public class CustomerController extends BaseController {
         } else {
             param.setStatus(Integer.MAX_VALUE + "");
         }
-        List<Integer> sources = Lists.newArrayList(TOrder.SOURCE_0, TOrder.SOURCE_2);
-        Kv<String, Object> map = Kv.obj("creater", user.getOpenId()).set("page", page).set("status", param.getStatus()).set("sources", "'" + StringUtils.join(sources, "','") + "'");
-        List<Map<String, Object>> maps = orderService.findMaps(map);
-        return render(maps);
+        if ("count".equals(param.getFlag())) {
+            long count = orderService.findPageCount(user, param, TOrder.SOURCE_0, TOrder.SOURCE_2);
+            return render().set("total", count);
+        } else {
+            List<Map<String, Object>> maps = orderService.findPage(user, page, param,TOrder.SOURCE_0, TOrder.SOURCE_2);
+            return render(maps).set("total", page.getTotal());
+        }
     }
 
 

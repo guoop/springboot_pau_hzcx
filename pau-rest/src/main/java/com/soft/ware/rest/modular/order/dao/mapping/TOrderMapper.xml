@@ -25,6 +25,7 @@
         <result column="status" property="status" />
         <result column="remark" property="remark" />
         <result column="is_delete" property="isDelete"/>
+        <result column="phone" property="phone"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -32,12 +33,8 @@
         id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, type, version, status, remark,is_delete
     </sql>
     <sql id="t_order_alias_columns">
-        a.id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark,a.is_delete isDelete
+        a.id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark,a.is_delete isDelete,a.phone phone
     </sql>
-
-
-
-
     <sql id="Condition">
         <if test="id != null and id != ''">
             and id = #{id}
@@ -60,39 +57,6 @@
 
     </sql>
 
-
-    <sql id="findListCondition">
-        <if test="source != null">
-            and a.source in
-            <foreach collection="source" item="id" index="index" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
-        </if>
-        <if test="param.status != null">
-            and a.status in
-            <foreach collection="param.statusArray" item="id" index="index" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
-        </if>
-        <!--根据买家用户查询-->
-        <if test="user.openId != null">
-            and a.creater in (#{user.openId})
-        </if>
-    </sql>
-    <select id="findListCount" resultType="java.lang.Long">
-        select count(1) from t_order a where a.owner_id = #{user.ownerId}
-        <include refid="findListCondition"/>
-    </select>
-    <select id="findList" resultType="java.util.Map">
-        select
-        a.id id,a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark
-        ,b.pay_order_no as diffNo, b.money as diffTicketMoney, b.pic as diffPic, b.money_diff as diffMoney, b.status as diffStatus
-        from t_order a left outer join t_order_money_diff b on a.owner_id = b.owner_id and a.order_no = b.order_no
-        where a.owner_id = #{user.ownerId}
-        <include refid="findListCondition"/>
-        order by a.create_time desc
-        <include refid="limit"/>
-    </select>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
@@ -129,7 +93,7 @@
     <include refid="t_order_alias_columns"/>
     ,b.pay_order_no diffNo,b.money ticketMoney,b.money_diff diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
     ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault
-    ,tr.order_no orderNo,tr.reason refundReason,tr.status refundStatus,tr.order_money orderMoney
+    ,tr.reason refundReason,tr.status refundStatus,tr.order_money refundMoney,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') refundTime
     ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
     ,ts.id child_spec_id, ts.name child_spec_name
     from t_order a
@@ -158,7 +122,7 @@
         and a.creater = #{map.creater}
     </if>
     <if test="map.ownerId != null and map.ownerId != ''">
-        and a.owner_id = #{map.ownerId}
+        and a.owner_id = #{map.ownerId}act_hi_procinst
     </if>
     <if test="map.type != null and map.type != ''">
         and a.type = #{map.type}
@@ -169,12 +133,14 @@
     <if test="map.sources != null and map.sources != ''">
         and a.source in (${map.sources})
     </if>
+    <if test="map.orderBy != null">
+        order by ${map.orderBy}
+    </if>
     <include refid="map_limit"/>
     </select>
     <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1
         <include refid="Condition"></include>
-
     </select>
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
 

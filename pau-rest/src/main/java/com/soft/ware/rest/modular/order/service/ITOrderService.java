@@ -28,7 +28,9 @@ public interface ITOrderService extends IService<TOrder> {
 
     List<TOrder> selectOrderListByMap(Map<String,Object> param);
 
-    List<Map> findPage(SessionUser user, Page page, OrderPageParam param, int... source);
+    List<Map<String,Object>> findPage(SessionUser user, Page page, OrderPageParam param, Integer... source);
+
+    long findPageCount(SessionUser user, OrderPageParam param, Integer... sources);
 
     List<Map<String,Object>> findMaps(Map<String,Object> map);
 

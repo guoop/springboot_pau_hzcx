@@ -34,6 +34,11 @@ public class TOrder extends Model<TOrder> {
     //：到店自取订单）
     public static int SOURCE_2 = 2;
 
+    //：未删除；
+    public static Integer is_delete_0 = 0;
+    //：已删除）
+    public static Integer is_delete_1 = 1;
+
     //：在线支付；
     public static Integer MONEY_CHANNEL_0 = 0;
     //：货到付款；
@@ -381,16 +386,16 @@ public class TOrder extends Model<TOrder> {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public TOrder setPhone(String phone) {
+        this.phone = phone;return this;
     }
 
     public Integer getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(Integer isDelete) {
-        this.isDelete = isDelete;
+    public TOrder setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;return this;
     }
 
     @Override
