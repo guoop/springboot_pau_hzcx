@@ -7,12 +7,16 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
+import com.soft.ware.rest.modular.auth.service.ImService;
+import com.soft.ware.rest.modular.auth.service.SmsService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +38,19 @@ public class WxPayController extends BaseController {
 
     @Autowired
     private ITOrderMoneyDiffService orderMoneyDiffService;
+
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private SmsService smsService;
+
+    @Autowired
+    private ImService imService;
+
+    @Autowired
+    private ITOwnerTempService ownerTempService;
+
 
 
 

@@ -1,8 +1,11 @@
 package com.soft.ware.core.util;
 
 import com.soft.ware.core.base.tips.Tip;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 
 public class Kv<K,V> extends Tip implements Map<K,V>  {
@@ -69,22 +72,147 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return i == null ? def : i;
     }
 
+    public Integer getOnceInt(K k){
+        Integer v = getInt(k);
+        remove(k);
+        return v;
+    }
+
+    public Integer getOnceInt(K k, Integer def) {
+        Integer v = getInt(k, def);
+        remove(k);
+        return v;
+    }
+
+    public Integer requiredOnceInt(K k){
+        Integer v = requiredInt(k);
+        remove(k);
+        return v;
+    }
+
     public String getStr(K k){
         V v = map.get(k);
         return v == null ? null : v.toString();
     }
 
+    public String getOnceStr(K k){
+        String v = getStr(k);
+        remove(v);
+        return v;
+    }
+
+    public String getOnceStr(K k, String def) {
+        String v = getStr(k, def);
+        remove(v);
+        return v;
+    }
+
+    public String requiredOnceStr(K k){
+        String v = requiredStr(k);
+        remove(k);
+        return v;
+    }
+
     public String requiredStr(K k){
-        String str = getStr(k);
-        if (str == null || str.trim().isEmpty()) {
+        String v = getStr(k);
+        if (v == null || v.trim().isEmpty()) {
             throw new IllegalArgumentException(k + "不能为空");
         }
-        return str;
+        return v;
     }
 
     public String getStr(K k, String def) {
-        String s = getStr(k);
-        return s == null ? def : s;
+        String v = getStr(k);
+        return v == null ? def : v;
+    }
+
+
+    public Date getDate(K k) throws ParseException {
+        V v = map.get(k);
+        if (v != null) {
+            if (v instanceof String) {
+                return DateUtils.parseDate(v.toString(), "yyyy-MM-dd HH:mm:ss");
+            } else {
+                return (Date) v;
+            }
+        }
+        return null;
+    }
+
+    public Date getOnceDate(K k) throws ParseException {
+        Date v = getDate(k);
+        remove(v);
+        return v;
+    }
+
+    public Date getOnceDate(K k, Date def) throws ParseException {
+        Date v = getDate(k, def);
+        remove(v);
+        return v;
+    }
+
+    public Date requiredOnceDate(K k) throws ParseException {
+        Date v = requiredDate(k);
+        remove(k);
+        return v;
+    }
+
+    public Date requiredDate(K k) throws ParseException {
+        Date v = getDate(k);
+        if (v == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return v;
+    }
+
+    public Date getDate(K k, Date def) throws ParseException {
+        Date v = getDate(k);
+        return v == null ? def : v;
+    }
+
+
+
+    public String getDateStr(K k) {
+        V v = map.get(k);
+        if (v != null) {
+            if (v instanceof String) {
+                return v.toString();
+            } else {
+                return DateFormatUtils.format((Date) v, "yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        return null;
+    }
+
+    public String getOnceDateStr(K k) {
+        String v = getDateStr(k);
+        remove(v);
+        return v;
+    }
+
+    public String getOnceDateStr(K k, String def)  {
+        String v = getDateStr(k, def);
+        remove(v);
+        return v;
+    }
+
+    public String requiredOnceDateStr(K k) {
+        String v = requiredDateStr(k);
+        remove(k);
+        return v;
+    }
+
+    public String requiredDateStr(K k)  {
+        String v = getDateStr(k);
+        if (v == null) {
+            throw new IllegalArgumentException(k + "不能为空");
+        }
+        return v;
+    }
+
+    public String getDateStr(K k, String def) {
+        String v = getDateStr(k);
+        return v == null ? def : v;
     }
 
     public Long getLong(K k){
@@ -103,10 +231,27 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return v;
     }
 
-
     public Long getLong(K k,Long def){
-        Long i = getLong(k);
-        return i == null ? def : i;
+        Long v = getLong(k);
+        return v == null ? def : v;
+    }
+
+    public Long getOnceLong(K k){
+        Long v = getLong(k);
+        remove(k);
+        return v;
+    }
+
+    public Long getOnceLong(K k, Long def) {
+        Long v = getLong(k, def);
+        remove(k);
+        return v;
+    }
+
+    public Long requiredOnceLong(K k){
+        Long v = requiredLong(k);
+        remove(k);
+        return v;
     }
 
     public Boolean getBoolean(K key) {
@@ -162,6 +307,24 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return null;
     }
 
+    public Boolean getOnceBoolean(K k){
+        Boolean v = getBoolean(k);
+        remove(k);
+        return v;
+    }
+
+    public Boolean getOnceBoolean(K k, Boolean def) {
+        Boolean v = getBoolean(k, def);
+        remove(k);
+        return v;
+    }
+
+    public Boolean requiredOnceBoolean(K k){
+        Boolean v = requiredBoolean(k);
+        remove(k);
+        return v;
+    }
+
     public BigDecimal getBigDecimal(K key){
         Object v = map.get(key);
         if (v != null) {
@@ -181,6 +344,24 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
     public BigDecimal getBigDecimal(K key,BigDecimal def){
         BigDecimal v = getBigDecimal(key);
         return v == null ? def : v;
+    }
+
+    public BigDecimal getOnceBigDecimal(K k){
+        BigDecimal v = getBigDecimal(k);
+        remove(k);
+        return v;
+    }
+
+    public BigDecimal getOnceBigDecimal(K k, BigDecimal def) {
+        BigDecimal v = getBigDecimal(k, def);
+        remove(k);
+        return v;
+    }
+
+    public BigDecimal requiredOnceBigDecimal(K k){
+        BigDecimal v = requiredBigDecimal(k);
+        remove(k);
+        return v;
     }
 
     public List<Kv<String,Object>> getKvs(K key){
@@ -231,6 +412,39 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
     @Override
     public V get(Object key) {
         return map.get(key);
+    }
+
+    /**
+     * 获取并删除
+     * @param key
+     * @return
+     */
+    public V getOnce(K key) {
+        V v = map.get(key);
+        map.remove(key);
+        return v;
+    }
+
+    public V require(K key) {
+        V v = map.get(key);
+        if (v == null) {
+            throw new IllegalArgumentException(key + "不能为空");
+        }
+        return v;
+    }
+
+    public V requireOnce(K key) {
+        V v = require(key);
+        remove(key);
+        return v;
+    }
+
+
+    public Kv dels(K... keys){
+        for (K key : keys) {
+            remove(key);
+        }
+        return this;
     }
 
     @Override

@@ -6,6 +6,10 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
+import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
+import com.github.binarywang.wxpay.constant.WxPayConstants;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
@@ -20,6 +24,7 @@ import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.RegexUtils;
@@ -36,6 +41,7 @@ import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -82,6 +88,9 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private HzcxWxService hzcxWxService;
 
 
 
@@ -344,6 +353,23 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         Integer version = order.getVersion();
         order.setVersion(version+1);
         return super.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setVersion(version)));
+    }
+
+
+
+    @Override
+    public WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException {
+        WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
+                .newBuilder()
+                .body(body)
+                .attach(attach)
+                .notifyUrl(notifyUrl)
+                .openid(user.getOpenId())
+                .outTradeNo(no)
+                .spbillCreateIp(ip)
+                .tradeType(WxPayConstants.TradeType.JSAPI)
+                .totalFee(total_fee).build();
+        return hzcxWxService.getWxPayService(app).createOrder(req);
     }
 
 

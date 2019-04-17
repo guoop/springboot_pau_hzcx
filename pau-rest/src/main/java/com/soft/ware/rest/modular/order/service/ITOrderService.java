@@ -3,6 +3,8 @@ package com.soft.ware.rest.modular.order.service;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
@@ -10,6 +12,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,4 +61,6 @@ public interface ITOrderService extends IService<TOrder> {
      * @return
      */
     boolean updateByVersion(TOrder order);
+
+    WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException;
 }

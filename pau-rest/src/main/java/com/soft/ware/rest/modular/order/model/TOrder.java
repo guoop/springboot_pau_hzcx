@@ -28,11 +28,11 @@ public class TOrder extends Model<TOrder> {
 
 
     //：微信小程序；
-    public static int SOURCE_0 = 0;
+    public static Integer SOURCE_0 = 0;
     //：收银机；
-    public static int SOURCE_1 = 1;
+    public static Integer SOURCE_1 = 1;
     //：到店自取订单）
-    public static int SOURCE_2 = 2;
+    public static Integer SOURCE_2 = 2;
 
     //：未删除；
     public static Integer is_delete_0 = 0;
