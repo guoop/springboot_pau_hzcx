@@ -98,6 +98,9 @@
         <if test="map.id != null and map.id != ''">
         and g.id = #{map.id}
         </if>
+        <if test="map.code != null and map.code != ''">
+            and g.code = #{map.code}
+        </if>
         <if test="map.ids != null and map.ids != ''">
             and g.id in (${map.ids})
         </if>

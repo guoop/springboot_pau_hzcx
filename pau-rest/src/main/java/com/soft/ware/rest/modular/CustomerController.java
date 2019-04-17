@@ -187,8 +187,8 @@ public class CustomerController extends BaseController {
      * @return
      */
     @RequestMapping(value = "goods/{id}", method = RequestMethod.GET, params = {"flag=goodsNO"})
-    public Object goodsByCode(@PathVariable String id) {
-        List<Map<String, Object>> list = goodsService.findMaps(Kv.by("owner", id));
+    public Object goodsByCode(@PathVariable String id,String flag) {
+        List<Map<String, Object>> list = goodsService.findMaps(Kv.obj("ownerId", id).set("code", id));
         return render().setOne("goods", list);
     }
 

@@ -122,7 +122,7 @@
         and a.creater = #{map.creater}
     </if>
     <if test="map.ownerId != null and map.ownerId != ''">
-        and a.owner_id = #{map.ownerId}act_hi_procinst
+        and a.owner_id = #{map.ownerId}
     </if>
     <if test="map.type != null and map.type != ''">
         and a.type = #{map.type}
