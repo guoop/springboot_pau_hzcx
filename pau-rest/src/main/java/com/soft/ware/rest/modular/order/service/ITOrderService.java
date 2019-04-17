@@ -53,7 +53,7 @@ public interface ITOrderService extends IService<TOrder> {
 
     int selectOrderCount(String ownerId);
 
-    TOrder selectOrderDetailById(String orderNo);
+    Map<String,Object> selectOrderDetailById(String orderNo);
 
     /**
      * 支付时设置,收货人地址电话信息
@@ -63,4 +63,6 @@ public interface ITOrderService extends IService<TOrder> {
     boolean updateByVersion(TOrder order);
 
     WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException;
+
+    boolean orderSignStatu(SessionUser sessionUser,Map<String,Object> param);
 }

@@ -26,6 +26,7 @@
         <result column="remark" property="remark" />
         <result column="is_delete" property="isDelete"/>
         <result column="phone" property="phone"/>
+        <result column="cancel_reason" property="cancelReason"></result>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -145,7 +146,7 @@
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
 
 
-        select  a.id id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,c.`status` as 'refundStatus',
+        select  a.id id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
                 from t_order a
                 LEFT JOIN t_address b
@@ -179,8 +180,9 @@
     </update>
 
     <!--根据订单id查询订单 -->
-    <select id="selectOrderDetailById" resultType="com.soft.ware.rest.modular.order.model.TOrder">
-        select <include refid="t_order_alias_columns"/> from t_order a where a.order_no = #{orderNo}
+    <select id="selectOrderDetailById" resultType="java.util.Map">
+        select <include refid="t_order_alias_columns"/>
+      from t_order a where a.order_no = #{orderNo}
 
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.order.service.impl;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.alibaba.fastjson.JSON;
@@ -19,8 +20,10 @@ import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
+import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
+import com.soft.ware.rest.modular.address.service.impl.TAddressServiceImpl;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -38,16 +41,24 @@ import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
+import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
+import com.soft.ware.rest.modular.wx_secret.model.SWxSecret;
+import com.soft.ware.rest.modular.wx_secret.service.ISWxSecretService;
+import me.chanjar.weixin.common.error.WxErrorException;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -92,6 +103,17 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Autowired
     private HzcxWxService hzcxWxService;
 
+    @Autowired
+    private ITAddressService tAddressService;
+
+    @Autowired
+    private ISWxAppService isWxAppService;
+    @Autowired
+    private HzcxWxService hzcxWxService;
+
+
+
+
 
 
     @Override
@@ -131,7 +153,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     public List<HashMap<String, Object>> selectOrdersListByMap(Map<String, Object> map) {
-
         List<HashMap<String,Object>> listMap = orderMapper.selectOrdersListByMap(map);
         List<HashMap<String,Object>> resultList = new ArrayList<>();
         if(listMap.size() > 0){
@@ -335,14 +356,19 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
     @Override
-    public TOrder selectOrderDetailById(String orderNo) {
-        TOrder tOrder = orderMapper.selectOrderDetailById(orderNo);
+    @Transactional
+    public Map<String,Object> selectOrderDetailById(String orderNo) {
+        Map<String,Object> tOrder = orderMapper.selectOrderDetailById(orderNo);
         if(ToolUtil.isNotEmpty(tOrder)){
+            if(ToolUtil.isNotEmpty(tOrder.get("addressId"))){
+                TAddress tAddress=tAddressService.selectById(tOrder.get("addressId").toString());
+                tOrder.put("addressInfo",tAddress);
+            }
             Map<String,Object> param = new HashMap<>();
-            param.put("orderId",tOrder.getId());
+            param.put("orderId",tOrder.get("id").toString());
             List<TOrderChild>  childList = orderChildService.selectOrderChildListByMap(param);
             if(childList.size() == 0 || childList.size() > 0){
-                tOrder.setOrderChildList(childList);
+                tOrder.put("childList",childList);
             }
         }
         return tOrder;
@@ -353,6 +379,101 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         Integer version = order.getVersion();
         order.setVersion(version+1);
         return super.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setVersion(version)));
+    }
+
+    @Override
+    public boolean orderSignStatu(SessionUser sessionUser,Map<String, Object> param) {
+        boolean isSuccess = false;
+        Integer updateNum = 0;
+        SWxApp sWxApp = isWxAppService.find(new TOwner().setId(param.get("owner_id").toString()));
+        WxMaService service = hzcxWxService.getWxMaService(sWxApp);
+        TOrder tOrder = new TOrder();
+        tOrder.setOrderNo(param.get("orderNo").toString());
+        tOrder = orderMapper.selectOne(tOrder);
+        List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
+        List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
+        TAddress address = null;
+        if(ToolUtil.isNotEmpty(tOrder.getAddressId())){
+            address = tAddressService.selectById(tOrder.getAddressId());
+        }
+        switch (param.get("status").toString()){
+
+            //待商家确认,商家确认接单
+            case "deliver":
+                // 只允许对已经经过商家确认的订单进行配送
+                try {
+                    if (tOrder.getStatus().equals(TblOrder.STATUS_10)) {
+                        tOrder.setStatus(TblOrder.STATUS_2);
+                        tOrder.setDistributioner(sessionUser.getPhone());
+                        tOrder.setDistributionTime(new Date());
+                        updateNum = orderMapper.updateById(tOrder);
+                        //update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
+                        if (tOrder.getSource().equals(TblOrder.SOURCE_0)) {
+                            logger.info("配送订单 - ", tOrder.getOrderNo());
+                            String templateFormId = redisTemplate.opsForValue().get("ms:fit:" + tOrder.getOrderNo());
+                            WxMaTemplateMessage msg = this.buildOrderTemplateMessage("deliver", templateFormId, tOrder,goodsNames,address);
+                            msg.getData().add(new WxMaTemplateData("keyword6", "配送人员已经开始为您配送，请保持手机畅通"));// 温馨提示
+                            msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
+                            service.getMsgService().sendTemplateMsg(msg);
+                        }
+                    } else {
+                        throw new PauException(BizExceptionEnum.ORDER_DELIVER_FAIL);
+                    }
+                } catch (WxErrorException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "confirm":
+                if (tOrder.getStatus().equals(TOrder.STATUS_1)) { //如果当前订单状态是待商家确认订单
+                    tOrder.setStatus(TOrder.STATUS_10);//那么订单状态设置商家确认订单
+                    tOrder.setConfirmer(tOrder.getConfirmer());
+                    tOrder.setConfirmTime(new Date());
+                    updateNum = orderMapper.updateById(tOrder);
+                    logger.info("确认订单 - {}", tOrder.getOrderNo());
+                    String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
+                    WxMaTemplateMessage msg = this.buildOrderTemplateMessage("confirm", templateFormId,tOrder,goodsNames,address );
+                    msg.getData().add(new WxMaTemplateData("keyword6",DateUtil.format(tOrder.getCreateTime(), "YYYY-MM-DD HH:mm:ss")));// 确认时间
+                    msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息*/
+                } else {
+                    throw new PauException(BizExceptionEnum.ORDER_CONFIRM_FAIL);
+                }
+                break;
+
+            //已完成
+            case "done":
+                // 只允许对配送中的订单进行标记完成操作
+                if (tOrder.getStatus().equals(TblOrder.SOURCE_2)) {
+                    tOrder.setStatus(TblOrder.STATUS_3);
+                    tOrder.setDoner(sessionUser.getPhone());
+                    tOrder.setDoneTime(new Date());
+                    updateNum = orderMapper.updateById(tOrder);
+                } else {
+                    throw new PauException(BizExceptionEnum.ORDER_DONE_FAIL);
+                }
+            //手动取消
+            case "cancal":
+               if(tOrder.getMoneyChannel() == TOrder.MONEY_CHANNEL_1 && tOrder.getMoneyChannel() == TOrder.STATUS_1) {
+                   try {
+                   tOrder.setStatus(TOrder.STATUS_1);
+                   tOrder.setCanceler(param.get("openId").toString());
+                   tOrder.setCancelTime(new Date());
+                   updateNum = orderMapper.updateById(tOrder);
+                   String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
+                   //订单下的子订单商品名称
+                   WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, tOrder,goodsNames,address);
+                   msg.getData().add(new WxMaTemplateData("keyword6",tOrder.getCancelReason()));// 取消原因
+                   msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
+                   service.getMsgService().sendTemplateMsg(msg);
+                   } catch (WxErrorException e) {
+                       e.printStackTrace();
+                   }
+               }
+                break;
+        }
+        if(updateNum > 0){
+            return true;
+        }
+        return false;
     }
 
 

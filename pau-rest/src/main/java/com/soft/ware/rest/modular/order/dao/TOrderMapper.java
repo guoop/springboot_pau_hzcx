@@ -33,6 +33,6 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
 
     int selectOrderCount(String ownerId);
 
-   TOrder selectOrderDetailById(String orderNo);
+   Map<String,Object> selectOrderDetailById(String orderNo);
 
 }

@@ -28,6 +28,6 @@ public interface ITOwnerService extends IService<TOwner> {
 
     TOwner find(SessionUser user) throws Exception;
 
-   TOwner selectOwnerInfoByOwnerId(String ownerId);
+   Map<String,Object> selectOwnerInfoByOwnerId(String ownerId);
 
 }
