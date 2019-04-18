@@ -80,4 +80,7 @@ public interface ITOrderService extends IService<TOrder> {
     WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark) throws Exception;
 
     WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
+
+    boolean diffMoney(Map<String,Object> param,SessionUser sessionUser);
+
 }

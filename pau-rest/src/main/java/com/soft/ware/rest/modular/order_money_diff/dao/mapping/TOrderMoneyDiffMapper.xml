@@ -16,6 +16,10 @@
         <result column="pay_time" property="payTime" />
         <result column="pay_response" property="payResponse" />
         <result column="is_delete" property="isDelete" />
+        <result column="refunder" property="refunder" />
+        <result column="refund_time" property="refundTime" />
+        <result column="refund_status" property="refundStatus" />
+        <result column="refund_response" property="refundResponse" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

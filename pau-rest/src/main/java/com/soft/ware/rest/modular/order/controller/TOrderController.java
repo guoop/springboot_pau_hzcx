@@ -169,20 +169,17 @@ public class TOrderController extends BaseController {
     }
 
     /**
-     * 订单补差价退款
+     * 订单补差价
      * @param param orderNo 订单编号
      * @param sessionUser  当前登录用户
-     * @// TODO: 2019/4/11 paulo 暂时往后放
      */
-    @RequestMapping(value = "orders/money-diff-refund")
+    @RequestMapping(value = "orders/money/diff")
     public Tip ordersMoneyDiffRefund(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-        param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
-        param.get("orderNo").toString();
         param.put("owner_id",sessionUser.getOwnerId());
-        Map<String,Object> map = itOrderMoneyDiffService.findMap(param);
-
-
-
+        //Map<String,Object> map = itOrderMoneyDiffService.findMap(param);
+        if(tOrderService.diffMoney(param,sessionUser)){
+            return new SuccessTip();
+        }
         return new ErrorTip();
     }
 

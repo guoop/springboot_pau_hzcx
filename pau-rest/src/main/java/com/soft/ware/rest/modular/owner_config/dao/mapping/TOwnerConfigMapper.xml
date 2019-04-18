@@ -49,4 +49,16 @@
             and toc.order_phone = #{map.orderPhone}
         </if>
     </select>
+
+    <update id="updateOwnerConfigInfo" parameterMap="java.util.Map" >
+        update t_owner_config
+        <if test="isDelivery != null and isDelivery != ''">
+            set is_delivery = #{isDelivery}
+        </if>
+        <if test="orderPhone != null and orderPhone != ''">
+            set order_phone = #{orderPhone}
+        </if>
+        where owner_id = #{ownerId}
+
+    </update>
 </mapper>
