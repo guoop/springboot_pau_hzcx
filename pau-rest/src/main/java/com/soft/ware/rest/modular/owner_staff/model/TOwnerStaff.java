@@ -1,11 +1,11 @@
 package com.soft.ware.rest.modular.owner_staff.model;
 
-import java.io.Serializable;
-
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -19,6 +19,13 @@ import com.baomidou.mybatisplus.annotations.TableName;
 public class TOwnerStaff extends Model<TOwnerStaff> {
 
     private static final long serialVersionUID = 1L;
+
+    //：正常；
+    public static Integer status_0 = 0;
+    //：已禁用；
+    public static Integer status_1 = 1;
+    //：已删除）
+    public static Integer status_2 = 2;
 
     /**
      * 主键id

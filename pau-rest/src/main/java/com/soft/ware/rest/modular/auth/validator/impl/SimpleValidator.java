@@ -3,7 +3,6 @@ package com.soft.ware.rest.modular.auth.validator.impl;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
@@ -31,19 +30,19 @@ public class SimpleValidator implements IReqValidator {
         TOwnerStaff staff = staffService.findByPhone(phone);
 
         if (ToolUtil.isEmpty(password) || ToolUtil.isEmpty(phone)) {
-            return null;
+            return new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
 
         password = PasswordUtils.encode(phone, password);
-        if (!phone.equals(password) && !password.equals(staff.getPassword())) {
-            return null;
+        if (!phone.equals(staff.getPhone()) || !password.equals(staff.getPassword())) {
+            return new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
 
-        if (TblOwnerStaff.status_1.equals(staff.getStatus())) {
+        if (TOwnerStaff.status_1.equals(staff.getStatus())) {
             throw new PauException(BizExceptionEnum.USER_DISABLED);
         }
 
-        if (TblOwnerStaff.status_2.equals(staff.getStatus())) {
+        if (TOwnerStaff.status_2.equals(staff.getStatus())) {
             throw new PauException(BizExceptionEnum.USER_DELETED);
         }
         return staff;

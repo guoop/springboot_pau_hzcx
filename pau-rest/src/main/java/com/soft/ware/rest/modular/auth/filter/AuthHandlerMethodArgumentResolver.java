@@ -13,6 +13,7 @@ import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.core.MethodParameter;
@@ -70,13 +71,13 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             Object claims = request.getAttribute("claims",0);
             if (claims instanceof DefaultClaims) {
                 DefaultClaims c = (DefaultClaims) claims;
-                String username = (String)c.get("sub");
+                String username = (String) c.get(Claims.SUBJECT);
                 AuthService authService = SpringContextHolder.getBean(AuthService.class);
                  if(methodParameter.getParameterType() == SessionUser.class) {
                     //todo yancc 计划删掉,商户端应该不支持
                     TOwnerStaff user = authService.findByUsername(username);
                     SessionUser u = new SessionUser();
-                    u.setId(user.getId().toString() + "");
+                    u.setId(user.getId() + "");
                     u.setOwnerId(user.getOwnerId());
                     if (req.getServletPath().startsWith("/owner")) {
                         //小程序用户

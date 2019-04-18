@@ -7,6 +7,7 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.owner.dao.TOwnerMapper;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +35,6 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     }
 
     @Override
-        public TOwner findByAppId(String appId) {
-        //return mapper.selectOne(new TOwner().setAppId(appId));
-
-        return null;
-    }
-
-    @Override
     public List<Map<String, Object>> findMaps(Map<String, Object> map) {
         return mapper.findMap(map);
     }
@@ -60,5 +54,10 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     public Map<String,Object> selectOwnerInfoByOwnerId(String ownerId) {
 
         return mapper.selectOwnerInfoByOwnerId(ownerId);
+    }
+
+    @Override
+    public TOwner find(TOwnerStaff user) throws Exception {
+        return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
     }
 }

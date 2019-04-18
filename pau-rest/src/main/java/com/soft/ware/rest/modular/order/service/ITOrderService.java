@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.soft.ware.rest.modular.address.model.TAddress;
-import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
@@ -80,4 +77,12 @@ public interface ITOrderService extends IService<TOrder> {
     WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark) throws Exception;
 
     WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
+
+    /**
+     * 收银app下单
+     * @param user
+     * @param param
+     * @return
+     */
+    TOrder createOrder(SessionUser user, AddOrderParam param);
 }

@@ -2,16 +2,25 @@ package com.soft.ware.rest.modular;
 
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.common.persistence.model.TblAppBase;
+import com.soft.ware.rest.modular.app_version.model.TAppVersion;
+import com.soft.ware.rest.modular.app_version.service.ITAppVersionService;
+import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
+import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.order.service.ITOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +34,12 @@ public class AppController extends BaseController {
 
     @Autowired
     private ITGoodsService goodsService;
+
+    @Autowired
+    private ITOrderService orderService;
+
+    @Autowired
+    private ITAppVersionService appVersionService;
 
 
 
@@ -76,27 +91,26 @@ public class AppController extends BaseController {
      * goods拼接方式：1801__https://mp-owner-1251363375.cos.ap-guangzhou.myqcloud.com/1536655293256.jpg__馒头（每人限5袋）__-1__1__1.50__1.50
      * @return
      */
-/*
+
     @RequestMapping(value = "/user/order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user, AddOrderParam param){
-        TblOrder order = tblOrderService.createOrder(user,param);
+        TOrder order = orderService.createOrder(user,param);
         return render();
     }
 
 
     @RequestMapping(value = "/version/check",method = RequestMethod.GET)
-    public Object appVersion(){
-        TblAppVersion v = appVersionService.findLast(TblAppBase.PLATFORM_CODE_APP_ANDROID);
+    public Object appVersion() throws Exception {
+        TAppVersion v = appVersionService.findLast(TblAppBase.PLATFORM_CODE_APP_ANDROID);
         Kv<String, String> kv = Kv.by("download_url", v.getDownloadUrl()).set("description", v.getDescription()).set("version", v.getVersion());
         return render().set("force", v.getIsForce()).set("newVersion", kv);
     }
 
 
-    */
-/**
-     * 极光im初始化
-     *//*
 
+    /**
+     * 极光im初始化
+     */
     @RequestMapping("/im/init")
     public Object getPayLoad(HttpServletResponse response){
         //todo yancc 是否删除
@@ -104,6 +118,5 @@ public class AppController extends BaseController {
         return render().setAll(WXUtils.getPayLoad());
     }
 
-*/
 
 }

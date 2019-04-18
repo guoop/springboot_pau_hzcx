@@ -1,6 +1,8 @@
 package com.soft.ware.rest.modular.handover.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Map;
  */
 public interface ITHandoverRecordService extends IService<THandoverRecord> {
 
-    public List<THandoverRecord> getHandOver(Map<String,Object> param);
+    List<THandoverRecord> getHandOver(Map<String,Object> param);
 
+    THandoverRecord over(SessionUser user, HandoverParam param);
 }

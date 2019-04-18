@@ -21,4 +21,62 @@
         <result column="updater" property="updater" />
     </resultMap>
 
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, name, platform, version_main AS versionMain, version_secondary AS versionSecondary, version_bug AS versionBug, version, is_force AS isForce, download_url AS downloadUrl, description, created_time AS createdTime, creater, update_time AS updateTime, updater
+    </sql>
+    <sql id="t_app_version_alias_columns">
+        tav.code, tav.name, tav.platform, tav.version_main AS versionMain, tav.version_secondary AS versionSecondary, tav.version_bug AS versionBug, tav.version, tav.is_force AS isForce, tav.download_url AS downloadUrl, tav.description, tav.created_time AS createdTime, tav.creater, tav.update_time AS updateTime, tav.updater
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="t_app_version_alias_columns"/>
+        from t_app_version tav where true
+        <if test="params.id != null and params.id != ''">
+            and tav.id = #{params.id}
+        </if>
+        <if test="params.code != null and params.code != ''">
+            and tav.code = #{params.code}
+        </if>
+        <if test="params.name != null and params.name != ''">
+            and tav.name = #{params.name}
+        </if>
+        <if test="params.platform != null and params.platform != ''">
+            and tav.platform = #{params.platform}
+        </if>
+        <if test="params.versionMain != null">
+            and tav.version_main = #{params.versionMain}
+        </if>
+        <if test="params.versionSecondary != null">
+            and tav.version_secondary = #{params.versionSecondary}
+        </if>
+        <if test="params.versionBug != null">
+            and tav.version_bug = #{params.versionBug}
+        </if>
+        <if test="params.version != null and params.version != ''">
+            and tav.version = #{params.version}
+        </if>
+        <if test="params.isForce != null">
+            and tav.is_force = #{params.isForce}
+        </if>
+        <if test="params.downloadUrl != null and params.downloadUrl != ''">
+            and tav.download_url = #{params.downloadUrl}
+        </if>
+        <if test="params.description != null and params.description != ''">
+            and tav.description = #{params.description}
+        </if>
+        <if test="params.createdTime != null">
+            and tav.created_time = #{params.createdTime}
+        </if>
+        <if test="params.creater != null and params.creater != ''">
+            and tav.creater = #{params.creater}
+        </if>
+        <if test="params.updateTime != null">
+            and tav.update_time = #{params.updateTime}
+        </if>
+        <if test="params.updater != null and params.updater != ''">
+            and tav.updater = #{params.updater}
+        </if>
+    </select>
 </mapper>

@@ -24,13 +24,9 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
-import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
-import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -668,6 +664,39 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         // 订单价格 单位是 分
         Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
         return this.pay(app,user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+    }
+
+    /**
+     * 收银app下单
+     * @param user
+     * @param param
+     * @return
+     */
+    @Override
+    public TOrder createOrder(SessionUser user, AddOrderParam param) {
+        Date date = new Date();
+        TOrder o = new TOrder();
+        o.setOwnerId(user.getOwnerId());
+
+        o.setOrderNo(param.getNo());
+        o.setMoneyChannel(param.getMoney_channel());
+        o.setOrderMoney(param.getMoney());
+        o.setSource(param.getSource().shortValue());
+        o.setPayMoney(param.getMoney_shishou());//todo 不对应
+        o.setPayTime(param.getPay_at());//todo 不对应
+        o.setCreateTime(date);
+        o.setRemark("收银机订单");
+        //o.setCreatedBy(user.getId());//todo 有疑问
+
+        param.getMoney_dpay();//todo 优惠后金额
+        param.getMoney_zhaol();//todo 找不到
+
+        o.setStatus(param.getStatus());
+        o.setSettlementer(param.getSettlement_by());
+        //todo yancc 修改goods 为子订单
+        //o.setGoods(param.getGoods());
+        Integer insert = orderMapper.insert(o);
+        return (insert != null && insert > 0 ) ? o : null;
     }
 
 }
