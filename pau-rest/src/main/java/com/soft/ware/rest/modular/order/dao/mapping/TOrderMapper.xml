@@ -146,7 +146,7 @@
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
 
 
-        select  a.id id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus',
+        select  <include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
                 from t_order a
                 LEFT JOIN t_address b
@@ -162,6 +162,7 @@
             <if test="owner_id != null and owner_id != ''">
                 and a.owner_id = #{owner_id}
             </if>
+                order by a.create_time desc
             <if test="page != null ">
                 limit #{page},20
             </if>

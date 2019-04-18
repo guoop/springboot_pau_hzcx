@@ -69,4 +69,9 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
         return mapper.updateOrSort(categorySortParam);
     }
 
+    @Override
+    public List<TCategory> selectCategoryByIds(List<String> ids) {
+        return mapper.selectCategoryByIds(ids);
+    }
+
 }

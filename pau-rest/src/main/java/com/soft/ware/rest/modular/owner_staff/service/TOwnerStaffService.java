@@ -11,4 +11,7 @@ public interface TOwnerStaffService extends IService<TOwnerStaff> {
      */
     TOwnerStaff findByPhone(String phone);
 
+    TOwnerStaff selectStaffByOwnerId(String ownerId);
+
+
 }

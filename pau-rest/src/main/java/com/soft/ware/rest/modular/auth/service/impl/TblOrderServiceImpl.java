@@ -430,6 +430,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         int round = WXContants.big_decimal_sale;
         Date date = new Date();
         TblOrder order = this.findByNo(user, param.gevoid());
+
         if (!order.getMoneyChannel().equals(TblOrder.MONEY_CHANNEL_0) || (!order.getStatus().equals(TblOrder.STATUS_1) && !order.getStatus().equals(TblOrder.STATUS_3))) {
             throw new PauException(BizExceptionEnum.ORDER_REFUND_NOT_SUPPORT);
         } else if (TblOrder.REFUND_STATUS_0.equals(order.getRefundStatus())) {

@@ -27,4 +27,6 @@ public interface ITCategoryService extends IService<TCategory> {
     List<TCategory> selectChildrenCategoryList(Map<String,Object> map);
 
     boolean updateOrSort(CategorySortParam categorySortParam);
+
+    List<TCategory> selectCategoryByIds(List<String> ids);
 }

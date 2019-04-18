@@ -205,7 +205,7 @@ public class TOrder extends Model<TOrder> {
     /**
      * 确认时间
      */
-    @TableField("confirme_time")
+    @TableField("confirm_time")
     private Date confirmTime;
 
     /**

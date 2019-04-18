@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -41,7 +42,7 @@ public class TRefund extends Model<TRefund> {
      * 订单金额
      */
     @TableField("order_money")
-    private String orderMoney;
+    private BigDecimal orderMoney;
     /**
      * 第三方返回结果
      */
@@ -57,6 +58,8 @@ public class TRefund extends Model<TRefund> {
     private String creater;
 
 
+
+
     public String getId() {
         return id;
     }
@@ -65,11 +68,11 @@ public class TRefund extends Model<TRefund> {
         this.id = id;
     }
 
-    public String gevoidNo() {
+    public String getOrderNo() {
         return orderNo;
     }
 
-    public void sevoidNo(String orderNo) {
+    public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
 
@@ -89,11 +92,11 @@ public class TRefund extends Model<TRefund> {
         this.status = status;
     }
 
-    public String gevoidMoney() {
+    public BigDecimal getOrderMoney() {
         return orderMoney;
     }
 
-    public void sevoidMoney(String orderMoney) {
+    public void setOrderMoney(BigDecimal orderMoney) {
         this.orderMoney = orderMoney;
     }
 
