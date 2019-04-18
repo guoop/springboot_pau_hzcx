@@ -50,7 +50,7 @@
         </if>
     </select>
 
-    <update id="updateOwnerConfigInfo" parameterMap="java.util.Map" >
+    <update id="updateOwnerConfigInfo" parameterType="map" >
         update t_owner_config
         <if test="isDelivery != null and isDelivery != ''">
             set is_delivery = #{isDelivery}
