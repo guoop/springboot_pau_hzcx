@@ -4,10 +4,11 @@ import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
-import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
 import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +22,21 @@ import org.springframework.stereotype.Service;
 public class SimpleValidator implements IReqValidator {
 
     @Autowired
-    private TblOwnerStaffService tblOwnerStaffService;
+    private TOwnerStaffService staffService;
 
     @Override
     public boolean validate(Credence credence) {
         String password = credence.getCredenceCode();
         String phone = credence.getPhoneName();
-        TblOwnerStaff staff = tblOwnerStaffService.findByPhone(phone);
-        if (!ToolUtil.isEmpty(password) && ToolUtil.isEmpty(phone)) {
-            password = PasswordUtils.encode(phone, password);
-            return phone.equals(password) && password.equals(staff.getPassword());
+        TOwnerStaff staff = staffService.findByPhone(phone);
+
+        if (ToolUtil.isEmpty(password) || ToolUtil.isEmpty(phone)) {
+            return false;
+        }
+
+        password = PasswordUtils.encode(phone, password);
+        if (!phone.equals(password) && !password.equals(staff.getPassword())) {
+            return false;
         }
 
         if (TblOwnerStaff.status_1.equals(staff.getStatus())) {
