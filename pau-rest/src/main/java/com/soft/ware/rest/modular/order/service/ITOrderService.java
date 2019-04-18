@@ -78,6 +78,9 @@ public interface ITOrderService extends IService<TOrder> {
 
     WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
 
+    boolean diffMoney(Map<String,Object> param,SessionUser sessionUser);
+
+
     /**
      * 收银app下单
      * @param user

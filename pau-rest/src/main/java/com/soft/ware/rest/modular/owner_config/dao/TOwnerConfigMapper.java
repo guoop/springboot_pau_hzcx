@@ -10,4 +10,6 @@ public interface TOwnerConfigMapper extends BaseMapper<TOwnerConfig> {
 
     List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
 
+    boolean updateOwnerConfigInfo(Map<String,Object> param);
+
 }

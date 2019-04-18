@@ -94,7 +94,46 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
      */
     @TableField("is_delete")
     private Integer isDelete;
+    @TableField("refunder")
+    private String refunder;
+    @TableField("refund_time")
+    private Date refundTime;
+    @TableField("refund_status")
+    private int refundStatus;
+    @TableField("reund_response")
+    private String reundResponse;
 
+    public String getRefunder() {
+        return refunder;
+    }
+
+    public void setRefunder(String refunder) {
+        this.refunder = refunder;
+    }
+
+    public Date getRefundTime() {
+        return refundTime;
+    }
+
+    public void setRefundTime(Date refundTime) {
+        this.refundTime = refundTime;
+    }
+
+    public int getRefundStatus() {
+        return refundStatus;
+    }
+
+    public void setRefundStatus(int refundStatus) {
+        this.refundStatus = refundStatus;
+    }
+
+    public String getReundResponse() {
+        return reundResponse;
+    }
+
+    public void setReundResponse(String reundResponse) {
+        this.reundResponse = reundResponse;
+    }
 
     public String getId() {
         return id;

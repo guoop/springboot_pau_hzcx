@@ -9,6 +9,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -28,6 +29,9 @@ public class TOwnerController  extends BaseController {
     private ITOwnerService itOwnerService;
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private ITOwnerConfigService itOwnerConfigService;
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
@@ -106,6 +110,19 @@ public class TOwnerController  extends BaseController {
         return new ErrorTip();
     }
 
+    /**
+     * 更新商户配置信息
+     * @param param
+     * @param sessionUser
+     * @return
+     */
+    @RequestMapping(value = "update/config/info",method = RequestMethod.POST)
+    public Tip updateOwnerConfigInfo(@RequestParam Map<String,Object> param,SessionUser sessionUser){
+        if(itOwnerConfigService.updateOwnerConfigInfo(param,sessionUser)){
+            return new SuccessTip();
+        }
+        return  new ErrorTip();
+    }
 
 
 }
