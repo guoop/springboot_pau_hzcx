@@ -1,7 +1,5 @@
 package com.soft.ware.rest.modular.owner_temp.model;
-
 import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -14,7 +12,7 @@ import java.util.Date;
  * </p>
  *
  * @author yancc
- * @since 2019-04-11 20:09:34
+ * @since 2019-04-18 16:53:22
  */
 @TableName("t_owner_temp")
 public class TOwnerTemp extends Model<TOwnerTemp> {
@@ -29,62 +27,50 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     /**
      * 微信支付商户号
      */
-    @TableField("shop_id")
     private String shopId;
     /**
      * 微信支付密钥
      */
-    @TableField("shop_secret")
     private String shopSecret;
     /**
      * 小程序ID
      */
-    @TableField("app_id")
     private String appId;
     /**
      * app_secret
      */
-    @TableField("app_secret")
     private String appSecret;
     /**
      * 小程序名称
      */
-    @TableField("app_name")
     private String appName;
     /**
      * 小程序二维码URL
      */
-    @TableField("app_qr")
     private String appQr;
     /**
      * 商家在系统中的唯一标识
      */
-    @TableField("owner_id")
     private String ownerId;
     /**
      * 官网登录账号
      */
-    @TableField("acct_name")
     private String acctName;
     /**
      * 官网登录密码
      */
-    @TableField("acct_pwd")
     private String acctPwd;
     /**
      * 企业名称
      */
-    @TableField("company_name")
     private String companyName;
     /**
      * 企业营业执照URL
      */
-    @TableField("company_license")
     private String companyLicense;
     /**
      * 企业信用代码
      */
-    @TableField("company_code")
     private String companyCode;
     /**
      * 商家姓名
@@ -101,17 +87,14 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     /**
      * 微信商户平台API证书地址
      */
-    @TableField("wx_api_card")
     private String wxApiCard;
     /**
      * 模板消息ID对应的JSON字符串
      */
-    @TableField("msg_tmplate")
     private String msgTmplate;
     /**
      * 创建时间
      */
-    @TableField("created_time")
     private Date createdTime;
     /**
      * 创建人
@@ -120,72 +103,58 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     /**
      * 商户资料状态（1：未提交审核；2：审核中；3：已通过审核；4：审核被拒）
      */
-    @TableField("owner_data_status")
     private Integer ownerDataStatus;
     /**
      * 小程序资料状态（1：未提交审核；2：审核中；3：已通过审核；4：审核被拒）
      */
-    @TableField("wxapp_data_status")
     private Integer wxappDataStatus;
     /**
      * 商户资料审核人
      */
-    @TableField("owner_data_auditor")
     private String ownerDataAuditor;
     /**
      *  商户资料审核通过时间
      */
-    @TableField("owner_data_time")
     private Date ownerDataTime;
     /**
      * 小程序审核人
      */
-    @TableField("wxapp_data_auditor")
     private String wxappDataAuditor;
     /**
      * 小程序审核时间
      */
-    @TableField("wxapp_data_time")
     private Date wxappDataTime;
     /**
      * 商户资料拒绝人
      */
-    @TableField("owner_refuser")
     private String ownerRefuser;
     /**
      * 
      */
-    @TableField("owner_refuser_time")
     private Date ownerRefuserTime;
     /**
      * 
      */
-    @TableField("owner_refuser_reason")
     private String ownerRefuserReason;
     /**
      * 
      */
-    @TableField("wxapp_refuser")
     private String wxappRefuser;
     /**
      * 小程序拒绝时间
      */
-    @TableField("wxapp_refuser_time")
     private Date wxappRefuserTime;
     /**
      * 小程序拒绝原因
      */
-    @TableField("wxapp_refuser_reason")
     private String wxappRefuserReason;
     /**
      * 是否已完成配置
      */
-    @TableField("owner_is_valid")
-    private Integer ownerIsValid;
+    private String ownerIsValid;
     /**
      * 是否审核通过
      */
-    @TableField("is_verify")
     private Integer isVerify;
 
 
@@ -445,11 +414,11 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
         this.wxappRefuserReason = wxappRefuserReason;return this;
     }
 
-    public Integer getOwnerIsValid() {
+    public String getOwnerIsValid() {
         return ownerIsValid;
     }
 
-    public TOwnerTemp setOwnerIsValid( Integer ownerIsValid) {
+    public TOwnerTemp setOwnerIsValid( String ownerIsValid) {
         this.ownerIsValid = ownerIsValid;return this;
     }
 

@@ -57,7 +57,7 @@ public class TOwnerTempServiceImpl extends BaseService<TOwnerTempMapper,TOwnerTe
                 String tmpl = tpl.getMsgTmplate();
                 Map map = JSON.parseObject(tmpl, Map.class);
                 if (map == null) {
-                    map = new LinkedHashMap();
+                    map = new LinkedHashMap<String,Object>();
                     WxMaService service = hzcxWxService.getWxMaService(user);
                     WxMaTemplateListResult result = service.getTemplateService().findTemplateList(0, 20);
                     List<WxMaTemplateListResult.TemplateInfo> ls = result.getList();

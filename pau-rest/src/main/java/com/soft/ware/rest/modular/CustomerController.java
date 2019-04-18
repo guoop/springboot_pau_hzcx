@@ -1,7 +1,5 @@
 package com.soft.ware.rest.modular;
 
-import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
-import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryRequest;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
@@ -32,14 +30,10 @@ import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.controller.dto.PayAfterOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
-import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
-import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
-import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
-import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
 import com.soft.ware.rest.modular.question.model.TQuestion;
 import com.soft.ware.rest.modular.question.service.ITQuestionService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
@@ -61,7 +55,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Api(value = "买家版接口")
 @RestController
@@ -100,9 +93,6 @@ public class CustomerController extends BaseController {
     private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
-    private ITOwnerTempService ownerTempService;
-
-    @Autowired
     private HzcxWxService hzcxWxService;
 
     @Autowired
@@ -111,14 +101,6 @@ public class CustomerController extends BaseController {
     @Autowired
     private ImService imService;
 
-    @Autowired
-    private ITOrderChildService orderChildService;
-
-    @Autowired
-    private ITOrderMoneyDiffService orderMoneyDiffService;
-
-    @Autowired
-    private WXContants wxContants;
 
 
     /**
@@ -497,27 +479,13 @@ public class CustomerController extends BaseController {
     public Tip orders(SessionUser user, @PathVariable String no, @RequestBody PayAfterOrderParam param) throws Exception {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj().set("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
-        TAddress address = BeanMapUtils.toObject(addressService.findMap(Kv.by("id", order.getAddressId())), TAddress.class);
-        List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
-        List<String> names = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
-        String pack = param.getPack();
-        SWxApp app = appService.find(user);
-        if (TOrder.MONEY_CHANNEL_3.equals(order.getMoneyChannel())) {
-            String tempKey = "ms:ppi:" + no;
-            redisTemplate.opsForValue().set(tempKey, pack, 604800, TimeUnit.SECONDS);
-            logger.debug("买家支付订单时保存PrepayID {} = {}", tempKey, pack);
-            // 微信支付时发送模板消息
-            String pay = ownerTempService.getTplId(user, "pay");
-            // 备注信息
-            WxMaTemplateMessage msg = orderService.buildOrderTemplateMessage(pay, pack, order, names, address);
-            msg.getData().add(new WxMaTemplateData("keyword6", "如有疑问，请进入小程序联系商家"));
-            hzcxWxService.getWxMaService(app).getMsgService().sendTemplateMsg(msg);
-        }
         // 发送短信通知
         String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "order_phone");
         if (StringUtils.isNotBlank(phone)) {
             smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.getOrderNO());
         }
+        //通知不在这里发送了，转移到回调里面了
+
         // IM通知店铺
         imService.sendNewOrderNotify(user, order);
         String tempKey = "ms:fit:" + param.getOrderNO();
@@ -542,60 +510,20 @@ public class CustomerController extends BaseController {
         String no = kv.requiredStr("orderNO");
         Integer source = kv.getInt("source");
         String remark = kv.getStr("remark");
-        TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
-        SWxApp app = appService.find(user);
-        long current = System.currentTimeMillis();
-        boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(source);
-        // 获取客户端ip
+        String phone = kv.getStr("phone");
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
-        // 商品描述
-        String body = "购买商品";
-        // 支付成功的回调地址  可访问 不带参数
-        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPay();
-        String attach = "无";
-        if (source2) {
-            notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayPickup();
-            attach = no;
-        }
-        // 订单价格 单位是 分
-        int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
-        // 商户订单号
-        String out_trade_no = no;
-        order.setSource(source.shortValue());
-        order.setRemark(remark);
-        //暂不支持
-        /*if (TOrder.MONEY_CHANNEL_1.equals(order.getMoneyChannel())) {
-            //货到付款等待商家确认
-            order.setStatus(TOrder.STATUS_1);
-        }*/
-        if (source2) {
-            String phone = kv.requiredStr("phone");
-            out_trade_no = phone + "" + order.getCreateTime().getTime();
-            order.setPhone(phone);
-            total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).intValue();
-            //修改支付金额
-            order.setPayMoney(order.getOrderMoney());
-            //清除运费
-            order.setRunMoney(BigDecimal.ZERO);
-            //设置取货吗
-            redisTemplate.opsForValue().increment("counter:" + user.getAppId(), 1);
-            Object s = redisTemplate.opsForValue().get("counter:" + user.getAppId());
-            order.setPickupNo(Long.valueOf(s.toString()));
-            //设置取货时间
-            order.setPickupTime(new Date(current));
-            order.setMoneyChannel(TOrder.MONEY_CHANNEL_3);//仅支持微信支付
-            orderService.updateByVersion(order);
-        } else {
-            order.setPickupTime(null);
-            order.setPickupNo(null);
-            orderService.updateByVersion(order);
-        }
         try {
-            WxPayMpOrderResult result = orderService.pay(app, user, out_trade_no, total_fee, notify_url, body, attach, spbill_create_ip);
+            WxPayMpOrderResult result = orderService.unifiedorder(user, no, source, spbill_create_ip, phone, remark);
+            //保存支付package 用来发送通知
+            String tempKey = "ms:ppi:" + no;
+            String pack = result.getPackageValue().substring("prepay_id=".length());
+            redisTemplate.opsForValue().set(tempKey, pack, 604800, TimeUnit.SECONDS);
+            logger.debug("买家支付订单时保存PrepayID {} = {}", tempKey, result.getPackageValue());
             return buildPayView(result);
         } catch (WxPayException e) {
             return render(false, e.getReturnMsg()).set("status", "102");
         }
+
     }
 
 
@@ -698,24 +626,15 @@ public class CustomerController extends BaseController {
     @RequestMapping(value = "diff/wxpay/unifiedorder", method = RequestMethod.POST)
     public Object diff(SessionUser user, @RequestBody @Valid DiffParam param, HttpServletRequest request, BindingResult result) throws Exception {
         Validator.valid(result);
-        String no = param.getDiffNO();
-        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("payOrderNo", no).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId()));
-        TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
-        SWxApp app = appService.find(user);
-        String remark = "无";
-        // 获取客户端ip
-        String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
-        // 商品描述
-        String body = "购买商品";
-        // 支付成功的回调地址  可访问 不带参数
-        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiff();
-        // 订单价格 单位是 分
-        Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
         try {
-            WxPayMpOrderResult res = orderService.pay(app,user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+            // 获取客户端ip
+            String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
+            WxPayMpOrderResult res = orderService.unifiedorderDiff(user, param, spbill_create_ip);
             return buildPayView(res);
         } catch (WxPayException e) {
             return render(false, e.getReturnMsg()).set("status", "102");
+        } catch (Exception e){
+            return render(false, e.getMessage()).set("status", "102");
         }
 
     }

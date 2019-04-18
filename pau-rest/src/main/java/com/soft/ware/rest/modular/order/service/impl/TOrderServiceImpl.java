@@ -23,6 +23,7 @@ import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
+import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -40,6 +41,8 @@ import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
+import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
+import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
@@ -104,6 +107,14 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Autowired
     private ISWxAppService isWxAppService;
 
+    @Autowired
+    private ISWxAppService appService;
+
+    @Autowired
+    private WXContants wxContants;
+
+    @Autowired
+    private ITOrderMoneyDiffService orderMoneyDiffService;
 
 
 
@@ -304,9 +315,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
 
     @Override
-    public boolean updatePayCallback(WxPayOrderNotifyResult result, SessionUser user, String no) throws Exception {
+    public boolean updatePayCallback(WxPayOrderNotifyResult result, SessionUser user,TOrder order) throws Exception {
         user.setOpenId(result.getOpenid());
-        TOrder order = BeanMapUtils.toObject(findMap(Kv.obj("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
         Integer beforeStatus = order.getStatus();
         order.setPayTime(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
         order.setStatus(TOrder.STATUS_1);
@@ -315,12 +325,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         Integer version = order.getVersion();
         //todo yancc 订单更新失败怎么办
         order.setVersion(order.getVersion() + 1);
-        Integer update = orderMapper.update(order, new EntityWrapper<TOrder>(new TOrder().setId(order.getId()).setStatus(beforeStatus).setVersion(version)));
-        if (update != 1) {
-            //这样做也没什么用，但是微信会尝试重新执行回调
-            throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
-        }
-        return true;
+        return this.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setStatus(beforeStatus).setVersion(version)));
     }
 
     @Override
@@ -376,7 +381,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
 
 
-    @Override
     public WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException {
         WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
                 .newBuilder()
@@ -488,5 +492,74 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
 
+    @Override
+    public WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark) throws Exception {
+        TOrder order = BeanMapUtils.toObject(this.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
+        SWxApp app = appService.find(user);
+        long current = System.currentTimeMillis();
+        boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(source);
+        // 商品描述
+        String body = "购买商品";
+        // 支付成功的回调地址  可访问 不带参数
+        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPay();
+        String attach = "无";
+        if (source2) {
+            notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayPickup();
+            attach = no;
+        }
+        // 订单价格 单位是 分
+        int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
+        // 商户订单号
+        String out_trade_no = no;
+        order.setSource(source.shortValue());
+        order.setRemark(remark);
+        //暂不支持
+        /*if (TOrder.MONEY_CHANNEL_1.equals(order.getMoneyChannel())) {
+            //货到付款等待商家确认
+            order.setStatus(TOrder.STATUS_1);
+        }*/
+        if (source2) {
+            if (StringUtils.isBlank(phone)) {
+                throw new PauException(BizExceptionEnum.SMS_ERROR_PHONE_FORMAT);
+            }
+            out_trade_no = phone + "" + order.getCreateTime().getTime();
+            order.setPhone(phone);
+            total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).intValue();
+            //修改支付金额
+            order.setPayMoney(order.getOrderMoney());
+            //清除运费
+            order.setRunMoney(BigDecimal.ZERO);
+            //设置取货吗
+            redisTemplate.opsForValue().increment("counter:" + user.getAppId(), 1);
+            Object s = redisTemplate.opsForValue().get("counter:" + user.getAppId());
+            order.setPickupNo(Long.valueOf(s.toString()));
+            //设置取货时间
+            order.setPickupTime(new Date(current));
+            order.setMoneyChannel(TOrder.MONEY_CHANNEL_3);//仅支持微信支付
+            this.updateByVersion(order);
+        } else {
+            order.setPickupTime(null);
+            order.setPickupNo(null);
+            this.updateByVersion(order);
+        }
+        return this.pay(app, user, out_trade_no, total_fee, notify_url, body, attach, spbill_create_ip);
+    }
+
+
+    @Override
+    public WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param,String spbill_create_ip) throws Exception {
+        String no = param.getDiffNO();
+        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("payOrderNo", no).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId()));
+        TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
+        SWxApp app = appService.find(user);
+        String remark = "无";
+        // 商品描述
+        String body = "购买商品";
+        // 支付成功的回调地址  可访问 不带参数
+        String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiff();
+        // 订单价格 单位是 分
+        Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
+        return this.pay(app,user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+    }
 
 }
