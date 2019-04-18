@@ -22,4 +22,10 @@
         id, owner_id , name, phone, password, create_time , function_list , url_list , category_list , status, description
     </sql>
 
+
+    <select id="selectStaffByOwnerId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_owner_staff where owner_id = #{ownerId}
+    </select>
+
+
 </mapper>

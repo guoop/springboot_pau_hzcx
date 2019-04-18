@@ -1,13 +1,25 @@
 package com.soft.ware.rest.modular.order.controller;
 
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
+import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
+import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.DateUtil;
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
+import com.soft.ware.rest.common.exception.BizExceptionEnum;
+import com.soft.ware.rest.common.persistence.model.TblOrder;
+import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
+import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
@@ -16,12 +28,12 @@ import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.TOrderAppService;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.beans.Transient;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,8 +143,8 @@ public class TOrderController extends BaseController {
      * @return 通用提示
      * @// TODO: 2019/4/11  paulo 暂时往后放
      */
-    @RequestMapping(value = "orders/sign-status")
-    public Tip signStatus(@RequestParam Map<String,Object> param,SessionUser sessionUser){
+    @RequestMapping(value = "orders/sign-status",method = RequestMethod.POST)
+    public Tip signStatus(@RequestBody Map<String,Object> param, SessionUser sessionUser){
          param.put("owner_id",sessionUser.getOwnerId());
          param.put("openId",sessionUser.getOpenId());
         if(tOrderService.orderSignStatu(sessionUser,param)){
@@ -146,13 +158,13 @@ public class TOrderController extends BaseController {
      * 订单退款
      * @param param orderNo 订单编号
      * @param sessionUser  当前登录用户
-     * @// TODO: 2019/4/11 paulo 暂时往后放
      */
-    @RequestMapping(value = "orders/refund")
-    public Tip ordersRefund(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-        param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
-        param.get("orderNo").toString();
+    @RequestMapping(value = "orders/refund",method = RequestMethod.POST)
+    public Tip ordersRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser){
         param.put("owner_id",sessionUser.getOwnerId());
+       if(tOrderService.orderRefund(param,sessionUser)){
+           return new SuccessTip();
+       }
         return new ErrorTip();
     }
 

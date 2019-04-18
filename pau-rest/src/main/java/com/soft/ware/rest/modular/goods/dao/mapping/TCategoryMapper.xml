@@ -89,5 +89,13 @@
         </foreach>
     </update>
 
+    <select id="selectCategoryByIds" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_category where id in
+        <foreach collection="list" close=")" open="(" item="item" separator="," index="index">
+            #{item}
+        </foreach>
+
+    </select>
+
 
 </mapper>

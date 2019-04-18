@@ -21,4 +21,10 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
         return mapper.selectOne(staff);
 
     }
+
+    @Override
+    public TOwnerStaff selectStaffByOwnerId(String ownerId) {
+        return mapper.selectStaffByOwnerId(ownerId);
+    }
+
 }

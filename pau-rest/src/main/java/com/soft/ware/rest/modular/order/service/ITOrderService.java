@@ -41,6 +41,9 @@ public interface ITOrderService extends IService<TOrder> {
 
     List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map);
 
+    boolean orderRefund(Map<String,Object> map , SessionUser sessionUser);
+
+
     WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order,List<String> goodsNames, TAddress address);
 
     TOrder createMiniAppOrder(SessionUser user, CreateOrderParam param) throws Exception;
