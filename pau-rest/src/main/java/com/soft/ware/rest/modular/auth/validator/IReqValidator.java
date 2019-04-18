@@ -17,5 +17,5 @@ public interface IReqValidator {
      * @author paulo
      * @Date 2017/8/23 11:49
      */
-    boolean validate(Credence credence);
+    Object validate(Credence credence);
 }

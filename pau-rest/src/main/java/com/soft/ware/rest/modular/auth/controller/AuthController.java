@@ -14,7 +14,6 @@ import com.soft.ware.rest.modular.auth.controller.dto.AuthRequest;
 import com.soft.ware.rest.modular.auth.controller.dto.AuthResponse;
 import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
-import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
@@ -74,18 +73,19 @@ public class AuthController extends BaseController {
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/x-www-form-urlencoded"})
     public Object createAuthenticationToken(@Valid AuthRequest params, BindingResult result) {
        // Validator.valid(result);
-    	boolean validate;
+    	TOwnerStaff staff;
         if(ToolUtil.isNotEmpty(params.getPhone())){
-        	validate = reqValidator.validate(params);
+            staff = (TOwnerStaff) reqValidator.validate(params);
         }else{
-        	validate = reqValidator.validate(params);
+            staff = (TOwnerStaff)reqValidator.validate(params);
         }
-        if (validate) {
+        if (staff != null) {
+
             final String randomKey = jwtTokenUtil.getRandomKey();
             final String token = jwtTokenUtil.generateToken(params.getUserName(), randomKey);
-            return returnTokenParams(params,token,randomKey);
-        }else{
-        	throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+            return returnTokenParams(params, token, randomKey);
+        } else {
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
     }
 

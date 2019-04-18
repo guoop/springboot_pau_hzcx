@@ -25,18 +25,18 @@ public class SimpleValidator implements IReqValidator {
     private TOwnerStaffService staffService;
 
     @Override
-    public boolean validate(Credence credence) {
+    public Object validate(Credence credence) {
         String password = credence.getCredenceCode();
         String phone = credence.getPhoneName();
         TOwnerStaff staff = staffService.findByPhone(phone);
 
         if (ToolUtil.isEmpty(password) || ToolUtil.isEmpty(phone)) {
-            return false;
+            return null;
         }
 
         password = PasswordUtils.encode(phone, password);
         if (!phone.equals(password) && !password.equals(staff.getPassword())) {
-            return false;
+            return null;
         }
 
         if (TblOwnerStaff.status_1.equals(staff.getStatus())) {
@@ -46,6 +46,6 @@ public class SimpleValidator implements IReqValidator {
         if (TblOwnerStaff.status_2.equals(staff.getStatus())) {
             throw new PauException(BizExceptionEnum.USER_DELETED);
         }
-        return false;
+        return staff;
     }
 }
