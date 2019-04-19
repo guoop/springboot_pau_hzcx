@@ -8,6 +8,7 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
@@ -44,18 +45,9 @@ public class StaffController extends BaseController {
     private ITCategoryService itCategoryService;
 
       @RequestMapping(value = "staff/addOrUpdate",method = RequestMethod.POST)
-       public Tip updateOrSave(SessionUser sessionUser, TOwnerStaff ownerStaff){
-          Boolean isSuccess = false;
-          if(ToolUtil.isNotEmpty(ownerStaff)){
-              if(ToolUtil.isNotEmpty(ownerStaff.getId())){
-                     isSuccess = tOwnerStaffService.updateById(ownerStaff);
-              }else{
-                  ownerStaff.setId(IdGenerator.getId());
-                  isSuccess = tOwnerStaffService.insert(ownerStaff);
-              }
-              if(isSuccess){
-                  return  new SuccessTip();
-              }
+       public Tip updateOrSave(SessionUser sessionUser,  StaffEditParam param){
+          if(tOwnerStaffService.addOrUpdate(sessionUser,param)){
+              return new SuccessTip();
           }
            return new ErrorTip();
        }

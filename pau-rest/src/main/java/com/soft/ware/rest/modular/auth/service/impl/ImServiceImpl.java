@@ -10,11 +10,14 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
 import com.soft.ware.rest.modular.auth.service.ImService;
 import com.soft.ware.rest.modular.auth.service.ImUserService;
+import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.im_groups.model.SImGroups;
 import com.soft.ware.rest.modular.im_groups.service.ISImGroupsService;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,12 +99,12 @@ public class ImServiceImpl implements ImService {
      * @throws Exception
      */
     @Override
-    public void syncUsers(SessionUser user,TblOwner owner, TblOwnerStaff... ss) throws Exception {
+    public void syncUsers(SessionUser user, TOwner owner, TOwnerStaff... ss) throws Exception {
         ImGroupType type = ImGroupType.STAFF;//极光小程序用户
         List<Kv<String, ?>> params = Lists.newArrayList();
         String username;
-        for (TblOwnerStaff s : ss) {
-            username = buildUsername(s, type);
+        for (TOwnerStaff s : ss) {
+            username = ParamUtils.buildImUserName(s, type);
             ImUser u = getUser(username);
             if (TblOwnerStaff.status_0.equals(s.getStatus())) {
                 //用户状态正常
@@ -136,7 +139,7 @@ public class ImServiceImpl implements ImService {
 
             } else {
                 //状态异常删除用户
-                username = buildUsername(s, type);
+                username = ParamUtils.buildImUserName(s, type);
                 if (u != null) {
                     ImGroups g = requireOwnerGroup(user, owner, type);
                     if (g != null) {
@@ -157,11 +160,11 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @return
      */
-    private ImGroups requireOwnerGroup(SessionUser user,TblOwner owner,ImGroupType type){
-        String username = buildOwnerGroupUsername(owner,type);
+    private ImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+        String username = ParamUtils.buildOwnerGroupUsername(owner,type);
         ImUser u = getUser(username);
         if (u == null) {
-            buildOwnerGroupUsername(owner, type);
+            ParamUtils.buildOwnerGroupUsername(owner,type);
             List<Kv<String, ?>> params = Lists.newArrayList();
             params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName()));
             //创建群主
@@ -406,8 +409,8 @@ public class ImServiceImpl implements ImService {
      * @param type 群组类型
      * @return
      */
-    private ImGroups addGroup(SessionUser user, TblOwner owner,ImGroupType type){
-        String username = buildOwnerGroupUsername(owner,type);
+    private ImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
+        String username = ParamUtils.buildOwnerGroupUsername(owner,type);
         Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
         ResponseEntity<String> entity = post("/v1/groups/", params);
         ImGroups imGroups = JSON.parseObject(entity.getBody(), ImGroups.class);

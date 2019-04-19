@@ -208,6 +208,10 @@ public class WXSmallController extends BaseController {
 		TblOwnerStaff tblOwnerStaff = tblOwnerStaffService.selectById(id);
 		List<TblCategory> list = categoryService.findAllCategory(user);
         ResultView map = render();
+
+
+
+
 		map.put("staff", Lists.newArrayList(BeanMapUtils.toMap(tblOwnerStaff, true)));
 		map.put("function_list", functionList);
 		map.put("category_list", BeanMapUtils.toMap(true, list));

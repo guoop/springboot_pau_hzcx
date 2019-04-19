@@ -1,5 +1,10 @@
 package com.soft.ware.rest.modular.auth.util;
 
+import com.soft.ware.rest.common.persistence.model.TblOwner;
+import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,4 +103,18 @@ public class ParamUtils {
         return listMap;
     }
 
+
+    public static String buildImUserName(TOwnerStaff staff, ImGroupType type){
+        return staff.getOwnerId() + "-" + type.getSeparator() + "-" + staff.getPhone();
+    }
+
+    /**
+     * 统一群组管理员命名规则
+     * @param owner
+     * @param type
+     * @return
+     */
+    public static String buildOwnerGroupUsername(TOwner owner, ImGroupType type){
+        return owner.getId() + "--" + type.name();
+    }
 }

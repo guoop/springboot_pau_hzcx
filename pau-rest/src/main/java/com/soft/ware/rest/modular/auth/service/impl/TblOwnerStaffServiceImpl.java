@@ -72,20 +72,20 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
         if (s == null) {
             //添加店员信息
             s = new TblOwnerStaff();
-            param.update(s);
+           // param.update(s);
             s.setOwner(user.getOwnerId());
             s.setCreatedAt(new Date());
             Integer row = mapper.insert(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
-                imService.syncUsers(user,o, s);
+                //imService.syncUsers(user,o, s);
             }
             if (row != 1) {
                 throw new PauException(BizExceptionEnum.ADD_ERROR);
             }
         } else {
             //修改店员信息
-            param.update(s);
+            //param.update(s);
             //全部更新
             if (!s.getOwner().equals(user.getOwnerId())) {
                 throw new PauException(BizExceptionEnum.ERROR);
@@ -93,7 +93,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
             Integer row = mapper.updateAllColumnById(s);
             String keyPrefix = "user:" + s.getPhone() + ":*";
             Set<String> keys = redisTemplate.keys(keyPrefix);
-            imService.syncUsers(user, o, s);
+            //imService.syncUsers(user, o, s);
             if (TblOwnerStaff.status_0.equals(param.getStatus())) {
                 //启用店员信息
                 //todo yancc 可能还需要更新im群组信息

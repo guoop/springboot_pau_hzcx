@@ -12,5 +12,7 @@ public interface ITOwnerConfigService extends IService<TOwnerConfig> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
-    boolean updateOwnerConfigInfo(Map<String,Object> map, SessionUser sessionUser);
+    boolean updateOwnerConfig(Map<String,Object> map);
+
+
 }
