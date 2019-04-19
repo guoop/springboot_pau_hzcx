@@ -91,12 +91,12 @@ public class TOrder extends Model<TOrder> {
     /**
      * 订单来源（0：微信小程序；1：收银机；2：到店自取订单）
      */
-    private Short source;
+    private Integer source;
     /**
      * 取货码（只有到店自取的订单有该字段）
      */
     @TableField("pickup_no")
-    private Long pickupNo;
+    private Integer pickupNo;
     /**
      * 取货时间（只有到店自取的订单有该字段）
      */
@@ -315,19 +315,19 @@ public class TOrder extends Model<TOrder> {
         this.orderNo = orderNo;return this;
     }
 
-    public Short getSource() {
+    public Integer getSource() {
         return source;
     }
 
-    public TOrder setSource( Short source) {
+    public TOrder setSource( Integer source) {
         this.source = source;return this;
     }
 
-    public Long getPickupNo() {
+    public Integer getPickupNo() {
         return pickupNo;
     }
 
-    public TOrder setPickupNo( Long pickupNo) {
+    public TOrder setPickupNo( Integer pickupNo) {
         this.pickupNo = pickupNo;return this;
     }
 
