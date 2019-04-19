@@ -55,16 +55,7 @@ public class TOwner extends Model<TOwner> {
      */
     @TableField("end_time")
     private String endTime;
-    /**
-     * 商品的默认描述
-     */
-    @TableField("default_desc")
-    private String defaultDesc;
-    /**
-     * 默认退款原因
-     */
-    @TableField("default_refund_reason")
-    private String defaultRefundReason;
+
     /**
      * 创建时间
      */
@@ -143,21 +134,6 @@ public class TOwner extends Model<TOwner> {
         this.endTime = endTime;
     }
 
-    public String getDefaultDesc() {
-        return defaultDesc;
-    }
-
-    public void setDefaultDesc(String defaultDesc) {
-        this.defaultDesc = defaultDesc;
-    }
-
-    public String getDefaultRefundReason() {
-        return defaultRefundReason;
-    }
-
-    public void setDefaultRefundReason(String defaultRefundReason) {
-        this.defaultRefundReason = defaultRefundReason;
-    }
 
     public Date getCreateTime() {
         return createTime;
@@ -183,8 +159,6 @@ public class TOwner extends Model<TOwner> {
         ", videoUrl=" + videoUrl +
         ", beginTime=" + beginTime +
         ", endTime=" + endTime +
-        ", defaultDesc=" + defaultDesc +
-        ", defaultRefundReason=" + defaultRefundReason +
         ", createTime=" + createTime +
         "}";
     }

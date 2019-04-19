@@ -71,7 +71,33 @@ public class TOwnerConfig extends Model<TOwnerConfig> {
      */
     @TableField("order_phone")
     private String orderPhone;
+    /**
+     * 默认描述
+     */
+    @TableField("default_desc")
+    private String defaultDesc;
+    /**
+     * 默认退款原因
+     */
+    @TableField("default_refund_reason")
+    private String defaultRefundReason;
 
+
+    public String getDefaultDesc() {
+        return defaultDesc;
+    }
+
+    public void setDefaultDesc(String defaultDesc) {
+        this.defaultDesc = defaultDesc;
+    }
+
+    public String getDefaultRefundReason() {
+        return defaultRefundReason;
+    }
+
+    public void setDefaultRefundReason(String defaultRefundReason) {
+        this.defaultRefundReason = defaultRefundReason;
+    }
 
     public String getId() {
         return id;
@@ -133,7 +159,25 @@ public class TOwnerConfig extends Model<TOwnerConfig> {
         return deliveryGreatMoney;
     }
 
-    public TOwnerConfig setDeliveryGreatMoney( BigDecimal deliveryGreatMoney) {
+    @Override
+    public String toString() {
+        return "TOwnerConfig{" +
+                "id='" + id + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", isDelivery=" + isDelivery +
+                ", isSelfPickup=" + isSelfPickup +
+                ", isReachPay=" + isReachPay +
+                ", deliveryMoney=" + deliveryMoney +
+                ", deliveryLessMoney=" + deliveryLessMoney +
+                ", deliveryGreatMoney=" + deliveryGreatMoney +
+                ", deliveryDistance=" + deliveryDistance +
+                ", orderPhone='" + orderPhone + '\'' +
+                ", defaultDesc='" + defaultDesc + '\'' +
+                ", defaultRefundReason='" + defaultRefundReason + '\'' +
+                '}';
+    }
+
+    public TOwnerConfig setDeliveryGreatMoney(BigDecimal deliveryGreatMoney) {
         this.deliveryGreatMoney = deliveryGreatMoney;return this;
     }
 
@@ -158,19 +202,4 @@ public class TOwnerConfig extends Model<TOwnerConfig> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "TOwnerConfig{" +
-        "id=" + id +
-        ", ownerId=" + ownerId +
-        ", isDelivery=" + isDelivery +
-        ", isSelfPickup=" + isSelfPickup +
-        ", isReachPay=" + isReachPay +
-        ", deliveryMoney=" + deliveryMoney +
-        ", deliveryLessMoney=" + deliveryLessMoney +
-        ", deliveryGreatMoney=" + deliveryGreatMoney +
-        ", deliveryDistance=" + deliveryDistance +
-        ", orderPhone=" + orderPhone +
-        "}";
-    }
 }

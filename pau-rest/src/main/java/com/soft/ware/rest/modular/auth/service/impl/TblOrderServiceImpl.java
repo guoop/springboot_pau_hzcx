@@ -487,7 +487,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
                 String formID = redisTemplate.opsForValue().get("ms:ppi:" + order.getNo());
                 String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + owner.getAppId(), "refund");
                 WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, order);
-                msg.getData().set(4, new WxMaTemplateData("keyword5", "all".equals(param.getRefundType()) ? order.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
+                msg.getData().add(new WxMaTemplateData("keyword5", "all".equals(param.getRefundType()) ? order.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
                 msg.getData().add(new WxMaTemplateData("keyword6", order.getRefundReason()));
                 msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
