@@ -5,6 +5,8 @@ import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 
 public interface ImService {
 
@@ -19,7 +21,7 @@ public interface ImService {
      * @param user
      * @param ss
      */
-    void syncUsers(SessionUser user, TblOwner owner, TblOwnerStaff... ss) throws Exception;
+    void syncUsers(SessionUser user, TOwner owner, TOwnerStaff... ss) throws Exception;
 
     /**
      * 发送商品添加通知

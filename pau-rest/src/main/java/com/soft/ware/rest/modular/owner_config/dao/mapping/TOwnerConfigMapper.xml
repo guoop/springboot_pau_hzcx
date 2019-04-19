@@ -54,14 +54,37 @@
 
     <update id="updateOwnerConfigInfo" parameterType="map" >
         update t_owner_config
-        <if test="isDelivery != null and isDelivery != ''">
+        <if test="isDelivery != null ">
             set is_delivery = #{isDelivery}
+        </if>
+        <if test="is_SelfPickup != null ">
+            set is_self_pickup = #{isSelfPickup}
+        </if>
+        <if test="isReachPay != null ">
+            set is_reach_pay = #{isReachPay}
         </if>
         <if test="orderPhone != null and orderPhone != ''">
             set order_phone = #{orderPhone}
         </if>
+        <if test="deliveryMoney != null and deliveryMoney != ''">
+            set delivery_money = #{deliveryMoney}
+        </if>
+        <if test="deliveryLessMoney != null and deliveryLessMoney != ''">
+            set delivery_less_money = #{deliveryLessMoney}
+        </if>
+        <if test=""></if>
+        <if test="deliveryGreatMoney != null and deliveryGreatMoney != ''">
+            set delivery_great_money = #{deliveryGreatMoney}
+        </if>
+        <if test="deliveryDistance != null" >
+            set delivery_distance = #{deliveryDistance}
+        </if>
         <if test="defaultDesc != null and defaultDesc != ''">
-            set
+            set default_desc = #{defaultDesc}
+        </if>
+
+        <if test="defaultRefundReason != null and defaultRefundReason != ''">
+            set default_refund_reason = #{defaultRefundReason}
         </if>
         where owner_id = #{ownerId}
 

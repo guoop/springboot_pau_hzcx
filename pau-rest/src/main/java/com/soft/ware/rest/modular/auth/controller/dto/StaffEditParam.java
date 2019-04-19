@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -114,7 +115,7 @@ public class StaffEditParam {
 
 
 
-    public StaffEditParam update(TblOwnerStaff s){
+    public StaffEditParam update(TOwnerStaff s){
         StaffEditParam param = this;
         s.setName(ToolUtil.isEmpty(param.getName()) ? s.getName() : param.getName());
 

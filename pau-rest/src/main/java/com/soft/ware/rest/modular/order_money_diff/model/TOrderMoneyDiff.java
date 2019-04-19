@@ -94,12 +94,24 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
      */
     @TableField("is_delete")
     private Integer isDelete;
+    /**
+     * 退款人
+     */
     @TableField("refunder")
     private String refunder;
+    /**
+     * 退款时间
+     */
     @TableField("refund_time")
     private Date refundTime;
+    /**
+     * 退款状态
+     */
     @TableField("refund_status")
     private int refundStatus;
+    /**
+     * 退款响应
+     */
     @TableField("reund_response")
     private String reundResponse;
 

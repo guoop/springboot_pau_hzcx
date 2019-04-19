@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.owner.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
@@ -9,6 +10,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -112,15 +114,16 @@ public class TOwnerController  extends BaseController {
 
     /**
      * 更新商户配置信息
-     * @param param
-     * @param sessionUser
+     * @param map 商户配置参数
+     * @param sessionUser 登录当前的用户
      * @return
      */
     @RequestMapping(value = "update/config/info",method = RequestMethod.POST)
-    public Tip updateOwnerConfigInfo(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-        if(itOwnerConfigService.updateOwnerConfigInfo(param,sessionUser)){
-            return new SuccessTip();
-        }
+    public Tip updateOwnerConfigInfo(@RequestBody Map<String,Object> map,SessionUser sessionUser){
+        map.put("ownerId",sessionUser.getOwnerId());
+       if(itOwnerConfigService.updateOwnerConfig(map)){
+          return new SuccessTip();
+       }
         return  new ErrorTip();
     }
 
