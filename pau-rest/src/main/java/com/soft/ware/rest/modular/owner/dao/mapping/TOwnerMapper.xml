@@ -12,17 +12,15 @@
         <result column="video_url" property="videoUrl" />
         <result column="begin_time" property="beginTime" />
         <result column="end_time" property="endTime" />
-        <result column="default_desc" property="defaultDesc" />
-        <result column="default_refund_reason" property="defaultRefundReason" />
         <result column="create_time" property="createTime" />
         <result column="app_name" property="appName"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, phone, address, description, video_url AS videoUrl, begin_time AS beginTime, end_time AS endTime, default_desc AS defaultDesc, default_refund_reason AS defaultRefundReason, create_time AS createTime
+        id, name, phone, address, description, video_url AS videoUrl, begin_time AS beginTime, end_time AS endTime, create_time AS createTime
     </sql>
     <sql id="t_owner_alias_columns">
-        w.name ,w.phone ,w.address ,w.description ,w.video_url videoUrl,w.begin_time beginTime,w.end_time endTime,w.default_desc defaultDesc,w.default_refund_reason defaultRefundReason,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') createTime
+        w.name ,w.phone ,w.address ,w.description ,w.video_url videoUrl,w.begin_time beginTime,w.end_time endTime,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') createTime
     </sql>
     <select id="findMap" resultType="java.util.Map">
         select

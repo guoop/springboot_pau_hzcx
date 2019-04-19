@@ -81,7 +81,7 @@ public class TOrder extends Model<TOrder> {
     /**
      * 自增主键
      */
-    @TableId(value = "id", type = IdType.UUID)
+    @TableId(value = "id")
     private String id;
     /**
      * 订单编号

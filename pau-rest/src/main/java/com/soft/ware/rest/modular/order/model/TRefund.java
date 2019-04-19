@@ -2,7 +2,10 @@ package com.soft.ware.rest.modular.order.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,6 +27,8 @@ public class TRefund extends Model<TRefund> {
     /**
      * 主键id
      */
+    @Id
+    @TableId(value = "id" ,type = IdType.INPUT)
     private String id;
     /**
      * 订单编号
@@ -33,6 +38,7 @@ public class TRefund extends Model<TRefund> {
     /**
      * 退款原因
      */
+    @TableField("reason")
     private String reason;
     /**
      * 退款状态（0：处理中；1：成功；2：失败）

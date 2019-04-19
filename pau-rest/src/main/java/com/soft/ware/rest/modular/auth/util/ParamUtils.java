@@ -90,6 +90,10 @@ public class ParamUtils {
                 map.put("title","打印价签");
                 listMap.add(map);
             }
+            if(arg[i].equals("configOwner")){
+                map.put("key","configOwner");
+                map.put("title","设置");
+            }
         }
         return listMap;
     }

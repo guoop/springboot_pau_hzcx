@@ -155,6 +155,7 @@ public class StaffEditParam {
         kvs.set("goodsManPrice","/goods/price");
         kvs.set("categoryMan","/category/icons,/category/index,/category/sort,/category/del");
         kvs.set("printPriceTicket", "");
+        kvs.set("configOwner","");
     }
 
     public String getUrls(){
