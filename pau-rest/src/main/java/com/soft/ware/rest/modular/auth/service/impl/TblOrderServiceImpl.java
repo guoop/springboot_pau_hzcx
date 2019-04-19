@@ -82,12 +82,12 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         o.setOwner(user.getOwnerId());
 
         o.setNo(param.getNo());
-        o.setMoneyChannel(param.getMoney_channel());
+        o.setMoneyChannel(Integer.parseInt(param.getMoney_channel()));
         o.setMoney(param.getMoney());
         o.setSource(param.getSource());
         o.setMoney(param.getMoney());
         o.setPayMoney(param.getMoney_shishou());//todo 不对应
-        o.setPayAt(param.getPay_at());//todo 不对应
+        o.setPayAt(new Date(param.getPay_at()));//todo 不对应
         o.setCreatedAt(date);
         o.setRemark("收银机订单");
         //o.setCreatedBy(user.getId());//todo 有疑问

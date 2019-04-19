@@ -22,4 +22,5 @@ public interface ITOrderAppService extends IService<TOrderApp> {
 
     List<Map<String, Object>> findMapPage(SessionUser user, Page page, OrderPageParam param, Integer... sources);
 
+    TOrderApp addOrder(TOrderApp order);
 }

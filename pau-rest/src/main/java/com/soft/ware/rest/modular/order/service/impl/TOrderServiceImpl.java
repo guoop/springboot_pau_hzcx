@@ -24,8 +24,6 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblGoods;
 import com.soft.ware.rest.common.persistence.model.TblOrder;
-import com.soft.ware.rest.common.persistence.model.TblOrderMoneyDiff;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
@@ -780,11 +778,11 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         o.setOwnerId(user.getOwnerId());
 
         o.setOrderNo(param.getNo());
-        o.setMoneyChannel(param.getMoney_channel());
+        o.setMoneyChannel(Integer.valueOf(param.getMoney_channel()));
         o.setOrderMoney(param.getMoney());
         o.setSource(param.getSource());
         o.setPayMoney(param.getMoney_shishou());//todo 不对应
-        o.setPayTime(param.getPay_at());//todo 不对应
+        o.setPayTime(new Date(param.getPay_at()));//todo 不对应
         o.setCreateTime(date);
         o.setRemark("收银机订单");
         //o.setCreatedBy(user.getId());//todo 有疑问

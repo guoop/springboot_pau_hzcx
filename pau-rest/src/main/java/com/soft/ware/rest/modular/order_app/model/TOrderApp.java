@@ -32,7 +32,7 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 订单来源（0：安卓收银机；1：Windows收银机）
      */
-    private Short source;
+    private Integer source;
     /**
      * 付款方式（1：现金支付；2：微信支付；3：支付宝支付；4；银联支付），多种支付方式以_分割
      */
@@ -103,11 +103,11 @@ public class TOrderApp extends Model<TOrderApp> {
         this.no = no;return this;
     }
 
-    public Short getSource() {
+    public Integer getSource() {
         return source;
     }
 
-    public TOrderApp setSource( Short source) {
+    public TOrderApp setSource(Integer source) {
         this.source = source;return this;
     }
 

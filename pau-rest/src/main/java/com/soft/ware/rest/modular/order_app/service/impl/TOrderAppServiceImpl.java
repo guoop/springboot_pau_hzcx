@@ -1,4 +1,5 @@
 package com.soft.ware.rest.modular.order_app.service.impl;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.Kv;
@@ -7,9 +8,10 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order_app.dao.TOrderAppMapper;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
-import  com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
+import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,13 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
         long count = findPageCount(user, param,sources);
         page.setTotal(count);
         return findMaps(map);
+    }
+
+    @Override
+    public TOrderApp addOrder(TOrderApp order) {
+        TOrderChild c = new TOrderChild();
+
+        return order;
     }
 
     @Override

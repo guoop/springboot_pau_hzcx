@@ -10,7 +10,6 @@ import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.config.properties.JwtProperties;
 import com.soft.ware.rest.modular.auth.controller.dto.AuthRequest;
-import com.soft.ware.rest.modular.auth.controller.dto.AuthResponse;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
@@ -79,15 +78,13 @@ public class AuthController extends BaseController {
             user = (TOwnerStaff) reqValidator.validate(params);
         }
         if (user != null) {
-            final String randomKey = jwtTokenUtil.getRandomKey();
-            final String token = jwtTokenUtil.generateToken(params.getPhone(), randomKey);
+            String token = jwtTokenUtil.generateToken(params.getPhone(), jwtTokenUtil.getRandomKey());
             TOwner owner = ownerService.find(user);
             SWxApp app = appService.find(owner);
             appService.find(owner);
-            AuthResponse resp = new AuthResponse(token, randomKey);
             return render()
                     .set("payload", WXUtils.getPayLoad())
-                    .set("token", resp.getToken())
+                    .set("token", token)
                     .set("owner", user.getOwnerId())
                     .set("app_name", app.getAppName())
                     .set("app_qr", app.getAppQr())

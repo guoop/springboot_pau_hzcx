@@ -1,7 +1,9 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
+import com.google.common.collect.Maps;
+
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.Map;
 
 public class AddOrderParam {
 
@@ -9,7 +11,7 @@ public class AddOrderParam {
     //订单编号
     private String no;
     //（支付方式：1现金、2微信、3支付宝、4银联，多种支付方式以_
-    private Integer money_channel;
+    private String money_channel;
     //（订单金额，单位元，精确到分），
     private BigDecimal money;
     //（订单来源：0：android收银机、1：windows收银机）
@@ -23,7 +25,7 @@ public class AddOrderParam {
     //(支付明细  格式(支付方式_支付金钱，支付方式_支付金钱))
     private String channel_pay;
     //pay_at
-    private Date pay_at;
+    private long pay_at;
     //(订单状态  0 为正常  1 ：退单  2 ：反结账)
     private Integer status;
     //（结算人标识（收银app登录账号）），
@@ -47,11 +49,11 @@ public class AddOrderParam {
         this.no = no;
     }
 
-    public Integer getMoney_channel() {
+    public String getMoney_channel() {
         return money_channel;
     }
 
-    public void setMoney_channel(Integer money_channel) {
+    public void setMoney_channel(String money_channel) {
         this.money_channel = money_channel;
     }
 
@@ -103,11 +105,11 @@ public class AddOrderParam {
         this.channel_pay = channel_pay;
     }
 
-    public Date getPay_at() {
+    public long getPay_at() {
         return pay_at;
     }
 
-    public void setPay_at(Date pay_at) {
+    public void setPay_at(long pay_at) {
         this.pay_at = pay_at;
     }
 
@@ -133,5 +135,20 @@ public class AddOrderParam {
 
     public void setGoods(String goods) {
         this.goods = goods;
+    }
+
+
+    public Map<Integer,BigDecimal> getPayMap(){
+        String[] ss = getChannel_pay().split(",");
+        Map<Integer, BigDecimal> map = Maps.newLinkedHashMap();
+        String c;
+        String n;
+        for (String s : ss) {
+            c = s.substring(0, s.indexOf("_"));
+            n = s.substring(s.indexOf("_")+1);
+            map.put(Integer.valueOf(c),BigDecimal.valueOf(Double.valueOf(n)));
+        }
+
+        return map;
     }
 }

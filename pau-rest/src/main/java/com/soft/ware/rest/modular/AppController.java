@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
+import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.goods.model.TCategory;
@@ -11,6 +12,7 @@ import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +41,9 @@ public class AppController extends BaseController {
     @Autowired
     private ITOrderAppService orderAppService;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
 
 
     /**
@@ -49,7 +55,7 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "category/list")
     public Object goods(SessionUser user){
-        List<TCategory> list = categoryService.findAllCategory(user);
+        List<TCategory> list = categoryService.selectParentCategoryList(Kv.obj().set("owner_id", user.getOwnerId()));
         return render().set("data", list);
     }
 
@@ -84,10 +90,21 @@ public class AppController extends BaseController {
      * goods拼接方式：1801__https://mp-owner-1251363375.cos.ap-guangzhou.myqcloud.com/1536655293256.jpg__馒头（每人限5袋）__-1__1__1.50__1.50
      * @return
      */
-
     @RequestMapping(value = "order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user, AddOrderParam param){
-        //TOrderApp order = orderAppService.find()
+        TOrderApp order = new TOrderApp();
+        order.setNo(order.getNo());
+        order.setSource(param.getSource());
+        order.setMoneyChannel(param.getMoney_channel());
+        order.setMoney(param.getMoney());
+        order.setMoneyPay(param.getMoney_shishou());
+        order.setChannelPay(param.getChannel_pay());
+        order.setPayTime(new Date(param.getPay_at()));
+        order.setSettlementer(param.getSettlement_by());
+        order.setOwnerId(user.getOwnerId());
+        order.setRemark(null);
+        order.setCreateTime(new Date());
+        orderAppService.addOrder(order);
         return render();
     }
 
@@ -97,8 +114,9 @@ public class AppController extends BaseController {
 
     /**
      * 极光im初始化
+     * windows 需要
      */
-    @RequestMapping("/im/init")
+    @RequestMapping("im/init")
     public Object getPayLoad(HttpServletResponse response){
         //todo yancc 是否删除
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -126,6 +144,16 @@ public class AppController extends BaseController {
         Kv<String, Object> map = Kv.obj("page", page).set("ownerId", user.getOwnerId());
         List<Map<String, Object>> maps = orderAppService.findMapPage(user, page, param, TOrder.SOURCE_1);
         return render();
+    }
+
+
+    /**
+     * 交换token
+     * @param user
+     */
+    @RequestMapping(value = "token",method = RequestMethod.GET)
+    public void updateToken(SessionUser user){
+        render().set("token", jwtTokenUtil.generateToken(user.getPhone(), jwtTokenUtil.getRandomKey()));
     }
 
 

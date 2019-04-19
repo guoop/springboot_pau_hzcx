@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
@@ -51,6 +50,8 @@ public class TOrder extends Model<TOrder> {
     public static Integer MONEY_CHANNEL_4 = 4;
     //：银联）
     public static Integer MONEY_CHANNEL_5 = 5;
+    //聚合支付
+    public static Integer MONEY_CHANNEL_6 = 6;
     //：配送中；
     public static Integer STATUS_2 = 2;
     //：待商家确认（在线支付支付成功、货到付款下单成功）；
