@@ -2,19 +2,16 @@ package com.soft.ware.rest.modular;
 
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.util.Kv;
-import com.soft.ware.rest.common.persistence.model.TblAppBase;
-import com.soft.ware.rest.modular.app_version.model.TAppVersion;
-import com.soft.ware.rest.modular.app_version.service.ITAppVersionService;
-import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
-import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
+import com.soft.ware.rest.modular.handover.model.THandoverRecord;
+import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
 import com.soft.ware.rest.modular.order.model.TOrder;
-import com.soft.ware.rest.modular.order.service.ITOrderService;
+import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,10 +33,10 @@ public class AppController extends BaseController {
     private ITGoodsService goodsService;
 
     @Autowired
-    private ITOrderService orderService;
+    private ITHandoverRecordService handoverRecordService;
 
     @Autowired
-    private ITAppVersionService appVersionService;
+    private ITOrderAppService orderAppService;
 
 
 
@@ -57,13 +54,9 @@ public class AppController extends BaseController {
     }
 
 
-    @RequestMapping(value = "/user/goods")
+    @RequestMapping(value = "goods")
     public Object userGoods(SessionUser user, Page page, GoodsPageParam param){
-        Kv.obj("user", user);
-        //List<Map> list = goodsService.findMaps(user, page, param);
-        List<Map> list = null;
-        page.setRecords(list);
-        //todo  yancc 前端还不支持分页
+        List<Map> list = goodsService.findPage(user, page, param);
         return list;
     }
 
@@ -92,19 +85,13 @@ public class AppController extends BaseController {
      * @return
      */
 
-    @RequestMapping(value = "/user/order",method = RequestMethod.POST)
+    @RequestMapping(value = "order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user, AddOrderParam param){
-        TOrder order = orderService.createOrder(user,param);
+        //TOrderApp order = orderAppService.find()
         return render();
     }
 
 
-    @RequestMapping(value = "/version/check",method = RequestMethod.GET)
-    public Object appVersion() throws Exception {
-        TAppVersion v = appVersionService.findLast(TblAppBase.PLATFORM_CODE_APP_ANDROID);
-        Kv<String, String> kv = Kv.by("download_url", v.getDownloadUrl()).set("description", v.getDescription()).set("version", v.getVersion());
-        return render().set("force", v.getIsForce()).set("newVersion", kv);
-    }
 
 
 
@@ -117,6 +104,30 @@ public class AppController extends BaseController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         return render().setAll(WXUtils.getPayLoad());
     }
+
+
+    /**
+     * 交接班,记录
+     * @return
+     */
+    @RequestMapping(value = "handover",method = RequestMethod.POST)
+    public Object handover(SessionUser user, HandoverParam param){
+		THandoverRecord over = handoverRecordService.over(user, param);
+		return render(over != null);
+    }
+
+
+    /**
+     * 订单列表
+     * @return
+     */
+    @RequestMapping(value = "orders",method = RequestMethod.GET)
+    public Object orders(SessionUser user, Page page, OrderPageParam param){
+        Kv<String, Object> map = Kv.obj("page", page).set("ownerId", user.getOwnerId());
+        List<Map<String, Object>> maps = orderAppService.findMapPage(user, page, param, TOrder.SOURCE_1);
+        return render();
+    }
+
 
 
 }

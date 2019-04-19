@@ -10,15 +10,15 @@ import java.util.Date;
 public class HandoverParam {
 
     //操作人（登录）账号
-    private Integer  phone;
+    private String  phone;
     //操作人名字
     private String  name;
     //收银机编号
     private String  pospalcode;
     //账号登录时间
-    private Date  optionstart;
+    private Long  optionstart;
     //交接班结束时间
-    private Date optionat;
+    private Long optionat;
     //收银单数
     private Integer ordernum;
     //退单数
@@ -60,10 +60,17 @@ public class HandoverParam {
     //现金会员支付单数
     private Integer  momberpaynum;
     //第一笔收银订单时间
-    private Date  fisvoidtime;
+    private Long  fistordertime;
     //最后一笔订单时间
-    private Date  lasvoidtime;
+    private Long  lastordertime;
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public String getName() {
         return name;
@@ -81,43 +88,43 @@ public class HandoverParam {
         this.pospalcode = pospalcode;
     }
 
-    public Date getOptionstart() {
+    public Long getOptionstart() {
         return optionstart;
     }
 
-    public void setOptionstart(Date optionstart) {
+    public void setOptionstart(Long optionstart) {
         this.optionstart = optionstart;
     }
 
-    public Date getOptionat() {
+    public Long getOptionat() {
         return optionat;
     }
 
-    public void setOptionat(Date optionat) {
+    public void setOptionat(Long optionat) {
         this.optionat = optionat;
     }
 
-    public int gevoidnum() {
+    public int getOrdernum() {
         return ordernum;
     }
 
-    public void sevoidnum(Integer ordernum) {
+    public void setOrdernum(Integer ordernum) {
         this.ordernum = ordernum;
     }
 
-    public Integer gevoidtuinum() {
+    public Integer getOrdertuinum() {
         return ordertuinum;
     }
 
-    public void sevoidtuinum(Integer ordertuinum) {
+    public void setOrdertuinum(Integer ordertuinum) {
         this.ordertuinum = ordertuinum;
     }
 
-    public Integer gevoidreturnnum() {
+    public Integer getOrderreturnnum() {
         return orderreturnnum;
     }
 
-    public void sevoidreturnnum(Integer orderreturnnum) {
+    public void setOrderreturnnum(Integer orderreturnnum) {
         this.orderreturnnum = orderreturnnum;
     }
 
@@ -129,11 +136,11 @@ public class HandoverParam {
         this.allmoney = allmoney;
     }
 
-    public BigDecimal gevoidmoney() {
+    public BigDecimal getOrdermoney() {
         return ordermoney;
     }
 
-    public void sevoidmoney(BigDecimal ordermoney) {
+    public void setOrdermoney(BigDecimal ordermoney) {
         this.ordermoney = ordermoney;
     }
 
@@ -161,19 +168,19 @@ public class HandoverParam {
         this.membercz = membercz;
     }
 
-    public BigDecimal gevoidtuimoney() {
+    public BigDecimal getOrdertuimoney() {
         return ordertuimoney;
     }
 
-    public void sevoidtuimoney(BigDecimal ordertuimoney) {
+    public void setOrdertuimoney(BigDecimal ordertuimoney) {
         this.ordertuimoney = ordertuimoney;
     }
 
-    public BigDecimal gevoidreturnmoney() {
+    public BigDecimal getOrderreturnmoney() {
         return orderreturnmoney;
     }
 
-    public void sevoidreturnmoney(BigDecimal orderreturnmoney) {
+    public void setOrderreturnmoney(BigDecimal orderreturnmoney) {
         this.orderreturnmoney = orderreturnmoney;
     }
 
@@ -257,28 +264,19 @@ public class HandoverParam {
         this.momberpaynum = momberpaynum;
     }
 
-    public Integer getPhone() {
-        return phone;
+    public Long getFistordertime() {
+        return fistordertime;
     }
 
-    public void setPhone(Integer phone) {
-        this.phone = phone;
+    public void setFistordertime(Long fistordertime) {
+        this.fistordertime = fistordertime;
     }
 
-
-    public Date getFisvoidtime() {
-        return fisvoidtime;
+    public Long getLastordertime() {
+        return lastordertime;
     }
 
-    public void setFisvoidtime(Date fisvoidtime) {
-        this.fisvoidtime = fisvoidtime;
-    }
-
-    public Date getLasvoidtime() {
-        return lasvoidtime;
-    }
-
-    public void setLasvoidtime(Date lasvoidtime) {
-        this.lasvoidtime = lasvoidtime;
+    public void setLastordertime(Long lastordertime) {
+        this.lastordertime = lastordertime;
     }
 }

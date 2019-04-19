@@ -1,8 +1,16 @@
 package com.soft.ware.rest.modular.order_app.service.impl;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
+import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order_app.dao.TOrderAppMapper;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
-import com.soft.ware.rest.modular.order_app.service.TOrderAppService;
+import  com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +20,47 @@ import java.util.Map;
 
 @Service
 @Transactional
-public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper, TOrderApp> implements TOrderAppService {
+public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp> implements  ITOrderAppService {
 
     @Resource
     private TOrderAppMapper mapper;
+
+    @Override
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMaps(map);
+    }
+
+    @Override
+    public Map<String, Object> findMap(Map<String, Object> map) {
+        List<Map<String, Object>> maps = findMaps(map);
+        return maps.isEmpty() ? null : maps.get(0);
+    }
+
+    @Override
+    public TOrderApp findOne(Map<String,Object> map) throws Exception {
+        return BeanMapUtils.toObject(map, TOrderApp.class);
+    }
+
+    @Override
+    public List<Map<String, Object>> findMapPage(SessionUser user, Page page, OrderPageParam param, Integer... sources) {
+        Kv<String, Object> map = Kv.obj("creater", user.getOpenId())
+                .set("page", page)
+                .set("status", param.getStatus())
+                .set("isDelete", TOrder.is_delete_0)
+                .set("sources", "'" + StringUtils.join(sources, "','") + "'")
+                .set("orderBy", "a.create_time desc");
+        long count = findPageCount(user, param,sources);
+        page.setTotal(count);
+        return findMaps(map);
+    }
+
+    @Override
+    public long findPageCount(SessionUser user, OrderPageParam param, Integer... sources) {
+        TOrderApp p = new TOrderApp()
+                .setOwnerId(user.getOwnerId());
+        return selectCount(new EntityWrapper<>(p).in("status", param.getStatus()).in("sources",sources));
+    }
+
 
     @Override
     public List<TOrderApp> getAppOrderList(Map<String, Object> map) {

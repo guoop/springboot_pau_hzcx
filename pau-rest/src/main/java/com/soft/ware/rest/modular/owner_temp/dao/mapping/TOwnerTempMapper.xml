@@ -51,62 +51,29 @@
         select
         <include refid="t_owner_temp_alias_columns"/>
         from t_owner_temp tot where true
-        <if test="map.id != null and map.id != ''">
-            and tot.id = #{map.id}
+        <if test="params.id != null and params.id != ''">
+            and tot.id = #{params.id}
         </if>
-        <if test="map.shopId != null and map.shopId != ''">
-            and tot.shop_id = #{map.shopId}
+        <if test="params.shopId != null and params.shopId != ''">
+            and tot.shop_id = #{params.shopId}
         </if>
-        <if test="map.appId != null and map.appId != ''">
-            and tot.app_id = #{map.appId}
+        <if test="params.appId != null and params.appId != ''">
+            and tot.app_id = #{params.appId}
         </if>
-        <if test="map.appSecret != null and map.appSecret != ''">
-            and tot.app_secret = #{map.appSecret}
+        <if test="params.appSecret != null and params.appSecret != ''">
+            and tot.app_secret = #{params.appSecret}
         </if>
-        <if test="map.appName != null and map.appName != ''">
-            and tot.app_name = #{map.appName}
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and tot.owner_id = #{params.ownerId}
         </if>
-        <if test="map.appQr != null and map.appQr != ''">
-            and tot.app_qr = #{map.appQr}
+        <if test="params.phone != null and params.phone != ''">
+            and tot.phone = #{params.phone}
         </if>
-        <if test="map.ownerId != null and map.ownerId != ''">
-            and tot.owner_id = #{map.ownerId}
+        <if test="params.ownerIsValid != null">
+            and tot.owner_is_valid = #{params.ownerIsValid}
         </if>
-        <if test="map.acctName != null and map.acctName != ''">
-            and tot.acct_name = #{map.acctName}
-        </if>
-        <if test="map.name != null and map.name != ''">
-            and tot.name = #{map.name}
-        </if>
-        <if test="map.phone != null and map.phone != ''">
-            and tot.phone = #{map.phone}
-        </if>
-        <if test="map.ownerDataStatus != null">
-            and tot.owner_data_status = #{map.ownerDataStatus}
-        </if>
-        <if test="map.wxappDataStatus != null">
-            and tot.wxapp_data_status = #{map.wxappDataStatus}
-        </if>
-        <if test="map.ownerDataAuditor != null and map.ownerDataAuditor != ''">
-            and tot.owner_data_auditor = #{map.ownerDataAuditor}
-        </if>
-        <if test="map.wxappDataAuditor != null and map.wxappDataAuditor != ''">
-            and tot.wxapp_data_auditor = #{map.wxappDataAuditor}
-        </if>
-        <if test="map.ownerRefuser != null and map.ownerRefuser != ''">
-            and tot.owner_refuser = #{map.ownerRefuser}
-        </if>
-        <if test="map.ownerRefuserReason != null and map.ownerRefuserReason != ''">
-            and tot.owner_refuser_reason = #{map.ownerRefuserReason}
-        </if>
-        <if test="map.wxappRefuser != null and map.wxappRefuser != ''">
-            and tot.wxapp_refuser = #{map.wxappRefuser}
-        </if>
-        <if test="map.ownerIsValid != null">
-            and tot.owner_is_valid = #{map.ownerIsValid}
-        </if>
-        <if test="map.isVerify != null">
-            and tot.is_verify = #{map.isVerify}
+        <if test="params.isVerify != null">
+            and tot.is_verify = #{params.isVerify}
         </if>
     </select>
 </mapper>

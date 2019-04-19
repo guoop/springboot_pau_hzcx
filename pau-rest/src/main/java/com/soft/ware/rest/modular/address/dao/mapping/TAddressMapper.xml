@@ -29,23 +29,23 @@
         ta.id,
         <include refid="t_address_alias_columns"/>
         from t_address ta where true
-        <if test="map.id != null and map.id != ''">
-            and ta.id = #{map.id}
+        <if test="params.id != null and params.id != ''">
+            and ta.id = #{params.id}
         </if>
-        <if test="map.ownerId != null and map.ownerId != ''">
-            and ta.owner_id = #{map.ownerId}
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and ta.owner_id = #{params.ownerId}
         </if>
-        <if test="map.isDefault != null">
-            and ta.is_default = #{map.isDefault}
+        <if test="params.isDefault != null">
+            and ta.is_default = #{params.isDefault}
         </if>
-        <if test="map.isDelete != null">
-            and ta.is_delete = #{map.isDelete}
+        <if test="params.isDelete != null">
+            and ta.is_delete = #{params.isDelete}
         </if>
-        <if test="map.creater != null and map.creater != ''">
-            and ta.creater = #{map.creater}
+        <if test="params.creater != null and params.creater != ''">
+            and ta.creater = #{params.creater}
         </if>
-        <if test="map.orderBy != null">
-            order by ${map.orderBy}
+        <if test="params.orderBy != null">
+            order by ${params.orderBy}
         </if>
     </select>
 </mapper>

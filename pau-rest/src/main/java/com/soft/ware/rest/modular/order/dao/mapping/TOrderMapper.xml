@@ -61,9 +61,9 @@
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
-    <sql id="map_limit">
-        <if test="map != null and map.page != null">
-            limit #{map.page.size} offset #{map.page.offset}
+    <sql id="params_limit">
+        <if test="params != null and params.page != null">
+            limit #{params.page.size} offset #{params.page.offset}
         </if>
     </sql>
 
@@ -104,40 +104,40 @@
     left join t_refund tr on tr.order_no = a.order_no
     left join t_specs ts on ts.id = oc.goods_spec_id
     where true
-    <if test="map.id != null and map.id != ''">
-        and a.id = #{map.id}
+    <if test="params.id != null and params.id != ''">
+        and a.id = #{params.id}
     </if>
-    <if test="map.orderNo != null and map.orderNo != ''">
-        and a.order_no = #{map.orderNo}
+    <if test="params.orderNo != null and params.orderNo != ''">
+        and a.order_no = #{params.orderNo}
     </if>
-    <if test="map.source != null and map.source != ''">
-        and a.source = #{map.source}
+    <if test="params.source != null and params.source != ''">
+        and a.source = #{params.source}
     </if>
-    <if test="map.pickupNo != null and map.pickupNo != ''">
-        and a.pickup_no = #{map.pickupNo}
+    <if test="params.pickupNo != null and params.pickupNo != ''">
+        and a.pickup_no = #{params.pickupNo}
     </if>
-    <if test="map.moneyChannel != null and map.moneyChannel != ''">
-        and a.money_channel = #{map.moneyChannel}
+    <if test="params.moneyChannel != null and params.moneyChannel != ''">
+        and a.money_channel = #{params.moneyChannel}
     </if>
-    <if test="map.creater != null and map.creater != ''">
-        and a.creater = #{map.creater}
+    <if test="params.creater != null and params.creater != ''">
+        and a.creater = #{params.creater}
     </if>
-    <if test="map.ownerId != null and map.ownerId != ''">
-        and a.owner_id = #{map.ownerId}
+    <if test="params.ownerId != null and params.ownerId != ''">
+        and a.owner_id = #{params.ownerId}
     </if>
-    <if test="map.type != null and map.type != ''">
-        and a.type = #{map.type}
+    <if test="params.type != null and params.type != ''">
+        and a.type = #{params.type}
     </if>
-    <if test="map.status != null and map.status != ''">
-        and a.status in (${map.status})
+    <if test="params.status != null and params.status != ''">
+        and a.status in (${params.status})
     </if>
-    <if test="map.sources != null and map.sources != ''">
-        and a.source in (${map.sources})
+    <if test="params.sources != null and params.sources != ''">
+        and a.source in (${params.sources})
     </if>
-    <if test="map.orderBy != null">
-        order by ${map.orderBy}
+    <if test="params.orderBy != null">
+        order by ${params.orderBy}
     </if>
-    <include refid="map_limit"/>
+    <include refid="params_limit"/>
     </select>
     <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1

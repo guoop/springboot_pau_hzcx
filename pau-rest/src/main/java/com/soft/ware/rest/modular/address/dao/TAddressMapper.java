@@ -10,7 +10,7 @@ import java.util.Map;
 public interface TAddressMapper extends BaseMapper<TAddress> {
 
 
-    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
+    List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
     int deleteDefaultAddress(@Param("user") SessionUser user);
 }

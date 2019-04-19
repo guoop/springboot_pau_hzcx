@@ -27,17 +27,17 @@
         select
         <include refid="t_question_alias_columns"/>
         from t_question tq where true
-        <if test="map.id != null and map.id != ''">
-            and tq.id = #{map.id}
+        <if test="params.id != null and params.id != ''">
+            and tq.id = #{params.id}
         </if>
-        <if test="map.name != null and map.name != ''">
-            and tq.name = #{map.name}
+        <if test="params.name != null and params.name != ''">
+            and tq.name = #{params.name}
         </if>
-        <if test="map.ownerId != null and map.ownerId != ''">
-            and tq.owner_id = #{map.ownerId}
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and tq.owner_id = #{params.ownerId}
         </if>
-        <if test="map.openId != null and map.openId != ''">
-            and tq.open_id = #{map.openId}
+        <if test="params.openId != null and params.openId != ''">
+            and tq.open_id = #{params.openId}
         </if>
     </select>
 </mapper>

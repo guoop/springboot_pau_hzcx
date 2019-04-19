@@ -45,17 +45,6 @@ public class HandoverController extends BaseController{
 	}
 
 
-	/**
-	 * 交接班,记录
-	 * @return
-	 */
-	@RequestMapping(value = "handover",method = RequestMethod.POST)
-	public Object handover(SessionUser user, HandoverParam param){
-		/*HandOver over = overService.over(user, param);
-		return render(over != null);*/
-		return null;
-	}
-	
 	
 
 }

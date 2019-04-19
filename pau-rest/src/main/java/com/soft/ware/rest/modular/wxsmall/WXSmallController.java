@@ -253,11 +253,11 @@ public class WXSmallController extends BaseController {
 
 		if (!ToolUtil.isEmpty(startTime)) {
 			Date startDate = DateUtil.getDateByTime(startTime);
-			param.setOptionstart(startDate);
+			param.setOptionstart(startDate.getTime());
 		}
 		if (!ToolUtil.isEmpty(endTime)) {
 			Date endDate = DateUtil.getDateByTime(endTime);
-			param.setOptionat(endDate);
+			param.setOptionat(endDate.getTime());
 		}
 		listData = null;//handOverService.getHandOver(param, user,page);
 		return listData;

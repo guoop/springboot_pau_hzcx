@@ -23,7 +23,7 @@ public interface TOrderMapper extends BaseMapper<TOrder> {
 
     List<TOrder> selectOrderListByMap(Map<String,Object> map);
 
-    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
+    List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
     List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map);
 

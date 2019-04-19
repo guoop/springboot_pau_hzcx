@@ -6,7 +6,6 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.handover.dao.THandoverRecordMapper;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
-import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.springframework.stereotype.Service;
 
@@ -40,40 +39,39 @@ public class THandoverRecordServiceImpl extends ServiceImpl<THandoverRecordMappe
     @Override
     public THandoverRecord over(SessionUser user, HandoverParam param) {
         //todo yancc 考虑改成session中
-        TOwnerStaff staff = staffService.selectById(user.getId());
+        //TOwnerStaff staff = staffService.selectById(user.getId());
         THandoverRecord o = new THandoverRecord();
         Date date = new Date();
-/*        o.setOwnerId(user.getOwnerId());
-        o.setUserPhone(user.getPhone());
-        o.setUserName(staff.getName());
-
-        o.setPospalcode(param.getPospalcode());
-        o.setSyncAt(date);
-        o.setOptionStart(param.getOptionstart());
-        o.setOptionaAt(param.getOptionat());
-        o.setFisvoidTime(param.getFisvoidtime());
-        o.setLasvoidTime(param.getLasvoidtime());
-        o.sevoidNum(param.gevoidnum());
-        o.sevoidtuinum(param.gevoidtuinum());
-        o.sevoidReturnNum(param.gevoidreturnnum());
+        o.setOwnerId(user.getOwnerId());
+        o.setStaffId(user.getId());
+        o.setDeviceId(param.getPospalcode());//不一致
+        o.setSyncTime(date);
+        o.setStartTime(new Date(param.getOptionstart()));
+        o.setEndTime(new Date(param.getOptionat()));
+        //o.setFisvoidTime(param.getFisvoidtime());
+        //o.setLasvoidTime(param.getLasvoidtime());
+        o.setOrderNum(param.getOrdernum());
+        o.setOrderRefundNum(param.getOrdertuinum());
+        o.setOrderReturnNum(param.getOrderreturnnum());
         o.setAllMoney(param.getAllmoney());
-        o.sevoidMoney(param.gevoidmoney());
-        o.setMoneyShishou(param.getMoney_shishou());
-        o.setZhaoLing(param.getZhaoling());
-        o.setMembercz(param.getMembercz());
-        o.sevoidTuimoney(param.gevoidtuimoney());
-        o.sevoidReturnMoney(param.gevoidreturnmoney());
-        o.setWxpay(param.getWxpay());
-        o.setWxpayNum(param.getWxpaynum());
-        o.setAlipay(param.getAlipay());
-        o.setAlipayNum(param.getAlipaynum());
-        o.setUnionPay(param.getUnionpay());
-        o.setUnionPayNum(param.getUnionpaynum());
-        o.setMoneyPay(param.getMoneypay());
-        o.setMoneyPayNum(param.getMoneypaynum());
-        o.setMoneyMemberPay(param.getMoneymemberpay());
-        o.setMemberPayNum(param.getMomberpaynum());*/
-        Integer insert = mapper.insert(o);
-        return insert == 1 ? o : null;
+        o.setOrderMoney(param.getOrdermoney());
+        o.setAllMoney(param.getMoney_shishou());
+        o.setOddChangeMoney(param.getZhaoling());
+        o.setMemberRecharge(param.getMembercz());
+        o.setOrderRefundMoney(param.getOrdertuimoney());
+        o.setOrderReturnMoney(param.getOrderreturnmoney());
+        o.setCreateTime(date);
+        o.setCreater(user.getPhone());
+        //o.setWxpay(param.getWxpay());
+        //o.setWxpayNum(param.getWxpaynum());
+        //o.setAlipay(param.getAlipay());
+        //o.setAlipayNum(param.getAlipaynum());
+        //o.setUnionPay(param.getUnionpay());
+        //o.setUnionPayNum(param.getUnionpaynum());
+        //o.setMoneyPay(param.getMoneypay());
+        //o.setMoneyPayNum(param.getMoneypaynum());
+        //o.setMoneyMemberPay(param.getMoneymemberpay());
+        //o.setMemberPayNum(param.getMomberpaynum());
+        return insert(o) ? o : null;
     }
 }

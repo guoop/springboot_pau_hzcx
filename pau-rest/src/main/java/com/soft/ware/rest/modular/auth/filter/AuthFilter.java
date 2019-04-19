@@ -72,6 +72,8 @@ public class AuthFilter extends OncePerRequestFilter implements Filter {
         whiteUrlSet.add("/owner/im/init");
         whiteUrlSet.add("/owner/share/wx_identifier");
 
+        whiteUrlSet.add("/version/check");
+
         whitePrefixUrlSet.add("/pau-rest/swagger");
         whitePrefixUrlSet.add("/swagger");
         whitePrefixUrlSet.add("/customer/v2/orders/");

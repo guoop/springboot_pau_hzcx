@@ -617,7 +617,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
         // 商户订单号
         String out_trade_no = no;
-        order.setSource(source.shortValue());
+        order.setSource(source);
         order.setRemark(remark);
         //暂不支持
         /*if (TOrder.MONEY_CHANNEL_1.equals(order.getMoneyChannel())) {
@@ -638,7 +638,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             //设置取货吗
             redisTemplate.opsForValue().increment("counter:" + user.getAppId(), 1);
             Object s = redisTemplate.opsForValue().get("counter:" + user.getAppId());
-            order.setPickupNo(Long.valueOf(s.toString()));
+            order.setPickupNo(Integer.valueOf(s.toString()));
             //设置取货时间
             order.setPickupTime(new Date(current));
             order.setMoneyChannel(TOrder.MONEY_CHANNEL_3);//仅支持微信支付
@@ -767,7 +767,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         o.setOrderNo(param.getNo());
         o.setMoneyChannel(param.getMoney_channel());
         o.setOrderMoney(param.getMoney());
-        o.setSource(param.getSource().shortValue());
+        o.setSource(param.getSource());
         o.setPayMoney(param.getMoney_shishou());//todo 不对应
         o.setPayTime(param.getPay_at());//todo 不对应
         o.setCreateTime(date);

@@ -34,7 +34,8 @@ public class TCategory extends Model<TCategory> {
     //：是），系统类目不允许执行任何操作（比如香烟类目）
     public static Integer is_system_1 = 1;
 
-    List<TCategory> childCategory = null;
+    @TableField(exist = false)
+    private List<TCategory> childCategory = null;
 
     public List<TCategory> getChildCategory() {
         return childCategory;

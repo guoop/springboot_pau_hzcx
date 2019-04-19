@@ -25,7 +25,7 @@ public interface TGoodsMapper extends BaseMapper<TGoods> {
 
     Long findPageCount(@Param("owner") String owner, @Param("param") GoodsPageParam param);
 
-    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
+    List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
     List<Map<String,Object>> selectTGoodsListByMap(@Param("param") Map<String, Object> param,@Param("page") Page page);
 

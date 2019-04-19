@@ -27,26 +27,26 @@
         select
         <include refid="t_owner_config_alias_columns"/>
         from t_owner_config toc where true
-        <if test="map.id != null and map.id != ''">
-            and toc.id = #{map.id}
+        <if test="params.id != null and params.id != ''">
+            and toc.id = #{params.id}
         </if>
-        <if test="map.ownerId != null and map.ownerId != ''">
-            and toc.owner_id = #{map.ownerId}
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and toc.owner_id = #{params.ownerId}
         </if>
-        <if test="map.isDelivery != null">
-            and toc.is_delivery = #{map.isDelivery}
+        <if test="params.isDelivery != null">
+            and toc.is_delivery = #{params.isDelivery}
         </if>
-        <if test="map.isSelfPickup != null">
-            and toc.is_self_pickup = #{map.isSelfPickup}
+        <if test="params.isSelfPickup != null">
+            and toc.is_self_pickup = #{params.isSelfPickup}
         </if>
-        <if test="map.isReachPay != null">
-            and toc.is_reach_pay = #{map.isReachPay}
+        <if test="params.isReachPay != null">
+            and toc.is_reach_pay = #{params.isReachPay}
         </if>
-        <if test="map.deliveryDistance != null">
-            and toc.delivery_distance = #{map.deliveryDistance}
+        <if test="params.deliveryDistance != null">
+            and toc.delivery_distance = #{params.deliveryDistance}
         </if>
-        <if test="map.orderPhone != null and map.orderPhone != ''">
-            and toc.order_phone = #{map.orderPhone}
+        <if test="params.orderPhone != null and params.orderPhone != ''">
+            and toc.order_phone = #{params.orderPhone}
         </if>
     </select>
 

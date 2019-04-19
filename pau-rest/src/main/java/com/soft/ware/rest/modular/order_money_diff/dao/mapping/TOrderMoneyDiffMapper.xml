@@ -34,44 +34,29 @@
         id,
         <include refid="t_order_money_diff_alias_columns"/>
         from t_order_money_diff tomd where true
-        <if test="map.id != null and map.id != ''">
-            and tomd.id = #{map.id}
+        <if test="params.id != null and params.id != ''">
+            and tomd.id = #{params.id}
         </if>
-        <if test="map.payOrderNo != null and map.payOrderNo != ''">
-            and tomd.pay_order_no = #{map.payOrderNo}
+        <if test="params.payOrderNo != null and params.payOrderNo != ''">
+            and tomd.pay_order_no = #{params.payOrderNo}
         </if>
-        <if test="map.ownerId != null and map.ownerId != ''">
-            and tomd.owner_id = #{map.ownerId}
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and tomd.owner_id = #{params.ownerId}
         </if>
-        <if test="map.orderNo != null and map.orderNo != ''">
-            and tomd.order_no = #{map.orderNo}
+        <if test="params.orderNo != null and params.orderNo != ''">
+            and tomd.order_no = #{params.orderNo}
         </if>
-        <if test="map.money != null">
-            and tomd.money = #{map.money}
+        <if test="params.creater != null and params.creater != ''">
+            and tomd.creater = #{params.creater}
         </if>
-        <if test="map.moneyDiff != null">
-            and tomd.money_diff = #{map.moneyDiff}
+        <if test="params.status != null">
+            and tomd.status = #{params.status}
         </if>
-        <if test="map.pic != null and map.pic != ''">
-            and tomd.pic = #{map.pic}
+        <if test="params.payTime != null">
+            and tomd.pay_time = #{params.payTime}
         </if>
-        <if test="map.createdTime != null">
-            and tomd.created_time = #{map.createdTime}
-        </if>
-        <if test="map.creater != null and map.creater != ''">
-            and tomd.creater = #{map.creater}
-        </if>
-        <if test="map.status != null">
-            and tomd.status = #{map.status}
-        </if>
-        <if test="map.payTime != null">
-            and tomd.pay_time = #{map.payTime}
-        </if>
-        <if test="map.payResponse != null and map.payResponse != ''">
-            and tomd.pay_response = #{map.payResponse}
-        </if>
-        <if test="map.isDelete != null">
-            and tomd.is_delete = #{map.isDelete}
+        <if test="params.isDelete != null">
+            and tomd.is_delete = #{params.isDelete}
         </if>
     </select>
 </mapper>

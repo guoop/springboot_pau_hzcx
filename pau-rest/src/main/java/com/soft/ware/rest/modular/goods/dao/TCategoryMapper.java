@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public interface TCategoryMapper extends BaseMapper<TCategory> {
 
-    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
+    List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
     List<TCategory> selectParentCategoryList(Map<String,Object> map);
 

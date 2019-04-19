@@ -20,14 +20,14 @@
         id,
         <include refid="s_wx_app_alias_column"/>
         from s_wx_app swa where true
-        <if test="map.id != null and map.id !=''">
-            and swa.id = #{map.id}
+        <if test="params.id != null and params.id !=''">
+            and swa.id = #{params.id}
         </if>
-        <if test="map.appId != null and map.appId !=''">
-            and swa.app_id = #{map.appId}
+        <if test="params.appId != null and params.appId !=''">
+            and swa.app_id = #{params.appId}
         </if>
-        <if test="map.ownerId != null and map.ownerId !=''">
-            and swa.owner_id = #{map.ownerId}
+        <if test="params.ownerId != null and params.ownerId !=''">
+            and swa.owner_id = #{params.ownerId}
         </if>
     </select>
 

@@ -8,6 +8,6 @@ import java.util.Map;
 
 public interface TOwnerTempMapper extends BaseMapper<TOwnerTemp> {
 
-    List<Map<String, Object>> findMaps(@Param("map") Map<String, Object> map);
+    List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
 }

@@ -43,11 +43,11 @@ public class HandOver extends Model<HandOver>{
 	/**
 	 * 第一笔订单时间
 	 */
-	private Date fisvoidTime;
+	private Date fistOrderTime;
 	/**
 	 * 最后一笔订单时间
 	 */
-	private Date lasvoidTime;
+	private Date lastOrderTime;
 	/**
 	 * 订单数量
 	 */
@@ -234,61 +234,61 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public Date getFisvoidTime() {
-		return fisvoidTime;
+	public Date getFistOrderTime() {
+		return fistOrderTime;
 	}
 
 
 
-	public void setFisvoidTime(Date fisvoidTime) {
-		this.fisvoidTime = fisvoidTime;
+	public void setFistOrderTime(Date fistOrderTime) {
+		this.fistOrderTime = fistOrderTime;
 	}
 
 
 
-	public Date getLasvoidTime() {
-		return lasvoidTime;
+	public Date getLastOrderTime() {
+		return lastOrderTime;
 	}
 
 
 
-	public void setLasvoidTime(Date lasvoidTime) {
-		this.lasvoidTime = lasvoidTime;
+	public void setLastOrderTime(Date lastOrderTime) {
+		this.lastOrderTime = lastOrderTime;
 	}
 
 
 
-	public int gevoidNum() {
+	public int getOrderNum() {
 		return orderNum;
 	}
 
 
 
-	public void sevoidNum(int orderNum) {
+	public void setOrderNum(int orderNum) {
 		this.orderNum = orderNum;
 	}
 
 
 
-	public int gevoidtuinum() {
+	public int getOrdertuinum() {
 		return ordertuinum;
 	}
 
 
 
-	public void sevoidtuinum(int ordertuinum) {
+	public void setOrdertuinum(int ordertuinum) {
 		this.ordertuinum = ordertuinum;
 	}
 
 
 
-	public int gevoidReturnNum() {
+	public int getOrderReturnNum() {
 		return orderReturnNum;
 	}
 
 
 
-	public void sevoidReturnNum(int orderReturnNum) {
+	public void setOrderReturnNum(int orderReturnNum) {
 		this.orderReturnNum = orderReturnNum;
 	}
 
@@ -306,13 +306,13 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public BigDecimal gevoidMoney() {
+	public BigDecimal getOrderMoney() {
 		return orderMoney;
 	}
 
 
 
-	public void sevoidMoney(BigDecimal orderMoney) {
+	public void setOrderMoney(BigDecimal orderMoney) {
 		this.orderMoney = orderMoney;
 	}
 
@@ -354,25 +354,25 @@ public class HandOver extends Model<HandOver>{
 
 
 
-	public BigDecimal gevoidTuimoney() {
+	public BigDecimal getOrderTuimoney() {
 		return orderTuimoney;
 	}
 
 
 
-	public void sevoidTuimoney(BigDecimal orderTuimoney) {
+	public void setOrderTuimoney(BigDecimal orderTuimoney) {
 		this.orderTuimoney = orderTuimoney;
 	}
 
 
 
-	public BigDecimal gevoidReturnMoney() {
+	public BigDecimal getOrderReturnMoney() {
 		return orderReturnMoney;
 	}
 
 
 
-	public void sevoidReturnMoney(BigDecimal orderReturnMoney) {
+	public void setOrderReturnMoney(BigDecimal orderReturnMoney) {
 		this.orderReturnMoney = orderReturnMoney;
 	}
 
