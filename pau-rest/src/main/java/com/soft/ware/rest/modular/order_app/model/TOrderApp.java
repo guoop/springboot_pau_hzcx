@@ -23,8 +23,8 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "id", type = IdType.UUID)
+    private String id;
     /**
      * 订单编号
      */
@@ -87,12 +87,12 @@ public class TOrderApp extends Model<TOrderApp> {
     private String remark;
 
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public TOrderApp setId(Long id){
-        this.id = id;return this;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNo() {

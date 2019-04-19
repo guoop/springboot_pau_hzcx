@@ -1,8 +1,12 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.soft.ware.rest.modular.order.model.TOrderChild;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public class AddOrderParam {
@@ -150,5 +154,29 @@ public class AddOrderParam {
         }
 
         return map;
+    }
+
+    public List<TOrderChild> getGoodsList1(){
+        String[] ss = goods.split("\\$\\$");
+        String[] gs;
+        List<TOrderChild> cs = Lists.newArrayList();
+        TOrderChild c;
+        for (String s : ss) {
+            gs = s.split("__");
+            c = new TOrderChild();
+            c.setGoodsId(gs[0]);
+            c.setGoodsPic(gs[1]);
+            c.setGoodsName(gs[2]);
+            c.setGoodsUnitId(gs[3]);
+            c.setGoodsNum(Integer.valueOf(gs[4]));
+            c.setGoodsPrice(BigDecimal.valueOf(Double.valueOf(gs[5])));
+            c.setTotalPrice(BigDecimal.valueOf(Double.valueOf(gs[6])));
+        }
+        return cs;
+    }
+
+    public List<TOrderChild> getGoodsList(){
+        List<TOrderChild> list = JSON.parseArray(goods, TOrderChild.class);
+        return list;
     }
 }

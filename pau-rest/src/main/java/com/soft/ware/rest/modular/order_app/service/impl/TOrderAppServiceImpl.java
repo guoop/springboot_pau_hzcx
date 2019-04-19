@@ -2,21 +2,28 @@ package com.soft.ware.rest.modular.order_app.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.common.exception.BizExceptionEnum;
+import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
+import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order_app.dao.TOrderAppMapper;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +33,9 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
 
     @Resource
     private TOrderAppMapper mapper;
+
+    @Autowired
+    private ITOrderChildService orderChildService;
 
     @Override
     public List<Map<String, Object>> findMaps(Map<String, Object> map) {
@@ -57,9 +67,39 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     }
 
     @Override
-    public TOrderApp addOrder(TOrderApp order) {
-        TOrderChild c = new TOrderChild();
-
+    public TOrderApp addOrder(SessionUser user, AddOrderParam param) {
+        TOrderApp order = new TOrderApp();
+        Date date = new Date();
+        order.setId(IdGenerator.getId());
+        order.setNo(param.getNo());
+        order.setSource(param.getSource());
+        order.setMoneyChannel(param.getMoney_channel());
+        order.setMoney(param.getMoney());
+        order.setMoneyPay(param.getMoney_shishou());
+        order.setChannelPay(param.getChannel_pay());
+        order.setPayTime(new Date(param.getPay_at()));
+        order.setSettlementer(param.getSettlement_by());
+        order.setOwnerId(user.getOwnerId());
+        order.setRemark(null);
+        order.setCreateTime(date);
+        order.setMoneyRealIncome(param.getMoney_shishou().add(param.getMoney_zhaol()));//失手
+        boolean insert = insert(order);
+        List<TOrderChild> list = param.getGoodsList1();//todo yancc 改为 getGoodsList();
+        for (TOrderChild child : list) {
+            child.setId(IdGenerator.getId());
+            child.setCreateTime(date);
+            child.setOrderId(order.getId());
+        }
+        if (insert) {
+            for (TOrderChild child : list) {
+                insert = orderChildService.insert(child);
+                if (!insert) {
+                    throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
+                }
+            }
+        } else {
+            throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
+        }
         return order;
     }
 

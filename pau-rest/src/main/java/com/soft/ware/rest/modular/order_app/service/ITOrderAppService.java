@@ -1,5 +1,7 @@
 package com.soft.ware.rest.modular.order_app.service;
+
 import com.baomidou.mybatisplus.service.IService;
+import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -22,5 +24,5 @@ public interface ITOrderAppService extends IService<TOrderApp> {
 
     List<Map<String, Object>> findMapPage(SessionUser user, Page page, OrderPageParam param, Integer... sources);
 
-    TOrderApp addOrder(TOrderApp order);
+    TOrderApp addOrder(SessionUser user, AddOrderParam param);
 }

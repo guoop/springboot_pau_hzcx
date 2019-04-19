@@ -12,7 +12,6 @@ import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
 import com.soft.ware.rest.modular.order.model.TOrder;
-import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,19 +90,7 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user, AddOrderParam param){
-        TOrderApp order = new TOrderApp();
-        order.setNo(order.getNo());
-        order.setSource(param.getSource());
-        order.setMoneyChannel(param.getMoney_channel());
-        order.setMoney(param.getMoney());
-        order.setMoneyPay(param.getMoney_shishou());
-        order.setChannelPay(param.getChannel_pay());
-        order.setPayTime(new Date(param.getPay_at()));
-        order.setSettlementer(param.getSettlement_by());
-        order.setOwnerId(user.getOwnerId());
-        order.setRemark(null);
-        order.setCreateTime(new Date());
-        orderAppService.addOrder(order);
+        orderAppService.addOrder(user,param);
         return render();
     }
 
