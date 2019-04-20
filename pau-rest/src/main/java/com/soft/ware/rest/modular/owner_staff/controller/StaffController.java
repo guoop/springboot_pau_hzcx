@@ -89,27 +89,25 @@ public class StaffController extends BaseController {
      */
       @RequestMapping("staff/detail")
       public Tip getStaffDetail(SessionUser sessionUser , String id){
-          TOwnerStaff staff = tOwnerStaffService.selectById(id);
-          if(ToolUtil.isNotEmpty(staff)){
-              return new SuccessTip(staff);
-          }
           TOwnerStaff sta = tOwnerStaffService.findByPhone(sessionUser.getPhone());
-          if(ToolUtil.isNotEmpty(sta)){
-              Map<String,Object> map = new HashMap<>();
-              List<Map<String,Object>> functinListMap = new ArrayList<>();
-              String function[] = sta.getFunctionList().split(",");
-              List<Map<String,Object>> functionList = ParamUtils.getAllFunction(function);
-              map.put("functionList",functionList);
-              List<String> ids = new ArrayList<>();
-              String str[] = sta.getCategoryList().split(",");
-             for(int i=0;i<str.length;i++){
-                 ids.add(str[i]);
-             }
-             List<TCategory> categoryList = itCategoryService.selectCategoryByIds(ids);
-              map.put("categoryList",categoryList);
-              return new SuccessTip(map);
+          TOwnerStaff staff = tOwnerStaffService.selectById(id);
+          Map<String,Object> mapResult = new HashMap<>();
+          List<String> ids = new ArrayList<>();
+          String function[] = sta.getFunctionList().split(",");
+          List<Map<String,Object>> functionList = ParamUtils.getAllFunction(function);
+          mapResult.put("functionList",functionList);
+          String str[] = sta.getCategoryList().split(",");
+          for(int i=0;i<str.length;i++){
+              ids.add(str[i]);
           }
-          return  new ErrorTip();
+          List<TCategory> categoryList = itCategoryService.selectCategoryByIds(ids);
+          mapResult.put("categoryList",categoryList);
+          if(ToolUtil.isNotEmpty(staff)){
+              mapResult.put("staff",staff);
+              return new SuccessTip(mapResult);
+          }else{
+              return new SuccessTip(mapResult);
+          }
       }
 
     /**

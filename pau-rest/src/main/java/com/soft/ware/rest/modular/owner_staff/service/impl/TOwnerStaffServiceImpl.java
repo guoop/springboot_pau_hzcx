@@ -108,7 +108,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             s.setCreateTime(new Date());
             s.setId(IdGenerator.getId());
             s.setOwnerId(sessionUser.getOwnerId());
-            Integer row = tOwnerStaffMapper.insert(s);
+            Integer row = tOwnerStaffMapper.insertOwnerStaff(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
                 try {
@@ -120,6 +120,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             if (row != 1) {
                 throw new PauException(BizExceptionEnum.ADD_ERROR);
             }
+            return  true;
         } else {
             //修改店员信息
             param.update(s);
@@ -154,8 +155,6 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
                 throw new PauException(BizExceptionEnum.UPDATE_ERROR);
             }
         }
-
-
         return false;
     }
 

@@ -28,8 +28,9 @@
 
     </select>
 
-    <insert id="insertOwnerStaff" parameterType="">
-
+    <insert id="insertOwnerStaff" parameterType="com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff">
+        insert into t_owner_staff (id,name,owner_id,phone) values
+        (#{id},#{name},#{ownerId},#{phone})
     </insert>
 
 </mapper>
