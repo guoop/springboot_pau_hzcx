@@ -61,11 +61,6 @@
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
-    <sql id="params_limit">
-        <if test="params != null and params.page != null">
-            limit #{params.page.size} offset #{params.page.offset}
-        </if>
-    </sql>
 
 
     <resultMap id="goodsMap" type="map" autoMapping="true">
@@ -137,7 +132,7 @@
     <if test="params.orderBy != null">
         order by ${params.orderBy}
     </if>
-    <include refid="params_limit"/>
+    <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
     </select>
     <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1

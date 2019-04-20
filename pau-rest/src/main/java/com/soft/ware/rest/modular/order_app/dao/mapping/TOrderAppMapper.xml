@@ -57,6 +57,7 @@
         <if test="params.status != null">
             and toa.status = #{params.status}
         </if>
+        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
     </select>
     <select id="getAppOrderList" parameterType="java.util.Map" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from t_order_app where 1=1

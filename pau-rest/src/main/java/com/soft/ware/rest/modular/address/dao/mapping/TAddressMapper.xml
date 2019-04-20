@@ -48,4 +48,11 @@
             order by ${params.orderBy}
         </if>
     </select>
+
+    <sql id="params_limit">
+        <if test="params != null and params.page != null">
+            limit #{params.page.size} offset #{params.page.offset}
+        </if>
+    </sql>
+
 </mapper>

@@ -157,7 +157,7 @@ public class AddOrderParam {
     }
 
     public List<TOrderChild> getGoodsList1(){
-        String[] ss = goods.split("\\$\\$");
+        String[] ss = goods.split(",");
         String[] gs;
         List<TOrderChild> cs = Lists.newArrayList();
         TOrderChild c;
@@ -171,6 +171,7 @@ public class AddOrderParam {
             c.setGoodsNum(Integer.valueOf(gs[4]));
             c.setGoodsPrice(BigDecimal.valueOf(Double.valueOf(gs[5])));
             c.setTotalPrice(BigDecimal.valueOf(Double.valueOf(gs[6])));
+            cs.add(c);
         }
         return cs;
     }

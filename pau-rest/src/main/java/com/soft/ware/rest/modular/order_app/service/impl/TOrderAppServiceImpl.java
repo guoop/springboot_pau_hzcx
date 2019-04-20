@@ -79,10 +79,13 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
         order.setChannelPay(param.getChannel_pay());
         order.setPayTime(new Date(param.getPay_at()));
         order.setSettlementer(param.getSettlement_by());
+        order.setMoneyChange(param.getMoney_zhaol());
         order.setOwnerId(user.getOwnerId());
         order.setRemark(null);
         order.setCreateTime(date);
         order.setMoneyRealIncome(param.getMoney_shishou().add(param.getMoney_zhaol()));//失手
+        order.setGoodsId(param.getGoods());//删掉这个字段，数据库中也删掉
+        order.setStatus(param.getStatus());
         boolean insert = insert(order);
         List<TOrderChild> list = param.getGoodsList1();//todo yancc 改为 getGoodsList();
         for (TOrderChild child : list) {
@@ -107,7 +110,7 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     public long findPageCount(SessionUser user, OrderPageParam param, Integer... sources) {
         TOrderApp p = new TOrderApp()
                 .setOwnerId(user.getOwnerId());
-        return selectCount(new EntityWrapper<>(p).in("status", param.getStatus()).in("sources",sources));
+        return selectCount(new EntityWrapper<>(p).in("status", param.getStatus()).in("source",sources));
     }
 
 

@@ -90,7 +90,7 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user, AddOrderParam param){
-        orderAppService.addOrder(user,param);
+        orderAppService.addOrder(user, param);
         return render();
     }
 
@@ -127,9 +127,17 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "orders",method = RequestMethod.GET)
     public Object orders(SessionUser user, Page page, OrderPageParam param){
-        Kv<String, Object> map = Kv.obj("page", page).set("ownerId", user.getOwnerId());
         List<Map<String, Object>> maps = orderAppService.findMapPage(user, page, param, TOrder.SOURCE_1);
-        return render();
+        String c;
+        for (Map<String, Object> m : maps) {
+            c = m.get("moneyChannel").toString();
+            m.put("moneyChannel",c.split("_")[0]);
+            m.put("goods", m.get("goodsId"));
+            //m.put("payMoney", m.get("payMoney").toString().split(",")[0].split("_")[0]);
+            m.put("payMoney", m.get("moneyPay"));
+            m.put("freight", 0);
+        }
+        return render().set("orders", maps);
     }
 
 

@@ -115,6 +115,8 @@
         <if test="params.beginTime != null">
             and g.is_delete = #{params.isDelete}
         </if>
+        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+
         <choose>
             <!--商品计算价格需要这个 in ids 排序 -->
             <when test="params.ids != null and params.ids != ''">
@@ -125,7 +127,6 @@
                 order by g.created_time desc
             </otherwise>
         </choose>
-        <!--<include refid="com.soft.ware.rest.modular.order.dao.TOrderMapper.map_limit"></include>-->
     </select>
 
     <!--根据商品分类id查询所有商品列表-->
