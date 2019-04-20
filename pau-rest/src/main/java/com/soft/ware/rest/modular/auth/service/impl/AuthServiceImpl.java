@@ -1,7 +1,6 @@
 package com.soft.ware.rest.modular.auth.service.impl;
 
 import com.soft.ware.core.base.controller.BaseService;
-import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.owner_staff.dao.TOwnerStaffMapper;

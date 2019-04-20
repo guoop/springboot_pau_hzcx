@@ -2,7 +2,6 @@ package com.soft.ware.rest.modular.handover.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.soft.ware.rest.modular.handover.dao.HandOverMapper;
-import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
 import com.soft.ware.rest.modular.handover.model.HandOver;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
@@ -21,14 +20,12 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
     @Resource
     private HandOverMapper overMapper;
 
-    @Resource
-    private TblOwnerStaffMapper staffMapper;
 
 
     @Override
     public HandOver over(SessionUser user, HandoverParam param) {
         //todo yancc 考虑改成session中
-        TblOwnerStaff staff = staffMapper.selectById(user.getId());
+        TblOwnerStaff staff = null;// staffMapper.selectById(user.getId());
         HandOver o = new HandOver();
         Date date = new Date();
         o.setOwner(user.getOwnerId());

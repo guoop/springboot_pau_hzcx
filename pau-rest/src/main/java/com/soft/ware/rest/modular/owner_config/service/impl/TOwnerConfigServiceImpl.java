@@ -36,18 +36,39 @@ public class TOwnerConfigServiceImpl extends BaseService<TOwnerConfigMapper,TOwn
         TOwnerConfig con = new TOwnerConfig();
         con.setOwnerId(map.get("ownerId").toString());
         con = mapper.selectOne(con);
-        con.setIsDelivery(Integer.valueOf(map.get("isDelivery").toString()));
-        con.setOrderPhone(map.get("orderPhone").toString());
-        if(ToolUtil.isNotEmpty(map.get("defaultDesc"))){
-            con.setDefaultDesc(map.get("defaultDesc").toString());
+        TOwnerConfig conData = new TOwnerConfig();
+        conData.setId(con.getId());
+        if(ToolUtil.isNotEmpty(map.get("orderPhone"))){
+            conData.setOrderPhone(map.get("orderPhone").toString());
         }
-        con.setDefaultRefundReason(map.get("defaultRefundReason").toString());
-        con.setDeliveryDistance(Integer.valueOf(map.get("isDelivery").toString()));
-        con.setDeliveryGreatMoney(BigDecimal.valueOf(Double.valueOf(map.get("deliveryGreatMoney").toString())));
-        con.setDeliveryLessMoney(BigDecimal.valueOf(Double.valueOf(map.get("deliveryLessMoney").toString())));
-        con.setIsReachPay(Integer.valueOf(map.get("isReachPay").toString()));
-        con.setIsSelfPickup(Integer.valueOf(map.get("isSelfPickup").toString()));
-        if(mapper.updateById(con) > 0){
+        if(ToolUtil.isNotEmpty(map.get("isDelivery"))){
+            conData.setIsDelivery(Integer.valueOf(map.get("isDelivery").toString()));
+        }
+        if(ToolUtil.isNotEmpty(map.get("defaultDesc"))){
+            conData.setDefaultDesc(map.get("defaultDesc").toString());
+        }
+        if(ToolUtil.isNotEmpty(map.get("defaultRefundReason"))){
+            conData.setDefaultRefundReason(map.get("defaultRefundReason").toString());
+        }
+        if(ToolUtil.isNotEmpty(map.get("deliveryDistance"))){
+            conData.setDeliveryDistance(Integer.valueOf(map.get("deliveryDistance").toString()));
+        }
+        if(ToolUtil.isNotEmpty(map.get("deliveryGreatMoney"))){
+            conData.setDeliveryGreatMoney(BigDecimal.valueOf(Double.valueOf(map.get("deliveryGreatMoney").toString())));
+        }
+        if(ToolUtil.isNotEmpty(map.get("deliveryLessMoney"))){
+            conData.setDeliveryLessMoney(BigDecimal.valueOf(Double.valueOf(map.get("deliveryLessMoney").toString())));
+        }
+        if(ToolUtil.isNotEmpty(map.get("isReachPay"))){
+            conData.setIsReachPay(Integer.valueOf(map.get("isReachPay").toString()));
+        }
+        if(ToolUtil.isNotEmpty(map.get("isSelfPickup"))){
+            conData.setIsSelfPickup(Integer.valueOf(map.get("isSelfPickup").toString()));
+        }
+        if(ToolUtil.isNotEmpty(map.get("deliveryMoney"))){
+            conData.setDeliveryMoney(BigDecimal.valueOf(Double.valueOf(map.get("deliveryMoney").toString())));
+        }
+        if(mapper.updateById(conData) > 0){
             return true;
         }
         return false;

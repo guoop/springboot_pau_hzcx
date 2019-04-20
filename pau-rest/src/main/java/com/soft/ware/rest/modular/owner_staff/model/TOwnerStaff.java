@@ -2,7 +2,10 @@ package com.soft.ware.rest.modular.owner_staff.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +33,7 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
     /**
      * 主键id
      */
+    @TableId(value = "id", type = IdType.INPUT)
     private String id;
     /**
      * 商户唯一标识

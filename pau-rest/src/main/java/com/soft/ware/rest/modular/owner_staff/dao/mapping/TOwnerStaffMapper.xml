@@ -25,7 +25,11 @@
 
     <select id="selectStaffByOwnerId" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_owner_staff where owner_id = #{ownerId}
+
     </select>
 
+    <insert id="insertOwnerStaff" parameterType="">
+
+    </insert>
 
 </mapper>

@@ -10,6 +10,7 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
+import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.owner.model.TOwner;
@@ -18,11 +19,10 @@ import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +45,8 @@ public class StaffController extends BaseController {
     private ITCategoryService itCategoryService;
 
       @RequestMapping(value = "staff/addOrUpdate",method = RequestMethod.POST)
-       public Tip updateOrSave(SessionUser sessionUser,  StaffEditParam param){
+       public Tip updateOrSave(@RequestBody @Valid StaffEditParam param, SessionUser sessionUser, BindingResult result){
+          Validator.valid(result);
           if(tOwnerStaffService.addOrUpdate(sessionUser,param)){
               return new SuccessTip();
           }

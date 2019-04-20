@@ -19,19 +19,15 @@ import java.util.List;
 public class StaffEditParam {
 
     private String id;
-    private String owner;
-    private String category_list;
-    private String function_list;
+    private String categoryList;
+    private String functionList;
     private String password;
     @Pattern(regexp = "^1\\d{10}$",message = "手机号不合法")
     private String phone;
-    private String url_list;
+    private String urlList;
     private String name;
-    private String created_at;
-    @NotNull
-    @Min(value = 0)
-    @Max(value = 10)
-    private int status;
+    private String createTime;
+    private String status;
 
     public String getId() {
         return id;
@@ -41,28 +37,21 @@ public class StaffEditParam {
         this.id = id;
     }
 
-    public String getOwner() {
-        return owner;
+
+    public String getCategoryList() {
+        return categoryList;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setCategoryList(String categoryList) {
+        this.categoryList = categoryList;
     }
 
-    public String getCategory_list() {
-        return category_list;
+    public String getFunctionList() {
+        return functionList;
     }
 
-    public void setCategory_list(String category_list) {
-        this.category_list = category_list;
-    }
-
-    public String getFunction_list() {
-        return function_list;
-    }
-
-    public void setFunction_list(String function_list) {
-        this.function_list = function_list;
+    public void setFunctionList(String functionlist) {
+        this.functionList = functionlist;
     }
 
     public String getPassword() {
@@ -82,11 +71,11 @@ public class StaffEditParam {
     }
 
     public String getUrl_list() {
-        return url_list;
+        return urlList;
     }
 
     public void setUrl_list(String url_list) {
-        this.url_list = url_list;
+        this.urlList = urlList;
     }
 
     public String getName() {
@@ -98,31 +87,33 @@ public class StaffEditParam {
     }
 
     public String getCreated_at() {
-        return created_at;
+        return createTime;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
 
 
-    public StaffEditParam update(TOwnerStaff s){
+    public TOwnerStaff update(TOwnerStaff s){
+        TOwnerStaff tOwnerStaff = new TOwnerStaff();
         StaffEditParam param = this;
-        s.setName(ToolUtil.isEmpty(param.getName()) ? s.getName() : param.getName());
+        System.out.println(param.getName());
+        tOwnerStaff.setName(ToolUtil.isNotEmpty(param.getName()) ? param.getName() :s.getName());
 
         if ("-1".equals(param.getPassword())) {
             //todo yancc 清除密码方式是否正确，
             // 清除店员的收银APP密码
-            s.setPassword(null);
+            tOwnerStaff.setPassword(null);
             //password 不是设置为空 因该也行
             //sql += (', password = null ');
         }
@@ -130,15 +121,15 @@ public class StaffEditParam {
             // 修改店员的收银APP密码
             String password = "^a9682150f2e011e8uy572f1cf5acecff-" + param.getPhone() + "-" + param.getPassword() + "$";
             password = Base64.getEncoder().encodeToString(DigestUtils.updateDigest(DigestUtils.getMd5Digest(), password).digest());
-            s.setPassword(password);
+            tOwnerStaff.setPassword(password);
         }
 
-        s.setStatus(param.getStatus());
-        s.setPhone(param.getPhone());
-        s.setFunctionList(param.getFunction_list());
-        s.setCategoryList(param.getCategory_list());
-        s.setUrlList(getUrls());
-        return this;
+        tOwnerStaff.setStatus(Integer.valueOf(param.getStatus()));
+        tOwnerStaff.setPhone(param.getPhone());
+        tOwnerStaff.setFunctionList(param.getFunctionList());
+        tOwnerStaff.setCategoryList(param.getCategoryList());
+        tOwnerStaff.setUrlList(getUrls());
+        return tOwnerStaff;
     }
 
 
@@ -160,7 +151,7 @@ public class StaffEditParam {
     }
 
     public String getUrls(){
-        String ss = getFunction_list() == null ? "" : getFunction_list();
+        String ss = getFunctionList() == null ? "" : getFunctionList();
         String[] arr = ss.split(",");
         List<String> sb = Lists.newArrayList();
         for (String s : arr) {
