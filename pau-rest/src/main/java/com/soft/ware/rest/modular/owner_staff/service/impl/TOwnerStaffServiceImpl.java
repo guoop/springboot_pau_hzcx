@@ -7,19 +7,17 @@ import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.ImGroups;
-import com.soft.ware.rest.common.persistence.model.ImUser;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
 import com.soft.ware.rest.modular.auth.service.ImService;
-import com.soft.ware.rest.modular.auth.service.ImUserService;
+import com.soft.ware.rest.modular.auth.service.SImUserService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.im_groups.model.SImGroups;
+import com.soft.ware.rest.modular.im_user.model.SImUser;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.dao.TOwnerStaffMapper;
@@ -57,7 +55,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
     private String password = "Hzcx-owner";
 
     @Autowired
-    private ImUserService imUserService;
+    private SImUserService imUserService;
 
     @Autowired
     private ImGroupsService groupsService;
@@ -167,7 +165,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
         for (TOwnerStaff s : tOwnerStaff) {
             username = ParamUtils.buildImUserName(s,type);
             //username = buildUsername(s, type);
-            ImUser u = getUser(username);
+            SImUser u = getUser(username);
             if (TOwnerStaff.status_0.equals(s.getStatus())) {
                 //用户状态正常
                 if (u == null) {
@@ -176,7 +174,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
                     u = addUser(sessionUser, params);
 
                     imUserService.saveOrUpdate(sessionUser,u);
-                    ImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
+                    SImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(sessionUser, g, u);
@@ -196,7 +194,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
                     imUserService.saveOrUpdate(sessionUser,u);
                     logger.info("极光用户:{}被更新",username);
                     u = getUser(username);
-                    ImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
+                    SImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(sessionUser, g, u);
@@ -208,7 +206,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
                 //状态异常删除用户
                 username = ParamUtils.buildImUserName(s, type);
                 if (u != null) {
-                    ImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
+                    SImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
                     if (g != null) {
                         //delFromGroup(user,g,u);//经过测试，删除用户时极光会自动删除他所在的群组
                         groupsService.deleteByUsername(sessionUser, g.getOwnerUsername());
@@ -253,7 +251,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @param group
      * @param u
      */
-    public void addToGroup(SessionUser user,ImGroups group, ImUser u) {
+    public void addToGroup(SessionUser user,SImGroups group, SImUser u) {
         Kv<String,?> params = Kv.by("add",Lists.newArrayList(u.getUsername()));
         post("/v1/groups/" + group.getGid() + "/members", params);
     }
@@ -264,8 +262,8 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @param u
      * @return
      */
-    public boolean hasUser(ImGroups group,ImUser u){
-        List<ImUser> users = getUsers(group);
+    public boolean hasUser(SImGroups group,SImUser u){
+        List<SImUser> users = getUsers(group);
         return users.stream().anyMatch(s -> s.getUsername().equals(u.getUsername()));
     }
     /**
@@ -273,10 +271,10 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @param group
      * @return
      */
-    public List<ImUser> getUsers(ImGroups group){
+    public List<SImUser> getUsers(SImGroups group){
         try {
             ResponseEntity<String> entity = get("/v1/groups/" + group.getGid() + "/members");
-            return JSON.parseArray(entity.getBody(), ImUser.class);
+            return JSON.parseArray(entity.getBody(), SImUser.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -288,9 +286,9 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @param owner
      * @return
      */
-    private ImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+    private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
         String username = ParamUtils.buildOwnerGroupUsername(owner,type);
-        ImUser u = getUser(username);
+        SImUser u = getUser(username);
         if (u == null) {
             ParamUtils.buildOwnerGroupUsername(owner,type);
             List<Kv<String, ?>> params = Lists.newArrayList();
@@ -300,7 +298,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             //创建群组
             return addGroup(user, owner, type);
         } else {
-            List<ImGroups> gs = getGroup(u);
+            List<SImGroups> gs = getGroup(u);
             if (gs.isEmpty()) {
                 //创建群组
                 return addGroup(user, owner, type);
@@ -315,11 +313,11 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @return
      * @throws Exception
      */
-    private List<ImGroups> getGroup(ImUser user)  {
+    private List<SImGroups> getGroup(SImUser user)  {
         try {
             ResponseEntity<String> entity = get("/v1/users/" + user.getUsername() + "/groups/");
-            List<ImGroups> imGroups = JSON.parseArray(entity.getBody(), ImGroups.class);
-            for (ImGroups g : imGroups) {
+            List<SImGroups> imGroups = JSON.parseArray(entity.getBody(), SImGroups.class);
+            for (SImGroups g : imGroups) {
                 g.setOwnerUsername(user.getUsername());
             }
             return imGroups;
@@ -336,11 +334,11 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @param type 群组类型
      * @return
      */
-    private ImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
+    private SImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
         String username = ParamUtils.buildOwnerGroupUsername(owner,type);
         Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
         ResponseEntity<String> entity = post("/v1/groups/", params);
-        ImGroups imGroups = JSON.parseObject(entity.getBody(), ImGroups.class);
+        SImGroups imGroups = JSON.parseObject(entity.getBody(), SImGroups.class);
         if (imGroups != null) {
             imGroups.setOwnerUsername(username);
         }
@@ -353,10 +351,10 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @return
      * @throws Exception
      */
-    private ImUser getUser(String username) {
+    private SImUser getUser(String username) {
         try {
             ResponseEntity<String> entity = get("/v1/users/" + username);
-            return JSON.parseObject(entity.getBody(), ImUser.class);
+            return JSON.parseObject(entity.getBody(), SImUser.class);
         } catch (HttpClientErrorException e) {
             logger.warn("极光用户：{} 不存在",username);
             //e.printStackTrace();
@@ -372,9 +370,9 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
      * @param params
      * @return
      */
-    private ImUser addUser(SessionUser user,List<Kv<String,?>> params) {
+    private SImUser addUser(SessionUser user,List<Kv<String,?>> params) {
         ResponseEntity<String> entity = post("/v1/users", params);
-        List<ImUser> users = JSON.parseArray(entity.getBody(), ImUser.class);
+        List<SImUser> users = JSON.parseArray(entity.getBody(), SImUser.class);
         if (users == null || users.isEmpty()) {
             return null;
         }

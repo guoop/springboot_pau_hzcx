@@ -3,10 +3,10 @@ package com.soft.ware.rest.modular.auth.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
-import com.soft.ware.rest.common.persistence.dao.ImUserMapper;
-import com.soft.ware.rest.common.persistence.model.ImUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.service.ImUserService;
+import com.soft.ware.rest.modular.auth.service.SImUserService;
+import com.soft.ware.rest.modular.im_user.dao.SImUserMapper;
+import com.soft.ware.rest.modular.im_user.model.SImUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,20 +15,20 @@ import java.util.Date;
 
 @Service
 @Transactional
-public class ImUserServiceImpl extends BaseService<ImUserMapper,ImUser> implements ImUserService {
+public class ImUserServiceImpl extends BaseService<SImUserMapper, SImUser> implements SImUserService {
 
     @Resource
-    private ImUserMapper mapper;
+    private SImUserMapper mapper;
 
-    public ImUser findByUsername(String username){
-        ImUser user = mapper.selectOne(new ImUser().setUsername(username));
+    public SImUser findByUsername(String username){
+        SImUser user = mapper.selectOne(new SImUser().setUsername(username));
         return user;
     }
 
 
     @Override
-    public boolean saveOrUpdate(SessionUser user, ImUser u) {
-        ImUser old = findByUsername(u.getUsername());
+    public boolean saveOrUpdate(SessionUser user, SImUser u) {
+        SImUser old = findByUsername(u.getUsername());
         u.setOwnerId(user.getOwnerId());
         int row;
         if (old == null) {
@@ -48,9 +48,9 @@ public class ImUserServiceImpl extends BaseService<ImUserMapper,ImUser> implemen
 
     @Override
     public boolean deleteByUsername(SessionUser user, String username) {
-        ImUser u = findByUsername(username);
+        SImUser u = findByUsername(username);
         if (u != null) {
-            return delete(new EntityWrapper<>(new ImUser().setId(u.getId()).setOwnerId(user.getOwnerId())));
+            return delete(new EntityWrapper<>(new SImUser().setId(u.getId()).setOwnerId(user.getOwnerId())));
         }
         return false;
     }

@@ -28,8 +28,8 @@
 
     </select>
 
-    <insert id="insertOwnerStaff" parameterType="">
+   <!-- <insert id="insertOwnerStaff" parameterType="">
 
-    </insert>
+    </insert>-->
 
 </mapper>

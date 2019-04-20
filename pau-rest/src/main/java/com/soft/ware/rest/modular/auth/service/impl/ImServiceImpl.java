@@ -4,17 +4,20 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.common.persistence.model.*;
+import com.soft.ware.rest.common.persistence.model.TblOwner;
+import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
+import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
 import com.soft.ware.rest.modular.auth.service.ImService;
-import com.soft.ware.rest.modular.auth.service.ImUserService;
+import com.soft.ware.rest.modular.auth.service.SImUserService;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.im_groups.model.SImGroups;
 import com.soft.ware.rest.modular.im_groups.service.ISImGroupsService;
+import com.soft.ware.rest.modular.im_user.model.SImUser;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
@@ -58,7 +61,7 @@ public class ImServiceImpl implements ImService {
     private String password = "Hzcx-owner";
 
     @Autowired
-    private ImUserService imUserService;
+    private SImUserService imUserService;
 
     @Autowired
     private ImGroupsService groupsService;
@@ -105,7 +108,7 @@ public class ImServiceImpl implements ImService {
         String username;
         for (TOwnerStaff s : ss) {
             username = ParamUtils.buildImUserName(s, type);
-            ImUser u = getUser(username);
+            SImUser u = getUser(username);
             if (TblOwnerStaff.status_0.equals(s.getStatus())) {
                 //用户状态正常
                 if (u == null) {
@@ -113,7 +116,7 @@ public class ImServiceImpl implements ImService {
                     params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(s.getName()) ? s.getPhone() : s.getName()));
                     u = addUser(user, params);
                     imUserService.saveOrUpdate(user,u);
-                    ImGroups g = requireOwnerGroup(user, owner, type);
+                    SImGroups g = requireOwnerGroup(user, owner, type);
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(user, g, u);
@@ -129,7 +132,7 @@ public class ImServiceImpl implements ImService {
                     imUserService.saveOrUpdate(user,u);
                     logger.info("极光用户:{}被更新",username);
                     u = getUser(username);
-                    ImGroups g = requireOwnerGroup(user, owner, type);
+                    SImGroups g = requireOwnerGroup(user, owner, type);
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(user, g, u);
@@ -141,7 +144,7 @@ public class ImServiceImpl implements ImService {
                 //状态异常删除用户
                 username = ParamUtils.buildImUserName(s, type);
                 if (u != null) {
-                    ImGroups g = requireOwnerGroup(user, owner, type);
+                    SImGroups g = requireOwnerGroup(user, owner, type);
                     if (g != null) {
                         //delFromGroup(user,g,u);//经过测试，删除用户时极光会自动删除他所在的群组
                         groupsService.deleteByUsername(user, g.getOwnerUsername());
@@ -160,9 +163,9 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @return
      */
-    private ImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+    private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
         String username = ParamUtils.buildOwnerGroupUsername(owner,type);
-        ImUser u = getUser(username);
+        SImUser u = getUser(username);
         if (u == null) {
             ParamUtils.buildOwnerGroupUsername(owner,type);
             List<Kv<String, ?>> params = Lists.newArrayList();
@@ -172,7 +175,7 @@ public class ImServiceImpl implements ImService {
             //创建群组
             return addGroup(user, owner, type);
         } else {
-            List<ImGroups> gs = getGroup(u);
+            List<SImGroups> gs = getGroup(u);
             if (gs.isEmpty()) {
                 //创建群组
                 return addGroup(user, owner, type);
@@ -277,18 +280,17 @@ public class ImServiceImpl implements ImService {
 
     /**
      * 创建一个等待发送的基本消息
-     * @param groups
-     * @param g
+     * @param group
      * @param body
      * @return
      */
-    private Kv<String,Object> buildBaseMsg(SImGroups groups,ImGroups g,Kv<String,Object> body){
+    private Kv<String,Object> buildBaseMsg(SImGroups group,Kv<String,Object> body){
         Kv<String, Object> params = Kv.init();
         params.put("version", 1);
         params.put("target_type", "group");
-        params.put("target_id",groups.getGid());
+        params.put("target_id",group.getGid());
         params.put("from_type", "admin");
-        params.put("from_id", g.getOwnerUsername());
+        params.put("from_id", group.getOwnerUsername());
         params.put("msg_type", "custom");
         params.put("msg_body", body);
         return params;
@@ -303,17 +305,13 @@ public class ImServiceImpl implements ImService {
     private void sendNotify(SessionUser user,Kv<String,Object> body,String log){
         List<SImGroups> groups = imGroupsService.find(user, TblOwnerGroups.type_0);
         for (SImGroups group : groups) {
-            ImGroups g = JSON.parseObject(group.getBody(), ImGroups.class);
-            if (g == null) {
+            if (StringUtils.isBlank(group.getOwnerUsername())) {
                 continue;
             }
-            if (StringUtils.isBlank(g.getOwnerUsername())) {
+            if (group.getGid() == null) {
                 continue;
             }
-            if (g.getGid() == null) {
-                continue;
-            }
-            Kv<String, Object> params = buildBaseMsg(group, g, body);
+            Kv<String, Object> params = buildBaseMsg(group, body);
             HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
             ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/messages", http, String.class);
             if (entity.getStatusCodeValue() == 200 || entity.getStatusCodeValue() == 201) {
@@ -353,9 +351,9 @@ public class ImServiceImpl implements ImService {
      * @param params
      * @return
      */
-    private ImUser addUser(SessionUser user,List<Kv<String,?>> params) {
+    private SImUser addUser(SessionUser user,List<Kv<String,?>> params) {
         ResponseEntity<String> entity = post("/v1/users", params);
-        List<ImUser> users = JSON.parseArray(entity.getBody(), ImUser.class);
+        List<SImUser> users = JSON.parseArray(entity.getBody(), SImUser.class);
         if (users == null || users.isEmpty()) {
             return null;
         }
@@ -379,10 +377,10 @@ public class ImServiceImpl implements ImService {
      * @return
      * @throws Exception
      */
-    private ImUser getUser(String username) {
+    private SImUser getUser(String username) {
         try {
             ResponseEntity<String> entity = get("/v1/users/" + username);
-            return JSON.parseObject(entity.getBody(), ImUser.class);
+            return JSON.parseObject(entity.getBody(), SImUser.class);
         } catch (HttpClientErrorException e) {
             logger.warn("极光用户：{} 不存在",username);
             //e.printStackTrace();
@@ -409,11 +407,11 @@ public class ImServiceImpl implements ImService {
      * @param type 群组类型
      * @return
      */
-    private ImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
+    private SImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
         String username = ParamUtils.buildOwnerGroupUsername(owner,type);
         Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
         ResponseEntity<String> entity = post("/v1/groups/", params);
-        ImGroups imGroups = JSON.parseObject(entity.getBody(), ImGroups.class);
+        SImGroups imGroups = JSON.parseObject(entity.getBody(), SImGroups.class);
         if (imGroups != null) {
             imGroups.setOwnerUsername(username);
         }
@@ -426,9 +424,9 @@ public class ImServiceImpl implements ImService {
      * @return
      * @throws Exception
      */
-    private ImGroups getGroup(String gid) throws Exception {
+    private SImGroups getGroup(String gid) throws Exception {
         ResponseEntity<String> entity = get("/v1/groups/" + gid);
-        return JSON.parseObject(entity.getBody(), ImGroups.class);
+        return JSON.parseObject(entity.getBody(), SImGroups.class);
     }
 
 
@@ -438,11 +436,11 @@ public class ImServiceImpl implements ImService {
      * @return
      * @throws Exception
      */
-    private List<ImGroups> getGroup(ImUser user)  {
+    private List<SImGroups> getGroup(SImUser user)  {
         try {
             ResponseEntity<String> entity = get("/v1/users/" + user.getUsername() + "/groups/");
-            List<ImGroups> imGroups = JSON.parseArray(entity.getBody(), ImGroups.class);
-            for (ImGroups g : imGroups) {
+            List<SImGroups> imGroups = JSON.parseArray(entity.getBody(), SImGroups.class);
+            for (SImGroups g : imGroups) {
                 g.setOwnerUsername(user.getUsername());
             }
             return imGroups;
@@ -483,7 +481,7 @@ public class ImServiceImpl implements ImService {
      * @param group
      * @param u
      */
-    public void addToGroup(SessionUser user,ImGroups group, ImUser u) {
+    public void addToGroup(SessionUser user,SImGroups group, SImUser u) {
         Kv<String,?> params = Kv.by("add",Lists.newArrayList(u.getUsername()));
         post("/v1/groups/" + group.getGid() + "/members", params);
     }
@@ -495,7 +493,7 @@ public class ImServiceImpl implements ImService {
      * @param group
      * @param u
      */
-    public void delFromGroup(SessionUser user,ImGroups group, ImUser u) {
+    public void delFromGroup(SessionUser user,SImGroups group, SImUser u) {
         Kv<String,?> params = Kv.by("remove",Lists.newArrayList(u.getUsername()));
         post( "/v1/groups/" + group.getGid() + "/members", params);
     }
@@ -505,10 +503,10 @@ public class ImServiceImpl implements ImService {
      * @param group
      * @return
      */
-    public List<ImUser> getUsers(ImGroups group){
+    public List<SImUser> getUsers(SImGroups group){
         try {
             ResponseEntity<String> entity = get("/v1/groups/" + group.getGid() + "/members");
-            return JSON.parseArray(entity.getBody(), ImUser.class);
+            return JSON.parseArray(entity.getBody(), SImUser.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -521,8 +519,8 @@ public class ImServiceImpl implements ImService {
      * @param u
      * @return
      */
-    public boolean hasUser(ImGroups group,ImUser u){
-        List<ImUser> users = getUsers(group);
+    public boolean hasUser(SImGroups group,SImUser u){
+        List<SImUser> users = getUsers(group);
         return users.stream().anyMatch(s -> s.getUsername().equals(u.getUsername()));
     }
 

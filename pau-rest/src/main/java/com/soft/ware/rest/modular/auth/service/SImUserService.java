@@ -1,10 +1,10 @@
 package com.soft.ware.rest.modular.auth.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import com.soft.ware.rest.common.persistence.model.ImUser;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.im_user.model.SImUser;
 
-public interface ImUserService extends IService<ImUser> {
+public interface SImUserService extends IService<SImUser> {
 
 
     /**
@@ -13,7 +13,7 @@ public interface ImUserService extends IService<ImUser> {
      * @param u
      * @return
      */
-    boolean saveOrUpdate(SessionUser user, ImUser u);
+    boolean saveOrUpdate(SessionUser user, SImUser u);
 
     /**
      * 删除用户，根据username

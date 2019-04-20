@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
@@ -82,7 +83,7 @@ public class TOrder extends Model<TOrder> {
     /**
      * 自增主键
      */
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
      * 订单编号

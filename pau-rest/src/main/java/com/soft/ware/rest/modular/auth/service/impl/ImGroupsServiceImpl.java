@@ -3,10 +3,10 @@ package com.soft.ware.rest.modular.auth.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
-import com.soft.ware.rest.common.persistence.dao.ImGroupsMapper;
-import com.soft.ware.rest.common.persistence.model.ImGroups;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.ImGroupsService;
+import com.soft.ware.rest.modular.im_groups.dao.SImGroupsMapper;
+import com.soft.ware.rest.modular.im_groups.model.SImGroups;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,20 +15,20 @@ import java.util.Date;
 
 @Service
 @Transactional
-public class ImGroupsServiceImpl extends BaseService<ImGroupsMapper,ImGroups> implements ImGroupsService {
+public class ImGroupsServiceImpl extends BaseService<SImGroupsMapper, SImGroups> implements ImGroupsService {
 
     @Resource
-    private ImGroupsMapper mapper;
+    private SImGroupsMapper mapper;
 
-    public ImGroups findByUsername(String username){
-        ImGroups g = mapper.selectOne(new ImGroups().setOwnerUsername(username));
+    public SImGroups findByUsername(String username){
+        SImGroups g = mapper.selectOne(new SImGroups().setOwnerUsername(username));
         return g;
     }
 
 
     @Override
-    public boolean saveOrUpdate(SessionUser user, ImGroups g) {
-        ImGroups old = findByUsername(g.getOwnerUsername());
+    public boolean saveOrUpdate(SessionUser user, SImGroups g) {
+        SImGroups old = findByUsername(g.getOwnerUsername());
         int row;
         if (old == null) {
             g.setOwnerUsername(g.getOwnerUsername());
@@ -44,9 +44,9 @@ public class ImGroupsServiceImpl extends BaseService<ImGroupsMapper,ImGroups> im
 
     @Override
     public boolean deleteByUsername(SessionUser user, String ownerUsername) {
-        ImGroups g = findByUsername(ownerUsername);
+        SImGroups g = findByUsername(ownerUsername);
         if (g != null) {
-            return delete(new EntityWrapper<>(new ImGroups().setId(g.getId())));
+            return delete(new EntityWrapper<>(new SImGroups().setId(g.getId())));
         }
         return true;
     }
