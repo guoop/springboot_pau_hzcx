@@ -204,8 +204,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
             }
         }
-
-
         // 退款金额
         BigDecimal refundMoney = BigDecimal.ZERO;
         // 全额退款

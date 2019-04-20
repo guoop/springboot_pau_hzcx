@@ -121,7 +121,7 @@ public class TOwnerController  extends BaseController {
     @RequestMapping(value = "update/config/info",method = RequestMethod.POST)
     public Tip updateOwnerConfigInfo(@RequestBody Map<String,Object> map,SessionUser sessionUser){
         map.put("ownerId",sessionUser.getOwnerId());
-       if(itOwnerConfigService.updateOwnerConfig(map)){
+           if(itOwnerConfigService.updateOwnerConfig(map)){
           return new SuccessTip();
        }
         return  new ErrorTip();

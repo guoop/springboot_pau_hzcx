@@ -5,7 +5,6 @@ import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
 import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -23,13 +22,16 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+/*
 
 @Service
 @Transactional
 public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,TblOwnerStaff> implements TblOwnerStaffService {
 
-    @Resource
-    private TblOwnerStaffMapper mapper;
+    */
+/*@Resource
+    private TblOwnerStaffMapper mapper;*//*
+
 
     @Autowired
     private TblOwnerService tblOwnerService;
@@ -40,7 +42,8 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    @Override
+    */
+/*@Override
     public TblOwnerStaff findByPhone(String phone) {
         return mapper.selectOne(new TblOwnerStaff().setPhone(phone));
     }
@@ -49,6 +52,7 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
     public TblOwnerStaff find(SessionUser user) {
         return mapper.selectOne(new TblOwnerStaff().setId(Integer.valueOf(user.getId())));
     }
+*//*
 
     @Override
     public boolean saveOrUpdate(SessionUser user, StaffEditParam param) throws Exception {
@@ -118,4 +122,4 @@ public class TblOwnerStaffServiceImpl extends BaseService<TblOwnerStaffMapper,Tb
         return mapper.selectList(new EntityWrapper<TblOwnerStaff>().eq("owner", user.getOwnerId()).ne("status", TblOwnerStaff.status_2));
     }
 
-}
+}*/

@@ -11,7 +11,7 @@ import java.util.Date;
 /**
   * 
 */
-@TableName("tbl_owner_history")
+/*@TableName("tbl_owner_history")*/
 public class TblOwnerHistory extends Model<TblOwnerHistory> {
 
     private static final long serialVersionUID = 1L;

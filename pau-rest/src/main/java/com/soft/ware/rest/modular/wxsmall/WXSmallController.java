@@ -48,8 +48,8 @@ public class WXSmallController extends BaseController {
 	@Autowired
 	private TblOwnerService tblOwnerService;
 	// 超市员工服务
-	@Autowired
-	private TblOwnerStaffService tblOwnerStaffService;
+/*	@Autowired
+	private TblOwnerStaffService tblOwnerStaffService;*/
 	// 交接班服务
 	@Autowired
 	private IHandOverService handOverService;
@@ -138,8 +138,8 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("/v1/self")
 	public Object getUserInfo(SessionUser user) throws Exception {
-		TblOwnerStaff u = tblOwnerStaffService.find(user);
-		return render().set("user", BeanMapUtils.toMap(u, true));
+		//TblOwnerStaff u = tblOwnerStaffService.find(user);
+		return render().set("user", BeanMapUtils.toMap(null, true));
 	}
 
 	/**
@@ -181,8 +181,8 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("v1/auth/staff/list")
 	public Object getStaffList(SessionUser user) throws Exception {
-		List<TblOwnerStaff> list = tblOwnerStaffService.selectAll(user);
-        return render().set("data", BeanMapUtils.toMap(true, list));
+		//List<TblOwnerStaff> list = tblOwnerStaffService.selectAll(user);
+        return render().set("data", BeanMapUtils.toMap(true, null));
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class WXSmallController extends BaseController {
 		functionList.add(Kv.by("key", "categoryMan").set("title", "分类管理"));
 		functionList.add(Kv.by("key", "printPriceTicket").set("title", "打印价签"));
 
-		TblOwnerStaff tblOwnerStaff = tblOwnerStaffService.selectById(id);
+		TblOwnerStaff tblOwnerStaff = null;//tblOwnerStaffService.selectById(id);
 		List<TblCategory> list = categoryService.findAllCategory(user);
         ResultView map = render();
 
@@ -228,7 +228,7 @@ public class WXSmallController extends BaseController {
 	@RequestMapping("/v2/auth/staff/man")
 	public Object addOrUpdate(SessionUser user, @RequestBody @Valid StaffEditParam param, BindingResult result) throws Exception {
 		Validator.valid(result);
-		tblOwnerStaffService.saveOrUpdate(user,param);
+		//tblOwnerStaffService.saveOrUpdate(user,param);
 		return render();
 	}
 
@@ -237,9 +237,9 @@ public class WXSmallController extends BaseController {
 	 */
 	@RequestMapping("v1/auth/staff/del")
 	public Tip del(String id) {
-		if (tblOwnerStaffService.deleteById(id)) {
+		/*if (tblOwnerStaffService.deleteById(id)) {
 			return new SuccessTip();
-		}
+		}*/
 		return new ErrorTip(606, "删除失败");
 	}
 
@@ -270,7 +270,7 @@ public class WXSmallController extends BaseController {
 	/**
 	 * 通过订单状态查询订单列表
 	 * @param param (订单状态）,page（页码）
-	 * @return
+	 * @returns
 	 */
 	@RequestMapping("v2/orders")
 	public Object gevoidList(SessionUser user, Page page, OrderPageParam param) {

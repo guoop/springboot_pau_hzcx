@@ -7,6 +7,7 @@ public interface TOwnerStaffMapper extends BaseMapper<TOwnerStaff> {
 
     TOwnerStaff selectStaffByOwnerId(String ownerId);
 
-    void syncUsers(SessionUser sessionUser,TOwnerStaff tOwnerStaff);
+    int insertOwnerStaff(TOwnerStaff ownerStaff);
+
 
 }

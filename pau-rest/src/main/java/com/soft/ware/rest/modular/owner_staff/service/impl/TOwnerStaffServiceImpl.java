@@ -3,6 +3,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
@@ -45,7 +46,8 @@ import java.util.*;
 public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwnerStaff> implements TOwnerStaffService {
 
     @Resource
-    private TOwnerStaffMapper mapper;
+    private TOwnerStaffMapper tOwnerStaffMapper;
+
     @Autowired
     private ITOwnerService itOwnerService;
 
@@ -70,13 +72,13 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
     public TOwnerStaff findByPhone(String phone) {
         TOwnerStaff staff = new TOwnerStaff();
         staff.setPhone(phone);
-        return mapper.selectOne(staff);
+        return tOwnerStaffMapper.selectOne(staff);
 
     }
 
     @Override
     public TOwnerStaff selectStaffByOwnerId(String ownerId) {
-        return mapper.selectStaffByOwnerId(ownerId);
+        return tOwnerStaffMapper.selectStaffByOwnerId(ownerId);
     }
 
     @Override
@@ -101,13 +103,12 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
         }
         if (s == null) {
             //添加店员信息
-            s = new TOwnerStaff();
+            s =  param.update(s);
             s.setOwnerId(sessionUser.getOwnerId());
             s.setCreateTime(new Date());
-            param.update(s);
+            s.setId(IdGenerator.getId());
             s.setOwnerId(sessionUser.getOwnerId());
-            s.setCreateTime(new Date());
-            Integer row = mapper.insert(s);
+            Integer row = tOwnerStaffMapper.insert(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
                 try {
@@ -126,7 +127,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             if (!s.getOwnerId().equals(sessionUser.getOwnerId())) {
                 throw new PauException(BizExceptionEnum.ERROR);
             }
-            Integer row = mapper.updateAllColumnById(s);
+            Integer row = tOwnerStaffMapper.updateAllColumnById(s);
             String keyPrefix = "user:" + s.getPhone() + ":*";
             Set<String> keys = redisTemplate.keys(keyPrefix);
             try {
