@@ -55,14 +55,15 @@ public class StaffController extends BaseController {
 
     /**
      * 删除店员信息
-     * @param id 店员id
+     * @param param 店员id
      * @return
      */
-    @RequestMapping(value = "staff/del",method = RequestMethod.GET)
-       public Tip Delete(@RequestParam String id){
-              if(tOwnerStaffService.deleteById(id)){
+    @RequestMapping(value = "staff/del",method = RequestMethod.POST)
+       public Tip Delete(@RequestBody Map<String,Object> param,SessionUser sessionUser){
+              if(tOwnerStaffService.delStaff(param,sessionUser)){
                   return new SuccessTip();
               }
+
               return new ErrorTip();
       }
 

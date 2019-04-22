@@ -28,4 +28,5 @@ public interface ISImUserService extends IService<SImUser> {
      */
     boolean deleteByUsername(SessionUser user, String username);
 
+
 }
