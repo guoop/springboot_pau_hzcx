@@ -1,4 +1,4 @@
-package com.soft.ware.rest.modular.auth.service;
+package com.soft.ware.rest.modular.sms.service;
 
 public interface SmsService {
 
