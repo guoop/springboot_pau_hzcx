@@ -27,4 +27,6 @@ public interface ImService {
      * @param goods
      */
     void sendAddGoodsNotify(SessionUser user, TGoods goods);
+
+    boolean deleteImUserByNickName(String nickname);
 }

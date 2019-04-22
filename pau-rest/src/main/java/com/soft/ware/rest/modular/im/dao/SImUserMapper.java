@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface SImUserMapper extends BaseMapper<SImUser> {
+
     List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> params);
 
 }

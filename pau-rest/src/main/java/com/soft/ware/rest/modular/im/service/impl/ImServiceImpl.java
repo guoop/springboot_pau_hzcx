@@ -91,7 +91,11 @@ public class ImServiceImpl implements ImService {
         sendNotify(user, body,"商品添加");
     }
 
+    @Override
+    public boolean deleteImUserByNickName(String nickname) {
 
+        return false;
+    }
 
 
     /**

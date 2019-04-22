@@ -78,7 +78,11 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
 
     SMS_ERROR_SEND(400,"短信发送失败"),
 
+    IM_USER_DELETE(500,"没有当前用户"),
+
     ERROR(500,"未知错误");
+
+
 
 
 

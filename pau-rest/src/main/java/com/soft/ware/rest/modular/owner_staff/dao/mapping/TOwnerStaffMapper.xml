@@ -19,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, owner_id , name, phone, password, create_time , function_list , url_list , category_list , status, description
+        id, owner_id , name, phone,create_time , function_list , url_list , category_list , status, description
     </sql>
 
 
@@ -28,9 +28,5 @@
 
     </select>
 
-    <insert id="insertOwnerStaff" parameterType="com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff">
-        insert into t_owner_staff (id,name,owner_id,phone) values
-        (#{id},#{name},#{ownerId},#{phone})
-    </insert>
 
 </mapper>
