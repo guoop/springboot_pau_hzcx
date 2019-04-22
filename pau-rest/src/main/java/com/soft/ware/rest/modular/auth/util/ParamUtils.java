@@ -1,6 +1,5 @@
 package com.soft.ware.rest.modular.auth.util;
 
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
@@ -127,6 +126,6 @@ public class ParamUtils {
      * @return
      */
     public static String buildOwnerGroupUsername(TOwner owner, ImGroupType type){
-        return owner.getId() + "--" + type.name();
+        return owner.getId() + "--" + type.ordinal() + "--admin";
     }
 }

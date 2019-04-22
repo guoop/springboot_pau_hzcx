@@ -35,8 +35,7 @@ public class SImUserServiceImpl extends BaseService<SImUserMapper,SImUser> imple
 
 
     public SImUser findByUsername(String username){
-        SImUser user = mapper.selectOne(new SImUser().setUsername(username));
-        return user;
+        return mapper.selectOne(new SImUser().setUsername(username));
     }
 
 

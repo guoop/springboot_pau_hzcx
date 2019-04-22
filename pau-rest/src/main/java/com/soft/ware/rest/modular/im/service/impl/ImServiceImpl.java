@@ -103,7 +103,6 @@ public class ImServiceImpl implements ImService {
     @Override
     public void syncUsers(SessionUser user, TOwner owner, TOwnerStaff... ss) throws Exception {
         ImGroupType type = ImGroupType.STAFF;//极光小程序用户
-        List<Kv<String, ?>> params = Lists.newArrayList();
         String username;
         for (TOwnerStaff s : ss) {
             username = ParamUtils.buildImUserName(s, type);
@@ -112,15 +111,13 @@ public class ImServiceImpl implements ImService {
                 //用户状态正常
                 if (u == null) {
                     //注册用户
-                    params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(s.getName()) ? s.getPhone() : s.getName()));
-                    u = addUser(user, params);
+                    u = new SImUser().setUsername(username).setPassword(password).setNickname(ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName());
+                    addUser(user, u);
                     imUserService.saveOrUpdate(user,u);
                     SImGroups g = requireOwnerGroup(user, owner, type);
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(user, g, u);
-                        g.setType(type.ordinal());
-                        groupsService.saveOrUpdate(user,g);
                     }
                     logger.info("极光用户:{}被添加",username);
                 } else {
@@ -136,8 +133,6 @@ public class ImServiceImpl implements ImService {
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(user, g, u);
-                        g.setType(type.ordinal());
-                        groupsService.saveOrUpdate(user, g);
                     }
                 }
 
@@ -165,21 +160,29 @@ public class ImServiceImpl implements ImService {
      * @return
      */
     private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+        //todo yancc 对于群组和用户每次获取远程并检查数据库，没有必要
         String username = ParamUtils.buildOwnerGroupUsername(owner,type);
         SImUser u = getUser(username);
         if (u == null) {
             ParamUtils.buildOwnerGroupUsername(owner,type);
-            List<Kv<String, ?>> params = Lists.newArrayList();
-            params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName()));
             //创建群主
-            u = addUser(user, params);
+            u = new SImUser().setUsername(username).setPassword(password).setNickname(ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName());
+            addUser(user,u);
+            imUserService.insert(u);
             //创建群组
-            return addGroup(user, owner, type);
+            SImGroups group = addGroup(user, owner, type, u);
+            group.setType(type.ordinal());
+            imGroupsService.saveOrUpdate(user, group);
+            return group;
         } else {
             List<SImGroups> gs = getGroup(u);
             if (gs.isEmpty()) {
+                imUserService.saveOrUpdate(user, u);
                 //创建群组
-                return addGroup(user, owner, type);
+                SImGroups group = addGroup(user, owner, type, u);
+                group.setType(type.ordinal());
+                imGroupsService.saveOrUpdate(user, group);
+                return group;
             }
             //todo yancc 是否考虑多个群
             return gs.get(0);
@@ -290,7 +293,7 @@ public class ImServiceImpl implements ImService {
         params.put("version", 1);
         params.put("target_type", "group");
         params.put("target_id",group.getGid());
-        params.put("from_type", "admin");
+        params.put("from_type", "user");
         params.put("from_id", group.getOwnerUsername());
         params.put("msg_type", "custom");
         params.put("msg_body", body);
@@ -349,15 +352,13 @@ public class ImServiceImpl implements ImService {
     /**
      * 添加极光用户
      * @param user
-     * @param params
+     * @param u   极光用户
      * @return
      */
-    private SImUser addUser(SessionUser user,List<Kv<String,?>> params) {
+    private SImUser addUser(SessionUser user,SImUser u) {
+        Kv<String, String> params = Kv.by("username", u.getUsername()).set("password", u.getPassword()).set("nickname", u.getNickname());
         ResponseEntity<String> entity = post("/v1/users", params);
         List<SImUser> users = JSON.parseArray(entity.getBody(), SImUser.class);
-        if (users == null || users.isEmpty()) {
-            return null;
-        }
         return users.get(0);
     }
 
@@ -409,15 +410,10 @@ public class ImServiceImpl implements ImService {
      * @param type 群组类型
      * @return
      */
-    private SImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
-        String username = ParamUtils.buildOwnerGroupUsername(owner,type);
-        Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
+    private SImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type,SImUser admin){
+        Kv<String, Object> params = Kv.obj().set("owner_username", admin.getUsername()).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
         ResponseEntity<String> entity = post("/v1/groups/", params);
-        SImGroups imGroups = JSON.parseObject(entity.getBody(), SImGroups.class);
-        if (imGroups != null) {
-            imGroups.setOwnerUsername(username);
-        }
-        return imGroups;
+        return JSON.parseObject(entity.getBody(), SImGroups.class);
     }
 
     /**

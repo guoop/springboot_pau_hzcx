@@ -29,13 +29,17 @@ public class SimpleValidator implements IReqValidator {
         String phone = credence.getPhoneName();
         TOwnerStaff staff = staffService.findByPhone(phone);
 
+        if (staff == null) {
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+        }
+
         if (ToolUtil.isEmpty(password) || ToolUtil.isEmpty(phone)) {
-            return new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
 
         password = PasswordUtils.encode(phone, password);
         if (!phone.equals(staff.getPhone()) || !password.equals(staff.getPassword())) {
-            return new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
 
         if (TOwnerStaff.status_1.equals(staff.getStatus())) {
