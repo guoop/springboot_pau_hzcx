@@ -24,6 +24,7 @@ import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.handover.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
+import com.soft.ware.rest.modular.im.service.ImService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

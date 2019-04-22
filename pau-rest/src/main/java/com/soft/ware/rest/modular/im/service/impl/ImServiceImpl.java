@@ -1,4 +1,4 @@
-package com.soft.ware.rest.modular.auth.service.impl;
+package com.soft.ware.rest.modular.im.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -9,15 +9,14 @@ import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
 import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.service.ImGroupsService;
-import com.soft.ware.rest.modular.auth.service.ImService;
-import com.soft.ware.rest.modular.auth.service.SImUserService;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.goods.model.TGoods;
-import com.soft.ware.rest.modular.im_groups.model.SImGroups;
-import com.soft.ware.rest.modular.im_groups.service.ISImGroupsService;
-import com.soft.ware.rest.modular.im_user.model.SImUser;
+import com.soft.ware.rest.modular.im.model.SImGroups;
+import com.soft.ware.rest.modular.im.model.SImUser;
+import com.soft.ware.rest.modular.im.service.ISImGroupsService;
+import com.soft.ware.rest.modular.im.service.ISImUserService;
+import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
@@ -61,10 +60,10 @@ public class ImServiceImpl implements ImService {
     private String password = "Hzcx-owner";
 
     @Autowired
-    private SImUserService imUserService;
+    private ISImUserService imUserService;
 
     @Autowired
-    private ImGroupsService groupsService;
+    private ISImGroupsService groupsService;
 
 
 
@@ -120,23 +119,25 @@ public class ImServiceImpl implements ImService {
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(user, g, u);
+                        g.setType(type.ordinal());
                         groupsService.saveOrUpdate(user,g);
                     }
                     logger.info("极光用户:{}被添加",username);
                 } else {
                     //更新用户
-                    Kv<String,?> kv = Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(s.getName()) ? s.getPhone() : s.getName());
                     u.setOwnerId(user.getOwnerId());
-                    updateUser(user,username, kv);
-                    u = getUser(username);
+                    u.setNickname(ToolUtil.isEmpty(user.getName()) ? s.getPhone() : s.getName());
+                    u.setUsername(username);
+                    u.setPassword(password);
+                    updateUser(user,username,u);
                     imUserService.saveOrUpdate(user,u);
                     logger.info("极光用户:{}被更新",username);
-                    u = getUser(username);
                     SImGroups g = requireOwnerGroup(user, owner, type);
                     if (!hasUser(g, u)) {
                         //添加到群组
                         addToGroup(user, g, u);
-                        groupsService.saveOrUpdate(user,g);
+                        g.setType(type.ordinal());
+                        groupsService.saveOrUpdate(user, g);
                     }
                 }
 
@@ -363,12 +364,13 @@ public class ImServiceImpl implements ImService {
     /**
      * 修改用户信息
      * @param user
-     * @param params
+     * @param u
      * @throws Exception
      */
-    private void updateUser(SessionUser user,String username,Kv<String,?> params) throws Exception {
+    private void updateUser(SessionUser user,String username,SImUser u) throws Exception {
         //todo yancc 是否需要重置密码
-        put("/v1/users/" + username, params);
+        Kv<String, ?> kv = Kv.by("username", username).set("password", password).set("nickname", u.getNickname());
+        put("/v1/users/" + username, kv);
     }
 
     /**

@@ -1,7 +1,5 @@
-package com.soft.ware.rest.modular.auth.service;
+package com.soft.ware.rest.modular.im.service;
 
-import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.order.model.TOrder;

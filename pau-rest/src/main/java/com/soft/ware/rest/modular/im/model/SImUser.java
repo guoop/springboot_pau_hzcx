@@ -1,4 +1,4 @@
-package com.soft.ware.rest.modular.im_user.model;
+package com.soft.ware.rest.modular.im.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;

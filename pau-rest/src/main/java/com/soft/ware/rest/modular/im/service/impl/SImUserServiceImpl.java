@@ -1,24 +1,38 @@
-package com.soft.ware.rest.modular.auth.service.impl;
+package com.soft.ware.rest.modular.im.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.service.SImUserService;
-import com.soft.ware.rest.modular.im_user.dao.SImUserMapper;
-import com.soft.ware.rest.modular.im_user.model.SImUser;
+import com.soft.ware.rest.modular.im.dao.SImUserMapper;
+import com.soft.ware.rest.modular.im.model.SImUser;
+import com.soft.ware.rest.modular.im.service.ISImUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
-public class ImUserServiceImpl extends BaseService<SImUserMapper, SImUser> implements SImUserService {
+public class SImUserServiceImpl extends BaseService<SImUserMapper,SImUser> implements  ISImUserService {
 
     @Resource
     private SImUserMapper mapper;
+
+    @Override
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMaps(map);
+    }
+
+    @Override
+    public Map<String, Object> findMap(Map<String, Object> map) {
+    List<Map<String, Object>> maps = findMaps(map);
+        return maps.isEmpty() ? null : maps.get(0);
+    }
+
 
     public SImUser findByUsername(String username){
         SImUser user = mapper.selectOne(new SImUser().setUsername(username));
@@ -54,4 +68,6 @@ public class ImUserServiceImpl extends BaseService<SImUserMapper, SImUser> imple
         }
         return false;
     }
+
+
 }

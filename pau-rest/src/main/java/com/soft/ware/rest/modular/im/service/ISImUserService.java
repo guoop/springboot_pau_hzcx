@@ -1,11 +1,16 @@
-package com.soft.ware.rest.modular.auth.service;
-
+package com.soft.ware.rest.modular.im.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.im_user.model.SImUser;
+import com.soft.ware.rest.modular.im.model.SImUser;
 
-public interface SImUserService extends IService<SImUser> {
+import java.util.List;
+import java.util.Map;
 
+public interface ISImUserService extends IService<SImUser> {
+
+    List<Map<String,Object>> findMaps(Map<String, Object> map);
+
+    Map<String,Object> findMap(Map<String, Object> map);
 
     /**
      * 添加或更新群组，根据username
@@ -22,4 +27,5 @@ public interface SImUserService extends IService<SImUser> {
      * @return
      */
     boolean deleteByUsername(SessionUser user, String username);
+
 }

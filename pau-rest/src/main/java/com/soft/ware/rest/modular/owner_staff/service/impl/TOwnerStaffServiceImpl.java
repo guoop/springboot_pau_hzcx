@@ -1,23 +1,14 @@
 package com.soft.ware.rest.modular.owner_staff.service.impl;
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
+
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.IdGenerator;
-import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
-import com.soft.ware.rest.modular.auth.service.ImGroupsService;
-import com.soft.ware.rest.modular.auth.service.ImService;
-import com.soft.ware.rest.modular.auth.service.SImUserService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
-import com.soft.ware.rest.modular.auth.util.ParamUtils;
-import com.soft.ware.rest.modular.auth.util.WXContants;
-import com.soft.ware.rest.modular.im_groups.model.SImGroups;
-import com.soft.ware.rest.modular.im_user.model.SImUser;
+import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.dao.TOwnerStaffMapper;
@@ -25,19 +16,12 @@ import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.*;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -48,17 +32,6 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
 
     @Autowired
     private ITOwnerService itOwnerService;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    private String password = "Hzcx-owner";
-
-    @Autowired
-    private SImUserService imUserService;
-
-    @Autowired
-    private ImGroupsService groupsService;
 
     @Autowired
     private ImService imService;
@@ -106,7 +79,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             s.setCreateTime(new Date());
             s.setId(IdGenerator.getId());
             s.setOwnerId(sessionUser.getOwnerId());
-            Integer row = tOwnerStaffMapper.insertOwnerStaff(s);
+            long row = tOwnerStaffMapper.insertOwnerStaff(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
                 try {
@@ -156,338 +129,6 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
         return false;
     }
 
-    @Override
-    public void syncUsers(SessionUser sessionUser,TOwner tOwner, TOwnerStaff... tOwnerStaff) {
-        ImGroupType type = ImGroupType.STAFF;//极光小程序用户
-        List<Kv<String, ?>> params = Lists.newArrayList();
-        String username;
-        for (TOwnerStaff s : tOwnerStaff) {
-            username = ParamUtils.buildImUserName(s,type);
-            //username = buildUsername(s, type);
-            SImUser u = getUser(username);
-            if (TOwnerStaff.status_0.equals(s.getStatus())) {
-                //用户状态正常
-                if (u == null) {
-                    //注册用户
-                    params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(s.getName()) ? s.getPhone() : s.getName()));
-                    u = addUser(sessionUser, params);
-
-                    imUserService.saveOrUpdate(sessionUser,u);
-                    SImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
-                    if (!hasUser(g, u)) {
-                        //添加到群组
-                        addToGroup(sessionUser, g, u);
-                        groupsService.saveOrUpdate(sessionUser,g);
-                    }
-                    logger.info("极光用户:{}被添加",username);
-                } else {
-                    //更新用户
-                    Kv<String,?> kv = Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(s.getName()) ? s.getPhone() : s.getName());
-                    u.setOwnerId(sessionUser.getOwnerId());
-                    try {
-                        updateUser(sessionUser,username, kv);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    u = getUser(username);
-                    imUserService.saveOrUpdate(sessionUser,u);
-                    logger.info("极光用户:{}被更新",username);
-                    u = getUser(username);
-                    SImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
-                    if (!hasUser(g, u)) {
-                        //添加到群组
-                        addToGroup(sessionUser, g, u);
-                        groupsService.saveOrUpdate(sessionUser,g);
-                    }
-                }
-
-            } else {
-                //状态异常删除用户
-                username = ParamUtils.buildImUserName(s, type);
-                if (u != null) {
-                    SImGroups g = requireOwnerGroup(sessionUser, tOwner, type);
-                    if (g != null) {
-                        //delFromGroup(user,g,u);//经过测试，删除用户时极光会自动删除他所在的群组
-                        groupsService.deleteByUsername(sessionUser, g.getOwnerUsername());
-                    }
-                    try {
-                        delUser(username);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    imUserService.deleteByUsername(sessionUser,username);
-                }
-                logger.info("极光用户:{}被删除",username);
-            }
-        }
-
-
-    }
-    /**
-     * 删除极光用户
-     * @param username
-     * @throws Exception
-     */
-    private void delUser(String username) throws Exception {
-        del("/v1/users/" + username);
-    }
-    /**
-     * 发送del请求
-     * @param path
-     * @return
-     * @throws Exception
-     */
-    private ResponseEntity<String> del(String path) throws Exception {
-        ResponseEntity<String> entity = restTemplate.execute(WXContants.JG_GATEWAY + path, HttpMethod.DELETE, getRequestCallback(), getResponseExtractor(), new HashMap<>());
-        if (entity.getStatusCodeValue() != 204) {
-            throw new RestClientException("del请求失败");
-        }
-        return entity;
-    }
-    /**
-     * 添加用户到群组
-     * @param user
-     * @param group
-     * @param u
-     */
-    public void addToGroup(SessionUser user,SImGroups group, SImUser u) {
-        Kv<String,?> params = Kv.by("add",Lists.newArrayList(u.getUsername()));
-        post("/v1/groups/" + group.getGid() + "/members", params);
-    }
-
-    /**
-     * 查询这个群组是否包含这个用户
-     * @param group
-     * @param u
-     * @return
-     */
-    public boolean hasUser(SImGroups group,SImUser u){
-        List<SImUser> users = getUsers(group);
-        return users.stream().anyMatch(s -> s.getUsername().equals(u.getUsername()));
-    }
-    /**
-     * 返回群组所有用户
-     * @param group
-     * @return
-     */
-    public List<SImUser> getUsers(SImGroups group){
-        try {
-            ResponseEntity<String> entity = get("/v1/groups/" + group.getGid() + "/members");
-            return JSON.parseArray(entity.getBody(), SImUser.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Lists.newArrayList();
-    }
-
-    /**
-     * 获取群主信息
-     * @param owner
-     * @return
-     */
-    private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
-        String username = ParamUtils.buildOwnerGroupUsername(owner,type);
-        SImUser u = getUser(username);
-        if (u == null) {
-            ParamUtils.buildOwnerGroupUsername(owner,type);
-            List<Kv<String, ?>> params = Lists.newArrayList();
-            params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName()));
-            //创建群主
-            u = addUser(user, params);
-            //创建群组
-            return addGroup(user, owner, type);
-        } else {
-            List<SImGroups> gs = getGroup(u);
-            if (gs.isEmpty()) {
-                //创建群组
-                return addGroup(user, owner, type);
-            }
-            //todo yancc 是否考虑多个群
-            return gs.get(0);
-        }
-    }
-    /**
-     * 获取用户的群组
-     * @param user
-     * @return
-     * @throws Exception
-     */
-    private List<SImGroups> getGroup(SImUser user)  {
-        try {
-            ResponseEntity<String> entity = get("/v1/users/" + user.getUsername() + "/groups/");
-            List<SImGroups> imGroups = JSON.parseArray(entity.getBody(), SImGroups.class);
-            for (SImGroups g : imGroups) {
-                g.setOwnerUsername(user.getUsername());
-            }
-            return imGroups;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Lists.newArrayList();
-        }
-    }
-
-    /**
-     * 创建群组
-     * @param user
-     * @param owner
-     * @param type 群组类型
-     * @return
-     */
-    private SImGroups addGroup(SessionUser user, TOwner owner,ImGroupType type){
-        String username = ParamUtils.buildOwnerGroupUsername(owner,type);
-        Kv<String, Object> params = Kv.obj().set("owner_username", username).set("name", owner.getName()).set("desc", type.getDesc()).set("members_username", new String[]{});
-        ResponseEntity<String> entity = post("/v1/groups/", params);
-        SImGroups imGroups = JSON.parseObject(entity.getBody(), SImGroups.class);
-        if (imGroups != null) {
-            imGroups.setOwnerUsername(username);
-        }
-        return imGroups;
-    }
-
-    /**
-     * 获取极光im用户
-     * @param username
-     * @return
-     * @throws Exception
-     */
-    private SImUser getUser(String username) {
-        try {
-            ResponseEntity<String> entity = get("/v1/users/" + username);
-            return JSON.parseObject(entity.getBody(), SImUser.class);
-        } catch (HttpClientErrorException e) {
-            logger.warn("极光用户：{} 不存在",username);
-            //e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 添加极光用户
-     * @param user
-     * @param params
-     * @return
-     */
-    private SImUser addUser(SessionUser user,List<Kv<String,?>> params) {
-        ResponseEntity<String> entity = post("/v1/users", params);
-        List<SImUser> users = JSON.parseArray(entity.getBody(), SImUser.class);
-        if (users == null || users.isEmpty()) {
-            return null;
-        }
-        return users.get(0);
-    }
-
-    /**
-     * 修改用户信息
-     * @param user
-     * @param params
-     * @throws Exception
-     */
-    private void updateUser(SessionUser user,String username,Kv<String,?> params) throws Exception {
-        //todo yancc 是否需要重置密码
-        put("/v1/users/" + username, params);
-    }
-    /**
-     * 发送put请求
-     * @param path
-     * @param params
-     * @return
-     */
-    private void put(String path, Kv<String,?> params)  {
-        HttpEntity<Object> http = new HttpEntity<>(params, getJpushHeaders());
-        restTemplate.put(WXContants.JG_GATEWAY + path, http);
-    }
-
-    /**
-     * 发送get请求
-     * @param path
-     * @return
-     * @throws Exception
-     */
-    private ResponseEntity<String> get(String path) throws Exception {
-        ResponseEntity<String> entity = restTemplate.execute(WXContants.JG_GATEWAY + path, HttpMethod.GET, getRequestCallback(), getResponseExtractor(), new HashMap<>());
-        if (entity.getStatusCodeValue() != 200) {
-            throw new RestClientException("get请求失败");
-        }
-        return entity;
-    }
-
-    private RequestCallback getRequestCallback() throws Exception {
-        HttpEntity request = new HttpEntity(getJpushHeaders());
-        // 构造execute()执行所需要的参数。
-        //RequestCallback requestCallback = restTemplate.httpEntityCallback(request, String.class);
-        Method m = restTemplate.getClass().getDeclaredMethod("httpEntityCallback", Object.class, Type.class);
-        m.setAccessible(true);
-        RequestCallback requestCallback = (RequestCallback) m.invoke(restTemplate, request, String.class);
-        return requestCallback;
-    }
-
-    private ResponseExtractor<ResponseEntity<String>> getResponseExtractor() throws ReflectiveOperationException {
-        //ResponseExtractor<ResponseEntity<String>> responseExtractor = restTemplate.responseEntityExtractor(String.class);
-        Method m = restTemplate.getClass().getDeclaredMethod("responseEntityExtractor", Type.class);
-        m.setAccessible(true);
-        ResponseExtractor<ResponseEntity<String>> responseExtractor = (ResponseExtractor)m.invoke(restTemplate, String.class);
-        return responseExtractor;
-    }
-
-    private MultiValueMap<String,String> getJpushHeaders(){
-        MultiValueMap<String,String> headers = new HttpHeaders();
-        headers.put("Content-type", Lists.newArrayList("application/json; charset=utf-8"));
-        headers.put("Authorization", Lists.newArrayList("Basic " + Base64.getEncoder().encodeToString((WXContants.JG_APPKEY + ":" + WXContants.JG_MASTER_SECRET).getBytes())));
-        return headers;
-    }
-
-    /**
-     * 发送post请求
-     * @param path
-     * @param httpEntity
-     * @return
-     */
-    private ResponseEntity<String> post(String path, HttpEntity<String> httpEntity){
-        ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + path, httpEntity, String.class);
-        if (entity.getStatusCodeValue() != 200 && entity.getStatusCodeValue() != 201 && entity.getStatusCodeValue() != 204) {
-            throw new RestClientException("post请求失败");
-        }
-        return entity;
-    }
-
-    private ResponseEntity<String> post(String path, List<Kv<String,?>> params){
-        return post(path, new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders()));
-    }
-
-    private ResponseEntity<String> post(String path,Kv<String,?> params){
-        return post(path, new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders()));
-    }
-
-
-
-    /**
-     * 获取群主信息
-     * @param owner
-     * @return
-     */
-   /* private ImGroups requireOwnerGroup(SessionUser user,TblOwner owner,ImGroupType type){
-        String username = buildOwnerGroupUsername(owner,type);
-        ImUser u = getUser(username);
-        if (u == null) {
-            buildOwnerGroupUsername(owner, type);
-            List<Kv<String, ?>> params = Lists.newArrayList();
-            params.add(Kv.by("username", username).set("password", password).set("nickname", ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName()));
-            //创建群主
-            u = addUser(user, params);
-            //创建群组
-            return addGroup(user, owner, type);
-        } else {
-            List<ImGroups> gs = getGroup(u);
-            if (gs.isEmpty()) {
-                //创建群组
-                return addGroup(user, owner, type);
-            }
-            //todo yancc 是否考虑多个群
-            return gs.get(0);
-        }
-    }*/
 
 
 }
