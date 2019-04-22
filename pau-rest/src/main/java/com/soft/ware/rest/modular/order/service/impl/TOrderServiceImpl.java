@@ -193,9 +193,9 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         tRefund.setOrderNo(param.get("orderNo").toString());
         tRefund  = itRefundService.selectOne(new EntityWrapper<>( tRefund));
         //
-        if (!tOrder.getMoneyChannel().equals(TOrder.MONEY_CHANNEL_0) || !tOrder.getMoneyChannel().equals(TOrder.MONEY_CHANNEL_3) ) {
+       /* if (tOrder.getMoneyChannel() != TOrder.MONEY_CHANNEL_0 || tOrder.getMoneyChannel() != TOrder.MONEY_CHANNEL_3 ) {
             throw new PauException(BizExceptionEnum.ORDER_REFUND_NOT_SUPPORT);
-        }
+        }*/
         if(ToolUtil.isNotEmpty(tRefund)){
             if (TOrder.REFUND_STATUS_0.equals(tRefund.getStatus())) {
                 throw new PauException(BizExceptionEnum.ORDER_REFUND_RUNNING);
@@ -242,6 +242,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             tRef.setId(IdGenerator.getId());
             isSuccess = itRefundService.insert(tRef);
         }else{
+            tOrder.setStatus(-1);
+            orderMapper.updateById(tOrder);
             tRefund.setStatus(param.get("refundType").toString().equals("all") ? -1 : 3);
             tRefund.setCreater(sessionUser.getPhone());
             tRefund.setCreateTime(new Date());
