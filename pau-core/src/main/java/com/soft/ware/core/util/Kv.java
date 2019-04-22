@@ -377,7 +377,10 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
 
     public List<Kv<String,Object>> getRequiredList(K key){
         List<Kv<String, Object>> list = getKvs(key);
-        return list == null ? new ArrayList<>() : list;
+        if (list == null) {
+            throw new IllegalArgumentException(key + "不能为空");
+        }
+        return list;
     }
 
     public List<Kv<String,Object>> getList(K key,List<Kv<String,Object>> list){

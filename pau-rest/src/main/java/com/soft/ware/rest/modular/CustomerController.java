@@ -215,7 +215,6 @@ public class CustomerController extends BaseController {
         } else {
             param.setStatus(Integer.MAX_VALUE + "");
         }
-        user.setOpenId("o_Eds5QTeCEr7iLZGW-rPUh27MWc");
         if ("count".equals(param.getFlag())) {
             long count = orderService.findPageCount(user, param, TOrder.SOURCE_0, TOrder.SOURCE_2);
             return render().set("total", count);
@@ -407,7 +406,7 @@ public class CustomerController extends BaseController {
             // 计算单个商品的总价（总价 = 购买数量 * 商品单价）
             g = all.get(i);
             final String specId = param.getSpecs().get(i);
-            spec = g.getRequiredList("specs").stream().filter(s -> specId.equals(s.get("id"))).findFirst().orElse(Kv.obj());
+            spec = g.getRequiredList("specs").stream().filter(s -> s.containsKey("id") && specId.equals(s.get("id"))).findFirst().orElse(Kv.obj());
             isPromotion = g.getBoolean("isPromotion");
             price = g.getBigDecimal("price").setScale(2, round);
             num = BigDecimal.valueOf(nums.get(i));
