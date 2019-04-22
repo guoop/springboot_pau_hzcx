@@ -18,4 +18,6 @@ public interface ITAddressService extends IService<TAddress> {
     boolean updateAddress(SessionUser user, TAddress address);
 
     boolean deleteById(SessionUser user, TAddress address);
+
+    TAddress findById(SessionUser user, String addressId) throws Exception;
 }

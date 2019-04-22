@@ -215,6 +215,7 @@ public class CustomerController extends BaseController {
         } else {
             param.setStatus(Integer.MAX_VALUE + "");
         }
+        user.setOpenId("o_Eds5QTeCEr7iLZGW-rPUh27MWc");
         if ("count".equals(param.getFlag())) {
             long count = orderService.findPageCount(user, param, TOrder.SOURCE_0, TOrder.SOURCE_2);
             return render().set("total", count);
@@ -325,8 +326,10 @@ public class CustomerController extends BaseController {
         String orderNo = kv.requiredStr("orderNO");
         String addressId = kv.requiredStr("addressID");
         kv.remove("addressId");
+        TAddress a = addressService.findById(user,addressId);
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("orderNo", orderNo).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId())), TOrder.class);
         order.setAddressId(addressId);
+        order.setPhone(a.getPhone());
         boolean update = orderService.updateByVersion(order);
         return render(update);
     }

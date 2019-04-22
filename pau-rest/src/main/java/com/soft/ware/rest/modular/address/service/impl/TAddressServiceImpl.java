@@ -3,10 +3,12 @@ package com.soft.ware.rest.modular.address.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.address.dao.TAddressMapper;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +66,10 @@ public class TAddressServiceImpl extends BaseService<TAddressMapper,TAddress> im
         return row == 1;
     }
 
-
+    @Override
+    public TAddress findById(SessionUser user, String addressId) throws Exception {
+        return BeanMapUtils.toObject(findMap(Kv.obj("id", addressId).set("creater", user.getOpenId())), TAddress.class);
+    }
 
 
 }
