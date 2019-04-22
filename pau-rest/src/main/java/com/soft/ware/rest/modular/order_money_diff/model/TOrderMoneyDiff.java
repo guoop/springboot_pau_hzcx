@@ -112,8 +112,8 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     /**
      * 退款响应
      */
-    @TableField("reund_response")
-    private String reundResponse;
+    @TableField("refund_response")
+    private String refundResponse;
 
     public String getRefunder() {
         return refunder;
@@ -139,12 +139,12 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         this.refundStatus = refundStatus;
     }
 
-    public String getReundResponse() {
-        return reundResponse;
+    public String getRefundResponse() {
+        return refundResponse;
     }
 
-    public void setReundResponse(String reundResponse) {
-        this.reundResponse = reundResponse;
+    public void setRefundResponse(String refundResponse) {
+        this.refundResponse = refundResponse;
     }
 
     public String getId() {

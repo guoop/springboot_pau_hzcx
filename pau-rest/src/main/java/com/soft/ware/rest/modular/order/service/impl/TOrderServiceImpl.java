@@ -685,6 +685,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) {
         TOrder tOrder = new TOrder();
         tOrder.setOrderNo(param.get("orderNo").toString());
@@ -696,38 +697,44 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
         List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
         TAddress tAddress = null;
-        if (TOrderMoneyDiff.status_1.equals(tOrderMoneyDiff.getStatus())) {
-            throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
-        }
-        if(ToolUtil.isNotEmpty(tOrderMoneyDiff.getRefundStatus())){
-            if (TOrderMoneyDiff.refund_status_0.equals(tOrderMoneyDiff.getRefundStatus())) {
-                throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_RUNNING);
-            } else if (TOrderMoneyDiff.refund_status_1.equals(tOrderMoneyDiff.getRefundStatus())) {
-                throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_FINISHED);
+        if(ToolUtil.isNotEmpty(tOrderMoneyDiff)){
+            if (TOrderMoneyDiff.status_1.equals(tOrderMoneyDiff.getStatus())) {
+                throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
+            }
+            if(ToolUtil.isNotEmpty(tOrderMoneyDiff.getRefundStatus())){
+                if (TOrderMoneyDiff.refund_status_0.equals(tOrderMoneyDiff.getRefundStatus())) {
+                    throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_RUNNING);
+                } else if (TOrderMoneyDiff.refund_status_1.equals(tOrderMoneyDiff.getRefundStatus())) {
+                    throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_FINISHED);
+                }
             }
         }
         // 如果是到店自提的订单
-        if(ToolUtil.isNotEmpty(tOrder.getAddressId())){
-            tAddress = tAddressService.selectById(tOrder.getAddressId());
             if (tOrder.getSource().equals(TOrder.SOURCE_2)) {
-                orderNO = tAddress.getPhone() + "" + tOrder.getCreateTime().getTime();
+                orderNO = tOrder.getPhone() + "" + tOrder.getCreateTime().getTime();
             }
-        }
-        tOrderMoneyDiff.setStatus(TOrderMoneyDiff.status_1);
-        tOrderMoneyDiff.setRefunder(sessionUser.getPhone());
-        tOrderMoneyDiff.setRefundTime(new Date());
-        tOrderMoneyDiff.setRefundStatus(TOrderMoneyDiff.refund_status_1);
+
+        TOrderMoneyDiff tOrderDiff = new TOrderMoneyDiff();
+        tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
+        tOrderDiff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
+        tOrderDiff.setRefunder(sessionUser.getPhone());
+        tOrderDiff.setRefundTime(new Date());
+        tOrderDiff.setRefundStatus(TOrderMoneyDiff.refund_status_1);
+        BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
+        BigDecimal payMoney = tOrder.getPayMoney();
+        System.out.println("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
+        tOrderDiff.setMoneyDiff(payMoney.subtract(money));
         //todo yancc 需要乐观锁
         boolean isSuccess = false;
-         if(ToolUtil.isNotEmpty(tOrderMoneyDiff.getId())){
-             isSuccess = orderMoneyDiffService.updateById(tOrderMoneyDiff);
+         if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
+             isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
          }else{
-             tOrderMoneyDiff.setId(IdGenerator.getId());
-             isSuccess = orderMoneyDiffService.insert(tOrderMoneyDiff);
+             tOrderDiff.setId(IdGenerator.getId());
+             isSuccess = orderMoneyDiffService.insert(tOrderDiff);
          }
         try {
             if (isSuccess) {
-                BigDecimal refundFee = BigDecimal.valueOf(Math.abs(tOrderMoneyDiff.getMoneyDiff().doubleValue()));
+                BigDecimal refundFee = BigDecimal.valueOf(Math.abs(tOrderDiff.getMoneyDiff().doubleValue()));
                 WxPayRefundRequest req = WxPayRefundRequest
                         .newBuilder()
                         .outTradeNo(orderNO)
@@ -739,11 +746,12 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
                 String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "refund");
                 WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
-                msg.getData().set(4, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
+                msg.getData().set(3, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
                 msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.get("refundReason").toString()) ? "小票差额退款" : param.get("refundReason").toString()));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
                 try {
                     hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
+
                 } catch (WxErrorException e) {
                     logger.error("订单差价退款成功，但是通知发送失败,订单号:{},退款单号:{},错误码：{},错误信息：{}", tOrder.getOrderNo(), req.getOutRefundNo(), e.getError().getErrorCode(), e.getError().getErrorMsg());
                     e.printStackTrace();
@@ -754,14 +762,14 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             //todo yancc 需要乐观锁
             logger.info("订单差价退款失败,订单号{}，错误码{},错误原因{}", tOrder.getOrderNo(), e.getErrCode(), e.getErrCodeDes());
             //退款失败
-            tOrderMoneyDiff.setRefunder(sessionUser.getPhone());
-            tOrderMoneyDiff.setRefundTime(new Date());
-            tOrderMoneyDiff.setRefundStatus(TOrderMoneyDiff.refund_status_2);
-            if(ToolUtil.isNotEmpty(tOrderMoneyDiff.getId())){
-                isSuccess = orderMoneyDiffService.updateById(tOrderMoneyDiff);
+            tOrderDiff.setRefunder(sessionUser.getPhone());
+            tOrderDiff.setRefundTime(new Date());
+            tOrderDiff.setRefundStatus(TOrderMoneyDiff.refund_status_2);
+            if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
+                isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
             }else{
                 tOrderMoneyDiff.setId(IdGenerator.getId());
-                isSuccess = orderMoneyDiffService.insert(tOrderMoneyDiff);
+                isSuccess = orderMoneyDiffService.insert(tOrderDiff);
             }
             e.printStackTrace();
         }
