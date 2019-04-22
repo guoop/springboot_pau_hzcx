@@ -233,6 +233,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         //todo yancc 需要添加 行锁
         if(ToolUtil.isEmpty(tRefund)){
             TRefund tRef= new TRefund();
+
             tRef.setStatus(param.get("refundType").toString().equals("all") ? -1 : 3);
             tRef.setCreater(sessionUser.getPhone());
             tRef.setCreateTime(new Date());
@@ -242,8 +243,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             tRef.setId(IdGenerator.getId());
             isSuccess = itRefundService.insert(tRef);
         }else{
-            tOrder.setStatus(-1);
-            orderMapper.updateById(tOrder);
+
             tRefund.setStatus(param.get("refundType").toString().equals("all") ? -1 : 3);
             tRefund.setCreater(sessionUser.getPhone());
             tRefund.setCreateTime(new Date());
@@ -252,6 +252,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             isSuccess = itRefundService.updateById(tRefund);
         }
         if (isSuccess) {
+
+
             WxPayRefundRequest req = WxPayRefundRequest
                     .newBuilder()
                     .outTradeNo(orderNO)
@@ -274,6 +276,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                     tOrder.setConfirmer(sessionUser.getPhone());
                     tOrder.setCancelReason(param.get("refundType").toString());
                     tOrder.setCancelTime(new Date());
+                    tOrder.setStatus(-1);
                     orderMapper.updateById(tOrder);
                   /*  order.setCancelBy(user.getPhone());
                     order.setCancelAt(date);
