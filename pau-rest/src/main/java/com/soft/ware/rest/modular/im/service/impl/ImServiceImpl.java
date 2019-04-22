@@ -170,8 +170,8 @@ public class ImServiceImpl implements ImService {
         if (u == null) {
             ParamUtils.buildOwnerGroupUsername(owner,type);
             //创建群主
-            u = new SImUser().setUsername(username).setPassword(password).setNickname(ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName());
-            addUser(user,u);
+            u = new SImUser().setOwnerId(user.getOwnerId()).setUsername(username).setPassword(password).setNickname(ToolUtil.isEmpty(owner.getName()) ? owner.getPhone() : owner.getName());
+            addAdmin(u);
             imUserService.insert(u);
             //创建群组
             SImGroups group = addGroup(user, owner, type, u);
@@ -236,7 +236,7 @@ public class ImServiceImpl implements ImService {
         return entity;
     }
 
-    private ResponseEntity<String> post(String path, List<Kv<String,?>> params){
+    private ResponseEntity<String> post(String path, List<Kv<String,Object>> params){
         return post(path, new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders()));
     }
 
@@ -297,7 +297,7 @@ public class ImServiceImpl implements ImService {
         params.put("version", 1);
         params.put("target_type", "group");
         params.put("target_id",group.getGid());
-        params.put("from_type", "user");
+        params.put("from_type", "admin");
         params.put("from_id", group.getOwnerUsername());
         params.put("msg_type", "custom");
         params.put("msg_body", body);
@@ -360,8 +360,10 @@ public class ImServiceImpl implements ImService {
      * @return
      */
     private SImUser addUser(SessionUser user,SImUser u) {
-        Kv<String, String> params = Kv.by("username", u.getUsername()).set("password", u.getPassword()).set("nickname", u.getNickname());
-        ResponseEntity<String> entity = post("/v1/users", params);
+        Kv<String, Object> params = Kv.obj("username", u.getUsername()).set("password", u.getPassword()).set("nickname", u.getNickname());
+        List<Kv<String,Object>> us = Lists.newArrayList();
+        us.add(params);
+        ResponseEntity<String> entity = post("/v1/users",us);
         List<SImUser> users = JSON.parseArray(entity.getBody(), SImUser.class);
         return users.get(0);
     }
@@ -524,6 +526,18 @@ public class ImServiceImpl implements ImService {
     public boolean hasUser(SImGroups group,SImUser u){
         List<SImUser> users = getUsers(group);
         return users.stream().anyMatch(s -> s.getUsername().equals(u.getUsername()));
+    }
+
+
+    /**
+     * 注册管理员
+     * @param admin
+     * @return
+     */
+    public SImUser addAdmin(SImUser admin){
+        Kv<String,Object> params = Kv.obj("username", admin.getUsername()).set("password", admin.getPassword()).set("nickname", admin.getNickname());
+        ResponseEntity<String> entity = post("/v1/admins", params);
+        return getUser(admin.getUsername());
     }
 
 
