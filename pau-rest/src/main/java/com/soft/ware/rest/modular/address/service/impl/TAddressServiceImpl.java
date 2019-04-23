@@ -61,7 +61,7 @@ public class TAddressServiceImpl extends BaseService<TAddressMapper,TAddress> im
     @Override
     public boolean deleteById(SessionUser user, TAddress address){
         address.setIsDelete(TAddress.is_delete_1);
-        address.setDeletedTime(new Date());
+        address.setDeleteTime(new Date());
         Integer row = mapper.update(address, new EntityWrapper<>(new TAddress().setId(address.getId()).setCreater(user.getOpenId())));
         return row == 1;
     }

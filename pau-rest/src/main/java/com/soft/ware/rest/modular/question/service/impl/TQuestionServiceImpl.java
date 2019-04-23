@@ -43,7 +43,7 @@ public class TQuestionServiceImpl extends BaseService<TQuestionMapper,TQuestion>
     @Override
     public boolean add(SessionUser user,TQuestion question) {
         question.setId(IdGenerator.getId());
-        question.setCreatedAt(new Date());
+        question.setCreateTime(new Date());
         question.setOpenId(user.getOpenId());
         question.setOwnerId(user.getOwnerId());
         return mapper.insert(question) == 1;

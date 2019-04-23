@@ -115,14 +115,14 @@
             </when>
             <otherwise>
                 <!--普通列表查询-->
-                order by g.sort asc,g.createdTime desc
+                order by g.sort asc,g.createTime desc
             </otherwise>
         </choose>
     </select>
 
     <!--根据商品分类id查询所有商品列表-->
     <select id="selectTGoodsListByMap"  resultType="java.util.HashMap" >
-        select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.created_time createTime,b.start_time startTime,b.end_time endTime,c.`name` as specName ,d.`name` categoryName,
+        select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime,b.start_time startTime,b.end_time endTime,c.`name` as specName ,d.`name` categoryName,
         e.after_storage stock ,e.baseline
         from t_goods a
         LEFT JOIN t_promotion b on a.id = b.goods_id
@@ -154,7 +154,7 @@
 
 
 <select id="findById"  parameterType="String" resultType="java.util.HashMap" >
-     select a.id,a.name,a.code,a.unit_id unitId,a.`status`,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.created_time createTime,b.money as promotionMoney,b.start_time startTime,b.end_time endTime,c.`name` as specsName ,d.`name` categoryName,
+     select a.id,a.name,a.code,a.unit_id unitId,a.`status`,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime,b.money as promotionMoney,b.start_time startTime,b.end_time endTime,c.`name` as specsName ,d.`name` categoryName,
     IFNULL(e.after_storage,0) stock ,IFNULL(e.baseline,0)
     from t_goods a
         LEFT JOIN t_promotion b on a.id = b.goods_id

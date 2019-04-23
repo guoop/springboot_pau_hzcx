@@ -114,7 +114,7 @@ public class TQuestion extends Model<TQuestion> {
         return createTime;
     }
 
-    public void setAt(Date createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
