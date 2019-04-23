@@ -69,8 +69,8 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     /**
      * 创建时间
      */
-    @TableField("created_time")
-    private Date createdTime;
+    @TableField("create_time")
+    private Date createTime;
     /**
      * 创建人
      */
@@ -204,11 +204,11 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return createTime;
     }
 
     public TOrderMoneyDiff setCreatedTime( Date createdTime) {
-        this.createdTime = createdTime;return this;
+        this.createTime = createdTime;return this;
     }
 
     public String getCreater() {
@@ -239,8 +239,8 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return payResponse;
     }
 
-    public TOrderMoneyDiff setPayResponse( String payResponse) {
-        this.payResponse = payResponse;return this;
+    public void setPayResponse(String payResponse) {
+        this.payResponse = payResponse;
     }
 
     public Integer getIsDelete() {
@@ -266,7 +266,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         ", money=" + money +
         ", moneyDiff=" + moneyDiff +
         ", pic=" + pic +
-        ", createdTime=" + createdTime +
+        ", createdTime=" + createTime +
         ", creater=" + creater +
         ", status=" + status +
         ", payTime=" + payTime +

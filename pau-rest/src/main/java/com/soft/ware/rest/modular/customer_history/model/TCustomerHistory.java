@@ -26,7 +26,7 @@ public class TCustomerHistory extends Model<TCustomerHistory> {
     private String ownerId;
     //用户添加时间
 
-    private Date createdTime;
+    private Date createTime;
     //用户最后一次进入小程序的时间
 
     private Date endInTime;
@@ -44,10 +44,10 @@ public class TCustomerHistory extends Model<TCustomerHistory> {
     private String addressPhone;
     //地址创建时间
 
-    private Date addressCreatedTime;
+    private Date addressCreateTime;
     //地址更新时间
 
-    private Date addressUpdatedTime;
+    private Date addressUpdateTime;
 
 
     public String getId(){
@@ -77,11 +77,11 @@ public class TCustomerHistory extends Model<TCustomerHistory> {
         return this;
     }
     public Date getCreatedTime(){
-        return createdTime;
+        return createTime;
     }
 
     public TCustomerHistory setCreatedTime( Date createdTime){
-        this.createdTime = createdTime;
+        this.createTime = createdTime;
         return this;
     }
     public Date getEndInTime(){
@@ -125,19 +125,19 @@ public class TCustomerHistory extends Model<TCustomerHistory> {
         return this;
     }
     public Date getAddressCreatedTime(){
-        return addressCreatedTime;
+        return addressCreateTime;
     }
 
     public TCustomerHistory setAddressCreatedTime( Date addressCreatedTime){
-        this.addressCreatedTime = addressCreatedTime;
+        this.addressCreateTime = addressCreatedTime;
         return this;
     }
-    public Date getAddressUpdatedTime(){
-        return addressUpdatedTime;
+    public Date getAddressUpdateTime(){
+        return addressUpdateTime;
     }
 
     public TCustomerHistory setAddressUpdatedTime( Date addressUpdatedTime){
-        this.addressUpdatedTime = addressUpdatedTime;
+        this.addressUpdateTime = addressUpdateTime;
         return this;
     }
 
@@ -154,14 +154,14 @@ public class TCustomerHistory extends Model<TCustomerHistory> {
         "id=" + id +
             ", openId=" + openId +
             ", ownerId=" + ownerId +
-            ", createdTime=" + createdTime +
+            ", createdTime=" + createTime +
             ", endInTime=" + endInTime +
             ", endOutTime=" + endOutTime +
             ", currentStatus=" + currentStatus +
             ", addressName=" + addressName +
             ", addressPhone=" + addressPhone +
-            ", addressCreatedTime=" + addressCreatedTime +
-            ", addressUpdatedTime=" + addressUpdatedTime +
+            ", addressCreateTime=" + addressCreateTime +
+            ", addressUpdateTime=" + addressUpdateTime +
         "}";
     }
 

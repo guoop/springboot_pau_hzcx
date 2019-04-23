@@ -721,14 +721,13 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             tOrderDiff.setOwnerId(sessionUser.getOwnerId());
             tOrderDiff.setPayTime(tOrder.getPayTime());
             tOrderDiff.setOrderNo(orderNO);
-            tOrderDiff.setPayResponse(tOrder.getPayResponse());
             tOrderDiff.setRefundTime(new Date());
             BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
             BigDecimal payMoney = tOrder.getPayMoney();
             System.out.println("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
             tOrderDiff.setMoneyDiff(money.subtract(payMoney));
         try {
-        if(money.compareTo(payMoney) == 1){
+        if(money.compareTo(payMoney) == -1){
             //todo yancc 需要乐观锁
             tOrderDiff.setStatus(TOrderMoneyDiff.status_1);
             if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
@@ -762,7 +761,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 }
                 return true;
             }
-        }else if(money.compareTo(payMoney) == -1){
+        }else if(money.compareTo(payMoney) == 1){
             tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
             if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
                 isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
@@ -775,6 +774,9 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
         }else{
             throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_EXCEPTION);
+        }
+        if(isSuccess){
+            return true;
         }
 
         } catch (WxPayException e) {

@@ -67,7 +67,7 @@ public class TAppVersion extends Model<TAppVersion> {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private Date createTime;
     /**
      * 创建人
      */
@@ -171,11 +171,11 @@ public class TAppVersion extends Model<TAppVersion> {
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return createTime;
     }
 
     public TAppVersion setCreatedTime( Date createdTime) {
-        this.createdTime = createdTime;return this;
+        this.createTime = createdTime;return this;
     }
 
     public String getCreater() {
@@ -221,7 +221,7 @@ public class TAppVersion extends Model<TAppVersion> {
         ", isForce=" + isForce +
         ", downloadUrl=" + downloadUrl +
         ", description=" + description +
-        ", createdTime=" + createdTime +
+        ", createdTime=" + createTime +
         ", creater=" + creater +
         ", updateTime=" + updateTime +
         ", updater=" + updater +

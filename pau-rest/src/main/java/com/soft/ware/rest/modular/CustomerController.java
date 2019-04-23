@@ -252,7 +252,7 @@ public class CustomerController extends BaseController {
      */
     @RequestMapping(value = "address", method = RequestMethod.GET)
     public Object address(SessionUser user) {
-        List<Map<String, Object>> list = addressService.findMaps(Kv.obj("ownerId", user.getOwnerId()).set("creater", user.getOpenId()).set("isDelete", TAddress.is_delete_0).set("orderBy", " is_default desc, created_time desc "));
+        List<Map<String, Object>> list = addressService.findMaps(Kv.obj("ownerId", user.getOwnerId()).set("creater", user.getOpenId()).set("isDelete", TAddress.is_delete_0).set("orderBy", " is_default desc, create_time desc "));
         return render(list);
     }
 

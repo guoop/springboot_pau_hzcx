@@ -12,14 +12,14 @@
         <result column="detail" property="detail" />
         <result column="is_default" property="isDefault" />
         <result column="is_delete" property="isDelete" />
-        <result column="created_time" property="createdTime" />
+        <result column="create_time" property="createTime" />
         <result column="creater" property="creater" />
-        <result column="deleted_time" property="deletedTime" />
+        <result column="delete_time" property="deleteTime" />
     </resultMap>
 
 
     <sql id="t_address_alias_columns">
-       phone ,owner_id ownerId,name ,province ,detail ,is_default isDefault,is_delete isDelete,DATE_FORMAT(ta.created_time,'%Y-%m-%d %H:%i:%s') createdTime,creater ,DATE_FORMAT(ta.deleted_time,'%Y-%m-%d %H:%i:%s') deletedTime
+       phone ,owner_id ownerId,name ,province ,detail ,is_default isDefault,is_delete isDelete,DATE_FORMAT(ta.create_time,'%Y-%m-%d %H:%i:%s') createTime,creater ,DATE_FORMAT(ta.delete_time,'%Y-%m-%d %H:%i:%s') deleteTime
     </sql>
     <update id="deleteDefaultAddress">
         update t_address a set a.is_default = 0 where a.owner_id = #{user.ownerId} and a.creater = #{user.openId}

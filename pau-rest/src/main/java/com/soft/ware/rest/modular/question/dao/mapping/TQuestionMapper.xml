@@ -9,7 +9,7 @@
         <result column="phone" property="phone" />
         <result column="address" property="address" />
         <result column="description" property="description" />
-        <result column="created_at" property="createdAt" />
+        <result column="create_time" property="createTime" />
         <result column="owner_id" property="ownerId" />
         <result column="open_id" property="openId" />
         <result column="account_info" property="accountInfo" />
@@ -18,10 +18,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, phone, address, description, created_at AS createdAt, owner, open_id AS openId, account_info AS accountInfo, system_info AS systemInfo
+        id, name, phone, address, description, create_time AS createTime, owner, open_id AS openId, account_info AS accountInfo, system_info AS systemInfo
     </sql>
     <sql id="t_question_alias_columns">
-        tq.name, tq.phone, tq.address, tq.description, tq.created_at, tq.owner_id, tq.open_id, tq.account_info, tq.system_info
+        tq.name, tq.phone, tq.address, tq.description, tq.create_time, tq.owner_id, tq.open_id, tq.account_info, tq.system_info
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select
