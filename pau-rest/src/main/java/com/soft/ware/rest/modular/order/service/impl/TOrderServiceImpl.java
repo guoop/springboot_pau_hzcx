@@ -132,9 +132,10 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Override
     public List<Map<String,Object>> findPage(SessionUser user, Page page, OrderPageParam param, Integer... sources) {
         Kv<String, Object> map = Kv.obj("creater", user.getOpenId())
+                .set("ownerId", user.getOwnerId())
                 .set("page", page)
                 .set("status", param.getStatus())
-                .set("isDelete",TOrder.is_delete_0)
+                .set("isDelete", TOrder.is_delete_0)
                 .set("sources", "'" + StringUtils.join(sources, "','") + "'")
                 .set("orderBy", "a.create_time desc");
         long count = findPageCount(user, param,sources);

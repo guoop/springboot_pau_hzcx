@@ -146,6 +146,7 @@
         <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
     ) as a
     <include refid="orderJoinSql"/>
+    order by a.createTime desc
     </select>
     <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1

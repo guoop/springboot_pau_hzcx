@@ -108,6 +108,16 @@
             <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
         ) as g
         <include refid="goodsJoinSql"/>
+        <choose>
+            <!--商品计算价格需要这个 in ids 排序 -->
+            <when test="params.ids != null and params.ids != ''">
+                order by field(g.id,${params.ids})
+            </when>
+            <otherwise>
+                <!--普通列表查询-->
+                order by g.sort asc,g.createdTime desc
+            </otherwise>
+        </choose>
     </select>
 
     <!--根据商品分类id查询所有商品列表-->
