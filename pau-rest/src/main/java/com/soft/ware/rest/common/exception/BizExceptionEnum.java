@@ -67,7 +67,7 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     ORDER_DIFF_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_REFUND_FINISHED(500,"已退款，请勿重复"),
     ORDER_DIFF_REFUND_FINISHED(500,"差价已退款，请勿重复"),
-
+    ORDER_DIFF_REFUND_EXCEPTION(500,"支付金额与小票金额相同，不需要支持退补差价"),
 
     GOODS_REPEAT(500,"商品已存在"),
 
