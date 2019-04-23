@@ -688,6 +688,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Transactional(rollbackFor = Exception.class)
     public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) {
         TOrder tOrder = new TOrder();
+        boolean isSuccess = false;
         tOrder.setOrderNo(param.get("orderNo").toString());
         tOrder = orderMapper.selectOne(tOrder);
         String orderNO = tOrder.getOrderNo();
@@ -714,25 +715,28 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 orderNO = tOrder.getPhone() + "" + tOrder.getCreateTime().getTime();
             }
 
-        TOrderMoneyDiff tOrderDiff = new TOrderMoneyDiff();
-        tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
-        tOrderDiff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
-        tOrderDiff.setRefunder(sessionUser.getPhone());
-        tOrderDiff.setRefundTime(new Date());
-        tOrderDiff.setRefundStatus(TOrderMoneyDiff.refund_status_1);
-        BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
-        BigDecimal payMoney = tOrder.getPayMoney();
-        System.out.println("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
-        tOrderDiff.setMoneyDiff(payMoney.subtract(money));
-        //todo yancc 需要乐观锁
-        boolean isSuccess = false;
-         if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
-             isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
-         }else{
-             tOrderDiff.setId(IdGenerator.getId());
-             isSuccess = orderMoneyDiffService.insert(tOrderDiff);
-         }
+            TOrderMoneyDiff tOrderDiff = new TOrderMoneyDiff();
+            tOrderDiff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
+            tOrderDiff.setRefunder(sessionUser.getPhone());
+            tOrderDiff.setOwnerId(sessionUser.getOwnerId());
+            tOrderDiff.setPayTime(tOrder.getPayTime());
+            tOrderDiff.setOrderNo(orderNO);
+            tOrderDiff.setPayResponse(tOrder.getPayResponse());
+            tOrderDiff.setRefundTime(new Date());
+            BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
+            BigDecimal payMoney = tOrder.getPayMoney();
+            System.out.println("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
+            tOrderDiff.setMoneyDiff(money.subtract(payMoney));
         try {
+        if(money.compareTo(payMoney) == 1){
+            //todo yancc 需要乐观锁
+            tOrderDiff.setStatus(TOrderMoneyDiff.status_1);
+            if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
+                isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
+            }else{
+                tOrderDiff.setId(IdGenerator.getId());
+                isSuccess = orderMoneyDiffService.insert(tOrderDiff);
+            }
             if (isSuccess) {
                 BigDecimal refundFee = BigDecimal.valueOf(Math.abs(tOrderDiff.getMoneyDiff().doubleValue()));
                 WxPayRefundRequest req = WxPayRefundRequest
@@ -758,6 +762,21 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 }
                 return true;
             }
+        }else if(money.compareTo(payMoney) == -1){
+            tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
+            if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
+                isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
+            }else{
+                tOrderDiff.setId(IdGenerator.getId());
+                isSuccess = orderMoneyDiffService.insert(tOrderDiff);
+            }
+            // TODO: 2019/4/23 paulo 需要添加通知提醒客户补差价
+
+
+        }else{
+            throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_EXCEPTION);
+        }
+
         } catch (WxPayException e) {
             //todo yancc 需要乐观锁
             logger.info("订单差价退款失败,订单号{}，错误码{},错误原因{}", tOrder.getOrderNo(), e.getErrCode(), e.getErrCodeDes());
