@@ -163,16 +163,32 @@
                 LEFT JOIN t_order_money_diff d
                 on a.order_no = d.order_no
                 where 1=1 and a.source != 1
-            <if test="status != null and status != ''">
-                and a.status = #{status}
+            <if test="params.status != null and params.status != ''">
+                and a.status = #{params.status}
             </if>
-            <if test="owner_id != null and owner_id != ''">
-                and a.owner_id = #{owner_id}
+            <if test="params.owner_id != null and params.owner_id != ''">
+                and a.owner_id = #{params.owner_id}
             </if>
                 order by a.create_time desc
-            <if test="page != null ">
-                limit #{page},20
-            </if>
+            <include refid="limit"/>
+    </select>
+
+    <select id="selectOrdersListByMapCount" resultType="int">
+        select count(1)
+        from t_order a
+        LEFT JOIN t_address b
+        on a.address_id = b.id
+        LEFT JOIN t_refund c
+        on a.order_no = c.order_no
+        LEFT JOIN t_order_money_diff d
+        on a.order_no = d.order_no
+        where 1=1 and a.source != 1
+        <if test="params.status != null and params.status != ''">
+            and a.status = #{params.status}
+        </if>
+        <if test="params.owner_id != null and params.owner_id != ''">
+            and a.owner_id = #{params.owner_id}
+        </if>
     </select>
 
     <select id="selectOrderCount" resultType="int" >

@@ -5,6 +5,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TOwnerStaffService extends IService<TOwnerStaff> {
@@ -16,7 +17,7 @@ public interface TOwnerStaffService extends IService<TOwnerStaff> {
      */
     TOwnerStaff findByPhone(String phone);
 
-    TOwnerStaff selectStaffByOwnerId(String ownerId);
+    List<TOwnerStaff> selectStaffByOwnerId(String ownerId);
 
     boolean addOrUpdate(SessionUser sessionUser, StaffEditParam param);
 

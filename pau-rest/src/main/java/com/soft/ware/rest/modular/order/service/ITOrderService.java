@@ -35,7 +35,7 @@ public interface ITOrderService extends IService<TOrder> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
-    List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map);
+    List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map , Page page);
 
     boolean orderRefund(Map<String,Object> map , SessionUser sessionUser);
 

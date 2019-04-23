@@ -12,6 +12,8 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
+import com.soft.ware.rest.modular.im.model.SImGroups;
+import com.soft.ware.rest.modular.im.model.SImUser;
 import com.soft.ware.rest.modular.im.service.ISImUserService;
 import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.owner.model.TOwner;
@@ -26,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -59,14 +58,16 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
     }
 
     @Override
-    public TOwnerStaff selectStaffByOwnerId(String ownerId) {
+    public List<TOwnerStaff> selectStaffByOwnerId(String ownerId) {
         return tOwnerStaffMapper.selectStaffByOwnerId(ownerId);
     }
 
+
     @Override
     public boolean addOrUpdate(SessionUser sessionUser,  StaffEditParam param) {
-
+        ImGroupType type = ImGroupType.STAFF;//极光小程序用户
         TOwner o = itOwnerService.selectById(sessionUser.getOwnerId());
+        Integer row = 0;
         if ( param.getPhone().equals(sessionUser.getPhone())) {
             throw new PauException(BizExceptionEnum.PHONE_EXISTS);
         }
@@ -90,7 +91,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             s.setCreateTime(new Date());
             s.setId(IdGenerator.getId());
             s.setOwnerId(sessionUser.getOwnerId());
-            long row = tOwnerStaffMapper.insert(s);
+            row = tOwnerStaffMapper.insert(s);
             //添加到im群组
             if (s.getPassword() != null && s.getPassword().length() > 10) {
                 try {
@@ -99,10 +100,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
                     e.printStackTrace();
                 }
             }
-            if (row != 1) {
-                throw new PauException(BizExceptionEnum.ADD_ERROR);
-            }
-            return  true;
+
         } else {
             //修改店员信息
             param.update(s);
@@ -118,15 +116,24 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             if (!s.getOwnerId().equals(sessionUser.getOwnerId())) {
                 throw new PauException(BizExceptionEnum.ERROR);
             }
-            Integer row = tOwnerStaffMapper.updateAllColumnById(s);
+            row = tOwnerStaffMapper.updateAllColumnById(s);
             String keyPrefix = "user:" + s.getPhone() + ":*";
             Set<String> keys = redisTemplate.keys(keyPrefix);
-            try {
-                imService.syncUsers(sessionUser, o, s);
-            } catch (Exception e) {
-                e.printStackTrace();
+        }
+        if(row > 0){
+            if(s.getFunctionList().contains("goodsMan")||s.getFunctionList().contains("configOrderPhone")){
+                try {
+                    imService.syncUsers(sessionUser,o,s);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            if (TOwnerStaff.status_0 == Integer.valueOf(param.getStatus())) {
+            return true;
+        }
+
+
+
+           /* if (TOwnerStaff.status_0 == Integer.valueOf(param.getStatus())) {
                 //启用店员信息
                 //todo yancc 可能还需要更新im群组信息
                 for (String key : keys) {
@@ -143,28 +150,27 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             }
             if (row > 0) {
                 return true;
-            }
+            }*/
             return false;
-        }
-
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean delStaff(Map<String, Object> map,SessionUser sessionUser) {
-        ImGroupType type = ImGroupType.STAFF;
-        if(this.deleteById(map.get("id").toString())){
+
             TOwnerStaff staff = new TOwnerStaff();
+            staff.setId(map.get("id").toString());
             staff.setOwnerId(sessionUser.getOwnerId());
             staff.setPhone(map.get("phone").toString());
-            System.out.println(ParamUtils.buildImUserName(staff,type));
-            if(ToolUtil.isEmpty(ParamUtils.buildImUserName(staff,type))){
-                throw new PauException(BizExceptionEnum.IM_USER_DELETE);
-            }
-            if(imUserService.deleteByUsername(sessionUser, ParamUtils.buildImUserName(staff,type))){
-                return  true;
-            }
-        }
+            staff.setStatus(2);
+            if(tOwnerStaffMapper.updateById(staff) > 0){
+                try {
+                    imService.syncUsers(sessionUser,itOwnerService.selectById(sessionUser.getOwnerId()),staff);
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            };
         return false;
     }
 

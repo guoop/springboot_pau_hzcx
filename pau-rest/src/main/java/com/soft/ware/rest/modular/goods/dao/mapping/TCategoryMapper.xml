@@ -52,7 +52,7 @@
         <if test="params.pid == null">
             and pid is null
         </if>
-        <if test="params.pid !=null">
+        <if test="params.pid != null">
             and pid is not null
         </if>
     </select>

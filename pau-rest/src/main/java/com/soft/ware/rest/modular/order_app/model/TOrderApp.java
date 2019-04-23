@@ -3,10 +3,14 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.soft.ware.rest.modular.goods.model.TGoods;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 /**
  * <p>
  * 收银机订单信息
@@ -77,6 +81,19 @@ public class TOrderApp extends Model<TOrderApp> {
      * 订单包含的商品信息（商品之间已英文逗号分隔，单个货物的的格式为：id__图片地址__名称__规格__数量__单价__总价）
      */
     private String goodsId;
+    /**
+     * 商品列表
+     */
+    List<TGoods> listGoods = new ArrayList<>();
+
+    public List<TGoods> getListGoods() {
+        return listGoods;
+    }
+
+    public void setListGoods(List<TGoods> listGoods) {
+        this.listGoods = listGoods;
+    }
+
     /**
      * 订单状态（0：为正常；1：退单；2：反结账）
      */
