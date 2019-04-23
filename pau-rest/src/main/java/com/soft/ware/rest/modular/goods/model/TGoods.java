@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.goods.model;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -47,6 +48,8 @@ public class TGoods extends Model<TGoods> {
     /**
      * 主键
      */
+    @Id
+    @TableField("id")
     private String id;
     /**
      * 商品所属类别（关联表tbl_category的id字段）

@@ -20,7 +20,7 @@ public interface ITOrderAppService extends IService<TOrderApp> {
 
     long findPageCount(SessionUser user, OrderPageParam param, Integer[] sources);
 
-    List<TOrderApp> getAppOrderList(Map<String,Object> map);
+    List<TOrderApp> getAppOrderList(Map<String,Object> map,Page page);
 
     List<Map<String, Object>> findMapPage(SessionUser user, Page page, OrderPageParam param, Integer... sources);
 

@@ -63,7 +63,6 @@ public class StaffController extends BaseController {
               if(tOwnerStaffService.delStaff(param,sessionUser)){
                   return new SuccessTip();
               }
-
               return new ErrorTip();
       }
 
@@ -76,7 +75,7 @@ public class StaffController extends BaseController {
       public Tip getList(SessionUser sessionUser){
         TOwnerStaff staff = new TOwnerStaff();
         staff.setOwnerId(sessionUser.getOwnerId());
-        List<TOwnerStaff>  staffList = tOwnerStaffService.selectList(new EntityWrapper<>(staff));
+        List<TOwnerStaff>  staffList = tOwnerStaffService.selectStaffByOwnerId(sessionUser.getOwnerId());
         if(staffList.size() > 0){
             return new SuccessTip(staffList);
         }

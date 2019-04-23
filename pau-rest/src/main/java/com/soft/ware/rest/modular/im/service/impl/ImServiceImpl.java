@@ -111,7 +111,7 @@ public class ImServiceImpl implements ImService {
         for (TOwnerStaff s : ss) {
             username = ParamUtils.buildImUserName(s, type);
             SImUser u = getUser(username);
-            if (TblOwnerStaff.status_0.equals(s.getStatus())) {
+
                 //用户状态正常
                 if (u == null) {
                     //注册用户
@@ -139,8 +139,7 @@ public class ImServiceImpl implements ImService {
                         addToGroup(user, g, u);
                     }
                 }
-
-            } else {
+            if(s.getStatus() == TOwnerStaff.status_2){
                 //状态异常删除用户
                 username = ParamUtils.buildImUserName(s, type);
                 if (u != null) {
@@ -153,8 +152,10 @@ public class ImServiceImpl implements ImService {
                     imUserService.deleteByUsername(user,username);
                 }
                 logger.info("极光用户:{}被删除",username);
+
             }
-        }
+
+            }
     }
 
 
@@ -386,7 +387,7 @@ public class ImServiceImpl implements ImService {
      * @return
      * @throws Exception
      */
-    private SImUser getUser(String username) {
+    public SImUser getUser(String username) {
         try {
             ResponseEntity<String> entity = get("/v1/users/" + username);
             return JSON.parseObject(entity.getBody(), SImUser.class);

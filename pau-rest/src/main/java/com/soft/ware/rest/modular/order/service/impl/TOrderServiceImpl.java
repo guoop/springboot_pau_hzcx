@@ -164,8 +164,10 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
     @Override
-    public List<HashMap<String, Object>> selectOrdersListByMap(Map<String, Object> map) {
-        List<HashMap<String,Object>> listMap = orderMapper.selectOrdersListByMap(map);
+    public List<HashMap<String, Object>> selectOrdersListByMap(Map<String, Object> map,Page page) {
+        int count = orderMapper.selectOrdersListByMapCount(map,page);
+        page.setTotal(count);
+        List<HashMap<String,Object>> listMap = orderMapper.selectOrdersListByMap(map,page);
         List<HashMap<String,Object>> resultList = new ArrayList<>();
         if(listMap.size() > 0){
             for (int i = 0; i < listMap.size(); i++) {
@@ -566,18 +568,23 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 }
                 break;
             case "confirm":
-                if (tOrder.getStatus().equals(TOrder.STATUS_1)) { //如果当前订单状态是待商家确认订单
-                    tOrder.setStatus(TOrder.STATUS_10);//那么订单状态设置商家确认订单
-                    tOrder.setConfirmer(tOrder.getConfirmer());
-                    tOrder.setConfirmTime(new Date());
-                    updateNum = orderMapper.updateById(tOrder);
-                    logger.info("确认订单 - {}", tOrder.getOrderNo());
-                    String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
-                    WxMaTemplateMessage msg = this.buildOrderTemplateMessage("confirm", templateFormId,tOrder,goodsNames,address );
-                    msg.getData().add(new WxMaTemplateData("keyword6",DateUtil.format(tOrder.getCreateTime(), "YYYY-MM-DD HH:mm:ss")));// 确认时间
-                    msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息*/
-                } else {
-                    throw new PauException(BizExceptionEnum.ORDER_CONFIRM_FAIL);
+                try {
+                    if (tOrder.getStatus().equals(TOrder.STATUS_1)) { //如果当前订单状态是待商家确认订单
+                        tOrder.setStatus(TOrder.STATUS_10);//那么订单状态设置商家确认订单
+                        tOrder.setConfirmer(tOrder.getConfirmer());
+                        tOrder.setConfirmTime(new Date());
+                        updateNum = orderMapper.updateById(tOrder);
+                        logger.info("确认订单 - {}", tOrder.getOrderNo());
+                        String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
+                        WxMaTemplateMessage msg = this.buildOrderTemplateMessage("confirm", templateFormId,tOrder,goodsNames,address );
+                        msg.getData().add(new WxMaTemplateData("keyword6",DateUtil.format(tOrder.getCreateTime(), "YYYY-MM-DD HH:mm:ss")));// 确认时间
+                        msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息*/
+                        service.getMsgService().sendTemplateMsg(msg);
+                    } else {
+                        throw new PauException(BizExceptionEnum.ORDER_CONFIRM_FAIL);
+                    }
+                } catch (WxErrorException e) {
+                    e.printStackTrace();
                 }
                 break;
 

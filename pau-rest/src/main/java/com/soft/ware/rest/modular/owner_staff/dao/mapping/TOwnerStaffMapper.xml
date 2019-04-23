@@ -24,9 +24,9 @@
 
 
     <select id="selectStaffByOwnerId" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from t_owner_staff where owner_id = #{ownerId}
-
+        select <include refid="Base_Column_List"/> from t_owner_staff where owner_id = #{ownerId} and status != 2
     </select>
+
 
 
 </mapper>

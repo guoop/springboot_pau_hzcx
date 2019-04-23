@@ -7,6 +7,7 @@ import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
@@ -51,12 +52,12 @@ public class TOrderController extends BaseController {
      */
     @RequestMapping(value = "/orders/list",method = RequestMethod.GET)
     @Transient
-    public Tip getOrderList( @RequestParam Map<String, Object> param,SessionUser sessionUser) {
+    public Tip getOrderList( @RequestParam Map<String, Object> param,Page page,SessionUser sessionUser) {
         param.put("owner_id", sessionUser.getOwnerId());
         param.put("status",ParamUtils.getOrderStatus(param.get("status").toString()));
         param.put("page",Integer.valueOf(param.get("page").toString()));
         //List<TOrder> list = tOrderService.selectOrderListByMap(param);
-        List<HashMap<String,Object>> listMap = tOrderService.selectOrdersListByMap(param);
+        List<HashMap<String,Object>> listMap = tOrderService.selectOrdersListByMap(param,page);
         if (listMap.size() > 0) {
             return new SuccessTip(listMap);
         }
@@ -112,10 +113,9 @@ public class TOrderController extends BaseController {
      * @return
      */
     @RequestMapping(value = "orders/app-list")
-    public Tip getAppOrdersList(@RequestParam Map<String,Object> param,SessionUser sessionUser){
-        param.put("owner_id",sessionUser.getOwnerId());
-        param.put("page",Integer.valueOf(param.get("page").toString()));
-        List<TOrderApp> orderAppList = tOrderAppService.getAppOrderList(param);
+    public Tip getAppOrdersList(@RequestParam Map<String,Object> param, Page page, SessionUser sessionUser){
+        param.put("ownerId",sessionUser.getOwnerId());
+        List<TOrderApp> orderAppList = tOrderAppService.getAppOrderList(param,page);
         if(orderAppList.size() > 0){
             return new SuccessTip(orderAppList);
         }
