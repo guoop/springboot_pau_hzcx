@@ -30,4 +30,12 @@ public class GoodsPageParam {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
 }

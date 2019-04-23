@@ -60,8 +60,7 @@ public class AppController extends BaseController {
 
     @RequestMapping(value = "goods")
     public Object userGoods(SessionUser user, Page page, GoodsPageParam param){
-        List<Map> list = goodsService.findPage(user, page, param);
-        return list;
+        return goodsService.findPage(user, page, param);
     }
 
 

@@ -26,7 +26,7 @@
         <result column="remark" property="remark" />
         <result column="is_delete" property="isDelete"/>
         <result column="phone" property="phone"/>
-        <result column="cancel_reason" property="cancelReason"></result>
+        <result column="cancel_reason" property="cancelReason"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -83,64 +83,75 @@
         <result column="child_unitName"/>
         <collection property="goods" ofType="map" javaType="list" columnPrefix="child_" resultMap="goodsMap"/>
     </resultMap>
+    <sql id="orderJoinColumnSql">
+        <if test="params.noJoin == null">
+            ,b.pay_order_no diffNo,b.money ticketMoney,b.money_diff diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
+            ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault
+            ,tr.reason refundReason,tr.status refundStatus,tr.order_money refundMoney,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') refundTime
+            ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
+            ,ts.id child_spec_id, ts.name child_spec_name
+        </if>
+    </sql>
+    <sql id="orderJoinSql">
+        <if test="params.noJoin == null">
+            left join t_order_child oc on oc.order_id = a.id
+            left join t_order_money_diff b on a.orderNo = b.order_no
+            left join t_address ta on ta.id = a.addressId
+            left join t_refund tr on tr.order_no = a.orderNo
+            left join t_specs ts on ts.id = oc.goods_spec_id
+        </if>
+    </sql>
     <select id="findMaps" resultType="java.util.Map" resultMap="orderMap">
-    select
-    a.id id,
-    <include refid="t_order_alias_columns"/>
-    ,b.pay_order_no diffNo,b.money ticketMoney,b.money_diff diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
-    ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault
-    ,tr.reason refundReason,tr.status refundStatus,tr.order_money refundMoney,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') refundTime
-    ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
-    ,ts.id child_spec_id, ts.name child_spec_name
-    from t_order a
-    left join t_order_child oc on oc.order_id = a.id
-    left join t_order_money_diff b on a.order_no = b.order_no
-    left join t_address ta on ta.id = a.address_id
-    left join t_refund tr on tr.order_no = a.order_no
-    left join t_specs ts on ts.id = oc.goods_spec_id
-    where true
-    <if test="params.id != null and params.id != ''">
-        and a.id = #{params.id}
-    </if>
-    <if test="params.orderNo != null and params.orderNo != ''">
-        and a.order_no = #{params.orderNo}
-    </if>
-    <if test="params.source != null and params.source != ''">
-        and a.source = #{params.source}
-    </if>
-    <if test="params.pickupNo != null and params.pickupNo != ''">
-        and a.pickup_no = #{params.pickupNo}
-    </if>
-    <if test="params.moneyChannel != null and params.moneyChannel != ''">
-        and a.money_channel = #{params.moneyChannel}
-    </if>
-    <if test="params.creater != null and params.creater != ''">
-        and a.creater = #{params.creater}
-    </if>
-    <if test="params.ownerId != null and params.ownerId != ''">
-        and a.owner_id = #{params.ownerId}
-    </if>
-    <if test="params.type != null and params.type != ''">
-        and a.type = #{params.type}
-    </if>
-    <if test="params.status != null and params.status != ''">
-        and a.status in (${params.status})
-    </if>
-    <if test="params.sources != null and params.sources != ''">
-        and a.source in (${params.sources})
-    </if>
-    <if test="params.orderBy != null">
-        order by ${params.orderBy}
-    </if>
-    <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+    select a.*
+    <include refid="orderJoinColumnSql"/>
+    from (
+        select
+        a.id id,
+        <include refid="t_order_alias_columns"/>
+        from t_order a
+        where true
+        <if test="params.id != null and params.id != ''">
+            and a.id = #{params.id}
+        </if>
+        <if test="params.orderNo != null and params.orderNo != ''">
+            and a.order_no = #{params.orderNo}
+        </if>
+        <if test="params.source != null and params.source != ''">
+            and a.source = #{params.source}
+        </if>
+        <if test="params.pickupNo != null and params.pickupNo != ''">
+            and a.pickup_no = #{params.pickupNo}
+        </if>
+        <if test="params.moneyChannel != null and params.moneyChannel != ''">
+            and a.money_channel = #{params.moneyChannel}
+        </if>
+        <if test="params.creater != null and params.creater != ''">
+            and a.creater = #{params.creater}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and a.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.type != null and params.type != ''">
+            and a.type = #{params.type}
+        </if>
+        <if test="params.status != null and params.status != ''">
+            and a.status in (${params.status})
+        </if>
+        <if test="params.sources != null and params.sources != ''">
+            and a.source in (${params.sources})
+        </if>
+        <if test="params.orderBy != null">
+            order by ${params.orderBy}
+        </if>
+        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+    ) as a
+    <include refid="orderJoinSql"/>
     </select>
     <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_order where 1=1
         <include refid="Condition"></include>
     </select>
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.Map">
-
-
         select  a.id,<include refid="t_order_alias_columns"/>,  b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus',
         d.money as diffMoney,d.money_diff as moneyDiff,d.pay_order_no as payOrderNo,d.`status` as 'diffStatus'
                 from t_order a
