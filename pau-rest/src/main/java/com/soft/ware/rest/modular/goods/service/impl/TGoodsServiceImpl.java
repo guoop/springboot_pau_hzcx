@@ -1,13 +1,13 @@
 package com.soft.ware.rest.modular.goods.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
-import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.util.DateUtil;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.goods.controller.dto.GoodsParam;
 import com.soft.ware.rest.modular.goods.dao.TGoodsMapper;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * <p>
@@ -36,10 +35,21 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
     private TGoodsMapper mapper;
 
     @Override
-    public List<Map> findPage(SessionUser user, Page page, GoodsPageParam param) {
-        Long count = mapper.findPageCount(user.getOwnerId(), param);
+    public List<Map<String, Object>> findPage(SessionUser user, Page page, GoodsPageParam param) {
+        TGoods g = new TGoods().setOwnerId(user.getOwnerId());
+        if (ToolUtil.isNotEmpty(param.getCategory())) {
+            g.setCategoryId(param.getCategory());
+        }
+        EntityWrapper<TGoods> wrapper = new EntityWrapper<>(g);
+        if (param.getBeginTime() != null) {
+            wrapper.gt("update_time", param.getBeginTime());
+        }
+        if (ToolUtil.isNotEmpty(param.getName())) {
+            wrapper.like("name", param.getName());
+        }
+        int count = mapper.selectCount(wrapper);
         page.setTotal(count);
-        return mapper.findPage(user.getOwnerId(), param, page);
+        return mapper.findMaps(Kv.obj("page", page).set("ownerId", user.getOwnerId()).set("like_name", param.getName()).set("categoryId", param.getCategory()).set("lastUpdateTime", param.getBeginTime()));
     }
 
     @Override

@@ -42,91 +42,72 @@
     <sql id="Base_Column_List">
         id, category_id , name, code, unit_id , price, pics, description, DATE_FORMAT(created_time,'%Y-%m-%d %H:%i:%s'), creater, owner_id , status, sells, sort, is_delete , source, top_time , is_promotion
     </sql>
-    <sql id="t_goods_alias_columns">
-        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') createdTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime
-        <!--,g.is_promotion isPromotion--> <!--删掉了 需要配合 t_promotion 才有意义-->
-    </sql>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
-    <sql id="findPageCondition">
-        <if test="param.category != null and param.category != ''">
-            and g.category_id = #{param.category}
-        </if>
-        <if test="param.name != null and param.name != ''">
-            and g.name like CONCAT('%',#{param.name},'%')
-        </if>
+    <sql id="t_goods_alias_columns">
+        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') createdTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.is_promotion isPromotion
+        <!--,g.is_promotion isPromotion--> <!--删掉了 需要配合 t_promotion 才有意义-->
     </sql>
-
-    <select id="findPage" resultMap="GoodsMap">
-        select
-        g.id,
-        <include refid="t_goods_alias_columns"/>
+    <sql id="goodsJoinSql">
+        left join t_unit u on u.id = g.unitId
+        left join t_promotion tp on tp.goods_id = g.id
+        left join t_specs ts on ts.goods_id = g.id
+    </sql>
+    <sql id="goodsJoinColumnSql">
         ,tp.id promotionId ,tp.money promotionMoney,DATE_FORMAT(tp.start_time,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(tp.end_time,'%Y-%m-%d %H:%i:%s') endTime
-        ,(g.is_promotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
+        ,(g.isPromotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
         ,u.name measurementUnit
         ,ts.name spec_name, ts.id spec_id
         <!-- 查询库存信息 -->
         ,((select ifnull(sum(ggss.in_amount),0) from t_goods_storage ggss where ggss.goods_id = g.id) - (select ifnull(sum(oocc.goods_num),0) from t_order_child oocc,t_order oo where oo.id = oocc.order_id and oo.status in (1,2,3,10)  and oocc.goods_id = g.id)) as storage
-        from t_goods g
-        left join t_unit u on u.id = g.unit_id
-        left join t_promotion tp on tp.goods_id = g.id
-        left join t_specs ts on ts.goods_id = g.id
-        where true
-        and g.owner_id = #{owner} and g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
-        <include refid="findPageCondition"/>
-        order by sort asc
-        <include refid="limit"/>
-    </select>
-    <select id="findPageCount" resultType="long">
-        select count(1) from t_goods g where g.is_delete = 0 and  g.status = 1 and g.owner_id = #{owner}
-        <include refid="findPageCondition"/>
-    </select>
+    </sql>
     <select id="findMaps" resultType="java.util.Map" resultMap="GoodsMap">
-        select
-        g.id,
-        <include refid="t_goods_alias_columns"/>
-        ,tp.id promotionId ,tp.money promotionMoney,DATE_FORMAT(tp.start_time,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(tp.end_time,'%Y-%m-%d %H:%i:%s') endTime
-        ,(g.is_promotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
-        ,u.name measurementUnit
-        ,ts.name spec_name, ts.id spec_id
-        <!-- 查询库存信息 -->
-        ,((select ifnull(sum(ggss.in_amount),0) from t_goods_storage ggss where ggss.goods_id = g.id) - (select ifnull(sum(oocc.goods_num),0) from t_order_child oocc,t_order oo where oo.id = oocc.order_id and oo.status in (1,2,3,10)  and oocc.goods_id = g.id)) as storage
-        from t_goods g
-        left join t_unit u on u.id = g.unit_id
-        left join t_promotion tp on tp.goods_id = g.id
-        left join t_specs ts on ts.goods_id = g.id
-        where true
-        <if test="params.id != null and params.id != ''">
-        and g.id = #{params.id}
-        </if>
-        <if test="params.code != null and params.code != ''">
-            and g.code = #{params.code}
-        </if>
-        <if test="params.ids != null and params.ids != ''">
-            and g.id in (${params.ids})
-        </if>
-        <if test="params.specId != null and params.specId != ''">
-            and gs.id in (${params.specId})
-        </if>
-        <if test="params.isDelete != null and params.isDelete != ''">
-            and g.is_delete = #{params.isDelete}
-        </if>
-        <if test="params.beginTime != null">
-            and g.is_delete = #{params.isDelete}
-        </if>
-        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
-
-        <choose>
-            <!--商品计算价格需要这个 in ids 排序 -->
-            <when test="params.ids != null and params.ids != ''">
-                order by field(g.id,${params.ids})
-            </when>
-            <otherwise>
-                <!--普通列表查询-->
-                order by g.created_time desc
-            </otherwise>
-        </choose>
+        select g.*
+            <include refid="goodsJoinColumnSql"/>
+            from (
+            select
+            g.id,
+            <include refid="t_goods_alias_columns"/>
+            from t_goods g
+            where true
+            <if test="params.id != null and params.id != ''">
+            and g.id = #{params.id}
+            </if>
+            <if test="params.ownerId != null and params.ownerId != ''">
+                and g.owner_id = #{params.ownerId}
+            </if>
+            <if test="params.code != null and params.code != ''">
+                and g.code = #{params.code}
+            </if>
+            <if test="params.ids != null and params.ids != ''">
+                and g.id in (${params.ids})
+            </if>
+            <if test="params.specId != null and params.specId != ''">
+                and gs.id in (${params.specId})
+            </if>
+            <if test="params.isDelete != null and params.isDelete != ''">
+                and g.is_delete = #{params.isDelete}
+            </if>
+            <if test="params.lastUpdateTime != null">
+                and g.update_time > #{params.lastUpdateTime}
+            </if>
+            <if test="params.like_name != null and params.like_name != ''">
+                and g.name like '%${params.like_name}%'
+            </if>
+            <choose>
+                <!--商品计算价格需要这个 in ids 排序 -->
+                <when test="params.ids != null and params.ids != ''">
+                    order by field(g.id,${params.ids})
+                </when>
+                <otherwise>
+                    <!--普通列表查询-->
+                    order by g.sort asc,g.created_time desc
+                </otherwise>
+            </choose>
+            <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+        ) as g
+        <include refid="goodsJoinSql"/>
     </select>
 
     <!--根据商品分类id查询所有商品列表-->

@@ -52,7 +52,7 @@ public class TGoods extends Model<TGoods> {
      * 商品所属类别（关联表tbl_category的id字段）
      */
     @TableField("category_id")
-    private Long categoryId;
+    private String categoryId;
     /**
      * 商品名称
      */
@@ -135,11 +135,11 @@ public class TGoods extends Model<TGoods> {
         return this;
     }
 
-    public Long getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -211,8 +211,8 @@ public class TGoods extends Model<TGoods> {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public TGoods setOwnerId(String ownerId) {
+        this.ownerId = ownerId;return this;
     }
 
     public Integer getStatus() {

@@ -150,7 +150,9 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     public List<Map<String, Object>> findMaps(Map<String, Object> map) {
-        return orderMapper.findMaps(map);
+        List<Map<String, Object>> maps = orderMapper.findMaps(map);
+        maps.forEach(s->s.remove("payResponse"));
+        return maps;
     }
 
     @Override

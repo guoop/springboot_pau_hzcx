@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public interface ITGoodsService extends IService<TGoods> {
 
-    List<Map> findPage(SessionUser user, Page page, GoodsPageParam param);
+    List<Map<String, Object>> findPage(SessionUser user, Page page, GoodsPageParam param);
 
     List<Map<String,Object>> findMaps(Map<String,Object> map);
 
