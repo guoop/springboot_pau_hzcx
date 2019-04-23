@@ -1,15 +1,10 @@
 package com.soft.ware.rest.modular.order_money_diff.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
-import com.soft.ware.core.util.DateUtil;
-import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.order_money_diff.dao.TOrderMoneyDiffMapper;
 import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
@@ -39,11 +34,8 @@ public class TOrderMoneyDiffServiceImpl extends BaseService<TOrderMoneyDiffMappe
     }
 
     @Override
-    public boolean update(WxPayOrderNotifyResult result, SessionUser user) throws Exception {
-        TOrderMoneyDiff order = BeanMapUtils.toObject(findMap(Kv.obj("creater", user.getOpenId()).set("payOutNo", result.getOutTradeNo())), TOrderMoneyDiff.class);
-        order.setStatus(TOrderMoneyDiff.refund_status_1);
-        order.setPayTime(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
-        order.setPayResponse(JSON.toJSONString(result));
+    public boolean update(TOrderMoneyDiff order, SessionUser user) throws Exception {
+
         //todo yancc 需要加锁么？
         Integer update = mapper.update(order, new EntityWrapper<>(new TOrderMoneyDiff().setId(order.getId())));
         if (update != 1) {

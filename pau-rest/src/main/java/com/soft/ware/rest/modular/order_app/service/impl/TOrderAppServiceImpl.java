@@ -87,7 +87,7 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
         order.setGoodsId(param.getGoods());//删掉这个字段，数据库中也删掉
         order.setStatus(param.getStatus());
         boolean insert = insert(order);
-        List<TOrderChild> list = param.getGoodsList1();//todo yancc 改为 getGoodsList();
+        List<TOrderChild> list = param.getGoodsList();
         for (TOrderChild child : list) {
             child.setId(IdGenerator.getId());
             child.setCreateTime(date);

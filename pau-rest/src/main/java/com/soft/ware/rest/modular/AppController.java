@@ -12,8 +12,10 @@ import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
 import com.soft.ware.rest.modular.order.model.TOrder;
+import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +43,9 @@ public class AppController extends BaseController {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private ITOrderService orderService;
 
 
 
@@ -121,22 +126,44 @@ public class AppController extends BaseController {
 
 
     /**
-     * 订单列表
+     * 订单列表(线上)
      * @return
      */
     @RequestMapping(value = "orders",method = RequestMethod.GET)
     public Object orders(SessionUser user, Page page, OrderPageParam param){
-        List<Map<String, Object>> maps = orderAppService.findMapPage(user, page, param, TOrder.SOURCE_1);
-        String c;
-        for (Map<String, Object> m : maps) {
-            c = m.get("moneyChannel").toString();
-            m.put("moneyChannel",c.split("_")[0]);
-            m.put("goods", m.get("goodsId"));
-            //m.put("payMoney", m.get("payMoney").toString().split(",")[0].split("_")[0]);
-            m.put("payMoney", m.get("moneyPay"));
-            m.put("freight", 0);
+        if ("confirm".equals(param.getStatus())) {
+            // 新订单（待商家确认）
+            param.setStatus("1");
+        } else if ("confirmed".equals(param.getStatus())) {
+            // 备货中（商家已确认）
+            param.setStatus("10");
+        } else if ("delivering".equals(param.getStatus())) {
+            // 配送中（包含自提订单）
+            param.setStatus("2");
+        } else if ("done".equals(param.getStatus())) {
+            // 已完成
+            param.setStatus("3");
+        } else if ("cancel".equals(param.getStatus())) {
+            // 已取消
+            param.setStatus("-1");
+        } else {
+            param.setStatus("");
         }
+        List<Map<String, Object>> maps = orderService.findPage(user, page, param, TOrder.SOURCE_2, TOrder.SOURCE_0);
         return render().set("orders", maps);
+    }
+
+    /**
+     * 查询订单详情（线上订单）
+     * @param user
+     * @param no
+     * @return
+     */
+    @RequestMapping(value = "orders/{no}",method = RequestMethod.GET)
+    public Object orders(SessionUser user,@PathVariable String no){
+        Kv<String, Object> params = Kv.obj("ownerId", user.getOwnerId()).set("orderNo", no);
+        Map<String, Object> order = orderService.findMap(params);
+        return render().set("order", order);
     }
 
 

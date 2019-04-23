@@ -131,7 +131,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     public List<Map<String,Object>> findPage(SessionUser user, Page page, OrderPageParam param, Integer... sources) {
-        Kv<String, Object> map = Kv.obj("creater", user.getOpenId())
+        Kv<String, Object> map = Kv
+                .obj("creater", user.getOpenId())
                 .set("ownerId", user.getOwnerId())
                 .set("page", page)
                 .set("status", param.getStatus())
@@ -321,19 +322,22 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         if (gs.size() > 3) {
             goodsName.append("...共").append(gs.size()).append("种商品");
         }
+        goodsName.replace(0, 1, "");//删除，号
         ArrayList<WxMaTemplateData> data = Lists.newArrayList();
         data.add(new WxMaTemplateData("keyword1", order.getOrderNo()));// 订单编号
         data.add(new WxMaTemplateData("keyword2", DateUtil.format(order.getCreateTime(), WXContants.date_format)));// 下单时间
         data.add(new WxMaTemplateData("keyword3", order.getPayMoney().setScale(2, WXContants.big_decimal_sale) + ""));// 订单金额
         data.add(new WxMaTemplateData("keyword4", goodsName.toString()));// 商品名称
-        if(ToolUtil.isNotEmpty(address)){
+        if (TOrder.SOURCE_0.equals(order.getSource()) && ToolUtil.isNotEmpty(address)) {
             data.add(new WxMaTemplateData("keyword5", address.getName() + ' ' + address.getPhone() + ' ' + address.getProvince() + " " + address.getDetail()));// 收货地址
+        } else {
+            data.add(new WxMaTemplateData("keyword5", order.getPhone()));
         }
         WxMaTemplateMessage msg = WxMaTemplateMessage.builder()
                 .templateId(templateID)
                 .formId(fromID)
                 .toUser(order.getCreater())
-                .page("pages/mine/index")
+                .page("pages/mine/orderForShow?orderNO=" + order.getOrderNo())
                 .data(data)
                 .build();
         return msg;

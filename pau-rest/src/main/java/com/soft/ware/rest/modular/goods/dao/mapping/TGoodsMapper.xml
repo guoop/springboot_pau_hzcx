@@ -92,8 +92,11 @@
             <if test="params.lastUpdateTime != null">
                 and g.update_time > #{params.lastUpdateTime}
             </if>
-            <if test="params.like_name != null and params.like_name != ''">
-                and g.name like '%${params.like_name}%'
+            <if test="params.categoryId != null and params.categoryId != ''">
+                and g.category_id = #{params.categoryId}
+            </if>
+            <if test="params.likeName != null and params.likeName != ''">
+                and g.name like '%${params.likeName}%'
             </if>
             <choose>
                 <!--商品计算价格需要这个 in ids 排序 -->

@@ -70,6 +70,7 @@
     </resultMap>
     <resultMap id="orderMap" type="map" autoMapping="true">
         <id column="id" property="id"/>
+        <result column="child_id"/>
         <result column="child_goodsId"/>
         <result column="child_goodsPic"/>
         <result column="child_goodsNum"/>

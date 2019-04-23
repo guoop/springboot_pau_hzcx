@@ -37,6 +37,8 @@ public class AddOrderParam {
     //（订单包含的商品清单）,
     private String goods;
 
+    private String goodsUnit;
+
     public String getOwner() {
         return owner;
     }
@@ -141,6 +143,13 @@ public class AddOrderParam {
         this.goods = goods;
     }
 
+    public String getGoodsUnit() {
+        return goodsUnit;
+    }
+
+    public void setGoodsUnit(String goodsUnit) {
+        this.goodsUnit = goodsUnit;
+    }
 
     public Map<Integer,BigDecimal> getPayMap(){
         String[] ss = getChannel_pay().split(",");

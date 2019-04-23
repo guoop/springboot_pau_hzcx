@@ -2,25 +2,25 @@ package com.soft.ware.rest.modular.auth.controller;
 
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
+import com.alibaba.fastjson.JSON;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
+import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
-import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
+import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
-import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
-import com.soft.ware.rest.modular.sms.service.SmsService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +43,6 @@ public class WxPayController extends BaseController {
     private ITOrderService orderService;
 
     @Autowired
-    private ITOwnerService ownerService;
-
-    @Autowired
     private ISWxAppService appService;
 
     @Autowired
@@ -53,12 +50,6 @@ public class WxPayController extends BaseController {
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
-
-    @Autowired
-    private SmsService smsService;
-
-    @Autowired
-    private ImService imService;
 
     @Autowired
     private ITOwnerTempService ownerTempService;
@@ -87,10 +78,17 @@ public class WxPayController extends BaseController {
             result.checkResult(service, service.getConfig().getSignType(), false);
             //根据订单号 orderNo
             TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("orderNo", result.getOutTradeNo()).set("creater", user.getOpenId())), TOrder.class);
-            orderService.updatePayCallback(result, user, order);
-            paySuccessNotify(order, user, app);
-            logger.info("商家配送支付回调成功：" + xmlData);
-            return WxPayNotifyResponse.success("成功");
+            if (order.getPayTime() == null) {
+                boolean b = orderService.updatePayCallback(result, user, order);
+                if (b) {
+                    paySuccessNotify(order, user, app);
+                    logger.info("商家配送支付回调成功：" + xmlData);
+                    return WxPayNotifyResponse.success("成功");
+                }
+            } else {
+                //订单已经支付
+            }
+            logger.info("商家配送支付回调可能失败：" + xmlData);
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -116,10 +114,17 @@ public class WxPayController extends BaseController {
             result.checkResult(service, service.getConfig().getSignType(), false);
             //根据订单号 attach
             TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj("orderNo", result.getAttach()).set("creater", user.getOpenId())), TOrder.class);
-            orderService.updatePayCallback(result, user, order);
-            paySuccessNotify(order, user, app);
-            logger.info("到店自取支付回调成功：" + xmlData);
-            return WxPayNotifyResponse.success("成功");
+            if (order.getPayTime() == null) {
+                boolean b = orderService.updatePayCallback(result, user, order);
+                if (b) {
+                    paySuccessNotify(order, user, app);
+                    logger.info("到店自取支付回调成功：" + xmlData);
+                    return WxPayNotifyResponse.success("成功");
+                }
+            } else {
+                //订单已经支付
+            }
+            logger.info("到店自取支付回调可能失败：" + xmlData);
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -142,9 +147,16 @@ public class WxPayController extends BaseController {
             SessionUser user = new SessionUser(app.getOwnerId());
             WxPayService service = hzcxWxService.getWxPayService(app);
             result.checkResult(service, service.getConfig().getSignType(), false);
-            orderMoneyDiffService.update(result, user);
-            logger.info("补差价支付回调成功：" + xmlData);
-            return WxPayNotifyResponse.success("成功");
+            TOrderMoneyDiff order = BeanMapUtils.toObject(orderMoneyDiffService.findMap(Kv.obj("creater", user.getOpenId()).set("payOutNo", result.getOutTradeNo())), TOrderMoneyDiff.class);
+            order.setStatus(TOrderMoneyDiff.refund_status_1);
+            order.setPayTime(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
+            order.setPayResponse(JSON.toJSONString(result));
+            boolean update = orderMoneyDiffService.update(order, user);
+            if (update) {
+                logger.info("补差价支付回调成功：" + xmlData);
+                return WxPayNotifyResponse.success("成功");
+            }
+            logger.info("补差价支付回调可能失败：" + xmlData);
         } catch (Exception e) {
             e.printStackTrace();
             //todo yancc 处理失败
@@ -188,7 +200,7 @@ public class WxPayController extends BaseController {
             if (pack.startsWith("prepay_id=")) {
                 pack = pack.substring(10);
             }
-            if (TOrder.MONEY_CHANNEL_3.equals(order.getMoneyChannel())) {
+            if (TOrder.MONEY_CHANNEL_3.equals(order.getMoneyChannel()) || TOrder.MONEY_CHANNEL_0.equals(order.getMoneyChannel())) {
                 logger.debug("买家支付订单时保存PrepayID {} = {}", tempKey, pack);
                 // 微信支付时发送模板消息
                 String pay = ownerTempService.getTplId(user, "pay");
