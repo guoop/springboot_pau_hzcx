@@ -15,7 +15,7 @@
         <result column="is_force" property="isForce" />
         <result column="download_url" property="downloadUrl" />
         <result column="description" property="description" />
-        <result column="created_time" property="createdTime" />
+        <result column="create_time" property="createTime" />
         <result column="creater" property="creater" />
         <result column="update_time" property="updateTime" />
         <result column="updater" property="updater" />
@@ -23,10 +23,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, code, name, platform, version_main AS versionMain, version_secondary AS versionSecondary, version_bug AS versionBug, version, is_force AS isForce, download_url AS downloadUrl, description, created_time AS createdTime, creater, update_time AS updateTime, updater
+        id, code, name, platform, version_main AS versionMain, version_secondary AS versionSecondary, version_bug AS versionBug, version, is_force AS isForce, download_url AS downloadUrl, description, create_time AS createTime, creater, update_time AS updateTime, updater
     </sql>
     <sql id="t_app_version_alias_columns">
-        tav.code, tav.name, tav.platform, tav.version_main AS versionMain, tav.version_secondary AS versionSecondary, tav.version_bug AS versionBug, tav.version, tav.is_force AS isForce, tav.download_url AS downloadUrl, tav.description, tav.created_time AS createdTime, tav.creater, tav.update_time AS updateTime, tav.updater
+        tav.code, tav.name, tav.platform, tav.version_main AS versionMain, tav.version_secondary AS versionSecondary, tav.version_bug AS versionBug, tav.version, tav.is_force AS isForce, tav.download_url AS downloadUrl, tav.description, tav.create_time AS createTime, tav.creater, tav.update_time AS updateTime, tav.updater
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select
@@ -67,7 +67,7 @@
             and tav.description = #{params.description}
         </if>
         <if test="params.createdTime != null">
-            and tav.created_time = #{params.createdTime}
+            and tav.create_time = #{params.createTime}
         </if>
         <if test="params.creater != null and params.creater != ''">
             and tav.creater = #{params.creater}

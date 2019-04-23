@@ -46,8 +46,8 @@ public class TQuestion extends Model<TQuestion> {
     /**
      * 创建时间
      */
-    @TableField("created_at")
-    private Date createdAt;
+    @TableField("create_time")
+    private Date createTime;
     /**
      * 店铺唯一标识
      */
@@ -110,12 +110,12 @@ public class TQuestion extends Model<TQuestion> {
         this.description = description;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setAt(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getOwnerId() {
@@ -163,7 +163,7 @@ public class TQuestion extends Model<TQuestion> {
         ", phone=" + phone +
         ", address=" + address +
         ", description=" + description +
-        ", createdAt=" + createdAt +
+        ", createTime=" + createTime +
         ", ownerId=" + ownerId +
         ", openId=" + openId +
         ", accountInfo=" + accountInfo +

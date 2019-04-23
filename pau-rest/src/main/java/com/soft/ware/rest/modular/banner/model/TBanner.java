@@ -56,7 +56,7 @@ public class TBanner extends Model<TBanner> {
     private String ownerId;
     //创建时间
 
-    private Date createdTime;
+    private Date createTime;
     //是否删除
 
     private Integer isDelete;
@@ -128,12 +128,12 @@ public class TBanner extends Model<TBanner> {
         this.ownerId = ownerId;
         return this;
     }
-    public Date getCreatedTime(){
-        return createdTime;
+    public Date getCreateTime(){
+        return createTime;
     }
 
-    public TBanner setCreatedTime( Date createdTime){
-        this.createdTime = createdTime;
+    public TBanner setCreateTime( Date createTime){
+        this.createTime = createTime;
         return this;
     }
     public Integer getIsDelete(){
@@ -163,7 +163,7 @@ public class TBanner extends Model<TBanner> {
             ", target=" + target +
             ", status=" + status +
             ", ownerId=" + ownerId +
-            ", createdTime=" + createdTime +
+            ", createdTime=" + createTime +
             ", isDelete=" + isDelete +
         "}";
     }

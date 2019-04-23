@@ -52,12 +52,12 @@ public class TAddress extends Model<TAddress> {
     private Integer isDelete;
     //创建时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createdTime;
+    private Date createTime;
     //创建人
     private String creater;
     //删除时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date deletedTime;
+    private Date deleteTime;
 
 
     public String getId(){
@@ -126,12 +126,12 @@ public class TAddress extends Model<TAddress> {
         this.isDelete = isDelete;
         return this;
     }
-    public Date getCreatedTime(){
-        return createdTime;
+    public Date getCreateTime(){
+        return createTime;
     }
 
-    public TAddress setCreatedTime( Date createdTime){
-        this.createdTime = createdTime;
+    public TAddress setCreatedTime( Date createTime){
+        this.createTime = createTime;
         return this;
     }
     public String getCreater(){
@@ -142,12 +142,12 @@ public class TAddress extends Model<TAddress> {
         this.creater = creater;
         return this;
     }
-    public Date getDeletedTime(){
-        return deletedTime;
+    public Date getDeleteTime(){
+        return deleteTime;
     }
 
-    public TAddress setDeletedTime( Date deletedTime){
-        this.deletedTime = deletedTime;
+    public TAddress setDeleteTime( Date deleteTime){
+        this.deleteTime = deleteTime;
         return this;
     }
 
@@ -169,9 +169,9 @@ public class TAddress extends Model<TAddress> {
             ", detail=" + detail +
             ", isDefault=" + isDefault +
             ", isDelete=" + isDelete +
-            ", createdTime=" + createdTime +
+            ", createTime=" + createTime +
             ", creater=" + creater +
-            ", deletedTime=" + deletedTime +
+            ", deleteTime=" + deleteTime +
         "}";
     }
 

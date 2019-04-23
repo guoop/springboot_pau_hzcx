@@ -10,7 +10,7 @@
         <result column="money" property="money" />
         <result column="money_diff" property="moneyDiff" />
         <result column="pic" property="pic" />
-        <result column="created_time" property="createdTime" />
+        <result column="create_time" property="createTime" />
         <result column="creater" property="creater" />
         <result column="status" property="status" />
         <result column="pay_time" property="payTime" />
@@ -24,10 +24,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pay_order_no AS payOrderNo, owner_id AS ownerId, order_no AS orderNo, money, money_diff AS moneyDiff, pic, created_time AS createdTime, creater, status, pay_time AS payTime, pay_response AS payResponse, is_delete AS isDelete
+        id, pay_order_no AS payOrderNo, owner_id AS ownerId, order_no AS orderNo, money, money_diff AS moneyDiff, pic, create_time AS createTime, creater, status, pay_time AS payTime, pay_response AS payResponse, is_delete AS isDelete
     </sql>
     <sql id="t_order_money_diff_alias_columns">
-        tomd.pay_order_no AS payOrderNo, tomd.owner_id AS ownerId, tomd.order_no AS orderNo, tomd.money, tomd.money_diff AS moneyDiff, tomd.pic, tomd.created_time AS createdTime, tomd.creater, tomd.status, tomd.pay_time AS payTime, tomd.pay_response AS payResponse, tomd.is_delete AS isDelete
+        tomd.pay_order_no AS payOrderNo, tomd.owner_id AS ownerId, tomd.order_no AS orderNo, tomd.money, tomd.money_diff AS moneyDiff, tomd.pic, tomd.create_time AS createTime, tomd.creater, tomd.status, tomd.pay_time AS payTime, tomd.pay_response AS payResponse, tomd.is_delete AS isDelete
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select

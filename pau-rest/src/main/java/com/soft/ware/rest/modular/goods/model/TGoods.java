@@ -81,8 +81,8 @@ public class TGoods extends Model<TGoods> {
     /**
      * 添加时间
      */
-    @TableField("created_time")
-    private Date createdTime;
+    @TableField("create_time")
+    private Date createTime;
     /**
      * 添加人
      */
@@ -191,12 +191,12 @@ public class TGoods extends Model<TGoods> {
         this.description = description;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getCreater() {
@@ -287,7 +287,7 @@ public class TGoods extends Model<TGoods> {
         ", price=" + price +
         ", pics=" + pics +
         ", description=" + description +
-        ", createdTime=" + createdTime +
+        ", createdTime=" + createTime +
         ", creater=" + creater +
         ", ownerId=" + ownerId +
         ", status=" + status +

@@ -12,7 +12,7 @@
         <result column="price" property="price" />
         <result column="pics" property="pics" />
         <result column="description" property="description" />
-        <result column="created_time" property="createdTime" />
+        <result column="create_time" property="createTime" />
         <result column="creater" property="creater" />
         <result column="owner_id" property="ownerId" />
         <result column="status" property="status" />
@@ -40,13 +40,13 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, category_id , name, code, unit_id , price, pics, description, DATE_FORMAT(created_time,'%Y-%m-%d %H:%i:%s'), creater, owner_id , status, sells, sort, is_delete , source, top_time , is_promotion
+        id, category_id , name, code, unit_id , price, pics, description, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s'), creater, owner_id , status, sells, sort, is_delete , source, top_time , is_promotion
     </sql>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
     </sql>
     <sql id="t_goods_alias_columns">
-        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.created_time,'%Y-%m-%d %H:%i:%s') createdTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.is_promotion isPromotion
+        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.create_time,'%Y-%m-%d %H:%i:%s') createTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.is_promotion isPromotion
         <!--,g.is_promotion isPromotion--> <!--删掉了 需要配合 t_promotion 才有意义-->
     </sql>
     <sql id="goodsJoinSql">
@@ -102,7 +102,7 @@
                 </when>
                 <otherwise>
                     <!--普通列表查询-->
-                    order by g.sort asc,g.created_time desc
+                    order by g.sort asc,g.create_time desc
                 </otherwise>
             </choose>
             <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>

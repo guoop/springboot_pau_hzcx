@@ -95,7 +95,7 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private Date createTime;
     /**
      * 创建人
      */
@@ -303,11 +303,11 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
     }
 
     public Date getCreatedTime() {
-        return createdTime;
+        return createTime;
     }
 
     public TOwnerTemp setCreatedTime( Date createdTime) {
-        this.createdTime = createdTime;return this;
+        this.createTime = createdTime;return this;
     }
 
     public String getCreater() {
@@ -456,7 +456,7 @@ public class TOwnerTemp extends Model<TOwnerTemp> {
         ", mailbox=" + mailbox +
         ", wxApiCard=" + wxApiCard +
         ", msgTmplate=" + msgTmplate +
-        ", createdTime=" + createdTime +
+        ", createdTime=" + createTime +
         ", creater=" + creater +
         ", ownerDataStatus=" + ownerDataStatus +
         ", wxappDataStatus=" + wxappDataStatus +

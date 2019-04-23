@@ -61,9 +61,20 @@ public class TOwner extends Model<TOwner> {
      */
     @TableField("create_time")
     private Date createTime;
+    /**
+     * 消息模板
+     */
+    @TableField("msg_template")
+    private String msgTemplate;
 
 
+    public String getMsgTemplate() {
+        return msgTemplate;
+    }
 
+    public void setMsgTemplate(String msgTemplate) {
+        this.msgTemplate = msgTemplate;
+    }
 
     public TOwner() {
     }
