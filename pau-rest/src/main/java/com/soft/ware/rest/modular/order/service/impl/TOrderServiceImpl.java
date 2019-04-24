@@ -292,7 +292,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "refund");
                 WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
                 msg.getData().set(3, new WxMaTemplateData("keyword5", "all".equals(param.get("refundType").toString()) ? tOrder.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
-                msg.getData().add(new WxMaTemplateData("keyword6", param.get("refundType").toString()));
+                msg.getData().add(new WxMaTemplateData("keyword6", param.get("refundReason").toString()));
                 msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
                 hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
@@ -706,7 +706,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         tOrder.setOrderNo(param.get("orderNo").toString());
         tOrder = orderMapper.selectOne(tOrder);
         String orderNO = tOrder.getOrderNo();
-        TOrderMoneyDiff  tOrderMoneyDiff = orderMoneyDiffService.selectOne(new EntityWrapper<>(new TOrderMoneyDiff().setOrderNo(tOrder.getOrderNo())));
+        String payOrderNo = null;
+        TOrderMoneyDiff  tOrderMoneyDiff = orderMoneyDiffService.selectOne(new EntityWrapper<>(new TOrderMoneyDiff().setOrderNo(orderNO)));
         SWxApp sWxApp = isWxAppService.find(new TOwner().setId(sessionUser.getOwnerId()));
         WxPayService service = hzcxWxService.getWxPayService(sWxApp);
         List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
@@ -724,10 +725,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 }
             }
         }
-        // 如果是到店自提的订单
-            if (tOrder.getSource().equals(TOrder.SOURCE_2)) {
-                orderNO = tOrder.getPhone() + "" + tOrder.getCreateTime().getTime();
-            }
+
 
             TOrderMoneyDiff tOrderDiff = new TOrderMoneyDiff();
             tOrderDiff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
@@ -776,7 +774,15 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 return true;
             }
         }else if(money.compareTo(payMoney) == 1){
+            // 如果是到店自提的订单
+            if (tOrder.getSource().equals(TOrder.SOURCE_2)) {
+                payOrderNo = tOrder.getPhone() + "" + tOrder.getCreateTime().getTime();
+            }else{
+                payOrderNo = IdGenerator.getId() + tOrder.getCreateTime().getTime();
+            }
+
             tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
+            tOrderDiff.setPayOrderNo(payOrderNo);
             if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
                 isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
             }else{
@@ -784,8 +790,20 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 isSuccess = orderMoneyDiffService.insert(tOrderDiff);
             }
             // TODO: 2019/4/23 paulo 需要添加通知提醒客户补差价
+            String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
+            String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "diff");
+            WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
+            msg.getData().set(3,new WxMaTemplateData("keyword3",goodsNames.get(0)));
+            msg.getData().add(new WxMaTemplateData("keyword7",tOrder.getPayMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
+            msg.getData().add(new WxMaTemplateData("keyword8",tOrderDiff.getMoneyDiff().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
+            msg.getData().add(new WxMaTemplateData("keyword9", tOrderDiff.getMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
 
-
+            try {
+                hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
+            } catch (WxErrorException e) {
+                e.printStackTrace();
+            }
+            return true;
         }else{
             throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_EXCEPTION);
         }
