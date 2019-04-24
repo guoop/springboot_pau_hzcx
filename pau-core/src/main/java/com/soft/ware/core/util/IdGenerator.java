@@ -19,7 +19,7 @@ public class IdGenerator {
      * @return
      */
     public static String getId() {
-        return  getId()+DateUtil.timestampToDate()+ToolUtil.getRandomString(6);
+        return  getOrderNo()+DateUtil.timestampToDate()+ToolUtil.getRandomString(6);
     }
     /**
      * 下单生成的订单编号
