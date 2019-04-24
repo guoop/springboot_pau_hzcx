@@ -638,15 +638,9 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         String body = "购买商品";
         // 支付成功的回调地址  可访问 不带参数
         String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPay();
-        String attach = "无";
-        if (source2) {
-            notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayPickup();
-            attach = no;
-        }
         // 订单价格 单位是 分
         int total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).add(order.getRunMoney().multiply(BigDecimal.valueOf(100))).intValue();
         // 商户订单号
-        String out_trade_no = no;
         order.setSource(source);
         order.setRemark(remark);
         //暂不支持
@@ -658,28 +652,38 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             if (StringUtils.isBlank(phone)) {
                 throw new PauException(BizExceptionEnum.SMS_ERROR_PHONE_FORMAT);
             }
-            out_trade_no = phone + "" + order.getCreateTime().getTime();
             order.setPhone(phone);
+            notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayPickup();
             total_fee = order.getOrderMoney().multiply(BigDecimal.valueOf(100)).intValue();
             //修改支付金额
             order.setPayMoney(order.getOrderMoney());
             //清除运费
             order.setRunMoney(BigDecimal.ZERO);
-            //设置取货吗
+            //设置取货码
             redisTemplate.opsForValue().increment("counter:" + user.getAppId(), 1);
             Object s = redisTemplate.opsForValue().get("counter:" + user.getAppId());
             order.setPickupNo(Integer.valueOf(s.toString()));
             //设置取货时间
             order.setPickupTime(new Date(current));
             order.setMoneyChannel(TOrder.MONEY_CHANNEL_3);//仅支持微信支付
-            order.setOrderNo(out_trade_no);
             this.updateByVersion(order);
         } else {
             order.setPickupTime(null);
             order.setPickupNo(null);
             this.updateByVersion(order);
         }
-        return this.pay(app, user, out_trade_no, total_fee, notify_url, body, attach, spbill_create_ip);
+        WxPayMpOrderResult result = this.pay(app, user, no, total_fee, notify_url, body, no, spbill_create_ip);
+        try {
+            //保存支付package 用来发送通知
+            String tempKey = "ms:ppi:" + no;
+            String pack = result.getPackageValue().substring("prepay_id=".length());
+            redisTemplate.opsForValue().set(tempKey, pack, 604800, TimeUnit.SECONDS);
+            logger.debug("买家支付订单时保存PrepayID {} = {}", tempKey, result.getPackageValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            //不影响支付结果返回
+        }
+        return result;
     }
 
 

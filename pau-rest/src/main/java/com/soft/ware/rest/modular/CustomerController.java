@@ -516,11 +516,6 @@ public class CustomerController extends BaseController {
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
         try {
             WxPayMpOrderResult result = orderService.unifiedorder(user, no, source, spbill_create_ip, phone, remark);
-            //保存支付package 用来发送通知
-            String tempKey = "ms:ppi:" + no;
-            String pack = result.getPackageValue().substring("prepay_id=".length());
-            redisTemplate.opsForValue().set(tempKey, pack, 604800, TimeUnit.SECONDS);
-            logger.debug("买家支付订单时保存PrepayID {} = {}", tempKey, result.getPackageValue());
             return buildPayView(result);
         } catch (WxPayException e) {
             return render(false, e.getReturnMsg()).set("status", "102");

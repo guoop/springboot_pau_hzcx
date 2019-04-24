@@ -1,3 +1,4 @@
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.PauRestApplication;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PauRestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -39,6 +42,18 @@ public class ImTest {
         TOrder order = BeanMapUtils.toObject(m, TOrder.class);
         imService.sendNewOrderNotify(buildConsumerUser(), order);
         Assert.notNull(m);
+    }
+
+    private static Set set = new HashSet();
+
+    public void testId() throws Exception {
+        for (int i = 0; i < 10000; i++) {
+            if (set.size() != i) {
+                throw new Exception("");
+            } else {
+                set.add(IdGenerator.getId());
+            }
+        }
     }
 
 }

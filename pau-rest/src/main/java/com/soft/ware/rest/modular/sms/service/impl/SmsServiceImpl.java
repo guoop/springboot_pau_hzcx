@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.sms.service.impl;
 
+import com.google.common.collect.Lists;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.ToolUtil;
@@ -13,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @Service
@@ -34,10 +38,12 @@ public class SmsServiceImpl implements SmsService {
         Map<String,Object> map = new HashMap<>();
         Map<String,Object> phoneMap = new HashMap<>();
         String timestamp = DateUtil.timestampToDate();
-        map.put("params", Arrays.asList(values));
-        map.put("sign", "汇智创享");
 
-        if (phone.contains(".")) {
+        map.put("params",Lists.newArrayList(values));
+        map.put("sign", "汇智创享");
+        String url = WXContants.TENCENTMSG_GATAWAY;
+        if (phone.contains(",")) {
+            url = WXContants.TENCENTMSG_GATAWAY2;
             String[] ss = phone.split(",");
             List<Map<String,Object>> ps = new ArrayList<>();
             for (String s : ss) {
@@ -53,16 +59,16 @@ public class SmsServiceImpl implements SmsService {
             map.put("tel",phoneMap);
 
         }
-        map.put("time", timestamp);
+        map.put("time",timestamp);
         map.put("tpl_id", templateId);
         //todo yancc random 是否需要改变
         map.put("sig", ToolUtil.getSHA256StrJava("appkey=" + WXContants.TENCENTMSG_APPKEY + "&random=142536&time=" + timestamp + "&mobile=" + phone));
-        ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.TENCENTMSG_GATAWAY, map, String.class);
+        ResponseEntity<String> entity = restTemplate.postForEntity(url, map, String.class);
         if (entity.getStatusCodeValue() == 200) {
-            logger.info("{} {}短信发送成功{}",businessId, phone, templateId);
+            logger.info("{} {}短信发送成功{} ", businessId, phone, templateId, entity.getBody());
             return true;
         }else{
-            logger.info("{} {}短信发送失败{}",businessId, phone, templateId);
+            logger.info("{} {}短信发送失败{} ", businessId, phone, templateId, entity.getBody());
             return false;
         }
     }

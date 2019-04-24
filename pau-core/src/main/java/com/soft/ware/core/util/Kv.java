@@ -485,6 +485,7 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return map.entrySet();
     }
 
+    @SafeVarargs
     public static Kv<String,Object> toKv(Map<String,Object>... maps){
         if (maps == null || maps.length < 1) {
             return Kv.obj();

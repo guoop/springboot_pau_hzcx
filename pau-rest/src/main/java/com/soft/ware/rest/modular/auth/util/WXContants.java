@@ -46,6 +46,10 @@ public class WXContants {
 	 * 腾讯云短信服务
 	 */
 	public static final String TENCENTMSG_GATAWAY = "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=1400165586&random=142536";
+	/**
+	 * 群发接口
+	 */
+	public static final String TENCENTMSG_GATAWAY2 = "https://yun.tim.qq.com/v5/tlssmssvr/sendmultisms2?sdkappid=1400165586&random=142536";
 	//appid
 	public static final String TENCENTMSG_APPID = "1400165586";
     //app key
