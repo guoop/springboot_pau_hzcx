@@ -485,8 +485,18 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return map.entrySet();
     }
 
-    public static Kv<String,Object> toKv(Map<String,Object> map){
-        return Kv.obj().setAll(map);
+    public static Kv<String,Object> toKv(Map<String,Object>... maps){
+        if (maps == null || maps.length < 1) {
+            return Kv.obj();
+        } else {
+            Kv<String, Object> kv = Kv.obj().setAll(maps[0]);
+            for (int i = 1; i < maps.length; i++) {
+                if (maps[i] != null) {
+                    kv.setAll(maps[i]);
+                }
+            }
+            return kv;
+        }
     }
 
 
@@ -498,5 +508,50 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return list;
     }
 
+    public static Kv<String,String> toStringMap(Map<String, Object> map) {
+        return toStringMap(map, EmptyMode.NULL_KEEP);
+    }
+
+    public static Kv<String,String> toStringMap(Map<String, Object> map,EmptyMode mode) {
+        Kv<String, String> kv = Kv.init();
+        if (mode == EmptyMode.NULL_IGNORE ) {
+            for (Entry<String, Object> entry : map.entrySet()) {
+                if (entry.getValue() != null) {
+                    kv.put(entry.getKey(),entry.getValue().toString());
+                }
+            }
+        } else if (mode == EmptyMode.NULL_KEEP) {
+            for (Entry<String, Object> entry : map.entrySet()) {
+                kv.put(entry.getKey(), entry.getValue() == null ? null : entry.getValue().toString());
+            }
+        } else {
+            for (Entry<String, Object> entry : map.entrySet()) {
+                kv.put(entry.getKey(), entry.getValue() == null ? "" : entry.getValue().toString());
+            }
+        }
+        return kv;
+    }
+
+
+    public enum EmptyMode{
+
+        NULL_IGNORE("NULL_IGNORE"),
+        NULL_KEEP("NULL_KEEP"),
+        NULL_BLANK("null->\"\"");
+
+        private String value;
+
+        EmptyMode(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
 
 }

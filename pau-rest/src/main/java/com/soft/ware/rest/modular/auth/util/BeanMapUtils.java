@@ -203,14 +203,14 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
     }
 
     public static Map<String, Object> toMap(Object obj,boolean underline) throws Exception {
-        return toMap(obj, underline, 1);
+        return toMap(obj, underline, 0);
     }
 
     /**
      * object 转 map
      * @param obj
      * @param underline
-     * @param empty 1 不返回null，2 返回null, 3 把null替换为空
+     * @param empty 0 不返回null，1 返回null, 2 把null替换为空
      * @return
      * @throws Exception
      */

@@ -482,7 +482,7 @@ public class CustomerController extends BaseController {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj().set("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
         // 发送短信通知
-        String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "order_phone");
+        String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "orderPhone");
         if (StringUtils.isNotBlank(phone)) {
             smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.getOrderNO());
         }

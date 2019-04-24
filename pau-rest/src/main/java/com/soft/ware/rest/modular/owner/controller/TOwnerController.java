@@ -1,21 +1,25 @@
 package com.soft.ware.rest.modular.owner.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
-import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -26,6 +30,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/owner/v1")
 public class TOwnerController  extends BaseController {
+
+    @Autowired
+    private ISWxAppService appService;
 
     @Autowired
     private ITOwnerService itOwnerService;
@@ -89,7 +96,7 @@ public class TOwnerController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "update/info",method = RequestMethod.POST)
-    public Tip updateOwner(@RequestBody Map<String,Object> param,SessionUser sessionUser){
+    public Tip updateOwner(@RequestBody Map<String,Object> param,SessionUser sessionUser) throws Exception {
         TOwner tOwner = new TOwner();
         tOwner.setId(sessionUser.getOwnerId());
         if(ToolUtil.isNotEmpty(param)){
@@ -106,6 +113,7 @@ public class TOwnerController  extends BaseController {
                 tOwner.setEndTime(param.get("endTime").toString());
             }
            if(itOwnerService.updateById(tOwner)){
+               syncRedis(sessionUser);
                return new SuccessTip();
            }
         }
@@ -119,12 +127,27 @@ public class TOwnerController  extends BaseController {
      * @return
      */
     @RequestMapping(value = "update/config/info",method = RequestMethod.POST)
-    public Tip updateOwnerConfigInfo(@RequestBody Map<String,Object> map,SessionUser sessionUser){
+    public Tip updateOwnerConfigInfo(@RequestBody Map<String,Object> map,SessionUser sessionUser) throws Exception {
         map.put("ownerId",sessionUser.getOwnerId());
-           if(itOwnerConfigService.updateOwnerConfig(map)){
-          return new SuccessTip();
+       if(itOwnerConfigService.updateOwnerConfig(map)){
+           syncRedis(sessionUser);
+           return new SuccessTip();
        }
-        return  new ErrorTip();
+       return  new ErrorTip();
+    }
+
+
+    /**
+     * 同步商户信息到redis
+     * @param user
+     * @throws Exception
+     */
+    private void syncRedis(SessionUser user) throws Exception {
+        SWxApp app = appService.find(user);
+        Map<String, Object> config = itOwnerConfigService.findMap(Kv.obj("ownerId", user.getOwnerId()));
+        Map<String, Object> owner = itOwnerService.findMap(Kv.by("id", user.getOwnerId()));
+        redisTemplate.opsForHash().putAll("owner:" + app.getAppId(), Kv.toStringMap(config, Kv.EmptyMode.NULL_BLANK));
+        redisTemplate.opsForHash().putAll("owner:" + app.getAppId(),Kv.toStringMap(owner,Kv.EmptyMode.NULL_BLANK));
     }
 
 

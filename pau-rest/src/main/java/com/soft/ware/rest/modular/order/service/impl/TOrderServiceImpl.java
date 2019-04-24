@@ -672,6 +672,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             //设置取货时间
             order.setPickupTime(new Date(current));
             order.setMoneyChannel(TOrder.MONEY_CHANNEL_3);//仅支持微信支付
+            order.setOrderNo(out_trade_no);
             this.updateByVersion(order);
         } else {
             order.setPickupTime(null);

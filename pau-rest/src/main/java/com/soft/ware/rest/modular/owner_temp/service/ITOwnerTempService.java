@@ -13,5 +13,12 @@ public interface ITOwnerTempService extends IService<TOwnerTemp> {
 
     Map<String,Object> findMap(Map<String,Object> map);
 
+    /**
+     * 获取模板id
+     * @param user 登录用户
+     * @param key  pay,cancel,deliver,confirm,refund,diff
+     * @return
+     * @throws Exception
+     */
     String getTplId(SessionUser user, String key) throws Exception;
 }
