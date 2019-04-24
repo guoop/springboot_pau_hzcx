@@ -73,7 +73,7 @@ public class WxPayController extends BaseController {
         try {
             WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
             SWxApp app = appService.findByAppId(result.getAppid());
-            SessionUser user = new SessionUser(app.getId());
+            SessionUser user = new SessionUser().setAppId(app.getAppId()).setOwnerId(app.getOwnerId());
             WxPayService service = hzcxWxService.getWxPayService(app);
             result.checkResult(service, service.getConfig().getSignType(), false);
             //根据订单号 orderNo
@@ -87,6 +87,7 @@ public class WxPayController extends BaseController {
                 }
             } else {
                 //订单已经支付
+                return WxPayNotifyResponse.success("成功1");
             }
             logger.info("商家配送支付回调可能失败：" + xmlData);
         } catch (Exception e) {
@@ -109,7 +110,7 @@ public class WxPayController extends BaseController {
         try {
             WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
             SWxApp app = appService.findByAppId(result.getAppid());
-            SessionUser user = new SessionUser(app.getOwnerId());
+            SessionUser user = new SessionUser().setAppId(app.getAppId()).setOwnerId(app.getOwnerId());
             WxPayService service = hzcxWxService.getWxPayService(app);
             result.checkResult(service, service.getConfig().getSignType(), false);
             //根据订单号 attach
@@ -123,6 +124,7 @@ public class WxPayController extends BaseController {
                 }
             } else {
                 //订单已经支付
+                return WxPayNotifyResponse.success("成功1");
             }
             logger.info("到店自取支付回调可能失败：" + xmlData);
         } catch (Exception e) {
@@ -144,7 +146,7 @@ public class WxPayController extends BaseController {
         try {
             WxPayOrderNotifyResult result = WxPayOrderNotifyResult.fromXML(xmlData);
             SWxApp app = appService.findByAppId(result.getAppid());
-            SessionUser user = new SessionUser(app.getOwnerId());
+            SessionUser user = new SessionUser().setAppId(app.getAppId()).setOwnerId(app.getOwnerId());
             WxPayService service = hzcxWxService.getWxPayService(app);
             result.checkResult(service, service.getConfig().getSignType(), false);
             TOrderMoneyDiff order = BeanMapUtils.toObject(orderMoneyDiffService.findMap(Kv.obj("creater", user.getOpenId()).set("payOutNo", result.getOutTradeNo())), TOrderMoneyDiff.class);
@@ -155,8 +157,10 @@ public class WxPayController extends BaseController {
             if (update) {
                 logger.info("补差价支付回调成功：" + xmlData);
                 return WxPayNotifyResponse.success("成功");
+            } else {
+                logger.info("补差价支付回调可能失败：" + xmlData);
+                return WxPayNotifyResponse.success("成功");
             }
-            logger.info("补差价支付回调可能失败：" + xmlData);
         } catch (Exception e) {
             e.printStackTrace();
             //todo yancc 处理失败

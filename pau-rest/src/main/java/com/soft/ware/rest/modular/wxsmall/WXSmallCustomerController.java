@@ -327,7 +327,8 @@ public class WXSmallCustomerController  extends BaseController {
             // 微信支付时发送模板消息
             String pay = tempService.getTplId(user, "pay");
             TblOwner owner = ownerService.find(user);
-            WxMaService service = hzcxWxService.getWxMaService(owner);
+            //WxMaService service = hzcxWxService.getWxMaService(owner);
+            WxMaService service = null;
             List<WxMaTemplateData> msList = new ArrayList<>();
             // 订单编号
             msList.add(new WxMaTemplateData("keyword1", param.gevoidNO()));
@@ -579,7 +580,8 @@ public class WXSmallCustomerController  extends BaseController {
     //@RequestMapping(value = "/customer/v1/order/status",method = RequestMethod.GET)
     public Object orderFind(SessionUser user,String orderNO) throws WxPayException {
         TblOwner owner = ownerService.find(user);
-        WxPayService service = hzcxWxService.getWxPayService(owner);
+        //WxPayService service = hzcxWxService.getWxPayService(owner);
+        WxPayService service = null;
         WxPayOrderQueryResult result = service.queryOrder(WxPayOrderQueryRequest.newBuilder().outTradeNo(orderNO).build());
         try{
             TblOrder o = orderService.findByNo(user, orderNO);
@@ -638,7 +640,11 @@ public class WXSmallCustomerController  extends BaseController {
     public Tip buildPayView(TblOwner owner,WxPayUnifiedOrderRequest req){
         Kv<String,Object> tip;
         try {
-            WxPayMpOrderResult res = hzcxWxService.getWxPayService(owner).createOrder(req);
+            //WxPayMpOrderResult res = hzcxWxService.getWxPayService(owner).createOrder(req);
+            WxPayMpOrderResult res = null;
+            if (res == null) {
+                throw new WxPayException("xxxxxxxxxx");
+            }
             tip = render();
             tip.set("out_trade_no", req.getOutTradeNo());
             // 小程序 客户端支付需要 nonceStr,timestamp,package,paySign  这四个参数

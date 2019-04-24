@@ -58,8 +58,9 @@ public class SessionUser  {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public SessionUser setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+        return this;
     }
 
     public String getOpenId(){
@@ -82,8 +83,9 @@ public class SessionUser  {
      * 构造appid
      * @param appId
      */
-    public void setAppId(String appId) {
+    public SessionUser setAppId(String appId) {
         this.appId = appId;
+        return this;
     }
 
     /**

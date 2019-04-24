@@ -30,7 +30,7 @@ public class TblOwnerTempServiceImpl extends BaseService<TblOwnerTempMapper,TblO
     private TblOwnerTempMapper tblOwnerTempMapper;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String,String> redisTemplate;
 
     @Autowired
     private HzcxWxService hzcxWxService;
@@ -44,10 +44,11 @@ public class TblOwnerTempServiceImpl extends BaseService<TblOwnerTempMapper,TblO
             TblOwnerTemp tpl =  tblOwnerTempMapper.findByUser(user);
             if (tpl != null) {
                 String tmpl = tpl.getTmpl();
-                Map map = JSON.parseObject(tmpl, Map.class);
+                Map<String,String> map = (Map<String,String>)JSON.parseObject(tmpl, Map.class);
                 if (map == null) {
-                    map = new LinkedHashMap();
-                    WxMaService service = hzcxWxService.getWxMaService(user);
+                    map = new LinkedHashMap<String,String>();
+                    WxMaService service = null;
+                    //WxMaService service = hzcxWxService.getWxMaService(user);
                     WxMaTemplateListResult result = service.getTemplateService().findTemplateList(0, 20);
                     List<WxMaTemplateListResult.TemplateInfo> ls = result.getList();
                     for (WxMaTemplateListResult.TemplateInfo l : ls) {
@@ -61,10 +62,14 @@ public class TblOwnerTempServiceImpl extends BaseService<TblOwnerTempMapper,TblO
                             map.put("confirm", l.getTemplateId());
                         } else if (l.getTitle().equals("退款通知")) {
                             map.put("refund", l.getTemplateId());
+                        } else if (l.getTitle().equals("待付款提醒")) {
+                            map.put("diff", l.getTemplateId());
+                        } else {
+                            map.put(l.getTitle().hashCode()+"", l.getTemplateId());
                         }
                     }
                     tpl.setTmpl(JSON.toJSONString(map));
-                    tblOwnerTempMapper.update(tpl, new EntityWrapper<TblOwnerTemp>(new TblOwnerTemp().setId(tpl.getId())));
+                    tblOwnerTempMapper.update(tpl, new EntityWrapper<>(new TblOwnerTemp().setId(tpl.getId())));
                 }
                 redisTemplate.opsForHash().putAll(name, map);
                 if (map.containsKey(key)) {

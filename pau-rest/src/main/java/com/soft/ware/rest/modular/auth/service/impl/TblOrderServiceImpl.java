@@ -332,7 +332,8 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
         long current = System.currentTimeMillis();
         String dateFormat = "YYYY-MM-DD HH:mm:ss";
         Date date = new Date(current);
-        WxMaService service = hzcxWxService.getWxMaService(owner);
+        //WxMaService service = hzcxWxService.getWxMaService(owner);
+        WxMaService service = null;
         List<String> ids = Lists.newArrayList();
         List<String> nums = Lists.newArrayList();
         String[] gs = order.getGoods().split(",");
@@ -362,7 +363,6 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
                 WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, order);
                 msg.getData().add(new WxMaTemplateData("keyword6", order.getCancelReason()));// 取消原因
                 msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
-                service.getMsgService().sendTemplateMsg(msg);
             } else {
                 throw new PauException(BizExceptionEnum.ORDER_CANEL_FAIL);
             }
@@ -456,7 +456,8 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
             orderNO = order.getConsigneeMobile() + "" + order.getCreatedAt().getTime();
         }
         TblOwner owner = ownerService.find(user);
-        WxPayService service = hzcxWxService.getWxPayService(owner);
+        //WxPayService service = hzcxWxService.getWxPayService(owner);
+        WxPayService service = null;
         //先执行操作，在发送通知，发送失败可以回滚
         //todo yancc 需要添加 行锁
         order.setStatus(param.getRefundType().equals("all") ? -1 : 3);
@@ -491,7 +492,7 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
                 msg.getData().add(new WxMaTemplateData("keyword6", order.getRefundReason()));
                 msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
-                hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
+                //hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
             }catch (Exception e){
                 e.printStackTrace();
                 //todo yancc 失败是否补发通知
@@ -530,7 +531,8 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
 
         try {
             if (update) {
-                WxPayService service = hzcxWxService.getWxPayService(owner);
+                //WxPayService service = hzcxWxService.getWxPayService(owner);
+                WxPayService service = null;
                 BigDecimal refundFee = BigDecimal.valueOf(Math.abs(diff.getMoneyDiff().doubleValue()));
                 WxPayRefundRequest req = WxPayRefundRequest
                         .newBuilder()
@@ -546,12 +548,12 @@ public class TblOrderServiceImpl extends BaseService<TblOrderMapper,TblOrder> im
                 msg.getData().set(4, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
                 msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.getRefundReason()) ? "小票差额退款" : param.getRefundReason()));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
-                try {
-                    hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
-                } catch (WxErrorException e) {
-                    logger.error("订单差价退款成功，但是通知发送失败,订单号:{},退款单号:{},错误码：{},错误信息：{}", order.getNo(), req.getOutRefundNo(), e.getError().getErrorCode(), e.getError().getErrorMsg());
-                    e.printStackTrace();
-                }
+                //try {
+                //    hzcxWxService.getWxMaService(owner).getMsgService().sendTemplateMsg(msg);
+                //} catch (WxErrorException e) {
+                //    logger.error("订单差价退款成功，但是通知发送失败,订单号:{},退款单号:{},错误码：{},错误信息：{}", order.getNo(), req.getOutRefundNo(), e.getError().getErrorCode(), e.getError().getErrorMsg());
+                //    e.printStackTrace();
+                //}
 
                 return true;
             }

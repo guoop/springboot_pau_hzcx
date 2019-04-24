@@ -8,12 +8,13 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.EntPayServiceImpl;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import com.soft.ware.rest.modular.wx_secret.model.SWxSecret;
 import com.soft.ware.rest.modular.wx_secret.service.ISWxSecretService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
 
 
     @Autowired
-    private TblOwnerService ownerService;
+    private ITOwnerService ownerService;
 
     private HashMap<String,WxPayService> map = new HashMap<>();
     private HashMap<String,WxMaService> map2 = new HashMap<>();
@@ -42,48 +43,25 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
     private String customerPay;
 
     @Autowired
+    private ISWxAppService appService;
+
+    @Autowired
     private ISWxSecretService secretService;
 
     private WxMaService wxMaService;
 
 
 
-    @Deprecated
     @Override
-    public WxPayService getWxPayService(TblOwner owner) {
-        if (map.containsKey(owner.getAppId())) {
-            return map.get(owner.getAppId());
-        } else {
-            WxPayServiceImpl service = new WxPayServiceImpl();
-            WxPayConfig config = new WxPayConfig();
-            config.setAppId(owner.getAppId());
-            config.setMchId(owner.getShopId());//商户号
-            config.setNotifyUrl(customerPayHost + customerPay);
-            config.setMchKey(owner.getShopSecret());
-            config.setTradeType(WxPayConstants.TradeType.JSAPI);
-            config.setSignType(WxPayConstants.SignType.MD5);
-            config.setKeyPath("classpath:p12/" + owner.getOwner() + ".p12");
-            service.setConfig(config);
-            service.setEntPayService(new EntPayServiceImpl(service));
-            map.put(owner.getAppId(), service);
-            return service;
-        }
+    public WxPayService getWxPayService(TOwner owner) {
+        SWxApp app = appService.find(owner);
+        return getWxPayService(app);
     }
 
-    @Deprecated
     @Override
-    public WxMaService getWxMaService(TblOwner owner){
-        if (map2.containsKey(owner.getAppId())) {
-            return map2.get(owner.getAppId());
-        } else {
-            WxMaService service = new WxMaServiceImpl();
-            WxMaInMemoryConfig config = new WxMaInMemoryConfig();
-            config.setAppid(owner.getAppId());
-            config.setSecret(owner.getAppSecret());
-            service.setWxMaConfig(config);
-            map2.put(owner.getAppId(), service);
-            return service;
-        }
+    public WxMaService getWxMaService(TOwner owner){
+        SWxApp app = appService.find(owner);
+        return getWxMaService(app);
     }
 
     @Override
@@ -125,18 +103,18 @@ public class HzcxWxPayServiceImpl implements HzcxWxService {
 
     @Deprecated
     @Override
-    public WxMaService getWxMaService(SessionUser user) {
-        TblOwner owner = ownerService.findByAppId(user.getAppId());
-        return getWxMaService(owner);
+    public WxMaService getWxMaService(SessionUser user) throws Exception {
+        SWxApp app = appService.find(user);
+        return getWxMaService(app);
     }
 
 
 
     @Deprecated
     @Override
-    public WxPayService getWxPayService(SessionUser user) {
-        TblOwner owner = ownerService.findByAppId(user.getAppId());
-        return getWxPayService(owner);
+    public WxPayService getWxPayService(SessionUser user) throws Exception {
+        SWxApp app = appService.find(user);
+        return getWxPayService(app);
     }
 
 
