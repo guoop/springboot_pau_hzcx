@@ -227,11 +227,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         TAddress tAddress = null;
         if(ToolUtil.isNotEmpty(tOrder.getAddressId())){
             tAddress = tAddressService.selectById(tOrder.getAddressId());
-            if (tOrder.getSource().equals(TOrder.SOURCE_2)) {
-                orderNO = tAddress.getPhone() + "" + tOrder.getCreateTime().getTime();
-            }
-        }{
-            orderNO = tOrder.getPhone() + ""+ tOrder.getCreateTime().getTime();
         }
         SWxApp sWxApp = isWxAppService.find(new TOwner().setId(param.get("owner_id").toString()));
         WxPayService service = hzcxWxService.getWxPayService(sWxApp);
@@ -705,7 +700,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) {
+    public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) throws WxErrorException, WxPayException {
         TOrder tOrder = new TOrder();
         boolean isSuccess = false;
         tOrder.setOrderNo(param.get("orderNo").toString());
@@ -743,7 +738,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             BigDecimal payMoney = tOrder.getPayMoney();
             System.out.println("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
             tOrderDiff.setMoneyDiff(money.subtract(payMoney));
-        try {
+
         if(money.compareTo(payMoney) == -1){
             //todo yancc 需要乐观锁
             tOrderDiff.setStatus(TOrderMoneyDiff.status_1);
@@ -769,25 +764,15 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 msg.getData().set(3, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
                 msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.get("refundReason").toString()) ? "小票差额退款" : param.get("refundReason").toString()));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
-                try {
-                    hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
-
-                } catch (WxErrorException e) {
-                    logger.error("订单差价退款成功，但是通知发送失败,订单号:{},退款单号:{},错误码：{},错误信息：{}", tOrder.getOrderNo(), req.getOutRefundNo(), e.getError().getErrorCode(), e.getError().getErrorMsg());
-                    e.printStackTrace();
-                }
+                hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
                 return true;
             }
         }else if(money.compareTo(payMoney) == 1){
-            // 如果是到店自提的订单
-            if (tOrder.getSource().equals(TOrder.SOURCE_2)) {
-                payOrderNo = tOrder.getPhone() + "" + tOrder.getCreateTime().getTime();
-            }else{
-                payOrderNo = IdGenerator.getId() + tOrder.getCreateTime().getTime();
-            }
-
+             // 订单手机号 + 12 位随机字符 + 当前时间戳
+            payOrderNo = tOrder.getPhone() + "" + ToolUtil.getRandomString(12)+DateUtil.timestampToDate();
             tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
             tOrderDiff.setPayOrderNo(payOrderNo);
+            System.out.println(tOrderDiff.getId());
             if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
                 isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
             }else{
@@ -802,35 +787,19 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             msg.getData().add(new WxMaTemplateData("keyword7",tOrder.getPayMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
             msg.getData().add(new WxMaTemplateData("keyword8",tOrderDiff.getMoneyDiff().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
             msg.getData().add(new WxMaTemplateData("keyword9", tOrderDiff.getMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
-
-            try {
-                hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
-            } catch (WxErrorException e) {
-                e.printStackTrace();
-            }
-            return true;
+            hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
         }else{
             throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_EXCEPTION);
         }
         if(isSuccess){
             return true;
         }
-
-        } catch (WxPayException e) {
-            //todo yancc 需要乐观锁
-            logger.info("订单差价退款失败,订单号{}，错误码{},错误原因{}", tOrder.getOrderNo(), e.getErrCode(), e.getErrCodeDes());
             //退款失败
             tOrderDiff.setRefunder(sessionUser.getPhone());
             tOrderDiff.setRefundTime(new Date());
             tOrderDiff.setRefundStatus(TOrderMoneyDiff.refund_status_2);
-            if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
-                isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
-            }else{
-                tOrderMoneyDiff.setId(IdGenerator.getId());
-                isSuccess = orderMoneyDiffService.insert(tOrderDiff);
-            }
-            e.printStackTrace();
-        }
+            tOrderMoneyDiff.setId(IdGenerator.getId());
+            isSuccess = orderMoneyDiffService.insert(tOrderDiff);
         return false;
     }
 

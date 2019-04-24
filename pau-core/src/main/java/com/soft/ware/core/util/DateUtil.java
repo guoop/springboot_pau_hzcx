@@ -370,15 +370,11 @@ public class DateUtil {
 
 
 	public static void main(String[] args) {
+    	System.out.println(DateUtil.timestampToDate());
 
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String timeFormat = sdf.format(parseDate("2019-01-01"));
-		System.out.println(timeFormat);
-
-      System.out.println(parse("2017-01-01","yyyy-MM-dd"));
-
-		System.out.println("---------------"+ parseDate("2019-01-01"));
+		System.out.println(DateUtil.getAllTime());
+		System.out.println(DateUtil.getTimeByDate(new Date()));
 	}
 
 }

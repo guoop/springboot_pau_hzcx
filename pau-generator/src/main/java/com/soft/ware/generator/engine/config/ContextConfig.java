@@ -19,6 +19,7 @@ public class ContextConfig {
     private String coreBasePackage = "com.soft.ware.core";
     private String modelPackageName = "com.soft.ware.modular.system.model";        //model的包名
     private String modelMapperPackageName = "com.soft.ware.modular.system.dao";    //model的dao
+    private String serviceTransactional;                //控制事物的注解@Transactional
     private String entityName;              //实体的名称
 
     private Boolean controllerSwitch = true;    //是否生成控制器代码开关
@@ -75,6 +76,14 @@ public class ContextConfig {
 
     public String getModuleName() {
         return moduleName;
+    }
+
+    public String getServiceTransactional() {
+        return serviceTransactional;
+    }
+
+    public void setServiceTransactional(String serviceTransactional) {
+        this.serviceTransactional = serviceTransactional;
     }
 
     public void setModuleName(String moduleName) {

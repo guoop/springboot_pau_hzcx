@@ -31,7 +31,6 @@ public class ServiceConfig {
         interfaceImports.add("com.baomidou.mybatisplus.service.IService");
         interfaceImports.add(contextConfig.getModelPackageName() + "." + contextConfig.getEntityName());
         this.serviceInterfaceImports = interfaceImports;
-
         this.servicePathTemplate = "\\src\\main\\java\\" + contextConfig.getProPackage().replaceAll("\\.", "\\\\") + "\\modular\\" + contextConfig.getModuleName() + "\\service\\I{}Service.java";
         this.serviceImplPathTemplate = "\\src\\main\\java\\" + contextConfig.getProPackage().replaceAll("\\.", "\\\\") + "\\modular\\" + contextConfig.getModuleName() + "\\service\\impl\\{}ServiceImpl.java";
         this.packageName = contextConfig.getProPackage() + ".modular." + contextConfig.getModuleName() + ".service";
