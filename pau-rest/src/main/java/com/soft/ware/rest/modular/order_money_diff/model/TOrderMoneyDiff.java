@@ -203,12 +203,12 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         this.pic = pic;return this;
     }
 
-    public Date getCreatedTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public TOrderMoneyDiff setCreatedTime( Date createdTime) {
-        this.createTime = createdTime;return this;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getCreater() {
