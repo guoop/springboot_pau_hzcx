@@ -22,8 +22,6 @@ import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.TblGoods;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
@@ -32,6 +30,7 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.RegexUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods.model.TUnit;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import com.soft.ware.rest.modular.goods.service.ITUnitService;
@@ -365,7 +364,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             price = g.getBigDecimal("price");
             num = BigDecimal.valueOf(c.getGoodsNum());
             // 只计算在售商品
-            if (TblGoods.status_1.equals(g.getInt("status"))) {
+            if (TGoods.status_1.equals(g.getInt("status"))) {
                 // let goodsPrice = parseFloat(result.price_unit);             // 商品单价
                 // let goodsMoney = parseInt(cartGoodsItems[2]) * goodsPrice;  // 商品总价 = 商品单价 * 购买数量
                 BigDecimal goodsMoney = num.multiply(price);   // 商品总价 = 商品单价 * 购买数量
@@ -544,8 +543,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             case "deliver":
                 // 只允许对已经经过商家确认的订单进行配送
                 try {
-                    if (tOrder.getStatus().equals(TblOrder.STATUS_10)) {
-                        tOrder.setStatus(TblOrder.STATUS_2);
+                    if (tOrder.getStatus().equals(TOrder.STATUS_10)) {
+                        tOrder.setStatus(TOrder.STATUS_2);
                         tOrder.setDistributioner(sessionUser.getPhone());
                         tOrder.setDistributionTime(new Date());
                         updateNum = orderMapper.updateById(tOrder);
@@ -592,8 +591,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             //已完成
             case "done":
                 // 只允许对配送中的订单进行标记完成操作
-                if (tOrder.getStatus().equals(TblOrder.SOURCE_2)) {
-                    tOrder.setStatus(TblOrder.STATUS_3);
+                if (tOrder.getStatus().equals(TOrder.SOURCE_2)) {
+                    tOrder.setStatus(TOrder.STATUS_3);
                     tOrder.setDoner(sessionUser.getPhone());
                     tOrder.setDoneTime(new Date());
                     updateNum = orderMapper.updateById(tOrder);
@@ -636,7 +635,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         TOrder order = BeanMapUtils.toObject(this.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
         SWxApp app = appService.find(user);
         long current = System.currentTimeMillis();
-        boolean source2 = Integer.valueOf(TblOrder.SOURCE_2).equals(source);
+        boolean source2 = Integer.valueOf(TOrder.SOURCE_2).equals(source);
         // 商品描述
         String body = "购买商品";
         // 支付成功的回调地址  可访问 不带参数

@@ -4,14 +4,10 @@ package com.soft.ware.rest.modular.auth.controller.dto;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Base64;
 import java.util.List;

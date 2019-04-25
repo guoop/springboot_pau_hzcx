@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.common.persistence.model.TblOwnerGroups;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.ParamUtils;
@@ -312,7 +309,7 @@ public class ImServiceImpl implements ImService {
      * @param log  日志前缀
      */
     private void sendNotify(SessionUser user,Kv<String,Object> body,String log){
-        List<SImGroups> groups = imGroupsService.find(user, TblOwnerGroups.type_0);
+        List<SImGroups> groups = imGroupsService.find(user, SImGroups.type_0);
         for (SImGroups group : groups) {
             if (StringUtils.isBlank(group.getOwnerUsername())) {
                 continue;
@@ -339,8 +336,8 @@ public class ImServiceImpl implements ImService {
      * @param type
      * @return
      */
-    private String buildUsername(TblOwnerStaff u,ImGroupType type){
-        return u.getOwner() + "-" + type.getSeparator() + "-" + u.getPhone();
+    private String buildUsername(TOwnerStaff u,ImGroupType type){
+        return u.getOwnerId() + "-" + type.getSeparator() + "-" + u.getPhone();
     }
 
     /**
@@ -349,8 +346,8 @@ public class ImServiceImpl implements ImService {
      * @param type
      * @return
      */
-    private String buildOwnerGroupUsername(TblOwner owner, ImGroupType type){
-        return owner.getOwner() + "--" + type.name();
+    private String buildOwnerGroupUsername(TOwner owner, ImGroupType type){
+        return owner.getId() + "--" + type.name();
     }
 
 
@@ -463,7 +460,7 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @throws Exception
      */
-    private void updateGroup(SessionUser user,TblOwner owner,ImGroupType type) throws Exception {
+    private void updateGroup(SessionUser user,TOwner owner,ImGroupType type) throws Exception {
         Kv<String, String> params = Kv.by("owner_username", buildOwnerGroupUsername(owner, type)).set("name", owner.getName());
         put("/v1/groups", params);
     }
@@ -475,7 +472,7 @@ public class ImServiceImpl implements ImService {
      * @param owner
      * @throws Exception
      */
-    private void delGroup(SessionUser user,TblOwner owner,ImGroupType type) throws Exception {
+    private void delGroup(SessionUser user,TOwner owner,ImGroupType type) throws Exception {
         del("/v1/groups/" + buildOwnerGroupUsername(owner, type));
     }
 

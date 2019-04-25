@@ -10,7 +10,6 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ResultView;
-import com.soft.ware.rest.common.persistence.model.TblOrder;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
@@ -600,7 +599,7 @@ public class CustomerController extends BaseController {
         WxPayOrderQueryResult result = service.queryOrder(WxPayOrderQueryRequest.newBuilder().outTradeNo(orderNO).build());
         try {
             Map<String, Object> map = orderService.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", orderNO));
-            if (TblOrder.STATUS_0.equals(map.get("status"))) {
+            if (TOrder.STATUS_0.equals(map.get("status"))) {
                 //orderService.update(result, user);
                 //todo yancc
             }

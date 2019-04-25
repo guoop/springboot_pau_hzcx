@@ -7,7 +7,6 @@ import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.config.properties.JwtProperties;
 import com.soft.ware.rest.modular.auth.controller.dto.AuthRequest;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
@@ -113,10 +112,10 @@ public class AuthController extends BaseController {
         if (user == null) {
             return render(false, "用户不存在");
         }
-        if (TblOwnerStaff.status_1.equals(user.getStatus())) {
+        if (TOwnerStaff.status_1.equals(user.getStatus())) {
             return render(false, "账户被禁用");
         }
-        if (TblOwnerStaff.status_2.equals(user.getStatus())) {
+        if (TOwnerStaff.status_2.equals(user.getStatus())) {
             return render(false, "账户不存在");
         }
         final String randomKey = jwtTokenUtil.getRandomKey();

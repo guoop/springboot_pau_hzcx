@@ -17,6 +17,15 @@ import java.util.Date;
 @TableName("t_app_version")
 public class TAppVersion extends Model<TAppVersion> {
 
+    /**
+     * android 收银客户端
+     */
+    public static String PLATFORM_CODE_APP_ANDROID = "app-android";
+    /**
+     * windows 收银客户端
+     */
+    public static String PLATFORM_CODE_APP_WINDOWS = "app-windows";
+
     private static final long serialVersionUID = 1L;
 
     /**
