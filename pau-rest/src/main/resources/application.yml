@@ -3,7 +3,7 @@ rest:
   sign-open: true #签名机制是否开启(true或false)
 wx:
  pay:
-  notify_host: http://wx.javaccy.giize.com
+  notify_host: http://246q2604o1.qicp.vip
   notify_url_customer_pay_pickup: /customer-pay/pickup #到店自提支付回调
   notify_url_customer_pay: /customer-pay #商家发货支付回调
   notify_url_customer_pay_diff: /customer-pay/money-diff #补差价支付回调

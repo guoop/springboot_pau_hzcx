@@ -505,8 +505,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         return super.update(order, new EntityWrapper<>(new TOrder().setId(order.getId()).setVersion(version)));
     }
 
-
-
     public WxPayMpOrderResult pay(SWxApp app, SessionUser user, String no, Integer total_fee, String notifyUrl, String body, String attach, String ip) throws WxPayException {
         WxPayUnifiedOrderRequest req = WxPayUnifiedOrderRequest
                 .newBuilder()
@@ -775,9 +773,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             }
         }else if(money.compareTo(payMoney) == 1){
              // 订单手机号 + 12 位随机字符 + 当前时间戳
-            payOrderNo = tOrder.getPhone() + "" + ToolUtil.getRandomString(12)+DateUtil.timestampToDate();
             tOrderDiff.setStatus(TOrderMoneyDiff.status_0);
-            tOrderDiff.setPayOrderNo(payOrderNo);
+            tOrderDiff.setPayOrderNo(IdGenerator.getOrderNo());
             System.out.println(tOrderDiff.getId());
             if(ToolUtil.isNotEmpty(tOrderDiff.getId())){
                 isSuccess = orderMoneyDiffService.updateById(tOrderDiff);
