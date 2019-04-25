@@ -61,6 +61,7 @@
         select <include refid="Base_Column_Name_List"/> from t_category where 1=1
         and pid is null and is_delete = 0
         <include refid="Condition"/>
+        order by sort asc
     </select>
 
     <select id="selectChildrenCategoryList"  parameterType="java.util.Map" resultMap="BaseResultMap">

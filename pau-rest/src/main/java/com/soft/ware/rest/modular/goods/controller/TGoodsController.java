@@ -90,7 +90,7 @@ public class TGoodsController {
      */
     @RequestMapping("category/list")
     public Tip getCategoryList(@RequestParam Map<String,Object> param, Page page, SessionUser sessionUser){
-        param.put("owner_id",sessionUser.getOwnerId());
+        param.put("ownerId",sessionUser.getOwnerId());
        List<TCategory> list = itCategoryService.selectParentCategoryList(param);
        if(list.size() > 0){
            return new SuccessTip(list);

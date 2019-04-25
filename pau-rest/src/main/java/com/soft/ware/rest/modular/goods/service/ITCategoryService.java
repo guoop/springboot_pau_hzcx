@@ -22,7 +22,7 @@ public interface ITCategoryService extends IService<TCategory> {
 
     List<Map<String, Object>> findMaps(Map<String, Object> map);
 
-    List<TCategory> selectParentCategoryList(Map<String,Object> map);
+    List<TCategory> selectParentCategoryList(Map<String,Object> map );
 
     List<TCategory> selectChildrenCategoryList(Map<String,Object> map);
 
