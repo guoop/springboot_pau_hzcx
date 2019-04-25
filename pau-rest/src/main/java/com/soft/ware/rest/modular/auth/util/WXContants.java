@@ -76,7 +76,7 @@ public class WXContants {
 	public static final String JG_GATEWAY = "https://api.im.jpush.cn";
 
 	//默认日期时间格式
-	public static final String date_format = "YYYY-MM-DD HH:mm:ss";
+	public static final String date_format = "YYYY-MM-dd HH:mm:ss";
 	//默认金额显示，格式
 	public static final int big_decimal_sale = BigDecimal.ROUND_HALF_UP;
 
