@@ -206,10 +206,8 @@ public class WxPayController extends BaseController {
             }
             if (TOrder.MONEY_CHANNEL_3.equals(order.getMoneyChannel()) || TOrder.MONEY_CHANNEL_0.equals(order.getMoneyChannel())) {
                 logger.debug("买家支付订单时保存PrepayID {} = {}", tempKey, pack);
-                // 微信支付时发送模板消息
-                String pay = ownerTempService.getTplId(user, "pay");
                 // 备注信息
-                WxMaTemplateMessage msg = orderService.buildOrderTemplateMessage(pay, pack, order, names, address);
+                WxMaTemplateMessage msg = orderService.buildOrderTemplateMessage(user,"pay", pack, order, names, address);
                 msg.getData().add(new WxMaTemplateData("keyword6", "如有疑问，请进入小程序联系商家"));
                 hzcxWxService.getWxMaService(app).getMsgService().sendTemplateMsg(msg);
             }

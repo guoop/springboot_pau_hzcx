@@ -7,6 +7,7 @@ import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.rest.PauRestApplication;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
+import com.soft.ware.rest.modular.order.service.ITOrderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class RefundTest {
     @Autowired
     private HzcxWxService hzcxWxService;
 
+    @Autowired
+    private ITOrderService orderService;
+
 
     /**
      * 按订单号强制退款
@@ -30,6 +34,8 @@ public class RefundTest {
     public void refund() throws Exception {
         String no = "";
         //no = "1118453238184235011";//史李阳
+        //no = "150831018981556101845000";//郭先鹏
+        no = "1120997420023042050";
         SessionUser user = new SessionUser();
         user.setOwnerId("16d0a4b0dcd411e8b2e187bf6b98e5cd");
         WxPayService service = hzcxWxService.getWxPayService(user);

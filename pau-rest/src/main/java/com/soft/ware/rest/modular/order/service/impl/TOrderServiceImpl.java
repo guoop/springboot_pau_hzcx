@@ -49,6 +49,7 @@ import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
+import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -120,6 +121,9 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Autowired
     private ITRefundService itRefundService;
+
+    @Autowired
+    private ITOwnerTempService ownerTempService;
 
 
 
@@ -284,8 +288,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                     order.setCancelReason(order.getRefundReason());*/
                 }
                 String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
-                String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "refund");
-                WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
+                WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"refund", formID, tOrder,goodsNames,tAddress);
                 msg.getData().set(3, new WxMaTemplateData("keyword5", "all".equals(param.get("refundType").toString()) ? tOrder.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
                 msg.getData().add(new WxMaTemplateData("keyword6", param.get("refundReason").toString()));
                 msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
@@ -304,7 +307,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
 
     @Override
-    public WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order, List<String> gs, TAddress address){
+    public WxMaTemplateMessage buildOrderTemplateMessage(SessionUser user,String templateKey, String fromID, TOrder order, List<String> gs, TAddress address) throws Exception {
+        String templateID = ownerTempService.getTplId(user , templateKey);
         StringBuilder goodsName = new StringBuilder();
         int i = 0;
         do {
@@ -550,7 +554,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         //update = this.update(order, new EntityWrapper<>(new TblOrder().setId(order.getId()).setOwner(user.getOwnerId())));
                             logger.info("配送订单 - ", tOrder.getOrderNo());
                             String templateFormId = redisTemplate.opsForValue().get("ms:fit:" + tOrder.getOrderNo());
-                            WxMaTemplateMessage msg = this.buildOrderTemplateMessage("deliver", templateFormId, tOrder,goodsNames,address);
+                            WxMaTemplateMessage msg = this.buildOrderTemplateMessage(sessionUser,"deliver", templateFormId, tOrder,goodsNames,address);
                             msg.getData().add(new WxMaTemplateData("keyword6", "配送人员已经开始为您配送，请保持手机畅通"));// 温馨提示
                             msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
                             service.getMsgService().sendTemplateMsg(msg);
@@ -559,6 +563,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         throw new PauException(BizExceptionEnum.ORDER_DELIVER_FAIL);
                     }
                 } catch (WxErrorException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
@@ -571,7 +577,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         updateNum = orderMapper.updateById(tOrder);
                         logger.info("确认订单 - {}", tOrder.getOrderNo());
                         String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
-                        WxMaTemplateMessage msg = this.buildOrderTemplateMessage("confirm", templateFormId,tOrder,goodsNames,address );
+                        WxMaTemplateMessage msg = this.buildOrderTemplateMessage(sessionUser,"confirm", templateFormId,tOrder,goodsNames,address );
                         msg.getData().add(new WxMaTemplateData("keyword6",DateUtil.format(tOrder.getCreateTime(), "YYYY-MM-DD HH:mm:ss")));// 确认时间
                         msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息*/
                         service.getMsgService().sendTemplateMsg(msg);
@@ -579,6 +585,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         throw new PauException(BizExceptionEnum.ORDER_CONFIRM_FAIL);
                     }
                 } catch (WxErrorException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
@@ -606,11 +614,13 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         updateNum = orderMapper.updateById(tOrder);
                         String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
                         //订单下的子订单商品名称
-                        WxMaTemplateMessage msg = this.buildOrderTemplateMessage("cancel", templateFormId, tOrder,goodsNames,address);
+                        WxMaTemplateMessage msg = this.buildOrderTemplateMessage(sessionUser,"cancel", templateFormId, tOrder,goodsNames,address);
                         msg.getData().add(new WxMaTemplateData("keyword6",tOrder.getCancelReason()));// 取消原因
                         msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息
                         service.getMsgService().sendTemplateMsg(msg);
                     } catch (WxErrorException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -700,7 +710,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) throws WxErrorException, WxPayException {
+    public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) throws Exception {
         TOrder tOrder = new TOrder();
         boolean isSuccess = false;
         tOrder.setOrderNo(param.get("orderNo").toString());
@@ -759,8 +769,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         .build();
                 service.refund(req);
                 String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
-                String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "refund");
-                WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
+                WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"refund", formID, tOrder,goodsNames,tAddress);
                 msg.getData().set(3, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
                 msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.get("refundReason").toString()) ? "小票差额退款" : param.get("refundReason").toString()));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
@@ -781,8 +790,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             }
             // TODO: 2019/4/23 paulo 需要添加通知提醒客户补差价
             String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
-            String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "diff");
-            WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
+            WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"diff", formID, tOrder,goodsNames,tAddress);
             msg.getData().set(3,new WxMaTemplateData("keyword3",goodsNames.get(0)));
             msg.getData().add(new WxMaTemplateData("keyword7",tOrder.getPayMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
             msg.getData().add(new WxMaTemplateData("keyword8",tOrderDiff.getMoneyDiff().setScale(2,WXContants.big_decimal_sale).toString()+"元"));

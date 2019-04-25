@@ -4,13 +4,11 @@ import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
-import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
-import me.chanjar.weixin.common.error.WxErrorException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +40,7 @@ public interface ITOrderService extends IService<TOrder> {
     boolean orderRefund(Map<String,Object> map , SessionUser sessionUser);
 
 
-    WxMaTemplateMessage buildOrderTemplateMessage(String templateID, String fromID, TOrder order,List<String> goodsNames, TAddress address);
+    WxMaTemplateMessage buildOrderTemplateMessage(SessionUser user,String templateKey, String fromID, TOrder order,List<String> goodsNames, TAddress address) throws Exception;
 
     TOrder createMiniAppOrder(SessionUser user, CreateOrderParam param) throws Exception;
 
@@ -80,7 +78,7 @@ public interface ITOrderService extends IService<TOrder> {
 
     WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
 
-    boolean diffMoney(Map<String,Object> param,SessionUser sessionUser) throws WxErrorException, WxPayException;
+    boolean diffMoney(Map<String,Object> param,SessionUser sessionUser) throws Exception;
 
 
     /**

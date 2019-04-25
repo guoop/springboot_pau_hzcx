@@ -15,6 +15,8 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.owner_temp.dao.TOwnerTempMapper;
 import com.soft.ware.rest.modular.owner_temp.model.TOwnerTemp;
 import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,6 +40,9 @@ public class TOwnerTempServiceImpl extends BaseService<TOwnerTempMapper,TOwnerTe
     @Autowired
     private HzcxWxService hzcxWxService;
 
+    @Autowired
+    private ISWxAppService appService;
+
     @Override
     public List<Map<String, Object>> findMaps(Map<String, Object> map) {
         return mapper.findMaps(map);
@@ -52,15 +57,16 @@ public class TOwnerTempServiceImpl extends BaseService<TOwnerTempMapper,TOwnerTe
 
     @Override
     public String getTplId(SessionUser user, String key) throws Exception {
-        if (ToolUtil.isEmpty(user.getAppId())) {
+        if (ToolUtil.isEmpty(user.getOwnerId())) {
             throw new PauException(BizExceptionEnum.ERROR);
         }
-        String name = "ms:tpl:" + user.getAppId();
+        SWxApp app = appService.find(user);
+        String name = "ms:tpl:" + app.getAppId();
         String o = (String)redisTemplate.opsForHash().get(name, key);
         if (StringUtils.isBlank(o)) {
-            TOwnerTemp tpl = BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwnerTemp.class);
+            TOwnerTemp tpl = BeanMapUtils.toObject(findMap(Kv.by("ownerId", app.getOwnerId())), TOwnerTemp.class);
             Map<String,Object> map = Maps.newLinkedHashMap();
-            WxMaService service = hzcxWxService.getWxMaService(user);
+            WxMaService service = hzcxWxService.getWxMaService(app);
             WxMaTemplateListResult result = service.getTemplateService().findTemplateList(0, 20);
             List<WxMaTemplateListResult.TemplateInfo> ls = result.getList();
             for (WxMaTemplateListResult.TemplateInfo l : ls) {

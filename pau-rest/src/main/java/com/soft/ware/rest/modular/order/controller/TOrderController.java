@@ -1,6 +1,5 @@
 package com.soft.ware.rest.modular.order.controller;
 
-import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
@@ -17,9 +16,7 @@ import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import java.beans.Transient;
@@ -161,7 +158,7 @@ public class TOrderController extends BaseController {
      * @param sessionUser  当前登录用户
      */
        @RequestMapping(value = "order/money/diff")
-        public Tip ordersMoneyDiffRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser) throws WxErrorException, WxPayException {
+        public Tip ordersMoneyDiffRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser) throws Exception {
         param.put("owner_id",sessionUser.getOwnerId());
         if(tOrderService.diffMoney(param,sessionUser)){
             return new SuccessTip();
