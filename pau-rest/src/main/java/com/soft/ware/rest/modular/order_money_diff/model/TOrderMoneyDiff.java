@@ -39,7 +39,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
-     * 支付订单号
+     * 支付订单号(本表中生成的订单号需要用此订单号再次支付)
      */
     @TableField("pay_order_no")
     private String payOrderNo;
@@ -49,7 +49,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     @TableField("owner_id")
     private String ownerId;
     /**
-     * 订单编号
+     * 订单编号(订单表中的订单号)
      */
     @TableField("order_no")
     private String orderNo;
@@ -72,7 +72,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     @TableField("create_time")
     private Date createTime;
     /**
-     * 创建人
+     * 创建人(买家姓名)
      */
     private String creater;
     /**
@@ -95,7 +95,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     @TableField("is_delete")
     private Integer isDelete;
     /**
-     * 退款人
+     * 退款人(买家openId)
      */
     @TableField("refunder")
     private String refunder;
@@ -105,47 +105,16 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     @TableField("refund_time")
     private Date refundTime;
     /**
-     * 退款状态
+     * 退款状态(0: 处理中 1：成功 2: 失败)
      */
     @TableField("refund_status")
-    private int refundStatus;
+    private Integer refundStatus;
     /**
      * 退款响应
      */
     @TableField("refund_response")
     private String refundResponse;
 
-    public String getRefunder() {
-        return refunder;
-    }
-
-    public void setRefunder(String refunder) {
-        this.refunder = refunder;
-    }
-
-    public Date getRefundTime() {
-        return refundTime;
-    }
-
-    public void setRefundTime(Date refundTime) {
-        this.refundTime = refundTime;
-    }
-
-    public int getRefundStatus() {
-        return refundStatus;
-    }
-
-    public void setRefundStatus(int refundStatus) {
-        this.refundStatus = refundStatus;
-    }
-
-    public String getRefundResponse() {
-        return refundResponse;
-    }
-
-    public void setRefundResponse(String refundResponse) {
-        this.refundResponse = refundResponse;
-    }
 
     public String getId() {
         return id;
@@ -207,8 +176,8 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public TOrderMoneyDiff setCreateTime( Date createTime) {
+        this.createTime = createTime;return this;
     }
 
     public String getCreater() {
@@ -239,8 +208,8 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         return payResponse;
     }
 
-    public void setPayResponse(String payResponse) {
-        this.payResponse = payResponse;
+    public TOrderMoneyDiff setPayResponse( String payResponse) {
+        this.payResponse = payResponse;return this;
     }
 
     public Integer getIsDelete() {
@@ -249,6 +218,38 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
 
     public TOrderMoneyDiff setIsDelete( Integer isDelete) {
         this.isDelete = isDelete;return this;
+    }
+
+    public String getRefunder() {
+        return refunder;
+    }
+
+    public TOrderMoneyDiff setRefunder( String refunder) {
+        this.refunder = refunder;return this;
+    }
+
+    public Date getRefundTime() {
+        return refundTime;
+    }
+
+    public TOrderMoneyDiff setRefundTime( Date refundTime) {
+        this.refundTime = refundTime;return this;
+    }
+
+    public Integer getRefundStatus() {
+        return refundStatus;
+    }
+
+    public TOrderMoneyDiff setRefundStatus( Integer refundStatus) {
+        this.refundStatus = refundStatus;return this;
+    }
+
+    public String getRefundResponse() {
+        return refundResponse;
+    }
+
+    public TOrderMoneyDiff setRefundResponse( String refundResponse) {
+        this.refundResponse = refundResponse;return this;
     }
 
     @Override
@@ -266,12 +267,16 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         ", money=" + money +
         ", moneyDiff=" + moneyDiff +
         ", pic=" + pic +
-        ", createdTime=" + createTime +
+        ", createTime=" + createTime +
         ", creater=" + creater +
         ", status=" + status +
         ", payTime=" + payTime +
         ", payResponse=" + payResponse +
         ", isDelete=" + isDelete +
+        ", refunder=" + refunder +
+        ", refundTime=" + refundTime +
+        ", refundStatus=" + refundStatus +
+        ", refundResponse=" + refundResponse +
         "}";
     }
 }

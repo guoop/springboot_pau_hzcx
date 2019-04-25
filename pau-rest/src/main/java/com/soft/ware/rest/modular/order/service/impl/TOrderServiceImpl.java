@@ -692,7 +692,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Override
     public WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param,String spbill_create_ip) throws Exception {
         String no = param.getDiffNO();
-        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("payOrderNo", no).set("ownerId", user.getOwnerId()).set("creater", user.getOpenId()));
+        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("payOrderNo", no).set("ownerId", user.getOwnerId()));
         TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
         SWxApp app = appService.find(user);
         String remark = "无";
@@ -702,13 +702,15 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiff();
         // 订单价格 单位是 分
         Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
-        return this.pay(app,user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+        WxPayMpOrderResult pay = this.pay(app, user, no, total_fee, notify_url, body, remark, spbill_create_ip);
+        return pay;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) throws Exception {
         TOrder tOrder = new TOrder();
+        Date date = new Date();
         boolean isSuccess = false;
         tOrder.setOrderNo(param.get("orderNo").toString());
         tOrder = orderMapper.selectOne(tOrder);
@@ -734,18 +736,19 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         }
 
 
-            TOrderMoneyDiff tOrderDiff = new TOrderMoneyDiff();
-            tOrderDiff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
-            tOrderDiff.setRefunder(sessionUser.getPhone());
-            tOrderDiff.setOwnerId(sessionUser.getOwnerId());
-            tOrderDiff.setPayTime(tOrder.getPayTime());
-            tOrderDiff.setOrderNo(orderNO);
-            tOrderDiff.setRefundTime(new Date());
-            BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
-            BigDecimal payMoney = tOrder.getPayMoney();
-            System.out.println("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
-            tOrderDiff.setMoneyDiff(money.subtract(payMoney));
-
+        TOrderMoneyDiff tOrderDiff = new TOrderMoneyDiff();
+        tOrderDiff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
+        tOrderDiff.setRefunder(sessionUser.getPhone());
+        tOrderDiff.setOwnerId(sessionUser.getOwnerId());
+        tOrderDiff.setPayTime(tOrder.getPayTime());
+        tOrderDiff.setOrderNo(orderNO);
+        tOrderDiff.setRefundTime(new Date());
+        BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
+        BigDecimal payMoney = tOrder.getPayMoney();
+        tOrderDiff.setMoneyDiff(money.subtract(payMoney));
+        tOrderDiff.setCreater(sessionUser.getName());
+        tOrderDiff.setCreateTime(date);
+        logger.info("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
         if(money.compareTo(payMoney) == -1){
             //todo yancc 需要乐观锁
             tOrderDiff.setStatus(TOrderMoneyDiff.status_1);
@@ -839,6 +842,11 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         //o.setGoods(param.getGoods());
         Integer insert = orderMapper.insert(o);
         return (insert != null && insert > 0 ) ? o : null;
+    }
+
+    @Override
+    public boolean updateStatus(SessionUser user, String no, String status) {
+        return false;
     }
 
 }

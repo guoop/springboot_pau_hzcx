@@ -628,8 +628,10 @@ public class CustomerController extends BaseController {
             WxPayMpOrderResult res = orderService.unifiedorderDiff(user, param, spbill_create_ip);
             return buildPayView(res);
         } catch (WxPayException e) {
+            e.printStackTrace();
             return render(false, e.getReturnMsg()).set("status", "102");
         } catch (Exception e){
+            e.printStackTrace();
             return render(false, e.getMessage()).set("status", "102");
         }
 

@@ -6,6 +6,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
+import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
@@ -15,12 +16,14 @@ import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -164,6 +167,17 @@ public class AppController extends BaseController {
         Kv<String, Object> params = Kv.obj("ownerId", user.getOwnerId()).set("orderNo", no);
         Map<String, Object> order = orderService.findMap(params);
         return render().set("order", order);
+    }
+
+    /**
+     * 更新订单状态
+     * @return
+     */
+    @RequestMapping(value = "order/maintain",method = RequestMethod.POST)
+    public Object updateStatus(SessionUser user, @Valid OrderUpdateStatusParam param, BindingResult error){
+        Validator.valid(error);
+        boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
+        return render(result);
     }
 
 

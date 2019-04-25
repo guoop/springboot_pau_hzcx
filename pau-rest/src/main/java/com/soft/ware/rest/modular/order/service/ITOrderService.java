@@ -88,4 +88,13 @@ public interface ITOrderService extends IService<TOrder> {
      * @return
      */
     TOrder createOrder(SessionUser user, AddOrderParam param);
+
+    /**
+     * 收银机修改订单状态
+     * @param user
+     * @param no
+     * @param status
+     * @return
+     */
+    boolean updateStatus(SessionUser user, String no, String status);
 }

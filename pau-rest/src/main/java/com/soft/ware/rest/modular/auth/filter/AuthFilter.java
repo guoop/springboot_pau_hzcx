@@ -66,7 +66,7 @@ public class AuthFilter extends OncePerRequestFilter implements Filter {
         whiteUrlSet.add("/customer-pay/money-diff");//差额支付回调,到店自提
         whiteUrlSet.add("/customer/v1/wx_identifier");//获取openId
         whiteUrlSet.add("/customer/v1/order/address");
-        whiteUrlSet.add("/customer/v2/diff/wxpay/unifiedorder");//补差价
+        whiteUrlSet.add("/customer/v1/diff/wxpay/unifiedorder");//补差价
 
         whiteUrlSet.add("/owner/share/login");
         whiteUrlSet.add("/owner/im/init");
