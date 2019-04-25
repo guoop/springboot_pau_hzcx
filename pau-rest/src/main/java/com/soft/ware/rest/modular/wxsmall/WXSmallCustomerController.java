@@ -315,7 +315,7 @@ public class WXSmallCustomerController  extends BaseController {
      * @return
      */
     //@RequestMapping(value = "/customer/v1/orders/{no}",method = RequestMethod.POST)
-    public Tip orders(SessionUser user,@PathVariable String no,@RequestBody OrderUpdateParam param) throws WxErrorException {
+    public Tip orders(SessionUser user,@PathVariable String no,@RequestBody OrderUpdateParam param) throws Exception {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TblOrder order = orderService.findByNo(user, no);
         long current = System.currentTimeMillis();

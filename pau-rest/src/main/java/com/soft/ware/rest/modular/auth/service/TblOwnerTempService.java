@@ -3,7 +3,6 @@ package com.soft.ware.rest.modular.auth.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.rest.common.persistence.model.TblOwnerTemp;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import me.chanjar.weixin.common.error.WxErrorException;
 
 public interface TblOwnerTempService extends IService<TblOwnerTemp> {
 
@@ -14,7 +13,7 @@ public interface TblOwnerTempService extends IService<TblOwnerTemp> {
      * @param key
      * @return
      */
-    String getTplId(SessionUser user,String key) throws WxErrorException;
+    String getTplId(SessionUser user,String key) throws Exception;
 
 
 }

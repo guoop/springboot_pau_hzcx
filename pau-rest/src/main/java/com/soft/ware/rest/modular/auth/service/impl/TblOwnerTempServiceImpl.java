@@ -10,7 +10,6 @@ import com.soft.ware.rest.common.persistence.model.TblOwnerTemp;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.service.TblOwnerTempService;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -37,7 +36,7 @@ public class TblOwnerTempServiceImpl extends BaseService<TblOwnerTempMapper,TblO
 
 
     @Override
-    public String getTplId(SessionUser user, String key) throws WxErrorException {
+    public String getTplId(SessionUser user, String key) throws Exception {
         String name = "ms:tpl:" + user.getAppId();
         String o = (String)redisTemplate.opsForHash().get(name, key);
         if (StringUtils.isBlank(o)) {
@@ -46,9 +45,8 @@ public class TblOwnerTempServiceImpl extends BaseService<TblOwnerTempMapper,TblO
                 String tmpl = tpl.getTmpl();
                 Map<String,String> map = (Map<String,String>)JSON.parseObject(tmpl, Map.class);
                 if (map == null) {
-                    map = new LinkedHashMap<String,String>();
-                    WxMaService service = null;
-                    //WxMaService service = hzcxWxService.getWxMaService(user);
+                    map = new LinkedHashMap<>();
+                    WxMaService service = hzcxWxService.getWxMaService(user);
                     WxMaTemplateListResult result = service.getTemplateService().findTemplateList(0, 20);
                     List<WxMaTemplateListResult.TemplateInfo> ls = result.getList();
                     for (WxMaTemplateListResult.TemplateInfo l : ls) {
