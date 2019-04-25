@@ -2,7 +2,6 @@ package com.soft.ware.rest.modular.owner.service.impl;
 
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.Kv;
-import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.owner.dao.TOwnerMapper;
@@ -13,7 +12,6 @@ import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +46,14 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     }
 
     @Override
-    public TOwner find(SessionUser user) throws Exception {
-        return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
+    public TOwner find(SessionUser user) {
+        TOwner owner = null;
+        try {
+            owner = BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return owner;
     }
 
     @Override

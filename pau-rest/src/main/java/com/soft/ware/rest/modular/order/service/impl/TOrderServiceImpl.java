@@ -330,7 +330,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         if (TOrder.SOURCE_0.equals(order.getSource()) && ToolUtil.isNotEmpty(address)) {
             data.add(new WxMaTemplateData("keyword5", address.getName() + ' ' + address.getPhone() + ' ' + address.getProvince() + " " + address.getDetail()));// 收货地址
         } else {
-            data.add(new WxMaTemplateData("keyword5", order.getPhone()));
+            //data.add(new WxMaTemplateData("keyword5", order.getPhone()));
         }
         WxMaTemplateMessage msg = WxMaTemplateMessage.builder()
                 .templateId(templateID)
@@ -494,9 +494,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             Map<String,Object> param = new HashMap<>();
             param.put("orderId",tOrder.get("id").toString());
             List<TOrderChild>  childList = orderChildService.selectOrderChildListByMap(param);
-            if(childList.size() == 0 || childList.size() > 0){
-                tOrder.put("childList",childList);
-            }
+            tOrder.put("childList",childList);
         }
         return tOrder;
     }
@@ -633,7 +631,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark) throws Exception {
+    public WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark,Date pickupTime) throws Exception {
         TOrder order = BeanMapUtils.toObject(this.findMap(Kv.obj("creater", user.getOpenId()).set("orderNo", no)), TOrder.class);
         SWxApp app = appService.find(user);
         long current = System.currentTimeMillis();
@@ -668,7 +666,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             Object s = redisTemplate.opsForValue().get("counter:" + user.getAppId());
             order.setPickupNo(Integer.valueOf(s.toString()));
             //设置取货时间
-            order.setPickupTime(new Date(current));
+            order.setPickupTime(pickupTime == null ? new Date(current) : pickupTime);
             order.setMoneyChannel(TOrder.MONEY_CHANNEL_3);//仅支持微信支付
             this.updateByVersion(order);
         } else {
@@ -744,6 +742,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         diff.setMoneyDiff(money.subtract(payMoney));
         diff.setCreater(sessionUser.getName() == null ? sessionUser.getPhone() : sessionUser.getName());
         diff.setCreateTime(date);
+        diff.setPic(param.get("pic") + "");
         logger.info("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
         if(money.compareTo(payMoney) < 0){
             //退差价

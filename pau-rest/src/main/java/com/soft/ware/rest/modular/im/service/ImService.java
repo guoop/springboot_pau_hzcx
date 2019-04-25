@@ -28,5 +28,4 @@ public interface ImService {
      */
     void sendAddGoodsNotify(SessionUser user, TGoods goods);
 
-    boolean deleteImUserByNickName(String nickname);
 }

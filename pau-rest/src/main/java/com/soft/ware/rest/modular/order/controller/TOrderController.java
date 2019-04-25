@@ -4,7 +4,6 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
-import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -14,7 +13,6 @@ import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
-import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -157,25 +155,14 @@ public class TOrderController extends BaseController {
      * @param param orderNo 订单编号
      * @param sessionUser  当前登录用户
      */
-       @RequestMapping(value = "order/money/diff")
-        public Tip ordersMoneyDiffRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser) throws Exception {
+    @RequestMapping(value = "order/money/diff")
+     public Tip ordersMoneyDiffRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser) throws Exception {
         param.put("owner_id",sessionUser.getOwnerId());
         if(tOrderService.diffMoney(param,sessionUser)){
             return new SuccessTip();
         }
         return new ErrorTip();
     }
-
-     @RequestMapping(value = "order/add/diff",method = RequestMethod.POST)
-    public Tip addDiffMoney(TOrderMoneyDiff tOrderMoneyDiff,SessionUser sessionUser){
-           tOrderMoneyDiff.setId(IdGenerator.getId());
-           tOrderMoneyDiff.setStatus(TOrderMoneyDiff.status_0);
-           tOrderMoneyDiff.setOwnerId(sessionUser.getOwnerId());
-          if(itOrderMoneyDiffService.insert(tOrderMoneyDiff)){
-              return new SuccessTip();
-          }
-           return new ErrorTip();
-     }
 
 
 }

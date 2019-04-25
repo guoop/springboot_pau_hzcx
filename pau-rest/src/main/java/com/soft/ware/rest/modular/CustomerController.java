@@ -512,9 +512,10 @@ public class CustomerController extends BaseController {
         Integer source = kv.getInt("source");
         String remark = kv.getStr("remark");
         String phone = kv.getStr("phone");
+        Date pickupTime = kv.getDate("pickupTime");
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
         try {
-            WxPayMpOrderResult result = orderService.unifiedorder(user, no, source, spbill_create_ip, phone, remark);
+            WxPayMpOrderResult result = orderService.unifiedorder(user, no, source, spbill_create_ip, phone, remark,pickupTime);
             return buildPayView(result);
         } catch (WxPayException e) {
             return render(false, e.getReturnMsg()).set("status", "102");

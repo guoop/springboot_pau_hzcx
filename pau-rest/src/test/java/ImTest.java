@@ -35,7 +35,7 @@ public class ImTest {
 
     @Test
     public void testOrderNotify() throws Exception {
-        Map<String, Object> m = orderService.findMap(Kv.obj().set("id", "1120143734019416066"));
+        Map<String, Object> m = orderService.findMap(Kv.obj().set("id", "11210443100349112341556112766d5qg99"));
         TOrder order = BeanMapUtils.toObject(m, TOrder.class);
         imService.sendNewOrderNotify(buildConsumerUser(), order);
         Assert.notNull(m);

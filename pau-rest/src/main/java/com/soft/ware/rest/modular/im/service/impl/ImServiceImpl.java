@@ -16,6 +16,7 @@ import com.soft.ware.rest.modular.im.service.ISImUserService;
 import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,6 +63,9 @@ public class ImServiceImpl implements ImService {
     @Autowired
     private ISImGroupsService groupsService;
 
+    @Autowired
+    private ITOwnerService ownerService;
+
 
 
     /**
@@ -88,10 +92,50 @@ public class ImServiceImpl implements ImService {
         sendNotify(user, body,"商品添加");
     }
 
-    @Override
-    public boolean deleteImUserByNickName(String nickname) {
 
-        return false;
+    /**
+     * 创建一个等待发送的基本消息
+     * @param group
+     * @param body
+     * @return
+     */
+    private Kv<String,Object> buildBaseMsg(SImGroups group,Kv<String,Object> body){
+        Kv<String, Object> params = Kv.init();
+        params.put("version", 1);
+        params.put("target_type", "group");
+        params.put("target_id",group.getGid());
+        params.put("from_type", "admin");
+        params.put("from_id", group.getOwnerUsername());
+        params.put("msg_type", "custom");
+        params.put("msg_body", body);
+        return params;
+    }
+
+    /**
+     * 发送通知
+     * @param user 发送者
+     * @param body 消息体
+     * @param log  日志前缀
+     */
+    private void sendNotify(SessionUser user,Kv<String,Object> body,String log){
+        List<SImGroups> groups = requireOwnerGroupList(user, null, ImGroupType.STAFF);
+        for (SImGroups group : groups) {
+            if (StringUtils.isBlank(group.getOwnerUsername())) {
+                continue;
+            }
+            if (group.getGid() == null) {
+                continue;
+            }
+            Kv<String, Object> params = buildBaseMsg(group, body);
+            HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
+            ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/messages", http, String.class);
+            if (entity.getStatusCodeValue() == 200 || entity.getStatusCodeValue() == 201) {
+                logger.info(log + " 通知发送成功: "+JSON.toJSONString(params));
+            } else {
+                logger.info(log + " 通知发送失败：" + JSON.toJSONString(params));
+            }
+        }
+
     }
 
 
@@ -108,7 +152,7 @@ public class ImServiceImpl implements ImService {
         for (TOwnerStaff s : ss) {
             username = ParamUtils.buildImUserName(s, type);
             SImUser u = getUser(username);
-
+            if (TOwnerStaff.status_0.equals(s.getStatus())) {
                 //用户状态正常
                 if (u == null) {
                     //注册用户
@@ -136,7 +180,8 @@ public class ImServiceImpl implements ImService {
                         addToGroup(user, g, u);
                     }
                 }
-            if(s.getStatus() == TOwnerStaff.status_2){
+
+            } else {
                 //状态异常删除用户
                 username = ParamUtils.buildImUserName(s, type);
                 if (u != null) {
@@ -149,20 +194,31 @@ public class ImServiceImpl implements ImService {
                     imUserService.deleteByUsername(user,username);
                 }
                 logger.info("极光用户:{}被删除",username);
-
             }
-
-            }
+        }
     }
 
+
+    private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+        List<SImGroups> gs = requireOwnerGroupList(user, owner, type);
+        for (SImGroups g : gs) {
+            if (g.getType() == type.ordinal()) {
+                return g;
+            }
+        }
+        return null;
+    }
 
     /**
      * 获取群主信息
      * @param owner
      * @return
      */
-    private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+    private List<SImGroups> requireOwnerGroupList(SessionUser user,TOwner owner,ImGroupType type){
         //todo yancc 对于群组和用户每次获取远程并检查数据库，没有必要
+        if (owner == null) {
+            owner = ownerService.find(user);
+        }
         String username = ParamUtils.buildOwnerGroupUsername(owner,type);
         SImUser u = getUser(username);
         if (u == null) {
@@ -175,7 +231,7 @@ public class ImServiceImpl implements ImService {
             SImGroups group = addGroup(user, owner, type, u);
             group.setType(type.ordinal());
             imGroupsService.saveOrUpdate(user, group);
-            return group;
+            return getGroup(u);
         } else {
             List<SImGroups> gs = getGroup(u);
             if (gs.isEmpty()) {
@@ -184,10 +240,10 @@ public class ImServiceImpl implements ImService {
                 SImGroups group = addGroup(user, owner, type, u);
                 group.setType(type.ordinal());
                 imGroupsService.saveOrUpdate(user, group);
-                return group;
+                return getGroup(u);
             }
             //todo yancc 是否考虑多个群
-            return gs.get(0);
+            return gs;
         }
     }
 
@@ -282,52 +338,6 @@ public class ImServiceImpl implements ImService {
 
 
 
-
-
-    /**
-     * 创建一个等待发送的基本消息
-     * @param group
-     * @param body
-     * @return
-     */
-    private Kv<String,Object> buildBaseMsg(SImGroups group,Kv<String,Object> body){
-        Kv<String, Object> params = Kv.init();
-        params.put("version", 1);
-        params.put("target_type", "group");
-        params.put("target_id",group.getGid());
-        params.put("from_type", "admin");
-        params.put("from_id", group.getOwnerUsername());
-        params.put("msg_type", "custom");
-        params.put("msg_body", body);
-        return params;
-    }
-
-    /**
-     * 发送通知
-     * @param user 发送者
-     * @param body 消息体
-     * @param log  日志前缀
-     */
-    private void sendNotify(SessionUser user,Kv<String,Object> body,String log){
-        List<SImGroups> groups = imGroupsService.find(user, SImGroups.type_0);
-        for (SImGroups group : groups) {
-            if (StringUtils.isBlank(group.getOwnerUsername())) {
-                continue;
-            }
-            if (group.getGid() == null) {
-                continue;
-            }
-            Kv<String, Object> params = buildBaseMsg(group, body);
-            HttpEntity<String> http = new HttpEntity<>(JSON.toJSONString(params), getJpushHeaders());
-            ResponseEntity<String> entity = restTemplate.postForEntity(WXContants.JG_GATEWAY + "/v1/messages", http, String.class);
-            if (entity.getStatusCodeValue() == 200 || entity.getStatusCodeValue() == 201) {
-                logger.info(log + " 通知发送成功: "+JSON.toJSONString(params));
-            } else {
-                logger.info(log + " 通知发送失败：" + JSON.toJSONString(params));
-            }
-        }
-
-    }
 
 
     /**

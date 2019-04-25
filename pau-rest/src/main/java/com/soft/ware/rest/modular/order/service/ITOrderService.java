@@ -10,6 +10,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public interface ITOrderService extends IService<TOrder> {
      * @return
      * @throws Exception
      */
-    WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark) throws Exception;
+    WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark, Date pickupTime) throws Exception;
 
     WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
 
