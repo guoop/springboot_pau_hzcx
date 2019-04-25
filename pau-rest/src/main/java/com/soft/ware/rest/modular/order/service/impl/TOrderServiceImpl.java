@@ -253,8 +253,6 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             isSuccess = itRefundService.updateById(tRefund);
         }
         if (isSuccess) {
-
-
             WxPayRefundRequest req = WxPayRefundRequest
                     .newBuilder()
                     .outTradeNo(orderNO)
@@ -762,7 +760,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                 String templateID = (String)redisTemplate.opsForHash().get("ms:tpl:" + sWxApp.getAppId(), "refund");
                 WxMaTemplateMessage msg = buildOrderTemplateMessage(templateID, formID, tOrder,goodsNames,tAddress);
                 msg.getData().set(3, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
-                msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.get("refundReason").toString()) ? "小票差额退款" : param.get("refundReason").toString()));
+                msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.get("refundReason")) ? "小票差额退款" : param.get("refundReason").toString()));
                 msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
                 hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
                 return true;
