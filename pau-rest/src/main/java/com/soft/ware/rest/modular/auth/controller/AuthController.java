@@ -3,6 +3,7 @@ package com.soft.ware.rest.modular.auth.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
+import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
@@ -131,7 +132,7 @@ public class AuthController extends BaseController {
     }
 
     @RequestMapping(value = "${jwt.logout-path}")
-    public void clearToken(HttpServletRequest request,String owner){
+    public Tip clearToken(HttpServletRequest request, String owner){
     	 String requestHeader = request.getHeader(jwtProperties.getHeader());
     	 String authToken = null;
     	 if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
@@ -140,7 +141,7 @@ public class AuthController extends BaseController {
             	 request.setAttribute("claims", "");
              }
     	 }
-    	 
+    	 return SUCCESS_TIP;
     	
     }
 }
