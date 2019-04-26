@@ -70,4 +70,10 @@ public class FileUtil {
         }
         return dir.delete();
     }
+
+    public static String getFileExtName(File file){
+        return file.getName().substring(file.getName().lastIndexOf(".")+1);
+    }
+
+
 }
