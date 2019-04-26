@@ -181,7 +181,7 @@ public class WxPayController extends BaseController {
      * @return
      * @throws WxPayException
      */
-    @Deprecated //微信退款直接能获取结果，不使用这个回调
+    @Deprecated
     @PostMapping(value = "${wx.pay.notify_url_customer_pay_diff_refund}")
     public String parseRefundNotifyResult(@RequestBody String xmlData) throws Exception {
         WxPayRefundNotifyResult result = WxPayRefundNotifyResult.fromXML(xmlData, WxPayRefundNotifyResult.class);
@@ -190,7 +190,7 @@ public class WxPayController extends BaseController {
         WxPayRefundNotifyResult.ReqInfo info = result.getReqInfo();
         Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("no", info.getOutRefundNo()));
         TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
-        //diff.setStatus(TOrderMoneyDiff.status_1);//不修改状态
+        //diff.setStatus(TOrderMoneyDiff.status_1);//不修改状态//微信退款直接能获取结果，不使用这个回调
         diff.setResponse(JSON.toJSONString(result));
         if (ToolUtil.isEmpty(diff.getResponse())) {
             orderMoneyDiffService.updateById(diff);
