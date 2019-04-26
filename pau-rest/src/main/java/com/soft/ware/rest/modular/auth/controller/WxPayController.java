@@ -18,15 +18,18 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
+import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff;
 import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffService;
 import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
+import com.soft.ware.rest.modular.sms.service.SmsService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +66,12 @@ public class WxPayController extends BaseController {
 
     @Autowired
     private ITOrderChildService orderChildService;
+
+    @Autowired
+    private SmsService smsService;
+
+    @Autowired
+    private ImService imService;
 
 
 
@@ -253,6 +262,27 @@ public class WxPayController extends BaseController {
             e.printStackTrace();
             logger.info("{}发送支付通知失败:{}", order.getOrderNo(), e.getMessage());
         }
+
+
+        try{
+            // 发送短信通知
+            String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "orderPhone");
+            if (StringUtils.isNotBlank(phone)) {
+                smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, order.getOrderNo());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("{}发送短信失败:{}", order.getOrderNo(), e.getMessage());
+        }
+
+        try{
+            // IM通知店铺
+            imService.sendNewOrderNotify(user, order);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("{}im店铺新订单通知失败:{}", order.getOrderNo(), e.getMessage());
+        }
+
 
     }
 

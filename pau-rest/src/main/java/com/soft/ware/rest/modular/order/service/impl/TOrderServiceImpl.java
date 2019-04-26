@@ -450,6 +450,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         if (i == 1) {
             return true;
         } else {
+            Map<String, Object> order = findMap(Kv.by("orderNo", param.getNo()));
+            logger.info("订单删除失败：{} 当前订单状态{}", param.getNo(), order.get("orderNo"));
             throw new PauException(BizExceptionEnum.UPDATE_ERROR);
         }
     }
@@ -458,6 +460,8 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     public boolean customerCancel(SessionUser user, OrderDeleteParam param) {
         int i = orderMapper.customerCancel(user, param);
         if (i != 1) {
+            Map<String, Object> order = findMap(Kv.by("orderNo", param.getNo()));
+            logger.info("订单取消失败：{} 当前订单状态{}", param.getNo(), order.get("orderNo"));
             throw new PauException(BizExceptionEnum.UPDATE_ERROR);
         }
         return true;

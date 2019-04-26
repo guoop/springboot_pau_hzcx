@@ -10,13 +10,13 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ResultView;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.banner.model.TBanner;
 import com.soft.ware.rest.modular.banner.service.TBannerService;
@@ -480,20 +480,7 @@ public class CustomerController extends BaseController {
     public Tip orders(SessionUser user, @PathVariable String no, @RequestBody PayAfterOrderParam param) throws Exception {
         // 如果是在线支付，则向买家发送【订单支付成功】模板消息
         TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.obj().set("orderNo", no).set("creater", user.getOpenId())), TOrder.class);
-        // 发送短信通知
-        String phone = (String) redisTemplate.opsForHash().get("owner:" + user.getAppId(), "orderPhone");
-        if (StringUtils.isNotBlank(phone)) {
-            smsService.sendNotify(phone, WXContants.TENCENT_TEMPLATE_ID4, param.getOrderNO());
-        }
-        //通知不在这里发送了，转移到回调里面了
-
-        // IM通知店铺
-        imService.sendNewOrderNotify(user, order);
-        String tempKey = "ms:fit:" + param.getOrderNO();
-        redisTemplate.opsForValue().set(tempKey, param.getFormID(), 604800, TimeUnit.SECONDS);
-        logger.info("买家支付订单时保存FormID {} = {}", tempKey, param.getFormID());
-        boolean update = orderService.updateByVersion(order);
-        return render(update);
+        return render(TOrder.STATUS_1.equals(order.getStatus()));
     }
 
 
@@ -513,11 +500,19 @@ public class CustomerController extends BaseController {
         String remark = kv.getStr("remark");
         String phone = kv.getStr("phone");
         Date pickupTime = kv.getDate("pickupTime");
+        String formID = kv.requiredStr("formID");
+        if (ToolUtil.isEmpty(formID) || !formID.matches("\\w{32,64}")) {
+            return render(false,"formID 不能为空！");
+        }
+        String tempKey = "ms:fit:" + no;
+        redisTemplate.opsForValue().set(tempKey, formID, 604800, TimeUnit.SECONDS);
+        logger.info("买家支付订单时保存FormID {} = {}", tempKey, formID);
         String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
         try {
             WxPayMpOrderResult result = orderService.unifiedorder(user, no, source, spbill_create_ip, phone, remark,pickupTime);
             return buildPayView(result);
         } catch (WxPayException e) {
+            redisTemplate.opsForValue().set(tempKey, formID, 1, TimeUnit.SECONDS);//支付失败清除
             return render(false, e.getReturnMsg()).set("status", "102");
         }
 
@@ -553,6 +548,7 @@ public class CustomerController extends BaseController {
         tip.set("package", res.getPackageValue());
         tip.set("paySign", res.getPaySign());
         tip.set("status", "100");
+        tip.set("delay", 1000);//延迟 多少毫秒 发送订单查询请求
         return tip;
     }
 
