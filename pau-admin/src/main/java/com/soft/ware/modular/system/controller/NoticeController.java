@@ -12,6 +12,7 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.model.Notice;
 import com.soft.ware.modular.system.service.INoticeService;
 import com.soft.ware.modular.system.warpper.NoticeWrapper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,6 +77,7 @@ public class NoticeController extends BaseController {
     /**
      * 获取通知列表
      */
+    @ApiOperation("通知列表")
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {

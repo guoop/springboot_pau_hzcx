@@ -7,7 +7,7 @@
     <result column="userName" property="username" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id,name ,phone
+    id,name,phone
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
