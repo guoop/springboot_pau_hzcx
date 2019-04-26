@@ -24,12 +24,25 @@ public class TRefund extends Model<TRefund> {
 
     private static final long serialVersionUID = 1L;
 
+    //：处理中；
+    public static Integer status_0 = 0;
+    //：成功；
+    public static Integer status_1 = 1;
+    //：失败）
+    public static Integer status_2 = 2;
+
     /**
      * 主键id
      */
     @Id
     @TableId(value = "id" ,type = IdType.INPUT)
     private String id;
+
+    /**
+     * 退款单号
+     */
+    private String no;
+
     /**
      * 订单编号
      */
@@ -64,8 +77,6 @@ public class TRefund extends Model<TRefund> {
     private String creater;
 
 
-
-
     public String getId() {
         return id;
     }
@@ -73,6 +84,15 @@ public class TRefund extends Model<TRefund> {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getNo() {
+        return no;
+    }
+
+    public void setNo(String no) {
+        this.no = no;
+    }
+
 
     public String getOrderNo() {
         return orderNo;

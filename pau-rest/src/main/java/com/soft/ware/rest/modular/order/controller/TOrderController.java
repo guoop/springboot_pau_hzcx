@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.order.controller;
 
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
@@ -143,10 +144,17 @@ public class TOrderController extends BaseController {
      * @param sessionUser  当前登录用户
      */
     @RequestMapping(value = "orders/refund",method = RequestMethod.POST)
-    public Tip ordersRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser){ param.put("owner_id",sessionUser.getOwnerId());
-       if(tOrderService.orderRefund(param,sessionUser)){
-           return new SuccessTip();
-       }
+    public Tip ordersRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser){
+        param.put("owner_id",sessionUser.getOwnerId());
+        try {
+            if(tOrderService.orderRefund(param,sessionUser)){
+                return new SuccessTip();
+            }
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            return render(false, e.getReturnMsg());
+        }
+
         return new ErrorTip();
     }
 

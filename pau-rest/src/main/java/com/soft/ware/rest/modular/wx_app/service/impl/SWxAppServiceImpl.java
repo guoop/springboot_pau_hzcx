@@ -44,8 +44,13 @@ public class SWxAppServiceImpl extends BaseService<SWxAppMapper,SWxApp> implemen
     }
 
     @Override
-    public SWxApp find(SessionUser user) throws Exception {
-        return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), SWxApp.class);
+    public SWxApp find(SessionUser user) {
+        try {
+            return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), SWxApp.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

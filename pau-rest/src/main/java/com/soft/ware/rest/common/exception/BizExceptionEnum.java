@@ -63,6 +63,7 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     ORDER_DELIVER_FAIL(500,"该订单不支持配送操作"),
     ORDER_DONE_FAIL(500,"该订单不支持完成操作"),
     ORDER_REFUND_NOT_SUPPORT(500,"该订单不支持退款操作"),
+    ORDER_REFUND_MODE_NOT_SUPPORT(500,"不支持的退款方式"),
     ORDER_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_DIFF_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_REFUND_FINISHED(500,"已退款，请勿重复"),

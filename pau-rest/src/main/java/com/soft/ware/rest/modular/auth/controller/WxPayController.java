@@ -11,6 +11,7 @@ import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -189,9 +190,11 @@ public class WxPayController extends BaseController {
         WxPayRefundNotifyResult.ReqInfo info = result.getReqInfo();
         Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("no", info.getOutRefundNo()));
         TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
-        diff.setStatus(TOrderMoneyDiff.status_1);
+        //diff.setStatus(TOrderMoneyDiff.status_1);//不修改状态
         diff.setResponse(JSON.toJSONString(result));
-        orderMoneyDiffService.updateById(diff);
+        if (ToolUtil.isEmpty(diff.getResponse())) {
+            orderMoneyDiffService.updateById(diff);
+        }
 
         try{
             TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.by("orderNo", diff.getOrderNo())), TOrder.class);

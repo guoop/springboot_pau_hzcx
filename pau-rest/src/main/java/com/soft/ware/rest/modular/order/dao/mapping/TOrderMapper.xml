@@ -157,6 +157,7 @@
         select  a.id,<include refid="t_order_alias_columns"/>
         ,b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus'
         ,d.no diffNo,d.ticket_money as diffTicketMoney,ifnull(d.money,0) as diffMoney,d.status  diffStatus, d.status diffRefundStatus,d.pic diffPic
+        ,c.reason refundReason,c.status refundStatus,c.order_money refundMoney,DATE_FORMAT(c.create_time,'%Y-%m-%d %H:%i:%s') refundAt,c.creater refundBy
         from t_order a
         LEFT JOIN t_address b
         on a.address_id = b.id
@@ -209,8 +210,10 @@
     <select id="selectOrderDetailById" resultType="java.util.Map">
         select a.id,<include refid="t_order_alias_columns"/>
         ,d.no diffNo,d.ticket_money as diffTicketMoney,ifnull(d.money,0) as diffMoney,d.status  diffStatus, d.status diffRefundStatus,d.pic diffPic
+        ,c.reason refundReason,c.status refundStatus,c.order_money refundMoney,DATE_FORMAT(c.create_time,'%Y-%m-%d %H:%i:%s') refundAt,c.creater refundBy
         from t_order a
         LEFT JOIN t_order_money_diff d on a.order_no = d.order_no
+        LEFT JOIN t_refund c on a.order_no = c.order_no
         where a.order_no = #{orderNo}
     </select>
 </mapper>

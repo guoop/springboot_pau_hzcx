@@ -190,113 +190,102 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     }
 
     @Override
-    public boolean orderRefund(Map<String, Object> param, SessionUser sessionUser) {
+    @Transactional(rollbackFor = Throwable.class)
+    public boolean orderRefund(Map<String, Object> paramMap, SessionUser sessionUser) throws WxPayException {
+        Kv<String, Object> param = Kv.toKv(paramMap);
+        String orderNo = param.getStr("orderNo");
+        String refundType = param.requiredStr("refundType");
+        String refundReason = param.getStr("refundReason", "");
+        Date date = new Date();
         int round = WXContants.big_decimal_sale;
-        TOrder tOrder =  orderMapper.selectOne(new TOrder().setOrderNo(param.get("orderNo").toString()));
+        BigDecimal v100 = BigDecimal.valueOf(100);
+        TOrder tOrder =  orderMapper.selectOne(new TOrder().setOrderNo(orderNo));
         List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
         List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
-        boolean isSuccess = false;
+        boolean isSuccess;
         TRefund tRefund  = new TRefund();
-        tRefund.setOrderNo(param.get("orderNo").toString());
+        tRefund.setOrderNo(orderNo);
         tRefund  = itRefundService.selectOne(new EntityWrapper<>( tRefund));
         //
        /* if (tOrder.getMoneyChannel() != TOrder.MONEY_CHANNEL_0 || tOrder.getMoneyChannel() != TOrder.MONEY_CHANNEL_3 ) {
             throw new PauException(BizExceptionEnum.ORDER_REFUND_NOT_SUPPORT);
         }*/
-        if(ToolUtil.isNotEmpty(tRefund)){
-            if (TOrder.REFUND_STATUS_0.equals(tRefund.getStatus())) {
-                throw new PauException(BizExceptionEnum.ORDER_REFUND_RUNNING);
-
-            } else if (TOrder.REFUND_STATUS_1.equals(tRefund.getStatus())) {
-                throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
-            }
-        }
         // 退款金额
-        BigDecimal refundMoney = BigDecimal.ZERO;
+        BigDecimal refundMoney;
         // 全额退款
-        if ("all".equals(param.get("refundType").toString())) {
-             refundMoney = (tOrder.getPayMoney().multiply(BigDecimal.valueOf(100))).setScale(2, round);
-
+        if ("all".equals(refundType)) {
+            // 全额退款则意味着取消订单
+            tOrder.setConfirmer(sessionUser.getPhone());
+            tOrder.setCancelReason(refundReason);
+            tOrder.setCancelTime(date);
+            tOrder.setStatus(TOrder.STATUS_01);//订单取消
+            isSuccess = updateByVersion(tOrder);
+            refundMoney = tOrder.getPayMoney();
+        } else if("part".equals(refundType)){
+            tOrder.setStatus(TOrder.STATUS_03);//订单完成
+            refundMoney = param.requiredBigDecimal("refundMoney");
+            isSuccess = updateByVersion(tOrder);
+        } else {
+            throw new PauException(BizExceptionEnum.ORDER_REFUND_MODE_NOT_SUPPORT);
         }
-        // 部分退款
-        if ("part".equals(param.get("refundType").toString())) {
-            refundMoney = (tOrder.getPayMoney().multiply(BigDecimal.valueOf(100))).setScale(2, round);
-
+        if (!isSuccess) {
+            throw new PauException(BizExceptionEnum.ERROR);//数据库造作失败回滚
+        }
+        List<TOrderMoneyDiff> diffList = orderMoneyDiffService.selectList(new EntityWrapper<>(new TOrderMoneyDiff().setOrderNo(tOrder.getOrderNo())));
+        //去掉差价
+        for (TOrderMoneyDiff diff : diffList) {
+            refundMoney = refundMoney.add(diff.getMoney());//加上差价 正数或者负数
         }
         // 如果是到店自提的订单
         String orderNO = tOrder.getOrderNo();
-        TAddress tAddress = null;
-        if(ToolUtil.isNotEmpty(tOrder.getAddressId())){
-            tAddress = tAddressService.selectById(tOrder.getAddressId());
-        }
-        SWxApp sWxApp = isWxAppService.find(new TOwner().setId(param.get("owner_id").toString()));
-        WxPayService service = hzcxWxService.getWxPayService(sWxApp);
+        SWxApp app = isWxAppService.find(sessionUser);
+        WxPayService service = hzcxWxService.getWxPayService(app);
         //先执行操作，在发送通知，发送失败可以回滚
-        //todo yancc 需要添加 行锁
         if(ToolUtil.isEmpty(tRefund)){
-            TRefund tRef= new TRefund();
-
-            tRef.setStatus(param.get("refundType").toString().equals("all") ? -1 : 3);
-            tRef.setCreater(sessionUser.getPhone());
-            tRef.setCreateTime(new Date());
-            tRef.setReason(param.get("refundReason").toString());
-            tRef.setOrderNo(tOrder.getOrderNo());
-            tRef.setOrderMoney(refundMoney);
-            tRef.setId(IdGenerator.getId());
-            isSuccess = itRefundService.insert(tRef);
-        }else{
-
-            tRefund.setStatus(param.get("refundType").toString().equals("all") ? -1 : 3);
+            tRefund= new TRefund();
+            tRefund.setStatus(TRefund.status_1);//退款成功
             tRefund.setCreater(sessionUser.getPhone());
             tRefund.setCreateTime(new Date());
-            tRefund.setReason(param.get("refundReason").toString());
+            tRefund.setReason(refundReason);
+            tRefund.setOrderNo(tOrder.getOrderNo());
             tRefund.setOrderMoney(refundMoney);
-            isSuccess = itRefundService.updateById(tRefund);
+            tRefund.setId(IdGenerator.getId());
+            tRefund.setNo(IdGenerator.getOrderNo());
+            isSuccess = itRefundService.insert(tRefund);
         }
-        if (isSuccess) {
-            WxPayRefundRequest req = WxPayRefundRequest
-                    .newBuilder()
-                    .outTradeNo(orderNO)
-                    .outRefundNo(IdGenerator.getId())
-                    .totalFee(tOrder.getPayMoney().multiply(BigDecimal.valueOf(100)).intValue())
-                    .refundFee(refundMoney.intValue())
-                    .refundDesc(ToolUtil.isEmpty(param.get("refundReason").toString()) ? "" : param.get("refundReason").toString())
-                    .notifyUrl(wxContants.getCustomerPayHost() + "/") //todo yancc 回调地址
-                    .build();
-            WxPayRefundResult result = null;
-            try {
-                result = service.refund(req);
-            } catch (WxPayException e) {
-                e.printStackTrace();
-            }
-            logger.info("微信退款请求执行成功:订单号{}", tOrder.getOrderNo());
-            try{
-                // 全额退款则意味着取消订单
-                if ("all".equals(param.get("refundType").toString())) {
-                    tOrder.setConfirmer(sessionUser.getPhone());
-                    tOrder.setCancelReason(param.get("refundType").toString());
-                    tOrder.setCancelTime(new Date());
-                    tOrder.setStatus(-1);
-                    orderMapper.updateById(tOrder);
-                  /*  order.setCancelBy(user.getPhone());
-                    order.setCancelAt(date);
-                    order.setCancelReason(order.getRefundReason());*/
-                }
-                String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
-                WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"refund", formID, tOrder,goodsNames,tAddress);
-                msg.getData().set(3, new WxMaTemplateData("keyword5", "all".equals(param.get("refundType").toString()) ? tOrder.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
-                msg.getData().add(new WxMaTemplateData("keyword6", param.get("refundReason").toString()));
-                msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
-                msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
-                hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
-            }catch (Exception e){
-                e.printStackTrace();
-                //todo yancc 失败是否补发通知
-                logger.error("{}退款成功：退款通知发送失败!", tOrder.getOrderNo());
-            }
-            return true;
+        if (!isSuccess) {
+            throw new PauException(BizExceptionEnum.ERROR);//数据库造作失败回滚
         }
-        return false;
+        WxPayRefundRequest req = WxPayRefundRequest
+                .newBuilder()
+                .outTradeNo(orderNO)
+                .outRefundNo(tRefund.getNo())
+                .totalFee(tOrder.getPayMoney().multiply(v100).intValue())
+                .refundFee(refundMoney.multiply(v100).intValue())
+                .refundDesc(refundReason)
+                .build();
+        WxPayRefundResult  result = service.refund(req);
+        if (!"SUCCESS".equals(result.getReturnCode())) {
+            throw new PauException(result.getReturnMsg());
+        }
+        if (!"SUCCESS".equals(result.getResultCode())) {
+            throw new PauException(result.getErrCodeDes());
+        }
+        logger.info("微信退款请求执行成功:订单号{}", tOrder.getOrderNo());
+        try{
+            String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
+            WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"refund", formID, tOrder,goodsNames,null);
+            msg.getData().set(4, new WxMaTemplateData("keyword5", "all".equals(refundType) ? tOrder.getPayMoney().setScale(2, round) + "元" : refundMoney.setScale(2, round) + "元"));
+            msg.getData().add(new WxMaTemplateData("keyword6",refundReason));
+            msg.getData().add(new WxMaTemplateData("keyword7", "到账金额以微信到账金额为准，请知晓"));
+            msg.getData().add(new WxMaTemplateData("keyword8", "如有疑问，请进入小程序联系商家"));
+            hzcxWxService.getWxMaService(app).getMsgService().sendTemplateMsg(msg);
+        }catch (Exception e){
+            e.printStackTrace();
+            //todo yancc 失败是否补发通知
+            logger.error("{}退款成功：退款通知发送失败!", tOrder.getOrderNo());
+        }
+        return true;
 
     }
 
@@ -327,7 +316,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         if (TOrder.SOURCE_0.equals(order.getSource()) && ToolUtil.isNotEmpty(address)) {
             data.add(new WxMaTemplateData("keyword5", address.getName() + ' ' + address.getPhone() + ' ' + address.getProvince() + " " + address.getDetail()));// 收货地址
         } else {
-            //data.add(new WxMaTemplateData("keyword5", order.getPhone()));
+            data.add(new WxMaTemplateData("keyword5", ""));
         }
         WxMaTemplateMessage msg = WxMaTemplateMessage.builder()
                 .templateId(templateID)
@@ -741,6 +730,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         if(money.compareTo(payMoney) < 0){
             //退差价
             diff.setPayTime(tOrder.getPayTime());
+            diff.setStatus(TOrderMoneyDiff.status_1);//直接退款成功，否则下面抛出异常回滚
             isSuccess = orderMoneyDiffService.insert(diff);
             if (isSuccess) {
                 BigDecimal refundFee = diff.getMoney().abs();
@@ -752,7 +742,13 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         .refundFee(refundFee.multiply(BigDecimal.valueOf(100)).intValue())
                         .notifyUrl(wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiffRefund())
                         .build();
-                service.refund(req);
+                WxPayRefundResult refund = service.refund(req);
+                if (!"SUCCESS".equals(refund.getReturnCode())) {
+                    throw new PauException(refund.getReturnMsg());
+                }
+                if (!"SUCCESS".equals(refund.getResultCode())) {
+                    throw new PauException(refund.getErrCodeDes());
+                }
             }
         }else if(money.compareTo(payMoney) > 0){
             TAddress address = addressService.findById(sessionUser, tOrder.getAddressId());

@@ -18,5 +18,5 @@ public interface ISWxAppService extends IService<SWxApp> {
 
     List<Map<String, Object>> findMaps(Map<String, Object> map);
 
-    SWxApp find(SessionUser user) throws Exception;
+    SWxApp find(SessionUser user);
 }

@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
@@ -39,7 +40,14 @@ public interface ITOrderService extends IService<TOrder> {
 
     List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map , Page page);
 
-    boolean orderRefund(Map<String,Object> map , SessionUser sessionUser);
+    /**
+     * 部分退款/全额退款（取消订单）
+     * @param map
+     * @param sessionUser
+     * @return
+     * @throws WxPayException
+     */
+    boolean orderRefund(Map<String,Object> map , SessionUser sessionUser) throws WxPayException;
 
     WxMaTemplateMessage buildOrderTemplateMessage(SessionUser user,String templateKey, String fromID, TOrder order,List<String> goodsNames, TAddress address) throws Exception;
 

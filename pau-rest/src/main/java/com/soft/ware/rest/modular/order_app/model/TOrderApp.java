@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.order_app.model;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -84,6 +85,7 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 商品列表
      */
+    @TableField(exist = false)
     List<TGoods> listGoods = new ArrayList<>();
 
     public List<TGoods> getListGoods() {
