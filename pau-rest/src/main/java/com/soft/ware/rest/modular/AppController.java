@@ -176,8 +176,9 @@ public class AppController extends BaseController {
     @RequestMapping(value = "order/maintain",method = RequestMethod.POST)
     public Object updateStatus(SessionUser user, @Valid OrderUpdateStatusParam param, BindingResult error){
         Validator.valid(error);
-        boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
-        return render(result);
+        //boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
+        //return render(result);
+        return null;
     }
 
 

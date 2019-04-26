@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.soft.ware.rest.modular.address.model.TAddress;
-import com.soft.ware.rest.modular.auth.controller.dto.*;
+import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
+import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
+import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.order.controller.dto.CreateOrderParam;
 import com.soft.ware.rest.modular.order.model.TOrder;
@@ -26,8 +29,6 @@ import java.util.Map;
 public interface ITOrderService extends IService<TOrder> {
 
 
-    List<TOrder> selectOrderListByMap(Map<String,Object> param);
-
     List<Map<String,Object>> findPage(SessionUser user, Page page, OrderPageParam param, Integer... source);
 
     long findPageCount(SessionUser user, OrderPageParam param, Integer... sources);
@@ -40,15 +41,27 @@ public interface ITOrderService extends IService<TOrder> {
 
     boolean orderRefund(Map<String,Object> map , SessionUser sessionUser);
 
-
     WxMaTemplateMessage buildOrderTemplateMessage(SessionUser user,String templateKey, String fromID, TOrder order,List<String> goodsNames, TAddress address) throws Exception;
 
     TOrder createMiniAppOrder(SessionUser user, CreateOrderParam param) throws Exception;
 
     boolean updatePayCallback(WxPayOrderNotifyResult result, SessionUser user,TOrder order) throws Exception;
 
+
+    /**
+     * 买家删除订单
+     * @param user
+     * @param param
+     * @return
+     */
     boolean customerDelete(SessionUser user, OrderDeleteParam param);
 
+    /**
+     * 买家取消订单
+     * @param user
+     * @param param
+     * @return
+     */
     boolean customerCancel(SessionUser user, OrderDeleteParam param);
 
     int selectOrderCount(String ownerId);
@@ -77,25 +90,23 @@ public interface ITOrderService extends IService<TOrder> {
      */
     WxPayMpOrderResult unifiedorder(SessionUser user, String no, Integer source, String spbill_create_ip, String phone, String remark, Date pickupTime) throws Exception;
 
-    WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
-
-    boolean diffMoney(Map<String,Object> param,SessionUser sessionUser) throws Exception;
-
-
     /**
-     * 收银app下单
+     * 差价支付
      * @param user
      * @param param
+     * @param spbill_create_ip
      * @return
+     * @throws Exception
      */
-    TOrder createOrder(SessionUser user, AddOrderParam param);
+    WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
 
     /**
-     * 收银机修改订单状态
-     * @param user
-     * @param no
-     * @param status
+     * 查下下单/或退款
+     * @param param
+     * @param sessionUser
      * @return
+     * @throws Exception
      */
-    boolean updateStatus(SessionUser user, String no, String status);
+    boolean diffMoney(Map<String,Object> param,SessionUser sessionUser) throws Exception;
+
 }
