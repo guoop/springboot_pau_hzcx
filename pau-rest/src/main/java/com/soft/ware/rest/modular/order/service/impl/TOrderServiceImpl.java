@@ -24,7 +24,6 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.address.service.ITAddressService;
-import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -681,8 +680,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param,String spbill_create_ip) throws Exception {
-        String no = param.getDiffNO();
+    public WxPayMpOrderResult unifiedorderDiff(SessionUser user, String no,String spbill_create_ip) throws Exception {
         Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("no", no).set("ownerId", user.getOwnerId()));
         TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
         SWxApp app = appService.find(user);

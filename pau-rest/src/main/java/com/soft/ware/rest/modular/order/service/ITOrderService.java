@@ -6,7 +6,6 @@ import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.rest.modular.address.model.TAddress;
-import com.soft.ware.rest.modular.auth.controller.dto.DiffParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -101,12 +100,12 @@ public interface ITOrderService extends IService<TOrder> {
     /**
      * 差价支付
      * @param user
-     * @param param
+     * @param diffNo
      * @param spbill_create_ip
      * @return
      * @throws Exception
      */
-    WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param, String spbill_create_ip) throws Exception;
+    WxPayMpOrderResult unifiedorderDiff(SessionUser user,String diffNo, String spbill_create_ip) throws Exception;
 
     /**
      * 查下下单/或退款

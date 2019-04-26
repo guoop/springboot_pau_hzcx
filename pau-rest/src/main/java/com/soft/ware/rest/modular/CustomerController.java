@@ -617,18 +617,27 @@ public class CustomerController extends BaseController {
      * @return 该接口逻辑和微信下单接口逻辑一样，返回结果也一样
      */
     @RequestMapping(value = "diff/wxpay/unifiedorder", method = RequestMethod.POST)
-    public Object diff(SessionUser user, @RequestBody @Valid DiffParam param, HttpServletRequest request, BindingResult result) throws Exception {
+    public Object diff(SessionUser user, @RequestBody @Valid Kv<String,Object> param, HttpServletRequest request, BindingResult result) throws Exception {
         Validator.valid(result);
+        String diffNO = param.requiredStr("diffNO");
+        String formID = param.requiredStr("formID");
+        String tempKey = "ms:diff_form_id:" + diffNO;
         try {
+            if (ToolUtil.isEmpty(formID) || !formID.matches("\\w{32,64}")) {
+                return render(false,"formID 不能为空！");
+            }
+            redisTemplate.opsForValue().set(tempKey, formID, 604800, TimeUnit.SECONDS);
             // 获取客户端ip
             String spbill_create_ip = request.getRemoteHost().replace("::ffff:", "");
-            WxPayMpOrderResult res = orderService.unifiedorderDiff(user, param, spbill_create_ip);
+            WxPayMpOrderResult res = orderService.unifiedorderDiff(user, diffNO, spbill_create_ip);
             return buildPayView(res);
         } catch (WxPayException e) {
             e.printStackTrace();
+            redisTemplate.opsForValue().set(tempKey, formID, 1, TimeUnit.SECONDS);
             return render(false, e.getReturnMsg()).set("status", "102");
         } catch (Exception e){
             e.printStackTrace();
+            redisTemplate.opsForValue().set(tempKey, formID, 1, TimeUnit.SECONDS);
             return render(false, e.getMessage()).set("status", "102");
         }
 
