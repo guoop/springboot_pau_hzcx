@@ -5,6 +5,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
 import com.alibaba.fastjson.JSON;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
+import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.soft.ware.core.base.controller.BaseController;
@@ -15,6 +16,7 @@ import com.soft.ware.rest.modular.address.service.ITAddressService;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
+import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
 import com.soft.ware.rest.modular.order.service.ITOrderService;
@@ -23,6 +25,7 @@ import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffServi
 import com.soft.ware.rest.modular.owner_temp.service.ITOwnerTempService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -149,10 +152,10 @@ public class WxPayController extends BaseController {
             SessionUser user = new SessionUser().setAppId(app.getAppId()).setOwnerId(app.getOwnerId());
             WxPayService service = hzcxWxService.getWxPayService(app);
             result.checkResult(service, service.getConfig().getSignType(), false);
-            TOrderMoneyDiff order = BeanMapUtils.toObject(orderMoneyDiffService.findMap(Kv.obj("creater", user.getOpenId()).set("payOutNo", result.getOutTradeNo())), TOrderMoneyDiff.class);
-            order.setStatus(TOrderMoneyDiff.refund_status_1);
+            TOrderMoneyDiff order = BeanMapUtils.toObject(orderMoneyDiffService.findMap(Kv.obj("creater", user.getOpenId()).set("no", result.getOutTradeNo())), TOrderMoneyDiff.class);
+            order.setStatus(TOrderMoneyDiff.status_1);
             order.setPayTime(DateUtil.parse(result.getTimeEnd(),"yyyyMMddHHmmss"));
-            order.setPayResponse(JSON.toJSONString(result));
+            order.setResponse(JSON.toJSONString(result));
             boolean update = orderMoneyDiffService.update(order, user);
             if (update) {
                 logger.info("补差价支付回调成功：" + xmlData);
@@ -171,10 +174,42 @@ public class WxPayController extends BaseController {
     }
 
 
-    //@ApiOperation(value = "退款回调通知处理")
-    @PostMapping("/notify/refund")
-    public String parseRefundNotifyResult(@RequestBody String xmlData) throws WxPayException {
-        //final WxPayRefundNotifyResult result = hzcxWxService.getWxPayService(null).parseRefundNotifyResult(xmlData);
+    /**
+     * 补差价退款支付回调
+     * @param xmlData
+     * @return
+     * @throws WxPayException
+     */
+    @Deprecated //微信退款直接能获取结果，不使用这个回调
+    @PostMapping(value = "${wx.pay.notify_url_customer_pay_diff_refund}")
+    public String parseRefundNotifyResult(@RequestBody String xmlData) throws Exception {
+        WxPayRefundNotifyResult result = WxPayRefundNotifyResult.fromXML(xmlData, WxPayRefundNotifyResult.class);
+        SWxApp app = appService.findByAppId(result.getAppid());
+        result = hzcxWxService.getWxPayService(app).parseRefundNotifyResult(xmlData);
+        WxPayRefundNotifyResult.ReqInfo info = result.getReqInfo();
+        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("no", info.getOutRefundNo()));
+        TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
+        diff.setStatus(TOrderMoneyDiff.status_1);
+        diff.setResponse(JSON.toJSONString(result));
+        orderMoneyDiffService.updateById(diff);
+
+        try{
+            TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.by("orderNo", diff.getOrderNo())), TOrder.class);
+            List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
+            List<String> goodsNames = childOrders.stream().map(m -> m.get("goodsName") + "").collect(Collectors.toList());
+            String formID = redisTemplate.opsForValue().get("ms:ppi:" + info.getOutTradeNo());
+            SessionUser user = new SessionUser().setOwnerId(app.getOwnerId());
+            WxMaTemplateMessage msg = orderService.buildOrderTemplateMessage(user, "refund", formID, order, goodsNames, null);
+            msg.getData().add(new WxMaTemplateData("keyword5", diff.getMoney().setScale(2, WXContants.big_decimal_sale).toString() + "元"));
+            msg.getData().add(new WxMaTemplateData("keyword6", diff.getReason()));
+            msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));
+            hzcxWxService.getWxMaService(app).getMsgService().sendTemplateMsg(msg);
+        } catch (WxErrorException e){
+            logger.error("订单差价退款回调发送通知失败：{}   {}", e.getError().getErrorCode(), e.getError().getErrorMsg());
+        } catch (Exception e) {
+            logger.error("订单差价退款回调发送通知失败：{}  ", e.getMessage());
+            e.printStackTrace();
+        }
         return WxPayNotifyResponse.success("成功");
     }
 

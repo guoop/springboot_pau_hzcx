@@ -4,30 +4,27 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order_money_diff.model.TOrderMoneyDiff">
         <id column="id" property="id" />
-        <result column="pay_order_no" property="payOrderNo" />
+        <result column="no" property="no" />
         <result column="owner_id" property="ownerId" />
         <result column="order_no" property="orderNo" />
+        <result column="ticket_money" property="ticketMoney" />
         <result column="money" property="money" />
-        <result column="money_diff" property="moneyDiff" />
         <result column="pic" property="pic" />
         <result column="create_time" property="createTime" />
         <result column="creater" property="creater" />
         <result column="status" property="status" />
         <result column="pay_time" property="payTime" />
-        <result column="pay_response" property="payResponse" />
+        <result column="response" property="response" />
         <result column="is_delete" property="isDelete" />
-        <result column="refunder" property="refunder" />
-        <result column="refund_time" property="refundTime" />
-        <result column="refund_status" property="refundStatus" />
-        <result column="refund_response" property="refundResponse" />
+        <result column="reason" property="reason" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pay_order_no AS payOrderNo, owner_id AS ownerId, order_no AS orderNo, money, money_diff AS moneyDiff, pic, create_time AS createTime, creater, status, pay_time AS payTime, pay_response AS payResponse, is_delete AS isDelete
+        id, no, owner_id AS ownerId, order_no AS orderNo, ticket_money AS ticketMoney, money, pic, create_time AS createTime, creater, status, pay_time AS payTime, response, is_delete AS isDelete, reason
     </sql>
     <sql id="t_order_money_diff_alias_columns">
-        tomd.pay_order_no AS payOrderNo, tomd.owner_id AS ownerId, tomd.order_no AS orderNo, tomd.money, tomd.money_diff AS moneyDiff, tomd.pic, tomd.create_time AS createTime, tomd.creater, tomd.status, tomd.pay_time AS payTime, tomd.pay_response AS payResponse, tomd.is_delete AS isDelete, tomd.refunder, tomd.refund_time AS refundTime, tomd.refund_status AS refundStatus, tomd.refund_response AS refundResponse
+        tomd.no, tomd.owner_id AS ownerId, tomd.order_no AS orderNo, tomd.ticket_money AS ticketMoney, tomd.money, tomd.pic, tomd.create_time AS createTime, tomd.creater, tomd.status, tomd.pay_time AS payTime, tomd.response, tomd.is_delete AS isDelete, tomd.reason
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select
@@ -37,8 +34,8 @@
         <if test="params.id != null and params.id != ''">
             and tomd.id = #{params.id}
         </if>
-        <if test="params.payOrderNo != null and params.payOrderNo != ''">
-            and tomd.pay_order_no = #{params.payOrderNo}
+        <if test="params.no != null and params.no != ''">
+            and tomd.no = #{params.no}
         </if>
         <if test="params.ownerId != null and params.ownerId != ''">
             and tomd.owner_id = #{params.ownerId}

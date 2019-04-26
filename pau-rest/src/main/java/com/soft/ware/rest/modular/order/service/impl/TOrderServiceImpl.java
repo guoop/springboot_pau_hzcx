@@ -693,7 +693,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     @Transactional(rollbackFor = Throwable.class)
     public WxPayMpOrderResult unifiedorderDiff(SessionUser user, DiffParam param,String spbill_create_ip) throws Exception {
         String no = param.getDiffNO();
-        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("payOrderNo", no).set("ownerId", user.getOwnerId()));
+        Map<String, Object> map = orderMoneyDiffService.findMap(Kv.obj("no", no).set("ownerId", user.getOwnerId()));
         TOrderMoneyDiff diff = BeanMapUtils.toObject(map, TOrderMoneyDiff.class);
         SWxApp app = appService.find(user);
         String remark = "无";
@@ -702,85 +702,76 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         // 支付成功的回调地址  可访问 不带参数
         String notify_url = wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiff();
         // 订单价格 单位是 分
-        Integer total_fee = diff.getMoneyDiff().multiply(BigDecimal.valueOf(100)).intValue();
+        Integer total_fee = diff.getMoney().multiply(BigDecimal.valueOf(100)).intValue();
         return this.pay(app, user, no, total_fee, notify_url, body, remark, spbill_create_ip);
     }
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public boolean diffMoney(Map<String, Object> param, SessionUser sessionUser) throws Exception {
+    public boolean diffMoney(Map<String, Object> paramMap, SessionUser sessionUser) throws Exception {
+        Kv<String,Object> param = Kv.toKv(paramMap);
+        String no = param.requiredStr("orderNo");
+        BigDecimal money = param.getBigDecimal("money");
+        String pic = param.getStr("pic");
+        String reason = param.getStr("refundReason", "小票差额");
         Date date = new Date();
         boolean isSuccess;
-        TOrder tOrder = orderMapper.selectOne(new TOrder().setOrderNo(param.get("orderNo").toString()));
+        TOrder tOrder = orderMapper.selectOne(new TOrder().setOrderNo(no));
         String orderNO = tOrder.getOrderNo();
         TOrderMoneyDiff  diff = orderMoneyDiffService.selectOne(new EntityWrapper<>(new TOrderMoneyDiff().setOrderNo(orderNO)));
         if (diff != null) {
             if (TOrderMoneyDiff.status_1.equals(diff.getStatus())) {
                 throw new PauException(BizExceptionEnum.ORDER_REFUND_FINISHED);
             }
-            if (TOrderMoneyDiff.refund_status_0.equals(diff.getRefundStatus())) {
-                throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_RUNNING);
-            } else if (TOrderMoneyDiff.refund_status_1.equals(diff.getRefundStatus())) {
-                throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_FINISHED);
-            }
         }
-        TAddress address = addressService.findById(sessionUser, tOrder.getAddressId());
         SWxApp sWxApp = isWxAppService.find(new TOwner().setId(sessionUser.getOwnerId()));
         WxPayService service = hzcxWxService.getWxPayService(sWxApp);
-        List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
-        List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
         diff = new TOrderMoneyDiff();
-        diff.setMoney(BigDecimal.valueOf(Double.valueOf(param.get("money").toString())));
-        diff.setPayOrderNo(IdGenerator.getOrderNo());
-        diff.setRefunder(sessionUser.getPhone());
+        diff.setId(IdGenerator.getId());
+        diff.setStatus(TOrderMoneyDiff.status_0);
+        diff.setTicketMoney(money);
+        diff.setNo(IdGenerator.getOrderNo());
         diff.setOwnerId(sessionUser.getOwnerId());
-        diff.setPayTime(tOrder.getPayTime());
         diff.setOrderNo(orderNO);
-        diff.setRefundTime(date);
-        BigDecimal money = BigDecimal.valueOf(Double.valueOf(param.get("money").toString()));
+        diff.setPayTime(date);
         BigDecimal payMoney = tOrder.getPayMoney();
-        diff.setMoneyDiff(money.subtract(payMoney));
-        diff.setCreater(sessionUser.getName() == null ? sessionUser.getPhone() : sessionUser.getName());
+        diff.setMoney(money.subtract(payMoney));
+        diff.setCreater(sessionUser.getPhone());
         diff.setCreateTime(date);
-        diff.setPic(param.get("pic") + "");
+        diff.setPic(pic);
+        diff.setReason(reason);
         logger.info("小票"+money+"支付金额"+payMoney+"差价"+money.subtract(payMoney));
         if(money.compareTo(payMoney) < 0){
             //退差价
-            diff.setId(IdGenerator.getId());
-            diff.setStatus(TOrderMoneyDiff.status_0);
-            diff.setRefundStatus(TOrderMoneyDiff.refund_status_0);
+            diff.setPayTime(tOrder.getPayTime());
             isSuccess = orderMoneyDiffService.insert(diff);
             if (isSuccess) {
-                BigDecimal refundFee = BigDecimal.valueOf(Math.abs(diff.getMoneyDiff().doubleValue()));
+                BigDecimal refundFee = diff.getMoney().abs();
                 WxPayRefundRequest req = WxPayRefundRequest
                         .newBuilder()
                         .outTradeNo(orderNO)
-                        .outRefundNo(diff.getPayOrderNo())
+                        .outRefundNo(diff.getNo())
                         .totalFee(tOrder.getPayMoney().multiply(BigDecimal.valueOf(100)).intValue())
                         .refundFee(refundFee.multiply(BigDecimal.valueOf(100)).intValue())
+                        .notifyUrl(wxContants.getCustomerPayHost() + wxContants.getCustomerPayDiffRefund())
                         .build();
                 service.refund(req);
-                String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
-                WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"refund", formID, tOrder,goodsNames,address);
-                msg.getData().set(4, new WxMaTemplateData("keyword5", refundFee.setScale(2, WXContants.big_decimal_sale).toString() + "元"));
-                msg.getData().add(new WxMaTemplateData("keyword6",ToolUtil.isEmpty(param.get("refundReason")) ? "小票差额退款" : param.get("refundReason").toString()));
-                msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));
-                hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
             }
         }else if(money.compareTo(payMoney) > 0){
-            diff.setStatus(TOrderMoneyDiff.status_0);
-            diff.setId(IdGenerator.getId());
+            TAddress address = addressService.findById(sessionUser, tOrder.getAddressId());
+            List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
+            List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
             isSuccess = orderMoneyDiffService.insert(diff);
-            // TODO: 2019/4/23 paulo 需要添加通知提醒客户补差价
             String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());
             WxMaTemplateMessage msg = buildOrderTemplateMessage(sessionUser,"diff", formID, tOrder,goodsNames,address);
             msg.getData().set(3,new WxMaTemplateData("keyword3",goodsNames.get(0)));
-            msg.getData().add(new WxMaTemplateData("keyword7",tOrder.getPayMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
-            msg.getData().add(new WxMaTemplateData("keyword8",diff.getMoneyDiff().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
-            msg.getData().add(new WxMaTemplateData("keyword9", diff.getMoney().setScale(2,WXContants.big_decimal_sale).toString()+"元"));
+            msg.getData().add(new WxMaTemplateData("keyword7",tOrder.getPayMoney().setScale(2,WXContants.big_decimal_sale)+"元"));
+            msg.getData().add(new WxMaTemplateData("keyword8",diff.getMoney().setScale(2,WXContants.big_decimal_sale)+"元"));
+            msg.getData().add(new WxMaTemplateData("keyword9", diff.getMoney().setScale(2,WXContants.big_decimal_sale)+"元"));
             hzcxWxService.getWxMaService(sWxApp).getMsgService().sendTemplateMsg(msg);
         }else{
-            throw new PauException(BizExceptionEnum.ORDER_DIFF_REFUND_EXCEPTION);
+            diff.setPayTime(date);
+            isSuccess = orderMoneyDiffService.insert(diff);
         }
         return isSuccess;
     }

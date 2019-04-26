@@ -15,23 +15,18 @@ import java.util.Date;
  * </p>
  *
  * @author yancc
- * @since 2019-04-13 11:46:45
+ * @since 2019-04-26 09:57:22
  */
 @TableName("t_order_money_diff")
 public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
 
     private static final long serialVersionUID = 1L;
 
+
     //：未补差价；
     public static Integer status_0 = 0;
     //：已补差价）
     public static Integer status_1 = 1;
-    //：处理中；
-    public static Integer refund_status_0 = 0;
-    //：成功；
-    public static Integer refund_status_1 = 1;
-    //：失败）
-    public static Integer refund_status_2 = 2;
 
     /**
      * 主键id
@@ -41,8 +36,7 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     /**
      * 支付订单号(本表中生成的订单号需要用此订单号再次支付)
      */
-    @TableField("pay_order_no")
-    private String payOrderNo;
+    private String no;
     /**
      * 商户唯一id
      */
@@ -56,12 +50,12 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     /**
      * 小票金额
      */
-    private BigDecimal money;
+    @TableField("ticket_money")
+    private BigDecimal ticketMoney;
     /**
      * 差价（小票金额-订单金额，如果为正数则需要买家补足差价，如果为负数则需要商家退款差价）
      */
-    @TableField("money_diff")
-    private BigDecimal moneyDiff;
+    private BigDecimal money;
     /**
      * 小票图片地址
      */
@@ -72,11 +66,11 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     @TableField("create_time")
     private Date createTime;
     /**
-     * 创建人(买家姓名)
+     * 创建人(卖家姓名)
      */
     private String creater;
     /**
-     * 状态（0：未补差价；1：已补差价）
+     * 差价状态（0：未补差价；1：已补差价）
      */
     private Integer status;
     /**
@@ -87,33 +81,16 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     /**
      * 支付信息
      */
-    @TableField("pay_response")
-    private String payResponse;
+    private String response;
     /**
      * 是否删除（0：不删除，1：删除）
      */
     @TableField("is_delete")
     private Integer isDelete;
     /**
-     * 退款人(买家openId)
+     * 退款原因
      */
-    @TableField("refunder")
-    private String refunder;
-    /**
-     * 退款时间
-     */
-    @TableField("refund_time")
-    private Date refundTime;
-    /**
-     * 退款状态(0: 处理中 1：成功 2: 失败)
-     */
-    @TableField("refund_status")
-    private Integer refundStatus;
-    /**
-     * 退款响应
-     */
-    @TableField("refund_response")
-    private String refundResponse;
+    private String reason;
 
 
     public String getId() {
@@ -124,12 +101,12 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         this.id = id;return this;
     }
 
-    public String getPayOrderNo() {
-        return payOrderNo;
+    public String getNo() {
+        return no;
     }
 
-    public TOrderMoneyDiff setPayOrderNo( String payOrderNo) {
-        this.payOrderNo = payOrderNo;return this;
+    public TOrderMoneyDiff setNo( String no) {
+        this.no = no;return this;
     }
 
     public String getOwnerId() {
@@ -148,20 +125,20 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         this.orderNo = orderNo;return this;
     }
 
+    public BigDecimal getTicketMoney() {
+        return ticketMoney;
+    }
+
+    public TOrderMoneyDiff setTicketMoney( BigDecimal ticketMoney) {
+        this.ticketMoney = ticketMoney;return this;
+    }
+
     public BigDecimal getMoney() {
         return money;
     }
 
     public TOrderMoneyDiff setMoney( BigDecimal money) {
         this.money = money;return this;
-    }
-
-    public BigDecimal getMoneyDiff() {
-        return moneyDiff;
-    }
-
-    public TOrderMoneyDiff setMoneyDiff( BigDecimal moneyDiff) {
-        this.moneyDiff = moneyDiff;return this;
     }
 
     public String getPic() {
@@ -204,12 +181,12 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         this.payTime = payTime;return this;
     }
 
-    public String getPayResponse() {
-        return payResponse;
+    public String getResponse() {
+        return response;
     }
 
-    public TOrderMoneyDiff setPayResponse( String payResponse) {
-        this.payResponse = payResponse;return this;
+    public TOrderMoneyDiff setResponse( String response) {
+        this.response = response;return this;
     }
 
     public Integer getIsDelete() {
@@ -220,36 +197,12 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
         this.isDelete = isDelete;return this;
     }
 
-    public String getRefunder() {
-        return refunder;
+    public String getReason() {
+        return reason;
     }
 
-    public TOrderMoneyDiff setRefunder( String refunder) {
-        this.refunder = refunder;return this;
-    }
-
-    public Date getRefundTime() {
-        return refundTime;
-    }
-
-    public TOrderMoneyDiff setRefundTime( Date refundTime) {
-        this.refundTime = refundTime;return this;
-    }
-
-    public Integer getRefundStatus() {
-        return refundStatus;
-    }
-
-    public TOrderMoneyDiff setRefundStatus( Integer refundStatus) {
-        this.refundStatus = refundStatus;return this;
-    }
-
-    public String getRefundResponse() {
-        return refundResponse;
-    }
-
-    public TOrderMoneyDiff setRefundResponse( String refundResponse) {
-        this.refundResponse = refundResponse;return this;
+    public TOrderMoneyDiff setReason( String reason) {
+        this.reason = reason;return this;
     }
 
     @Override
@@ -261,22 +214,19 @@ public class TOrderMoneyDiff extends Model<TOrderMoneyDiff> {
     public String toString() {
         return "TOrderMoneyDiff{" +
         "id=" + id +
-        ", payOrderNo=" + payOrderNo +
+        ", no=" + no +
         ", ownerId=" + ownerId +
         ", orderNo=" + orderNo +
+        ", ticketMoney=" + ticketMoney +
         ", money=" + money +
-        ", moneyDiff=" + moneyDiff +
         ", pic=" + pic +
         ", createTime=" + createTime +
         ", creater=" + creater +
         ", status=" + status +
         ", payTime=" + payTime +
-        ", payResponse=" + payResponse +
+        ", response=" + response +
         ", isDelete=" + isDelete +
-        ", refunder=" + refunder +
-        ", refundTime=" + refundTime +
-        ", refundStatus=" + refundStatus +
-        ", refundResponse=" + refundResponse +
+        ", reason=" + reason +
         "}";
     }
 }

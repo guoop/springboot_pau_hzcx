@@ -132,6 +132,8 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         if (v != null) {
             if (v instanceof String) {
                 return DateUtils.parseDate(v.toString(), "yyyy-MM-dd HH:mm:ss");
+            } else if (v instanceof Long){
+                return new Date(Long.valueOf(v.toString()));
             } else {
                 return (Date) v;
             }

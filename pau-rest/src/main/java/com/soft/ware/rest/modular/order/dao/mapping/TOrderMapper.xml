@@ -86,7 +86,7 @@
     </resultMap>
     <sql id="orderJoinColumnSql">
         <if test="params.noJoin == null">
-            ,b.pay_order_no diffNo,b.money ticketMoney,b.money_diff diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
+            ,b.no diffNo,b.ticket_money ticketMoney,b.money diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
             ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault
             ,tr.reason refundReason,tr.status refundStatus,tr.order_money refundMoney,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') refundTime
             ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
@@ -155,24 +155,24 @@
     </select>
     <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.HashMap">
         select  a.id,<include refid="t_order_alias_columns"/>
-            ,b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus'
-            ,d.pay_order_no diffNo,d.money as diffTicketMoney,ifnull(d.money_diff,0) as diffMoney,d.status  diffStatus, d.refund_status diffRefundStatus,d.pic diffPic
-            from t_order a
-            LEFT JOIN t_address b
-            on a.address_id = b.id
-            LEFT JOIN t_refund c
-            on a.order_no = c.order_no
-            LEFT JOIN t_order_money_diff d
-            on a.order_no = d.order_no
-            where 1=1 and a.source != 1
-            <if test="params.status != null and params.status != ''">
-                and a.status = #{params.status}
-            </if>
-            <if test="params.owner_id != null and params.owner_id != ''">
-                and a.owner_id = #{params.owner_id}
-            </if>
-                order by a.create_time desc
-            <include refid="limit"/>
+        ,b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus'
+        ,d.no diffNo,d.ticket_money as diffTicketMoney,ifnull(d.money,0) as diffMoney,d.status  diffStatus, d.status diffRefundStatus,d.pic diffPic
+        from t_order a
+        LEFT JOIN t_address b
+        on a.address_id = b.id
+        LEFT JOIN t_refund c
+        on a.order_no = c.order_no
+        LEFT JOIN t_order_money_diff d
+        on a.order_no = d.order_no
+        where 1=1 and a.source != 1
+        <if test="params.status != null and params.status != ''">
+            and a.status = #{params.status}
+        </if>
+        <if test="params.owner_id != null and params.owner_id != ''">
+            and a.owner_id = #{params.owner_id}
+        </if>
+            order by a.create_time desc
+        <include refid="limit"/>
     </select>
 
     <select id="selectOrdersListByMapCount" resultType="int">
@@ -208,7 +208,7 @@
     <!--根据订单id查询订单 -->
     <select id="selectOrderDetailById" resultType="java.util.Map">
         select a.id,<include refid="t_order_alias_columns"/>
-        ,d.pay_order_no diffNo,d.money as diffTicketMoney,ifnull(d.money_diff,0) as diffMoney,d.status  diffStatus, d.refund_status diffRefundStatus,d.pic diffPic
+        ,d.no diffNo,d.ticket_money as diffTicketMoney,ifnull(d.money,0) as diffMoney,d.status  diffStatus, d.status diffRefundStatus,d.pic diffPic
         from t_order a
         LEFT JOIN t_order_money_diff d on a.order_no = d.order_no
         where a.order_no = #{orderNo}
