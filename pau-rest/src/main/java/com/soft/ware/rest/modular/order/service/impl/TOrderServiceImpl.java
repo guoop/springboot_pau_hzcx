@@ -563,7 +563,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
                         logger.info("确认订单 - {}", tOrder.getOrderNo());
                         String templateFormId = redisTemplate.opsForValue().get("ms:fio:" + tOrder.getOrderNo());
                         WxMaTemplateMessage msg = this.buildOrderTemplateMessage(sessionUser,"confirm", templateFormId,tOrder,goodsNames,address );
-                        msg.getData().add(new WxMaTemplateData("keyword6",DateUtil.format(tOrder.getCreateTime(), "YYYY-MM-DD HH:mm:ss")));// 确认时间
+                        msg.getData().add(new WxMaTemplateData("keyword6",DateUtil.format(tOrder.getCreateTime(), "YYYY-MM-dd HH:mm:ss")));// 确认时间
                         msg.getData().add(new WxMaTemplateData("keyword7", "如有疑问，请进入小程序联系商家"));// 备注信息*/
                         service.getMsgService().sendTemplateMsg(msg);
                     } else {

@@ -71,13 +71,13 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 支付时间（即：订单在APP中的创建时间）
      */
-    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
     @TableField("pay_time")
     private Date payTime;
     /**
      * 订单同步到云端的时间
      */
-    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm:ss")
     @TableField("create_time")
     private Date createTime;
     /**
