@@ -81,7 +81,12 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
 
     IM_USER_DELETE(500,"没有当前用户"),
 
+    TORDERCHILD_SYN(600,"同步失败，该订单已存在"),
+
     ERROR(500,"未知错误");
+
+
+
 
 
 

@@ -71,5 +71,9 @@
    <include refid="limit"/>
 
     </select>
+    <!--根据订单编号查询是否已经同步过的账单-->
+    <select id="selectOrderChildByOrderNo" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_order_app where no = #{no}
+    </select>
 
 </mapper>

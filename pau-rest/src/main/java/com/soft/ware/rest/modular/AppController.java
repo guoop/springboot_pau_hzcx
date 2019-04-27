@@ -98,8 +98,10 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "order",method = RequestMethod.POST)
     public Object addOrder(SessionUser user, AddOrderParam param){
-        orderAppService.addOrder(user, param);
-        return render();
+        if(orderAppService.addOrder(user, param)){
+            return new SuccessTip();
+        };
+        return new ErrorTip();
     }
 
 
@@ -203,6 +205,11 @@ public class AppController extends BaseController {
             }
         return new ErrorTip();
     }
+
+
+    /**
+     * 退款库存修改
+     */
 
 
 

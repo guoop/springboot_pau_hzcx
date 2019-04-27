@@ -1,7 +1,8 @@
 rest:
   auth-open: true #jwt鉴权机制是否开启(true或者false)
   sign-open: true #签名机制是否开启(true或false)
-  swagger-open: true #swagger
+swagger:
+  enabled: true
 wx:
  pay:
   notify_host: http://246q2604o1.qicp.vip

@@ -38,6 +38,8 @@ public class SimpleValidator implements IReqValidator {
         }
 
         password = PasswordUtils.encode(phone, password);
+        System.out.println(password);
+        System.out.println(staff.getPassword());
         if (!phone.equals(staff.getPhone()) || !password.equals(staff.getPassword())) {
             throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
