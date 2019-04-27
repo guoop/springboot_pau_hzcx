@@ -202,11 +202,11 @@ public class ImServiceImpl implements ImService {
     private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
         List<SImGroups> gs = requireOwnerGroupList(user, owner, type);
         for (SImGroups g : gs) {
-            if (g.getType() == type.ordinal()) {
+            /*if (g.getType() == type.ordinal()) {
                 return g;
-            }
+            }*/
         }
-        return null;
+        return gs.get(0);
     }
 
     /**

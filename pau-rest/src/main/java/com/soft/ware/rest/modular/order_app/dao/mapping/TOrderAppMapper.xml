@@ -16,17 +16,16 @@
         <result column="create_time" property="createTime" />
         <result column="settlementer" property="settlementer" />
         <result column="owner_id" property="ownerId" />
-        <result column="goods_id" property="goodsId" />
         <result column="status" property="status" />
         <result column="remark" property="remark" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,no,source,money_channel,money,money_pay,money_real_income,money_change,channel_pay,pay_time,create_time,settlementer,owner_id,goods_id,status
+        id,no,source,money_channel,money,money_pay,money_real_income,money_change,channel_pay,pay_time,create_time,settlementer,owner_id,status
     </sql>
     <sql id="t_order_app_alias_columns">
-        toa.no, toa.source, toa.money_channel AS moneyChannel, toa.money, toa.money_pay AS moneyPay, toa.money_real_income AS moneyRealIncome, toa.money_change AS moneyChange, toa.channel_pay AS channelPay, toa.pay_time AS payTime, toa.create_time AS createTime, toa.settlementer, toa.owner_id AS ownerId, toa.goods_id AS goodsId, toa.status, toa.remark
+        toa.no, toa.source, toa.money_channel AS moneyChannel, toa.money, toa.money_pay AS moneyPay, toa.money_real_income AS moneyRealIncome, toa.money_change AS moneyChange, toa.channel_pay AS channelPay, toa.pay_time AS payTime, toa.create_time AS createTime, toa.settlementer, toa.owner_id AS ownerId, toa.status, toa.remark
     </sql>
     <sql id="limit">
         limit #{page.size} offset #{page.offset}
@@ -54,9 +53,6 @@
         </if>
         <if test="params.ownerId != null and params.ownerId != ''">
             and toa.owner_id = #{params.ownerId}
-        </if>
-        <if test="params.goodsId != null and params.goodsId != ''">
-            and toa.goods_id = #{params.goodsId}
         </if>
         <if test="params.status != null">
             and toa.status = #{params.status}

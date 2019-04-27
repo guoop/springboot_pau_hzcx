@@ -109,7 +109,7 @@ public class AuthController extends BaseController {
             return warpObject(render(false, "验证码错误"));
         }*/
         WxMaService service = hzcxWxService.getWxMaService();
-        TOwnerStaff user = tOwnerStaffService.findByPhone(phone);
+        TOwnerStaff user = tOwnerStaffService.findByLoginName(phone);
         if (user == null) {
             return render(false, "用户不存在");
         }

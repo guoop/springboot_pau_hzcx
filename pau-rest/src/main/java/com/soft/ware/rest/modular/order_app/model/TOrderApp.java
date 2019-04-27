@@ -1,16 +1,17 @@
 package com.soft.ware.rest.modular.order_app.model;
+
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.soft.ware.rest.modular.goods.model.TGoods;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -79,20 +80,16 @@ public class TOrderApp extends Model<TOrderApp> {
      */
     private String ownerId;
     /**
-     * 订单包含的商品信息（商品之间已英文逗号分隔，单个货物的的格式为：id__图片地址__名称__规格__数量__单价__总价）
-     */
-    private String goodsId;
-    /**
      * 商品列表
      */
     @TableField(exist = false)
-    List<TGoods> listGoods = new ArrayList<>();
+    List<Map<String,Object>> listGoods = new ArrayList<>();
 
-    public List<TGoods> getListGoods() {
+    public List<Map<String,Object>> getListGoods() {
         return listGoods;
     }
 
-    public void setListGoods(List<TGoods> listGoods) {
+    public void setListGoods(List<Map<String,Object>> listGoods) {
         this.listGoods = listGoods;
     }
 
@@ -210,13 +207,6 @@ public class TOrderApp extends Model<TOrderApp> {
         this.ownerId = ownerId;return this;
     }
 
-    public String getGoodsId() {
-        return goodsId;
-    }
-
-    public TOrderApp setGoodsId( String goodsId) {
-        this.goodsId = goodsId;return this;
-    }
 
     public Integer getStatus() {
         return status;
@@ -255,7 +245,6 @@ public class TOrderApp extends Model<TOrderApp> {
         ", createTime=" + createTime +
         ", settlementer=" + settlementer +
         ", ownerId=" + ownerId +
-        ", goodsId=" + goodsId +
         ", status=" + status +
         ", remark=" + remark +
         "}";

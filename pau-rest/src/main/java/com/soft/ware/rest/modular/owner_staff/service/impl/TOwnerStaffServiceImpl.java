@@ -1,19 +1,15 @@
 package com.soft.ware.rest.modular.owner_staff.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
-import com.soft.ware.core.exception.ParameterException;
 import com.soft.ware.core.exception.PauException;
-import com.soft.ware.core.exception.ServiceExceptionEnum;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
-import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
-import com.soft.ware.rest.modular.auth.util.ParamUtils;
-import com.soft.ware.rest.modular.im.model.SImGroups;
-import com.soft.ware.rest.modular.im.model.SImUser;
+import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.im.service.ISImUserService;
 import com.soft.ware.rest.modular.im.service.ImService;
 import com.soft.ware.rest.modular.owner.model.TOwner;
@@ -21,14 +17,16 @@ import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.dao.TOwnerStaffMapper;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -58,6 +56,11 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
     }
 
     @Override
+    public TOwnerStaff findByLoginName(String phone) {
+        return selectOne(new EntityWrapper<>(new TOwnerStaff().setPhone(phone)).ne("status", TOwnerStaff.status_2));
+    }
+
+    @Override
     public List<TOwnerStaff> selectStaffByOwnerId(String ownerId) {
         return tOwnerStaffMapper.selectStaffByOwnerId(ownerId);
     }
@@ -71,7 +74,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
         if ( param.getPhone().equals(sessionUser.getPhone())) {
             throw new PauException(BizExceptionEnum.PHONE_EXISTS);
         }
-        TOwnerStaff p = this.findByPhone(param.getPhone());
+        TOwnerStaff p = this.findByLoginName(param.getPhone());
         TOwnerStaff s = null;
         if (ToolUtil.isEmpty(param.getId())) {
             if (p != null) {
@@ -105,9 +108,7 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             //修改店员信息
             param.update(s);
             s.setPhone(param.getPhone());
-            String password = "^a9682150f2e011e8uy572f1cf5acecff-" + param.getPhone() + "-" + param.getPassword() + "$";
-            password = Base64.getEncoder().encodeToString(DigestUtils.updateDigest(DigestUtils.getMd5Digest(), password).digest());
-            s.setPassword(password);
+            s.setPassword(PasswordUtils.encode(param.getPhone(), param.getPassword()));
             s.setCategoryList(param.getCategoryList());
             s.setFunctionList(param.getFunctionList());
             s.setName(param.getName());
@@ -130,48 +131,20 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
             }
             return true;
         }
-
-
-
-           /* if (TOwnerStaff.status_0 == Integer.valueOf(param.getStatus())) {
-                //启用店员信息
-                //todo yancc 可能还需要更新im群组信息
-                for (String key : keys) {
-                    try {
-                        redisTemplate.opsForHash().putAll(key, BeanMapUtils.toMap(s,true));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                // 禁用店员信息
-                //todo yancc 可能还需要删除im群组信息
-                redisTemplate.delete(keys);
-            }
-            if (row > 0) {
-                return true;
-            }*/
-            return false;
+        return false;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean delStaff(Map<String, Object> map,SessionUser sessionUser) {
-
-            TOwnerStaff staff = new TOwnerStaff();
-            staff.setId(map.get("id").toString());
-            staff.setOwnerId(sessionUser.getOwnerId());
-            staff.setPhone(map.get("phone").toString());
-            staff.setStatus(2);
-            if(tOwnerStaffMapper.updateById(staff) > 0){
-                try {
-                    imService.syncUsers(sessionUser,itOwnerService.selectById(sessionUser.getOwnerId()),staff);
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            };
-        return false;
+    public boolean delStaff(Map<String, Object> map,SessionUser sessionUser) throws Exception {
+        TOwnerStaff staff = new TOwnerStaff();
+        staff.setId(map.get("id").toString());
+        staff.setOwnerId(sessionUser.getOwnerId());
+        staff.setPhone(map.get("phone").toString());
+        staff.setStatus(2);
+        updateById(staff);
+        imService.syncUsers(sessionUser,itOwnerService.selectById(sessionUser.getOwnerId()),staff);
+        return true;
     }
 
 

@@ -109,8 +109,8 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public TOwnerStaff setPhone(String phone) {
+        this.phone = phone;return this;
     }
 
     public String getPassword() {

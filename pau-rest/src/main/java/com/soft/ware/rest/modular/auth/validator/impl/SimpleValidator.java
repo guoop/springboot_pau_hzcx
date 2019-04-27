@@ -27,7 +27,7 @@ public class SimpleValidator implements IReqValidator {
     public Object validate(Credence credence) {
         String password = credence.getCredenceCode();
         String phone = credence.getPhoneName();
-        TOwnerStaff staff = staffService.findByPhone(phone);
+        TOwnerStaff staff = staffService.findByLoginName(phone);
 
         if (staff == null) {
             throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);

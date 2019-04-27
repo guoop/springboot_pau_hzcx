@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface TOrderChildMapper extends BaseMapper<TOrderChild> {
 
-    List<Map> findMaps(@Param("params") Map<String, Object> params);
+    List<Map<String,Object>> findMaps(@Param("params") Map<String, Object> params);
 
     List<TOrderChild> selectOrderChildListByMap(Map<String,Object> map);
 }

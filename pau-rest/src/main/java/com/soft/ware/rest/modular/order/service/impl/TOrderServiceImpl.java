@@ -199,7 +199,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         int round = WXContants.big_decimal_sale;
         BigDecimal v100 = BigDecimal.valueOf(100);
         TOrder tOrder =  orderMapper.selectOne(new TOrder().setOrderNo(orderNo));
-        List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
+        List<Map<String,Object>> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
         List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
         boolean isSuccess;
         TRefund tRefund  = new TRefund();
@@ -519,7 +519,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
         TOrder tOrder = new TOrder();
         tOrder.setOrderNo(param.get("orderNo").toString());
         tOrder = orderMapper.selectOne(tOrder);
-        List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
+        List<Map<String,Object>> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
         List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
         TAddress address = null;
         if(ToolUtil.isNotEmpty(tOrder.getAddressId())){
@@ -754,7 +754,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
             }
         }else if(money.compareTo(payMoney) > 0){
             TAddress address = addressService.findById(sessionUser, tOrder.getAddressId());
-            List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
+            List<Map<String,Object>> childOrders = orderChildService.findMaps(Kv.by("orderId", tOrder.getId()));
             List<String> goodsNames = childOrders.stream().map(map -> map.get("goodsName") + "").collect(Collectors.toList());
             isSuccess = orderMoneyDiffService.insert(diff);
             String formID = redisTemplate.opsForValue().get("ms:ppi:" + tOrder.getOrderNo());

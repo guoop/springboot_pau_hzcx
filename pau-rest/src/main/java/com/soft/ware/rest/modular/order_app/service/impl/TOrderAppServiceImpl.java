@@ -11,7 +11,6 @@ import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +88,6 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
         order.setRemark(null);
         order.setCreateTime(date);
         order.setMoneyRealIncome(param.getMoney_shishou().add(param.getMoney_zhaol()));//失手
-        order.setGoodsId(param.getGoods());//删掉这个字段，数据库中也删掉
         order.setStatus(param.getStatus());
         boolean insert = insert(order);
         List<TOrderChild> list = param.getGoodsList();
@@ -123,20 +120,10 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     @Override
     public List<TOrderApp> getAppOrderList(Map<String, Object> map,Page page) {
         List<TOrderApp> listOrderApp = mapper.getAppOrderList(map,page);
-        List<TOrderApp> resultList = new ArrayList<>();
+        for (TOrderApp app : listOrderApp) {
+            app.setListGoods(orderChildService.findMaps(Kv.by("orderId", app.getId())));
 
-        if(listOrderApp.size() > 0){
-            for (int i = 0; i < listOrderApp.size() ; i++) {
-                TOrderApp tOrderApp = listOrderApp.get(i);
-                List<TGoods> listGoods = new ArrayList<>();
-                String goodsIds[] = tOrderApp.getGoodsId().split(",");
-                for (int j = 0; j < goodsIds.length; j++) {
-                    listGoods.add(itGoodsService.selectById(goodsIds[j]));
-                }
-                tOrderApp.setListGoods(listGoods);
-                resultList.add(tOrderApp);
-            }
         }
-      return resultList;
+        return listOrderApp;
     }
 }

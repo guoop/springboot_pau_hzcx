@@ -1,11 +1,9 @@
 package com.soft.ware.rest.modular.owner_staff.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
-import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
@@ -13,14 +11,15 @@ import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
-import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -44,27 +43,27 @@ public class StaffController extends BaseController {
     @Autowired
     private ITCategoryService itCategoryService;
 
-      @RequestMapping(value = "staff/addOrUpdate",method = RequestMethod.POST)
-       public Tip updateOrSave(@RequestBody @Valid StaffEditParam param, SessionUser sessionUser, BindingResult result){
-          Validator.valid(result);
-          if(tOwnerStaffService.addOrUpdate(sessionUser,param)){
-              return new SuccessTip();
-          }
-           return new ErrorTip();
-       }
+    @RequestMapping(value = "staff/addOrUpdate", method = RequestMethod.POST)
+    public Tip updateOrSave(@RequestBody @Valid StaffEditParam param, SessionUser sessionUser, BindingResult result) {
+        Validator.valid(result);
+        if (tOwnerStaffService.addOrUpdate(sessionUser, param)) {
+            return new SuccessTip();
+        }
+        return new ErrorTip();
+    }
 
     /**
      * 删除店员信息
      * @param param 店员id
      * @return
      */
-    @RequestMapping(value = "staff/del",method = RequestMethod.POST)
-       public Tip Delete(@RequestBody Map<String,Object> param,SessionUser sessionUser){
-              if(tOwnerStaffService.delStaff(param,sessionUser)){
-                  return new SuccessTip();
-              }
-              return new ErrorTip();
-      }
+    @RequestMapping(value = "staff/del", method = RequestMethod.POST)
+    public Tip Delete(@RequestBody Map<String, Object> param, SessionUser sessionUser) throws Exception {
+        if (tOwnerStaffService.delStaff(param, sessionUser)) {
+            return new SuccessTip();
+        }
+        return new ErrorTip();
+    }
 
     /**
      * 获取超市下的所有店员信息
@@ -89,7 +88,7 @@ public class StaffController extends BaseController {
      */
       @RequestMapping("staff/detail")
       public Tip getStaffDetail(SessionUser sessionUser , String id){
-          TOwnerStaff sta = tOwnerStaffService.findByPhone(sessionUser.getPhone());
+          TOwnerStaff sta = tOwnerStaffService.findByLoginName(sessionUser.getPhone());
           TOwnerStaff staff = tOwnerStaffService.selectById(id);
           Map<String,Object> mapResult = new HashMap<>();
           List<String> ids = new ArrayList<>();

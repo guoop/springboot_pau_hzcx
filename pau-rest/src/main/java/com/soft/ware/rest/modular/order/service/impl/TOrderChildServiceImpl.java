@@ -30,7 +30,7 @@ public class TOrderChildServiceImpl extends ServiceImpl<TOrderChildMapper, TOrde
     }
 
     @Override
-    public List<Map> findMaps(Map<String, Object> map) {
+    public List<Map<String,Object>> findMaps(Map<String, Object> map) {
         return tOrderChildMapper.findMaps(map);
     }
 }

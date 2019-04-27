@@ -207,7 +207,7 @@ public class WxPayController extends BaseController {
 
         try{
             TOrder order = BeanMapUtils.toObject(orderService.findMap(Kv.by("orderNo", diff.getOrderNo())), TOrder.class);
-            List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
+            List<Map<String,Object>> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
             List<String> goodsNames = childOrders.stream().map(m -> m.get("goodsName") + "").collect(Collectors.toList());
             String formID = redisTemplate.opsForValue().get("ms:ppi:" + info.getOutTradeNo());
             SessionUser user = new SessionUser().setOwnerId(app.getOwnerId());
@@ -243,7 +243,7 @@ public class WxPayController extends BaseController {
     private void paySuccessNotify(TOrder order,SessionUser user,SWxApp app) {
         try {
             TAddress address = BeanMapUtils.toObject(addressService.findMap(Kv.by("id", order.getAddressId())), TAddress.class);
-            List<Map> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
+            List<Map<String,Object>> childOrders = orderChildService.findMaps(Kv.by("orderId", order.getId()));
             List<String> names = childOrders.stream().map(s -> s.get("goodsName") + "").collect(Collectors.toList());
             String tempKey = "ms:ppi:" + order.getOrderNo();
             String pack = redisTemplate.opsForValue().get(tempKey);
