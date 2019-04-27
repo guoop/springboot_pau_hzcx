@@ -304,16 +304,14 @@ public class TGoodsController {
         return  new ErrorTip();
     }
     @RequestMapping(value = "storage/change",method = RequestMethod.POST)
-    public Tip goodsChangeStorage(TGoodsStorage goodsStorage){
+    public Tip goodsChangeStorage(SessionUser sessionUser,TGoodsStorage goodsStorage){
         boolean isSuccess = false;
         if(ToolUtil.isNotEmpty(goodsStorage.getId())){
             isSuccess = tGoodsStorageService.updateById(goodsStorage);
         }else{
             goodsStorage.setId(IdGenerator.getId());
-
             tGoodsStorageService.insert(goodsStorage);
         }
-
         return new ErrorTip();
     }
 

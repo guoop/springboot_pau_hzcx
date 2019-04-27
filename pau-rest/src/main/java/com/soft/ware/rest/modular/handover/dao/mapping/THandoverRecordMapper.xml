@@ -13,10 +13,8 @@
         <result column="end_time" property="endTime" />
         <result column="order_num" property="orderNum" />
         <result column="order_refund_num" property="orderRefundNum" />
-        <result column="order_return_num" property="orderReturnNum" />
         <result column="order_money" property="orderMoney" />
         <result column="order_refund_money" property="orderRefundMoney" />
-        <result column="order_return_money" property="orderReturnMoney" />
         <result column="all_money" property="allMoney" />
         <result column="odd_change_money" property="oddChangeMoney" />
         <result column="member_recharge" property="memberRecharge" />
