@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.device.service.impl;
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.device.dao.TDeviceMapper;
 import com.soft.ware.rest.modular.device.model.TDevice;
@@ -24,9 +25,9 @@ public class TDeviceServiceImpl extends BaseService<TDeviceMapper,TDevice> imple
     }
 
     @Override
-    public Map<String, Object> findMap(Map<String, Object> map) {
+    public Kv<String, Object> findMap(Map<String, Object> map) {
     List<Map<String, Object>> maps = findMaps(map);
-        return maps.isEmpty() ? null : maps.get(0);
+        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
     }
 
     @Override

@@ -41,7 +41,7 @@ public class TOrderApp extends Model<TOrderApp> {
      */
     private Integer source;
     /**
-     * 付款方式（1：现金支付；2：微信支付；3：支付宝支付；4；银联支付），多种支付方式以_分割
+     * 参考 t_order 表的 money_channel 支付字段
      */
     @TableField("money_channel")
     private String moneyChannel;

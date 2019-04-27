@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.filter;
 
 import com.soft.ware.core.base.tips.ErrorTip;
+import com.soft.ware.core.exception.SessionException;
 import com.soft.ware.core.util.RenderUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.config.properties.JwtProperties;
@@ -110,8 +111,7 @@ public class AuthFilter extends OncePerRequestFilter implements Filter {
                 boolean flag = jwtTokenUtil.isTokenExpired(authToken);
                 
                 if (flag) {
-                    RenderUtil.renderJson(response, new ErrorTip(BizExceptionEnum.TOKEN_EXPIRED.getCode(), BizExceptionEnum.TOKEN_EXPIRED.getMessage()));
-                    return;
+                    throw new SessionException();
                 }else{
                     Claims c = jwtTokenUtil.getClaimFromToken(authToken);
                     request.setAttribute("claims", c);

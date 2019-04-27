@@ -419,6 +419,18 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return map.get(key);
     }
 
+    public V get(K key,V def) {
+        return map.containsKey(key) ? def : map.get(key);
+    }
+
+    public V required(K key,V def) {
+        V v = get(key);
+        if (v == null) {
+            throw new IllegalArgumentException(key + "不能为空");
+        }
+        return v;
+    }
+
     /**
      * 获取并删除
      * @param key

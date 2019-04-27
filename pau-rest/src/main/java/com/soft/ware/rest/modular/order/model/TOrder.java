@@ -106,7 +106,7 @@ public class TOrder extends Model<TOrder> {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+24")
     private Date pickupTime;
     /**
-     * 付款方式（0：在线支付；1：货到付款；2：现金；3：微信；4：支付宝；5：银联）
+     * 付款方式（0：在线支付；1：货到付款；2：现金支付；3：微信支付；4：支付宝支付；5：银联支付 6：聚合支付）
      */
     @TableField("money_channel")
     private Integer moneyChannel;

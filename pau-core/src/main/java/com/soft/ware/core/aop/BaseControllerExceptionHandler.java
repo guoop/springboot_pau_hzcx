@@ -3,6 +3,7 @@ package com.soft.ware.core.aop;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.exception.PauExceptionEnum;
+import com.soft.ware.core.exception.SessionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,12 +11,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+
 /**
  * 全局的的异常拦截器（拦截所有的控制器）（带有@RequestMapping注解的方法上都会拦截）
  */
 public class BaseControllerExceptionHandler {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
+
+
+    /**
+     * 拦截业务异常
+     */
+    @ExceptionHandler(SessionException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ErrorTip notFount(SessionException e) {
+        log.error("业务异常:", e);
+        //todo yancc 是否让前端改，httpClient.js
+        return new ErrorTip(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+    }
 
     /**
      * 拦截业务异常

@@ -2,6 +2,7 @@ package com.soft.ware.rest.modular.question.service.impl;
 
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.IdGenerator;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.question.dao.TQuestionMapper;
 import com.soft.ware.rest.modular.question.model.TQuestion;
@@ -35,9 +36,9 @@ public class TQuestionServiceImpl extends BaseService<TQuestionMapper,TQuestion>
     }
 
     @Override
-    public Map<String, Object> findMap(Map<String, Object> map) {
+    public Kv<String, Object> findMap(Map<String, Object> map) {
     List<Map<String, Object>> maps = findMaps(map);
-        return maps.isEmpty() ? null : maps.get(0);
+        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
     }
 
     @Override

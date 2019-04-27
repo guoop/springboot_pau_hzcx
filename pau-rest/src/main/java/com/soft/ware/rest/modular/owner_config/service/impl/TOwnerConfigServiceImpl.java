@@ -1,7 +1,7 @@
 package com.soft.ware.rest.modular.owner_config.service.impl;
 import com.soft.ware.core.base.controller.BaseService;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.owner_config.dao.TOwnerConfigMapper;
 import com.soft.ware.rest.modular.owner_config.model.TOwnerConfig;
 import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
@@ -26,9 +26,9 @@ public class TOwnerConfigServiceImpl extends BaseService<TOwnerConfigMapper,TOwn
     }
 
     @Override
-    public Map<String, Object> findMap(Map<String, Object> map) {
+    public Kv<String, Object> findMap(Map<String, Object> map) {
     List<Map<String, Object>> maps = findMaps(map);
-        return maps.isEmpty() ? null : maps.get(0);
+        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
     }
 
     @Override

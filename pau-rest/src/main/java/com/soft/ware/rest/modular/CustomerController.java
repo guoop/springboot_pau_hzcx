@@ -233,9 +233,9 @@ public class CustomerController extends BaseController {
      */
     @RequestMapping(value = "orders/{no}", method = RequestMethod.GET)
     public Tip orders(SessionUser user, @PathVariable String no) {
-        Map<String, Object> map = orderService.findMap(Kv.obj("orderNo", no).set("openId", user.getOpenId()));
+        Kv<String, Object> map = orderService.findMap(Kv.obj("orderNo", no).set("openId", user.getOpenId()));
         if(TOrder.SOURCE_0.toString().equals(map.get("source").toString())){
-            Kv<String, Object> address = Kv.toKv(addressService.findMap(Kv.obj("id", map.get("addressId")).set("ownerId", user.getOwnerId())));
+            Kv<String, Object> address = Kv.toKv(addressService.findMap(Kv.obj("id", map.getStr("addressId","0")).set("ownerId", user.getOwnerId())));
             map.remove("addressId");
             map.put("address", address);
         }

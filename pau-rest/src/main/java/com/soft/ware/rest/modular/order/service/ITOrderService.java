@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.exception.WxPayException;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.address.model.TAddress;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderDeleteParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
@@ -35,7 +36,7 @@ public interface ITOrderService extends IService<TOrder> {
 
     List<Map<String,Object>> findMaps(Map<String,Object> map);
 
-    Map<String,Object> findMap(Map<String,Object> map);
+    Kv<String,Object> findMap(Map<String,Object> map);
 
     List<HashMap<String,Object>> selectOrdersListByMap(Map<String,Object> map , Page page);
 
