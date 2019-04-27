@@ -5,6 +5,7 @@ import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
@@ -12,6 +13,8 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
+import com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage;
+import com.soft.ware.rest.modular.goods_storage.service.TGoodsStorageService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +41,9 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
 
     @Autowired
     private ITOrderChildService orderChildService;
+
+    @Autowired
+    private TGoodsStorageService tGoodsStorageService;
 
     @Autowired
     private ITGoodsService itGoodsService;
@@ -71,7 +78,9 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     }
 
     @Override
-    public TOrderApp addOrder(SessionUser user, AddOrderParam param) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean addOrder(SessionUser user, AddOrderParam param) {
+        boolean isSuccess = false;
         TOrderApp order = new TOrderApp();
         Date date = new Date();
         order.setId(IdGenerator.getId());
@@ -89,25 +98,30 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
         order.setCreateTime(date);
         order.setMoneyRealIncome(param.getMoney_shishou().add(param.getMoney_zhaol()));//失手
         order.setStatus(param.getStatus());
-        boolean insert = insert(order);
-        List<TOrderChild> list = param.getGoodsList();
-        for (TOrderChild child : list) {
-            child.setId(IdGenerator.getId());
-            child.setCreateTime(date);
-            child.setOrderId(order.getId());
+        TOrderApp tOrderApp = mapper.selectOrderChildByOrderNo(param.getNo());
+        if(ToolUtil.isNotEmpty(tOrderApp)){
+            throw new PauException(BizExceptionEnum.TORDERCHILD_SYN);
         }
-        if (insert) {
+        isSuccess = insert(order);
+        List<TOrderChild> list = param.getGoodsList();
+        if (isSuccess) {
+            //同步线下订单并扣减库存
             for (TOrderChild child : list) {
-                insert = orderChildService.insert(child);
-                if (!insert) {
-                    throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
-                }
+                child.setId(IdGenerator.getId());
+                child.setCreateTime(date);
+                child.setOrderId(order.getId());
+                    if (!isSuccess) {
+                        throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
+                    }
+                isSuccess = orderChildService.insert(child);
             }
         } else {
             throw new PauException(BizExceptionEnum.ORDER_CREATE_FAIL);
         }
-        return order;
+        return isSuccess;
     }
+
+
 
     @Override
     public long findPageCount(SessionUser user, OrderPageParam param, Integer... sources) {

@@ -6,6 +6,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.AddOrderParam;
 import com.soft.ware.rest.modular.auth.controller.dto.OrderPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order_app.model.TOrderApp;
 
 import java.util.List;
@@ -25,5 +26,6 @@ public interface ITOrderAppService extends IService<TOrderApp> {
 
     List<Map<String, Object>> findMapPage(SessionUser user, Page page, OrderPageParam param, Integer... sources);
 
-    TOrderApp addOrder(SessionUser user, AddOrderParam param);
+    boolean addOrder(SessionUser user, AddOrderParam param);
+
 }
