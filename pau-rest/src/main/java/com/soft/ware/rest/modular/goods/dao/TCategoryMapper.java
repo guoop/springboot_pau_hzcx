@@ -20,9 +20,9 @@ public interface TCategoryMapper extends BaseMapper<TCategory> {
 
     List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
-    List<TCategory> selectParentCategoryList(Map<String,Object> map);
+    List<TCategory> selectParentCategoryList(@Param("params") Map<String,Object> map);
 
-    List<TCategory> selectChildrenCategoryList(Map<String,Object> map);
+    List<TCategory> selectChildrenCategoryList(@Param("params") Map<String,Object> map);
 
     boolean updateOrSort(CategorySortParam categorySortParam);
 
