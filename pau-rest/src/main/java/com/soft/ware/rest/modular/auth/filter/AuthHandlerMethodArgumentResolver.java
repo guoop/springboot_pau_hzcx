@@ -5,12 +5,12 @@ import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.SpringContextHolder;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import io.jsonwebtoken.Claims;
@@ -72,10 +72,10 @@ public class AuthHandlerMethodArgumentResolver implements HandlerMethodArgumentR
             if (claims instanceof DefaultClaims) {
                 DefaultClaims c = (DefaultClaims) claims;
                 String username = (String) c.get(Claims.SUBJECT);
-                AuthService authService = SpringContextHolder.getBean(AuthService.class);
+                TOwnerStaffService authService = SpringContextHolder.getBean(TOwnerStaffService.class);
                  if(methodParameter.getParameterType() == SessionUser.class) {
                     //todo yancc 计划删掉,商户端应该不支持
-                    TOwnerStaff user = authService.findByUsername(username);
+                    TOwnerStaff user = authService.findByLoginName(username);
                     SessionUser u = new SessionUser();
                     u.setId(user.getId() + "");
                     u.setOwnerId(user.getOwnerId());
