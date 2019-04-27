@@ -51,7 +51,7 @@ public class TOwnerTempServiceImpl extends BaseService<TOwnerTempMapper,TOwnerTe
     @Override
     public Kv<String, Object> findMap(Map<String, Object> map) {
         List<Map<String, Object>> maps = findMaps(map);
-        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
+        return maps.size() == 1 ? Kv.toKv(maps.get(0)) : null;
     }
 
 

@@ -499,6 +499,12 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return map.entrySet();
     }
 
+    public Kv<K, V> clone() {
+        Kv<K, V> kv = Kv.init();
+        kv.putAll(this.map);
+        return kv;
+    }
+
     @SafeVarargs
     public static Kv<String,Object> toKv(Map<String,Object>... maps){
         if (maps == null || maps.length < 1) {

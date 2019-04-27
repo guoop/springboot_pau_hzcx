@@ -49,7 +49,7 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     @Override
     public Kv<String, Object> findMap(Map<String, Object> map) {
         List<Map<String, Object>> maps = findMaps(map);
-        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
+        return maps.size() == 1 ? Kv.toKv(maps.get(0)) : null;
     }
 
     @Override
@@ -120,7 +120,11 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     @Override
     public List<TOrderApp> getAppOrderList(Map<String, Object> map,Page page) {
         List<TOrderApp> listOrderApp = mapper.getAppOrderList(map,page);
-        listOrderApp.forEach(o->o.setListGoods(orderChildService.findMaps(Kv.by("orderId", o.getId()))));
+
+
+        listOrderApp.forEach(o-> {
+            o.setListGoods(orderChildService.findMaps(Kv.by("orderId", o.getId())));
+        });
         return listOrderApp;
     }
 }

@@ -1,13 +1,17 @@
 package com.soft.ware.rest.modular.handover.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.soft.ware.core.util.Kv;
+import com.soft.ware.rest.modular.auth.controller.dto.HandoverPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
+import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.handover.dao.THandoverRecordMapper;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
-import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,12 +35,37 @@ public class THandoverRecordServiceImpl extends ServiceImpl<THandoverRecordMappe
     @Resource
     private TOwnerStaffService staffService;
 
-
     @Override
-    public List<THandoverRecord> getHandOver(Map<String, Object> param) {
-        return mapper.getHandOver(param);
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMaps(map);
     }
 
+    @Override
+    public Kv<String, Object> findMap(Map<String, Object> map) {
+        List<Map<String, Object>> maps = findMaps(map);
+        return maps.size() == 1 ? Kv.toKv(maps.get(0)) : null;
+    }
+
+    @Override
+    public THandoverRecord findOne(Map<String,Object> map) throws Exception {
+        return BeanMapUtils.toObject(map, THandoverRecord.class);
+    }
+
+
+    @Override
+    public List<Map<String,Object>> findPage(SessionUser user, HandoverPageParam param, Page page) {
+        Kv<String, Object> params = Kv.obj("ownerId", user.getOwnerId()).set("staffId", user.getId());
+        if (param.getStart() != null) {
+            params.set("start", param.getStart());
+            params.set("end", DateUtils.addDays(param.getStart(), 1));
+        }
+        if (param.getEnd() != null) {
+            params.set("end", DateUtils.addDays(param.getEnd(), 1));
+        }
+        long count = (Long) findMap(params.clone().set("pageCount", "true")).get("count");
+        params.set("page", page.setTotal(count));
+        return mapper.findMaps(params);
+    }
 
     @Override
     public THandoverRecord over(SessionUser user, HandoverParam param) {

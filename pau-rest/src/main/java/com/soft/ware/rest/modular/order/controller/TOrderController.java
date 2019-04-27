@@ -5,6 +5,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
@@ -18,7 +19,6 @@ import com.soft.ware.rest.modular.order_money_diff.service.ITOrderMoneyDiffServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.beans.Transient;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +71,7 @@ public class TOrderController extends BaseController {
     @RequestMapping("order/detail")
     public Tip orderDetail(String orderNo){
         Map<String,Object> tOrder = tOrderService.selectOrderDetailById(orderNo);
+        tOrder.put("listGoods", itOrderChildService.findMaps(Kv.by("orderId", tOrder.get("id"))));
         if(ToolUtil.isNotEmpty(tOrder)){
             return new SuccessTip(tOrder);
         }

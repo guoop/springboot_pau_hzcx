@@ -32,7 +32,7 @@ public class TAddressServiceImpl extends BaseService<TAddressMapper,TAddress> im
     @Override
     public Map<String, Object> findMap(Map<String, Object> map) {
         List<Map<String, Object>> maps = findMaps(map);
-        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
+        return maps.size() == 1 ? Kv.toKv(maps.get(0)) : null;
     }
 
     @Override

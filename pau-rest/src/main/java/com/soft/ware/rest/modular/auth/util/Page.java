@@ -33,7 +33,7 @@ public class Page<T> {
         return total;
     }
 
-    public void setTotal(long total) {
+    public Page setTotal(long total) {
         this.total = total;
         if (page > total) {
             this.page = 1;
@@ -49,6 +49,7 @@ public class Page<T> {
         } else {
             this.offset = 0;
         }
+        return this;
     }
 
     public int getLimit() {
