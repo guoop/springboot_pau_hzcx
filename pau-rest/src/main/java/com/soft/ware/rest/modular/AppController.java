@@ -103,9 +103,6 @@ public class AppController extends BaseController {
     }
 
 
-
-
-
     /**
      * 极光im初始化
      * windows 需要
@@ -196,9 +193,9 @@ public class AppController extends BaseController {
     }
 
     /**
-     * 订单退款
+     * 线下订单退款
      */
-    @RequestMapping("order/refund")
+    @RequestMapping(value = "order/refund",method = RequestMethod.POST)
     public Object orderRefund(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws WxPayException {
         param.put("owner_id",sessionUser.getOwnerId());
             if(orderService.orderRefund(param,sessionUser)){

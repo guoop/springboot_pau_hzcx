@@ -5,6 +5,7 @@ import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.DateUtil;
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -304,9 +305,20 @@ public class TGoodsController {
     }
     @RequestMapping(value = "storage/change",method = RequestMethod.POST)
     public Tip goodsChangeStorage(TGoodsStorage goodsStorage){
-        tGoodsStorageService.updateById(goodsStorage);
+        boolean isSuccess = false;
+        if(ToolUtil.isNotEmpty(goodsStorage.getId())){
+            isSuccess = tGoodsStorageService.updateById(goodsStorage);
+        }else{
+            goodsStorage.setId(IdGenerator.getId());
+
+            tGoodsStorageService.insert(goodsStorage);
+        }
+
         return new ErrorTip();
     }
+
+
+
 
 
 
