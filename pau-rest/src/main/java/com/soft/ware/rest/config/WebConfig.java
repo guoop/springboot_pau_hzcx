@@ -39,7 +39,7 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvc
-public abstract class WebConfig  extends WebMvcConfigurerAdapter {
+public class WebConfig  extends WebMvcConfigurerAdapter {
 
     @Bean
     @ConditionalOnProperty(prefix = RestProperties.REST_PREFIX, name = "auth-open", havingValue = "true", matchIfMissing = true)
@@ -58,7 +58,6 @@ public abstract class WebConfig  extends WebMvcConfigurerAdapter {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-
         return corsConfiguration;
     }
 

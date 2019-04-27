@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class TOrderApp extends Model<TOrderApp> {
     private String remark;
 
     @TableField(exist = false)
-    private List<Map<String,Object>> listGoods;
+    private List<Map<String,Object>> listGoods = new ArrayList<>();
 
 
     public String getId() {

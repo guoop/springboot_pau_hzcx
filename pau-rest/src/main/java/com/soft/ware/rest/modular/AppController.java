@@ -1,6 +1,9 @@
 package com.soft.ware.rest.modular;
 
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.core.base.controller.BaseController;
+import com.soft.ware.core.base.tips.ErrorTip;
+import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
@@ -17,13 +20,11 @@ import com.soft.ware.rest.modular.order.service.ITOrderService;
 import com.soft.ware.rest.modular.order_app.service.ITOrderAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -176,11 +177,14 @@ public class AppController extends BaseController {
     @RequestMapping(value = "order/maintain",method = RequestMethod.POST)
     public Object updateStatus(SessionUser user, @Valid OrderUpdateStatusParam param, BindingResult error){
         Validator.valid(error);
-        //boolean result = orderService.updateStatus(user,param.getNo(),param.getStatus());
-        //return render(result);
-        return null;
+        Map<String,Object> params = new HashMap<>();
+        params.put("orderNo",param.getOrderNo());
+        params.put("status",param.getStatus());
+        if(orderService.orderSignStatu(user,params)){
+            return new SuccessTip();
+        }
+        return new ErrorTip();
     }
-
 
     /**
      * 交换token
@@ -189,6 +193,18 @@ public class AppController extends BaseController {
     @RequestMapping(value = "token",method = RequestMethod.GET)
     public void updateToken(SessionUser user){
         render().set("token", jwtTokenUtil.generateToken(user.getPhone(), jwtTokenUtil.getRandomKey()));
+    }
+
+    /**
+     * 订单退款
+     */
+    @RequestMapping("order/refund")
+    public Object orderRefund(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws WxPayException {
+        param.put("owner_id",sessionUser.getOwnerId());
+            if(orderService.orderRefund(param,sessionUser)){
+                return new SuccessTip();
+            }
+        return new ErrorTip();
     }
 
 
