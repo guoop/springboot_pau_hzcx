@@ -35,9 +35,17 @@ public class AddOrderParam {
     //（结算人标识（收银app登录账号）），
     private String settlement_by;
     //（订单包含的商品清单）,
-    private String goods;
+    private String goods_id;
 
     private String goodsUnit;
+
+    public String getGoods_id() {
+        return goods_id;
+    }
+
+    public void setGoods_id(String goods_id) {
+        this.goods_id = goods_id;
+    }
 
     public String getOwner() {
         return owner;
@@ -135,13 +143,6 @@ public class AddOrderParam {
         this.settlement_by = settlement_by;
     }
 
-    public String getGoods() {
-        return goods;
-    }
-
-    public void setGoods(String goods) {
-        this.goods = goods;
-    }
 
     public String getGoodsUnit() {
         return goodsUnit;
@@ -166,7 +167,7 @@ public class AddOrderParam {
     }
 
     public List<TOrderChild> getGoodsList1(){
-        String[] ss = goods.split(",");
+        String[] ss = goods_id.split(",");
         String[] gs;
         List<TOrderChild> cs = Lists.newArrayList();
         TOrderChild c;
@@ -186,7 +187,7 @@ public class AddOrderParam {
     }
 
     public List<TOrderChild> getGoodsList(){
-        List<TOrderChild> list = JSON.parseArray(goods, TOrderChild.class);
+        List<TOrderChild> list = JSON.parseArray(goods_id, TOrderChild.class);
         return list;
     }
 }

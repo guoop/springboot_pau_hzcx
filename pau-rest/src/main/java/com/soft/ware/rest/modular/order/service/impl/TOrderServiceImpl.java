@@ -514,7 +514,7 @@ public class TOrderServiceImpl extends BaseService<TOrderMapper, TOrder> impleme
     public boolean orderSignStatu(SessionUser sessionUser,Map<String, Object> param) {
         boolean isSuccess = false;
         Integer updateNum = 0;
-        SWxApp sWxApp = isWxAppService.find(new TOwner().setId(param.get("owner_id").toString()));
+        SWxApp sWxApp = isWxAppService.find(new TOwner().setId(sessionUser.getOwnerId()));
         WxMaService service = hzcxWxService.getWxMaService(sWxApp);
         TOrder tOrder = new TOrder();
         tOrder.setOrderNo(param.get("orderNo").toString());
