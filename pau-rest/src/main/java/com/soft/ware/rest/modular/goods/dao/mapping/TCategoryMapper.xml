@@ -4,16 +4,16 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TCategory">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="pid" property="pid" />
-        <result column="description" property="description" />
-        <result column="sort" property="sort" />
-        <result column="is_delete" property="isDelete" />
-        <result column="owner_id" property="ownerId" />
-        <result column="status" property="status" />
-        <result column="is_system" property="isSystem" />
-        <result column="category_icon_id" property="categoryIconId" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="pid" property="pid"/>
+        <result column="description" property="description"/>
+        <result column="sort" property="sort"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="owner_id" property="ownerId"/>
+        <result column="status" property="status"/>
+        <result column="is_system" property="isSystem"/>
+        <result column="category_icon_id" property="categoryIconId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -27,16 +27,16 @@
 
     <sql id="Condition">
 
-        <if test="id != null and id != ''">
+        <if test="params.id != null and params.id != ''">
             and id = #{id}
         </if>
-        <if test="ownerId != null and ownerId != ''">
+        <if test="params.ownerId != null and params.ownerId != ''">
             and owner_id = #{ownerId}
         </if>
-        <if test="status != null and status != ''">
+        <if test="params.status != null and params.status != ''">
             and status = #{status}
         </if>
-        <if test="pid != null and pid != ''">
+        <if test="params.pid != null and params.pid != ''">
             and pid = #{pid}
         </if>
 
@@ -58,14 +58,18 @@
     </select>
 
     <select id="selectParentCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select <include refid="Base_Column_Name_List"/> from t_category where 1=1
+        select
+        <include refid="Base_Column_Name_List"/>
+        from t_category where 1=1
         and pid is null and is_delete = 0
         <include refid="Condition"/>
         order by sort asc
     </select>
 
-    <select id="selectChildrenCategoryList"  parameterType="java.util.Map" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from t_category where 1=1 and is_delete = 0
+    <select id="selectChildrenCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_category where 1=1 and is_delete = 0
         <include refid="Condition"/>
     </select>
 
@@ -91,7 +95,9 @@
     </update>
 
     <select id="selectCategoryByIds" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/> from t_category where id in
+        select
+        <include refid="Base_Column_List"/>
+        from t_category where id in
         <foreach collection="list" close=")" open="(" item="item" separator="," index="index">
             #{item}
         </foreach>

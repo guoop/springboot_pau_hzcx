@@ -61,7 +61,7 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "category/list")
     public Object goods(SessionUser user){
-        List<TCategory> list = categoryService.selectParentCategoryList(Kv.obj().set("owner_id", user.getOwnerId()));
+        List<TCategory> list = categoryService.selectParentCategoryList(Kv.obj().set("ownerId", user.getOwnerId()));
         return render().set("data", list);
     }
 
