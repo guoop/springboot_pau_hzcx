@@ -120,10 +120,7 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     @Override
     public List<TOrderApp> getAppOrderList(Map<String, Object> map,Page page) {
         List<TOrderApp> listOrderApp = mapper.getAppOrderList(map,page);
-        for (TOrderApp app : listOrderApp) {
-            app.setListGoods(orderChildService.findMaps(Kv.by("orderId", app.getId())));
-
-        }
+        listOrderApp.forEach(o->o.setListGoods(orderChildService.findMaps(Kv.by("orderId", o.getId()))));
         return listOrderApp;
     }
 }

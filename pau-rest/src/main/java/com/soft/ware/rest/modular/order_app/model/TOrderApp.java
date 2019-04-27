@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ import java.util.Map;
  * </p>
  *
  * @author yancc
- * @since 2019-04-19 13:48:01
+ * @since 2019-04-27 10:24:11
  */
 @TableName("t_order_app")
 public class TOrderApp extends Model<TOrderApp> {
@@ -42,6 +42,7 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 付款方式（1：现金支付；2：微信支付；3：支付宝支付；4；银联支付），多种支付方式以_分割
      */
+    @TableField("money_channel")
     private String moneyChannel;
     /**
      * 订单金额，即：买家购买商品的总价（优惠前）
@@ -50,26 +51,34 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 买家支付金额（优惠后）
      */
+    @TableField("money_pay")
     private BigDecimal moneyPay;
     /**
      * 实收金额（包含找零金额）
      */
+    @TableField("money_real_income")
     private BigDecimal moneyRealIncome;
     /**
      * 找零金额
      */
+    @TableField("money_change")
     private BigDecimal moneyChange;
     /**
      * 支付明细(支付方式_支付金钱,支付方式_支付金钱)
      */
+    @TableField("channel_pay")
     private String channelPay;
     /**
      * 支付时间（即：订单在APP中的创建时间）
      */
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
+    @TableField("pay_time")
     private Date payTime;
     /**
      * 订单同步到云端的时间
      */
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
+    @TableField("create_time")
     private Date createTime;
     /**
      * 订单结算人（收银员标识）
@@ -78,21 +87,13 @@ public class TOrderApp extends Model<TOrderApp> {
     /**
      * 所属人
      */
+    @TableField("owner_id")
     private String ownerId;
     /**
-     * 商品列表
+     * 订单包含的商品信息（商品之间已英文逗号分隔，单个货物的的格式为：id__图片地址__名称__规格__数量__单价__总价）
      */
-    @TableField(exist = false)
-    List<Map<String,Object>> listGoods = new ArrayList<>();
-
-    public List<Map<String,Object>> getListGoods() {
-        return listGoods;
-    }
-
-    public void setListGoods(List<Map<String,Object>> listGoods) {
-        this.listGoods = listGoods;
-    }
-
+    @TableField("goods_id")
+    private String goodsId;
     /**
      * 订单状态（0：为正常；1：退单；2：反结账）
      */
@@ -102,13 +103,16 @@ public class TOrderApp extends Model<TOrderApp> {
      */
     private String remark;
 
+    @TableField(exist = false)
+    private List<Map<String,Object>> listGoods;
+
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public TOrderApp setId(String id){
+        this.id = id;return this;
     }
 
     public String getNo() {
@@ -123,7 +127,7 @@ public class TOrderApp extends Model<TOrderApp> {
         return source;
     }
 
-    public TOrderApp setSource(Integer source) {
+    public TOrderApp setSource( Integer source) {
         this.source = source;return this;
     }
 
@@ -207,6 +211,13 @@ public class TOrderApp extends Model<TOrderApp> {
         this.ownerId = ownerId;return this;
     }
 
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public TOrderApp setGoodsId( String goodsId) {
+        this.goodsId = goodsId;return this;
+    }
 
     public Integer getStatus() {
         return status;
@@ -222,6 +233,14 @@ public class TOrderApp extends Model<TOrderApp> {
 
     public TOrderApp setRemark( String remark) {
         this.remark = remark;return this;
+    }
+
+    public List<Map<String, Object>> getListGoods() {
+        return listGoods;
+    }
+
+    public void setListGoods(List<Map<String, Object>> listGoods) {
+        this.listGoods = listGoods;
     }
 
     @Override
@@ -245,6 +264,7 @@ public class TOrderApp extends Model<TOrderApp> {
         ", createTime=" + createTime +
         ", settlementer=" + settlementer +
         ", ownerId=" + ownerId +
+        ", goodsId=" + goodsId +
         ", status=" + status +
         ", remark=" + remark +
         "}";
