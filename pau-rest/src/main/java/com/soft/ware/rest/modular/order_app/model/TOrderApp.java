@@ -90,11 +90,6 @@ public class TOrderApp extends Model<TOrderApp> {
     @TableField("owner_id")
     private String ownerId;
     /**
-     * 订单包含的商品信息（商品之间已英文逗号分隔，单个货物的的格式为：id__图片地址__名称__规格__数量__单价__总价）
-     */
-    @TableField("goods_id")
-    private String goodsId;
-    /**
      * 订单状态（0：为正常；1：退单；2：反结账）
      */
     private Integer status;
@@ -211,14 +206,6 @@ public class TOrderApp extends Model<TOrderApp> {
         this.ownerId = ownerId;return this;
     }
 
-    public String getGoodsId() {
-        return goodsId;
-    }
-
-    public TOrderApp setGoodsId( String goodsId) {
-        this.goodsId = goodsId;return this;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -264,7 +251,6 @@ public class TOrderApp extends Model<TOrderApp> {
         ", createTime=" + createTime +
         ", settlementer=" + settlementer +
         ", ownerId=" + ownerId +
-        ", goodsId=" + goodsId +
         ", status=" + status +
         ", remark=" + remark +
         "}";
