@@ -61,9 +61,6 @@ public class ImServiceImpl implements ImService {
     private ISImUserService imUserService;
 
     @Autowired
-    private ISImGroupsService groupsService;
-
-    @Autowired
     private ITOwnerService ownerService;
 
 
@@ -188,7 +185,7 @@ public class ImServiceImpl implements ImService {
                     SImGroups g = requireOwnerGroup(user, owner, type);
                     if (g != null) {
                         //delFromGroup(user,g,u);//经过测试，删除用户时极光会自动删除他所在的群组
-                        groupsService.deleteByUsername(user, g.getOwnerUsername());
+                        imGroupsService.deleteByUsername(user, g.getOwnerUsername());
                     }
                     delUser(username);
                     imUserService.deleteByUsername(user,username);
@@ -200,11 +197,19 @@ public class ImServiceImpl implements ImService {
 
 
     private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
-        List<SImGroups> gs = requireOwnerGroupList(user, owner, type);
+        //先查数据库
+        List<SImGroups> gs = imGroupsService.find(user, type.ordinal());
         for (SImGroups g : gs) {
-            /*if (g.getType() == type.ordinal()) {
+            if (g.getOwnerUsername().equals(ParamUtils.buildOwnerGroupUsername(owner, type))) {
                 return g;
-            }*/
+            }
+        }
+        //再差远程
+        gs = requireOwnerGroupList(user, owner, type);
+        for (SImGroups g : gs) {
+            if (g.getOwnerUsername().equals(ParamUtils.buildOwnerGroupUsername(owner, type))) {
+                return g;
+            }
         }
         return gs.get(0);
     }
@@ -234,7 +239,7 @@ public class ImServiceImpl implements ImService {
             return getGroup(u);
         } else {
             List<SImGroups> gs = getGroup(u);
-            if (gs.isEmpty()) {
+            if (!gs.isEmpty()) {
                 imUserService.saveOrUpdate(user, u);
                 //创建群组
                 SImGroups group = addGroup(user, owner, type, u);
