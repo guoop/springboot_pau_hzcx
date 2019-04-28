@@ -142,8 +142,8 @@ public class TGoods extends Model<TGoods> {
         return categoryId;
     }
 
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
+    public TGoods setCategoryId(String categoryId) {
+        this.categoryId = categoryId;return this;
     }
 
     public String getName() {
@@ -246,8 +246,8 @@ public class TGoods extends Model<TGoods> {
         return isDelete;
     }
 
-    public void setIsDelete(Integer isDelete) {
-        this.isDelete = isDelete;
+    public TGoods setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;return this;
     }
 
     public Integer getSource() {

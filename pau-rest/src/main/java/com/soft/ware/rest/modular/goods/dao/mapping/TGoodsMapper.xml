@@ -125,24 +125,28 @@
 
     <!--根据商品分类id查询所有商品列表-->
     <select id="selectTGoodsListByMap"  resultType="java.util.HashMap" >
-        select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime,b.start_time startTime,b.end_time endTime,c.`name` as specName ,d.`name` categoryName,
-        e.after_storage stock ,e.baseline
+        select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime,b.start_time startTime,b.end_time endTime,c.`name` as specName ,d.`name` categoryName
+        ,(a.is_promotion = 1 and now() >= b.start_time and now() &lt; b.end_time) promotionInProgress
+        ,e.after_storage stock ,e.baseline
         from t_goods a
         LEFT JOIN t_promotion b on a.id = b.goods_id
         LEFT JOIN (select GROUP_CONCAT(name) name,goods_id from t_specs GROUP BY goods_id) c on a.id = c.goods_id
         LEFT JOIN t_category d on a.category_id = d.id
         LEFT JOIN t_goods_storage e on a.id = e.goods_id
         where 1=1
-        <if test="param.categoryId != null and param.categoryId != ''">
-            and a.category_id = #{param.categoryId}
+        <if test="params.categoryId != null and params.categoryId != ''">
+            and a.category_id = #{params.categoryId}
         </if>
-        <if test="param.owner_id != null and param.owner_id != ''">
-            and a.owner_id = #{param.owner_id}
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and a.owner_id = #{params.ownerId}
         </if>
-        <if test="param.name != null and param.name != ''">
-            and a.name like '%${param.name}%'
+        <if test="params.name != null and params.name != ''">
+            and a.name like '%${params.name}%'
         </if>
-       <include refid="limit"></include>
+        <if test="params.isDelete != null">
+            and a.is_delete = #{params.isDelete}
+        </if>
+       <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
     </select>
 
     <update id="updateGoodsTopTimeOrStatus" parameterType="java.util.Map">
@@ -165,7 +169,6 @@
         LEFT JOIN t_category d on a.category_id = d.id
         LEFT JOIN t_goods_storage e on a.id = e.goods_id
         where 1=1 and  a.id = #{id,jdbcType=VARCHAR}
-
 </select>
 
 

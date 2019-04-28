@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.goods.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/owner/v1")
-public class TGoodsController {
+public class TGoodsController extends BaseController {
     /**
      * 商品分类服务
      */
@@ -146,18 +147,13 @@ public class TGoodsController {
     /**
      * 商品列表
      * @param param page当前页，categoryId 分类
-     * @param sessionUser
+     * @param user
      * @return
      */
     @RequestMapping("goods/list")
-    public Tip getGoodsList(@RequestParam Map<String,Object> param,Page page ,SessionUser sessionUser) throws ParseException {
-        param.put("owner_id",sessionUser.getOwnerId());
-        page.setPage(Long.valueOf(param.get("page").toString()));
-        List<Map<String,Object>>  goodsList =  itGoodsService.selectTGoodsListByMap(param,page);
-        if( goodsList.size()== 0||goodsList.size() > 0 ){
-            return new SuccessTip(goodsList);
-        }
-        return  new ErrorTip();
+    public Tip getGoodsList(@RequestParam Map<String,Object> param,Page page ,SessionUser user) throws ParseException {
+        List<Map<String, Object>> list = itGoodsService.selectTGoodsListByMap(user, param, page);
+        return render().set("data", list);
     }
     @RequestMapping("goods/detail")
     public Tip getGoodsDetail(@RequestParam String id){

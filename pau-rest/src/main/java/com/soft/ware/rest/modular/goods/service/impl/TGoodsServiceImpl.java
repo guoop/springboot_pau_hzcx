@@ -2,7 +2,6 @@ package com.soft.ware.rest.modular.goods.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
-import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
@@ -14,7 +13,6 @@ import com.soft.ware.rest.modular.goods.service.ITGoodsService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -65,24 +63,22 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
 
 
     @Override
-    public List<Map<String,Object>> selectTGoodsListByMap(Map<String, Object> param,Page page) throws ParseException {
-        List<Map<String,Object>> mapList = mapper.selectTGoodsListByMap(param,page);
-        page.setTotal(param.size());
-        if(mapList.size() > 0){
-            for (int i = 0; i < mapList.size(); i++) {
-                if(ToolUtil.isNotEmpty(mapList.get(i).get("endTime"))){
-                    String endTime = mapList.get(i).get("endTime").toString();
-                    long endDate = Long.valueOf(DateUtil.dateToStamp(endTime));
-                    long currentDate = Long.valueOf(DateUtil.timestampToDate()) ;
-                    if(currentDate > endDate){
-                        mapList.get(i).put("promotionInProgress",0);
-                    }
-                    mapList.get(i).put("promotionInProgress",1);
-                }
-            }
-            return mapList;
+    public List<Map<String,Object>> selectTGoodsListByMap(SessionUser user,Map<String, Object> param,Page page) {
+        String ownerId = user.getOwnerId();
+        Object category = param.get("categoryId");
+        Object status = param.get("status");
+        TGoods g = new TGoods().setOwnerId(ownerId).setIsDelete(TGoods.is_delete_0);
+        if (ToolUtil.isEmpty(status)) {
+            g.setCategoryId(category.toString());
         }
-        return mapList;
+        if (ToolUtil.isEmpty(status)) {
+            g.setStatus(Integer.valueOf(status.toString()));
+        }
+        Integer count = mapper.selectCount(new EntityWrapper<>(g));
+        page.setTotal(count);
+        param.put("page", page);
+        param.put("ownerId", ownerId);
+        return mapper.selectTGoodsListByMap(param,page);
     }
 
     @Override

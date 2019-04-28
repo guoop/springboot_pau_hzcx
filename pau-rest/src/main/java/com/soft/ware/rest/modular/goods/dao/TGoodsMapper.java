@@ -22,7 +22,7 @@ public interface TGoodsMapper extends BaseMapper<TGoods> {
 
     List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
-    List<Map<String,Object>> selectTGoodsListByMap(@Param("param") Map<String, Object> param,@Param("page") Page page);
+    List<Map<String,Object>> selectTGoodsListByMap(@Param("params") Map<String, Object> param,@Param("page") Page page);
 
     boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
 
