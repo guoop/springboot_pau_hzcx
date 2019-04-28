@@ -191,7 +191,8 @@ public class WxPayController extends BaseController {
      * @throws WxPayException
      */
     @Deprecated
-    @PostMapping(value = "${wx.pay.notify_url_customer_pay_diff_refund}")
+    //@PostMapping(value = "${wx.pay.notify_url_customer_pay_diff_refund}")
+    @PostMapping(value = "")
     public String parseRefundNotifyResult(@RequestBody String xmlData) throws Exception {
         WxPayRefundNotifyResult result = WxPayRefundNotifyResult.fromXML(xmlData, WxPayRefundNotifyResult.class);
         SWxApp app = appService.findByAppId(result.getAppid());

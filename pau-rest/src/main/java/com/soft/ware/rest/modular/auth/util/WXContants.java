@@ -21,7 +21,7 @@ public class WXContants {
 	@Value(value = "${wx.pay.notify_url_customer_pay_diff}")
 	private String customerPayDiff;
 
-	@Value(value = "${wx.pay.notify_url_customer_pay_diff_refund}")
+	/*@Value(value = "${wx.pay.notify_url_customer_pay_diff_refund}")*/
 	private String customerPayDiffRefund;
 
 	//用户登录,验证码redis key 前缀

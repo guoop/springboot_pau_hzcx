@@ -8,6 +8,7 @@ import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
 import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.auth.util.ParamUtils;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.Validator;
 import com.soft.ware.rest.modular.goods.model.TCategory;
@@ -134,7 +135,7 @@ public class AppController extends BaseController {
      */
     @RequestMapping(value = "orders",method = RequestMethod.GET)
     public Object orders(SessionUser user, Page page, OrderPageParam param){
-        if ("confirm".equals(param.getStatus())) {
+        /*if ("confirm".equals(param.getStatus())) {
             // 新订单（待商家确认）
             param.setStatus("1");
         } else if ("confirmed".equals(param.getStatus())) {
@@ -151,7 +152,8 @@ public class AppController extends BaseController {
             param.setStatus("-1");
         } else {
             param.setStatus("");
-        }
+        }*/
+        param.setStatus(String.valueOf(ParamUtils.getOrderStatus(param.getStatus())));
         List<Map<String, Object>> maps = orderService.findPage(user, page, param, TOrder.SOURCE_2, TOrder.SOURCE_0);
         return render().set("orders", maps);
     }
