@@ -68,10 +68,10 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         Object category = param.get("categoryId");
         Object status = param.get("status");
         TGoods g = new TGoods().setOwnerId(ownerId).setIsDelete(TGoods.is_delete_0);
-        if (ToolUtil.isEmpty(status)) {
+        if (ToolUtil.isNotEmpty(status)) {
             g.setCategoryId(category.toString());
         }
-        if (ToolUtil.isEmpty(status)) {
+        if (ToolUtil.isNotEmpty(status)) {
             g.setStatus(Integer.valueOf(status.toString()));
         }
         Integer count = mapper.selectCount(new EntityWrapper<>(g));
