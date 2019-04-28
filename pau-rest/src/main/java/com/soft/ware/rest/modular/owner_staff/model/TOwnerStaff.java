@@ -28,6 +28,13 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
     public static Integer status_1 = 1;
     //：已删除）
     public static Integer status_2 = 2;
+    /**
+     * @see #functionList = "-"
+     * @see #urlList = "-"
+     * @see #categoryList = "-"
+     */
+    //店主标记
+    public static String shopkeeperFlag = "-";
 
     /**
      * 主键id

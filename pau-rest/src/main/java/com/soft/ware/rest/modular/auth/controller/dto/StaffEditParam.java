@@ -144,6 +144,7 @@ public class StaffEditParam {
         kvs.set("categoryMan","/category/icons,/category/index,/category/sort,/category/del");
         kvs.set("printPriceTicket", "");
         kvs.set("configOwner","");
+        kvs.set("configSetUp","");
     }
 
     public String getUrls(){

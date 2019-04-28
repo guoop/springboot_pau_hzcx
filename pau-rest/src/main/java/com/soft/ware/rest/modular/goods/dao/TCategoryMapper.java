@@ -24,8 +24,7 @@ public interface TCategoryMapper extends BaseMapper<TCategory> {
 
     List<TCategory> selectChildrenCategoryList(@Param("params") Map<String,Object> map);
 
-    boolean updateOrSort(CategorySortParam categorySortParam);
+    boolean updateOrSort(@Param("param") CategorySortParam param);
 
-    List<TCategory> selectCategoryByIds(List<String> ids);
 
 }

@@ -7,7 +7,6 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public interface ITGoodsService extends IService<TGoods> {
 
     Kv<String,Object> findMap(Map<String,Object> map);
 
-    List<Map<String,Object>>  selectTGoodsListByMap(SessionUser user,Map<String,Object> map, Page page) throws ParseException;
+    List<Map<String,Object>>  selectTGoodsListByMap(SessionUser user,Map<String,Object> map, Page page) throws Exception;
 
     boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
 

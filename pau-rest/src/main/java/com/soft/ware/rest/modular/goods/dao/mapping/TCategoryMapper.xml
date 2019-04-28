@@ -46,15 +46,28 @@
         select
         <include refid="Base_Column_List"/>
         from t_category where true
+        <if test="params.id != null and params.id != ''">
+            and id = #{params.id}
+        </if>
         <if test="params.ownerId != null and params.ownerId != ''">
             and owner_id = #{params.ownerId}
         </if>
-        <if test="params.pid == null">
-            and pid is null
-        </if>
-        <if test="params.pid != null">
-            and pid is not null
-        </if>
+        <choose>
+            <when test="params.pid_null == null">
+                <if test="params.pid != null and params.pid != ''">
+                    and pid = #{params.pid}
+                </if>
+            </when>
+            <otherwise>
+                <if test="params.pid == null">
+                    and pid is null
+                </if>
+                <if test="params.pid != null">
+                    and pid is not null
+                </if>
+            </otherwise>
+        </choose>
+        order by sort asc
     </select>
 
     <select id="selectParentCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -62,8 +75,9 @@
         <include refid="Base_Column_Name_List"/>
         from t_category where 1=1
         and pid is null and is_delete = 0
-       <include refid="Condition"/>
-        order by sort asc
+        <include refid="Condition"/>
+        <!-- 系统类目排在最后 -->
+        order by is_system,sort asc
     </select>
 
     <select id="selectChildrenCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -90,19 +104,8 @@
         END
         WHERE id IN
         <foreach collection="param.list" close=")" open="(" item="item" separator="," index="index">
-            ${item.id}
+            #{item.id}
         </foreach>
     </update>
-
-    <select id="selectCategoryByIds" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from t_category where id in
-        <foreach collection="list" close=")" open="(" item="item" separator="," index="index">
-            #{item}
-        </foreach>
-
-    </select>
-
 
 </mapper>

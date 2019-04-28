@@ -125,7 +125,7 @@ public class CustomerController extends BaseController {
      */
     @RequestMapping(value = "category/list", method = RequestMethod.GET)
     public Tip category(SessionUser user) {
-        List<Map<String, Object>> list = categoryService.findMaps(Kv.by("pid", null).set("ownerId", user.getOwnerId()));
+        List<Map<String, Object>> list = categoryService.findMaps(Kv.obj("pid_null", true).set("pid",null).set("ownerId", user.getOwnerId()));
         return render().set("list", list);
     }
 

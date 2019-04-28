@@ -24,8 +24,8 @@ public class CategorySortParam {
     public List<Sort> getList(){
         try {
             List<Sort> list = JSON.parseArray(category, Sort.class);
-            for (int i = 0; i < list.size(); i++) {
-                list.get(i).setWeights(list.size() - i);
+            for (int i = list.size()-1; i > 0; i--) {
+                list.get(i).setWeights(i);
             }
             return list;
         } catch (Exception e) {

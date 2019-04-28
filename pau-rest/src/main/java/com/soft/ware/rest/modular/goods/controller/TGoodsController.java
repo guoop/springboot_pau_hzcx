@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +87,7 @@ public class TGoodsController extends BaseController {
      * @return
      */
     @RequestMapping("category/list")
-    public Tip getCategoryList(@RequestParam Map<String,Object> param, Page page, SessionUser sessionUser){
+    public Tip getCategoryList(@RequestParam Map<String,Object> param, SessionUser sessionUser){
         param.put("ownerId",sessionUser.getOwnerId());
        List<TCategory> list = itCategoryService.selectParentCategoryList(param);
        if(list.size() > 0){
@@ -102,34 +101,27 @@ public class TGoodsController extends BaseController {
      * @param id
      * @return
      */
-    @RequestMapping(value = "category/detail")
-    public Tip getCategoryDetail(@RequestParam String id){
+    @RequestMapping(value = "category/detail",method = RequestMethod.GET)
+    public Tip getCategoryDetail(SessionUser user,@RequestParam String id){
         TCategory category = itCategoryService.selectById(id);
-        if(ToolUtil.isNotEmpty(category)){
-            return new SuccessTip(category);
-        }
-        return new ErrorTip();
+        category.setChildCategory(itCategoryService.selectList(new EntityWrapper<>(new TCategory().setPid(id))));
+        return renderData(category);
     }
 
     /**
      * 新增或者编辑商品分类
      * @param category 分类
-     * @param sessionUser 当前登录商户
+     * @param user 当前登录商户
      * @return
      */
-    @RequestMapping("category/addOrUpdate")
-    public Tip addOrUpdate(@RequestParam TCategory category,SessionUser sessionUser){
-        boolean isSuccess = false;
-            if(ToolUtil.isNotEmpty(category.getId())){
-                isSuccess =  itCategoryService.updateById(category);
-            }else{
-                isSuccess = itCategoryService.insert(category);
-            }
-            if(isSuccess){
-                return new SuccessTip();
-            }
-            return  new ErrorTip();
+    @RequestMapping(value = "category/addOrUpdate",method = RequestMethod.POST)
+    public Tip addOrUpdate(@RequestBody TCategory category,SessionUser user){
+        if (TCategory.is_system_1.equals(category.getIsSystem())) {
+            return render(false, "系统类目不能编辑");
+        }
+        return render(itCategoryService.saveOrUpdate(user, category));
     }
+
 
     /**
      * 通过分类id 删除分类
@@ -151,7 +143,7 @@ public class TGoodsController extends BaseController {
      * @return
      */
     @RequestMapping("goods/list")
-    public Tip getGoodsList(@RequestParam Map<String,Object> param,Page page ,SessionUser user) throws ParseException {
+    public Tip getGoodsList(@RequestParam Map<String,Object> param,Page page ,SessionUser user) throws Exception {
         List<Map<String, Object>> list = itGoodsService.selectTGoodsListByMap(user, param, page);
         return render().set("data", list);
     }
@@ -184,10 +176,10 @@ public class TGoodsController extends BaseController {
      * @return
      */
      @RequestMapping("category/sort")
-     public Tip categorySort(@RequestParam CategorySortParam categorySortParam){
+     public Tip categorySort(@RequestBody CategorySortParam categorySortParam){
          if(itCategoryService.updateOrSort(categorySortParam)){
              return new SuccessTip();
-         };
+         }
         return new ErrorTip();
      }
 

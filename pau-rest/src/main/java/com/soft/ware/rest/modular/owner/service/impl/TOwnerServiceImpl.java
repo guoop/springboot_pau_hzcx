@@ -63,6 +63,6 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
 
     @Override
     public TOwner find(TOwnerStaff user) throws Exception {
-        return BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
+        return BeanMapUtils.toObject(findMap(Kv.by("id", user.getOwnerId())), TOwner.class);
     }
 }

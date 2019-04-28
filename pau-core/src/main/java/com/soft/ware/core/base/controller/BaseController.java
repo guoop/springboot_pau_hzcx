@@ -127,6 +127,9 @@ public class BaseController {
     public ResultView render(List<?> list){
         return render().set("list", list);
     }
+    public ResultView renderData(Object data){
+        return render().set("data", data);
+    }
 
     public ResultView render(){
         return render(true);

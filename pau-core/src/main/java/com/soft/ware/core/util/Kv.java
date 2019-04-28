@@ -385,6 +385,30 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return list;
     }
 
+    public List<K> keyList(){
+        List<K> list = new ArrayList<>();
+        for (Entry<K, V> entry : this.map.entrySet()) {
+            list.add(entry.getKey());
+        }
+        return list;
+    }
+
+    public List<V> valueList(){
+        List<V> list = new ArrayList<>();
+        for (Entry<K, V> entry : this.map.entrySet()) {
+            list.add(entry.getValue());
+        }
+        return list;
+    }
+
+    public List<K> keyArray(){
+        List<K> list = new ArrayList<>();
+        for (Entry<K, V> entry : this.map.entrySet()) {
+            list.add(entry.getKey());
+        }
+        return list;
+    }
+
     public List<Kv<String,Object>> getList(K key,List<Kv<String,Object>> list){
         List<Kv<String, Object>> ls = getKvs(key);
         return ls == null ? list : ls;
@@ -503,6 +527,18 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         Kv<K, V> kv = Kv.init();
         kv.putAll(this.map);
         return kv;
+    }
+
+    public List<Kv<K,V>> list(){
+        List<Kv<K, V>> list = new ArrayList<>();
+        list.add(this);
+        return list;
+    }
+
+    public List<Map<K,V>> listMap(){
+        List<Map<K, V>> list = new ArrayList<>();
+        list.add(this);
+        return list;
     }
 
     @SafeVarargs

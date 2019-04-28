@@ -8,8 +8,12 @@ import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.dao.TGoodsMapper;
+import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.model.TGoods;
+import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,6 +36,9 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
 
     @Resource
     private TGoodsMapper mapper;
+
+    @Autowired
+    private ITCategoryService categoryService;
 
     @Override
     public List<Map<String, Object>> findPage(SessionUser user, Page page, GoodsPageParam param) {
@@ -63,10 +71,14 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
 
 
     @Override
-    public List<Map<String,Object>> selectTGoodsListByMap(SessionUser user,Map<String, Object> param,Page page) {
+    public List<Map<String,Object>> selectTGoodsListByMap(SessionUser user,Map<String, Object> param,Page page) throws Exception {
         String ownerId = user.getOwnerId();
         Object category = param.get("categoryId");
+        param.remove("categoryId");
         Object status = param.get("status");
+        //传过来的categoryId，是父分类或者子分类
+        TCategory c = categoryService.selectById(category.toString());
+        List<Object> ids = categoryService.findChild(user, c, true).stream().map(s -> (String)s.get("id")).collect(Collectors.toList());
         TGoods g = new TGoods().setOwnerId(ownerId).setIsDelete(TGoods.is_delete_0);
         if (ToolUtil.isNotEmpty(status)) {
             g.setCategoryId(category.toString());
@@ -74,10 +86,11 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         if (ToolUtil.isNotEmpty(status)) {
             g.setStatus(Integer.valueOf(status.toString()));
         }
-        Integer count = mapper.selectCount(new EntityWrapper<>(g));
+        Integer count = mapper.selectCount(new EntityWrapper<>(g).in("category_id", ids));
         page.setTotal(count);
         param.put("page", page);
         param.put("ownerId", ownerId);
+        param.put("categoryIds", "'"+StringUtils.join(ids,"','")+"'");
         return mapper.selectTGoodsListByMap(param,page);
     }
 

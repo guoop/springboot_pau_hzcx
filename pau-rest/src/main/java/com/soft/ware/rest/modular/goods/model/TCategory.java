@@ -2,7 +2,9 @@ package com.soft.ware.rest.modular.goods.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -44,7 +46,7 @@ public class TCategory extends Model<TCategory> {
     public void setChildCategory(List<TCategory> childCategory) {
         this.childCategory = childCategory;
     }
-
+    @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
      * 分类名称
@@ -108,8 +110,8 @@ public class TCategory extends Model<TCategory> {
         return pid;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public TCategory setPid(String pid) {
+        this.pid = pid;return this;
     }
 
     public String getDescription() {

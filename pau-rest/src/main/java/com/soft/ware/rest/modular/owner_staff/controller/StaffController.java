@@ -4,6 +4,7 @@ import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,9 +42,19 @@ public class StaffController extends BaseController {
     @Autowired
     private ITCategoryService itCategoryService;
 
+    /**
+     * 编辑店员信息
+     * @param param
+     * @param sessionUser
+     * @param result
+     * @return
+     */
     @RequestMapping(value = "staff/addOrUpdate", method = RequestMethod.POST)
     public Tip updateOrSave(@RequestBody @Valid StaffEditParam param, SessionUser sessionUser, BindingResult result) {
         Validator.valid(result);
+        if (TOwnerStaff.shopkeeperFlag.equals(param.getFunctionList())) {
+            return render(false, "非法操作");
+        }
         if (tOwnerStaffService.addOrUpdate(sessionUser, param)) {
             return new SuccessTip();
         }
@@ -87,26 +96,26 @@ public class StaffController extends BaseController {
      * @return
      */
       @RequestMapping("staff/detail")
-      public Tip getStaffDetail(SessionUser sessionUser , String id){
-          TOwnerStaff sta = tOwnerStaffService.findByLoginName(sessionUser.getPhone());
+      public Tip getStaffDetail(SessionUser user , String id){
+          TOwnerStaff sta = tOwnerStaffService.findByLoginName(user.getPhone());
+          List<TCategory> categoryList;
+          List<Map<String,Object>> functionList;
+          if (TOwnerStaff.shopkeeperFlag.equals(sta.getFunctionList())) {
+              //商品分类列表 店主
+              categoryList = itCategoryService.findAllCategory(user);
+              functionList = ParamUtils.getAllFunction(StaffEditParam.kvs.keyList().toArray(new String[]{}));
+          } else {
+              //商品分类列表
+              categoryList = itCategoryService.selectCategoryByIds(sta.getCategoryList().split(","));
+              //权限列表
+              String[] function = sta.getFunctionList().split(",");
+              functionList = ParamUtils.getAllFunction(function);
+          }
           TOwnerStaff staff = tOwnerStaffService.selectById(id);
-          Map<String,Object> mapResult = new HashMap<>();
-          List<String> ids = new ArrayList<>();
-          String function[] = sta.getFunctionList().split(",");
-          List<Map<String,Object>> functionList = ParamUtils.getAllFunction(function);
-          mapResult.put("functionList",functionList);
-          String str[] = sta.getCategoryList().split(",");
-          for(int i=0;i<str.length;i++){
-              ids.add(str[i]);
+          if (staff == null || !staff.getOwnerId().equals(user.getOwnerId())) {
+              render(false, "没有权限");
           }
-          List<TCategory> categoryList = itCategoryService.selectCategoryByIds(ids);
-          mapResult.put("categoryList",categoryList);
-          if(ToolUtil.isNotEmpty(staff)){
-              mapResult.put("staff",staff);
-              return new SuccessTip(mapResult);
-          }else{
-              return new SuccessTip(mapResult);
-          }
+          return render().set("data", Kv.obj("functionList", functionList).set("categoryList", categoryList).set("staff", staff));
       }
 
     /**

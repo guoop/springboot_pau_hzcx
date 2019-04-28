@@ -146,6 +146,9 @@
         <if test="params.isDelete != null">
             and a.is_delete = #{params.isDelete}
         </if>
+        <if test="params.categoryIds != null and params.categoryIds != ''">
+            and a.category_id in (${params.categoryIds})
+        </if>
        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
     </select>
 

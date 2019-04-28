@@ -121,6 +121,13 @@ public class AuthController extends BaseController {
         }
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(phone, randomKey);
+        TOwner owner = ownerService.find(user);
+        //店主
+        if (owner.getPhone().equals(user.getPhone())) {
+            user.setUrlList(TOwnerStaff.shopkeeperFlag);
+            user.setFunctionList(TOwnerStaff.shopkeeperFlag);
+            user.setCategoryList(TOwnerStaff.shopkeeperFlag);
+        }
 
         Kv<String,Object> map = render(true,"认证通过");
         map.set("token", token);
