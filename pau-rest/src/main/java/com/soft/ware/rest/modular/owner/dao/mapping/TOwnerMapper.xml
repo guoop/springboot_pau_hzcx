@@ -30,6 +30,9 @@
         <if test="params.ownerId != null and params.ownerId != ''">
             and w.id = #{params.ownerId}
         </if>
+        <if test="params.id != null and params.id != ''">
+            and w.id = #{params.id}
+        </if>
     </select>
 
     <select id="selectOwnerInfoByOwnerId" resultType="map">

@@ -79,7 +79,6 @@ public class AppController extends BaseController {
      * 4、上传订单(POST)
      * 接口：https://app.aiinp.com/user/order
      * 参数：
-     *
      * owner，
      * no（订单编号），
      * money_channel（支付方式：1现金、2微信、3支付宝、4银联，多种支付方式以_分割），
@@ -152,6 +151,7 @@ public class AppController extends BaseController {
             param.setStatus("-1");
         } else {
             param.setStatus("");
+
         }*/
         param.setStatus(String.valueOf(ParamUtils.getOrderStatus(param.getStatus())));
         List<Map<String, Object>> maps = orderService.findPage(user, page, param, TOrder.SOURCE_2, TOrder.SOURCE_0);
