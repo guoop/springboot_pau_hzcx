@@ -11,21 +11,25 @@ import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods.model.TRepository;
 import com.soft.ware.rest.modular.goods.service.*;
 import com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage;
-import com.soft.ware.rest.modular.goods_storage.service.TGoodsStorageService;
+import com.soft.ware.rest.modular.goods_storage.service.ITGoodsStorageService;
 import com.soft.ware.rest.modular.icon.model.TIcon;
 import com.soft.ware.rest.modular.icon.service.TIconService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import com.soft.ware.rest.modular.promotion.model.TPromotion;
 import com.soft.ware.rest.modular.promotion.service.TPromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,12 +81,16 @@ public class TGoodsController extends BaseController {
      * 商品库存服务
      */
     @Autowired
-    private TGoodsStorageService tGoodsStorageService;
+    private ITGoodsStorageService ITGoodsStorageService;
     /**
      * 促销服务
      */
     @Autowired
     private TPromotionService tPromotionService;
+
+    @Autowired
+    private ITOwnerStaffService staffService;
+
     /**
      * 获取分类列表
      * @param sessionUser  当前登录用户
@@ -142,6 +150,16 @@ public class TGoodsController extends BaseController {
             int count = itGoodsService.selectCount(new EntityWrapper<>(new TGoods().setOwnerId(user.getOwnerId()).setIsDelete(TGoods.is_delete_0).setStatus(TGoods.status_1)).in("id", ids));
             if (count > 0) {
                 return render(false, "存在上架商品，强制删除？");
+            }
+
+        }
+        List<TOwnerStaff> list = staffService.findList(Kv.obj("ownerId", user.getOwnerId()));
+        for (TOwnerStaff staff : list) {
+            //删除员工的商品分类管理权限
+            if (staff.getCategoryList().contains(id)) {
+                staff.setCategoryList(staff.getCategoryList().replaceAll("," + id, ""));
+                staff.setCategoryList(staff.getCategoryList().replaceAll(id + ",", ""));
+                staffService.updateById(staff);
             }
         }
         c.setIsDelete(TCategory.is_system_1);
@@ -220,11 +238,11 @@ public class TGoodsController extends BaseController {
      * @return
      */
     @RequestMapping("goods/addByScan")
-    public Tip addByScan(@RequestParam TGoods goods){
-        if(itGoodsService.insert(goods)){
-            return new SuccessTip();
-        }
-        return new ErrorTip();
+    public Tip addByScan(@RequestBody Map goods,SessionUser user) throws Exception {
+        TGoods g = BeanMapUtils.toObject(goods, TGoods.class, true);
+        TGoodsStorage s = BeanMapUtils.toObject(goods, TGoodsStorage.class, true);
+        boolean b = itGoodsService.addByScan(user, g, s);
+        return render(b);
     }
 
     /**
@@ -236,10 +254,12 @@ public class TGoodsController extends BaseController {
     @RequestMapping("goods/{path}")
     public Tip goodsTop(@PathVariable("path") String path , @RequestBody Map<String,Object> param){
         if(path.equals("top")){
-            if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
-
-                return  new SuccessTip();
+            if ("yes".equals(param.get("flag"))) {
+                itGoodsService.top(param.get("id") + "", new Date());
+            } else {
+                itGoodsService.top(param.get("id") + "", null);
             }
+            return render();
         }else{
             if(itGoodsService.updateGoodsTopTimeOrStatus(param)){
                 return new SuccessTip();
@@ -307,10 +327,10 @@ public class TGoodsController extends BaseController {
     public Tip goodsChangeStorage(SessionUser sessionUser,TGoodsStorage goodsStorage){
         boolean isSuccess = false;
         if(ToolUtil.isNotEmpty(goodsStorage.getId())){
-            isSuccess = tGoodsStorageService.updateById(goodsStorage);
+            isSuccess = ITGoodsStorageService.updateById(goodsStorage);
         }else{
             goodsStorage.setId(IdGenerator.getId());
-            tGoodsStorageService.insert(goodsStorage);
+            ITGoodsStorageService.insert(goodsStorage);
         }
         return new ErrorTip();
     }

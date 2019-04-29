@@ -11,7 +11,7 @@ import com.soft.ware.rest.modular.handover.dao.THandoverRecordMapper;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
-import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class THandoverRecordServiceImpl extends ServiceImpl<THandoverRecordMappe
     private THandoverRecordMapper mapper;
 
     @Resource
-    private TOwnerStaffService staffService;
+    private ITOwnerStaffService staffService;
 
     @Override
     public List<Map<String, Object>> findMaps(Map<String, Object> map) {

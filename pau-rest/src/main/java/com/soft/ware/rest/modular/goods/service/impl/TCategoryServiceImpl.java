@@ -14,6 +14,8 @@ import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.goods.dao.TCategoryMapper;
 import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,9 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
 
     @Resource
     private TCategoryMapper mapper;
+
+    @Resource
+    private ITOwnerStaffService staffService;
 
     @Override
     public List<TCategory> findAllCategory(SessionUser owner) {
@@ -120,6 +125,18 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
             result = insert(category);
         } else {
             result = updateById(category);
+        }
+        TOwnerStaff staff = staffService.findByLoginName(user.getPhone());
+        if (!TOwnerStaff.shopkeeperFlag.equals(staff.getFunctionList())) {
+            //非店主需要同步分类权限
+            String s = staff.getCategoryList();
+            if (!s.contains(category.getId())) {
+                if (!s.endsWith(",")) {
+                    s += ",";
+                }
+                staff.setCategoryList(s + category.getId() + ",");
+                staffService.updateById(staff);
+            }
         }
         List<String> ids = Lists.newArrayList();
         if (result) {

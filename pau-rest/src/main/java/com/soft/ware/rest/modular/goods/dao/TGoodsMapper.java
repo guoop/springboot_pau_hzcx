@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.model.TGoods;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +26,14 @@ public interface TGoodsMapper extends BaseMapper<TGoods> {
 
     List<Map<String,Object>> selectTGoodsListByMap(@Param("params") Map<String, Object> param,@Param("page") Page page);
 
+    long selectTGoodsListByMapCount(@Param("params") Map<String,Object> params);
+
     boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
 
     HashMap<String,Object> findById(String id);
+
+    @Update(value = "update t_goods g set g.top_time = #{date} where g.id = #{id}")
+    boolean top(@Param("id") String id, @Param("date") Date date);
+
+    long findMapsCount(@Param("params") Map<String,Object> params);
 }

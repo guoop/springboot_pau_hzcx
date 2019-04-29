@@ -14,7 +14,7 @@ import com.soft.ware.rest.modular.goods.model.TCategory;
 import com.soft.ware.rest.modular.goods.service.ITCategoryService;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
-import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +34,7 @@ import java.util.Map;
 public class StaffController extends BaseController {
 
     @Autowired
-    private TOwnerStaffService tOwnerStaffService;
+    private ITOwnerStaffService tOwnerStaffService;
 
     @Autowired
     private ITOwnerService itOwnerService;
@@ -102,7 +102,7 @@ public class StaffController extends BaseController {
           List<Map<String,Object>> functionList;
           if (TOwnerStaff.shopkeeperFlag.equals(sta.getFunctionList())) {
               //商品分类列表 店主
-              categoryList = itCategoryService.findAllCategory(user);
+              categoryList = itCategoryService.selectParentCategoryList(Kv.obj("ownerId", user.getOwnerId()));
               functionList = ParamUtils.getAllFunction(StaffEditParam.kvs.keyList().toArray(new String[]{}));
           } else {
               //商品分类列表

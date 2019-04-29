@@ -15,7 +15,7 @@
     <sql id="s_wx_app_alias_column">
         swa.owner_id ownerId,swa.app_id appId,swa.app_secret appSecret,swa.app_name appName,swa.app_qr appQr
     </sql>
-    <select id="findMap" resultType="java.util.Map">
+    <select id="findMaps" resultType="java.util.Map">
         select
         id,
         <include refid="s_wx_app_alias_column"/>

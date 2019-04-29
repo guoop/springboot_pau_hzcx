@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -61,6 +62,7 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
     @TableField("create_time")
     private Date createTime;
     /**
@@ -92,31 +94,31 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public TOwnerStaff setId(String id){
+        this.id = id;return this;
     }
 
     public String getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public TOwnerStaff setOwnerId( String ownerId) {
+        this.ownerId = ownerId;return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public TOwnerStaff setName( String name) {
+        this.name = name;return this;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public TOwnerStaff setPhone(String phone) {
+    public TOwnerStaff setPhone( String phone) {
         this.phone = phone;return this;
     }
 
@@ -124,56 +126,56 @@ public class TOwnerStaff extends Model<TOwnerStaff> {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public TOwnerStaff setPassword( String password) {
+        this.password = password;return this;
     }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public TOwnerStaff setCreateTime( Date createTime) {
+        this.createTime = createTime;return this;
     }
 
     public String getFunctionList() {
         return functionList;
     }
 
-    public void setFunctionList(String functionList) {
-        this.functionList = functionList;
+    public TOwnerStaff setFunctionList( String functionList) {
+        this.functionList = functionList;return this;
     }
 
     public String getUrlList() {
         return urlList;
     }
 
-    public void setUrlList(String urlList) {
-        this.urlList = urlList;
+    public TOwnerStaff setUrlList( String urlList) {
+        this.urlList = urlList;return this;
     }
 
     public String getCategoryList() {
         return categoryList;
     }
 
-    public void setCategoryList(String categoryList) {
-        this.categoryList = categoryList;
+    public TOwnerStaff setCategoryList( String categoryList) {
+        this.categoryList = categoryList;return this;
     }
 
     public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public TOwnerStaff setStatus( Integer status) {
+        this.status = status;return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public TOwnerStaff setDescription( String description) {
+        this.description = description;return this;
     }
 
     @Override

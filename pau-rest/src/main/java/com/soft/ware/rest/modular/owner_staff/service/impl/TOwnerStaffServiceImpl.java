@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.util.IdGenerator;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.auth.controller.dto.ImGroupType;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
+import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.im.service.ISImUserService;
 import com.soft.ware.rest.modular.im.service.ImService;
@@ -16,7 +18,7 @@ import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.dao.TOwnerStaffMapper;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
-import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ import java.util.Set;
 
 @Service
 @Transactional
-public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwnerStaff> implements TOwnerStaffService {
+public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwnerStaff> implements ITOwnerStaffService {
 
     @Resource
     private TOwnerStaffMapper tOwnerStaffMapper;
@@ -46,6 +48,33 @@ public class TOwnerStaffServiceImpl extends BaseService<TOwnerStaffMapper,TOwner
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+
+    @Resource
+    private TOwnerStaffMapper mapper;
+
+    @Override
+    public List<Map<String, Object>> findMaps(Map<String, Object> map) {
+        return mapper.findMaps(map);
+    }
+
+    @Override
+    public Kv<String, Object> findMap(Map<String, Object> map) {
+        List<Map<String, Object>> maps = findMaps(map);
+        return maps.size() == 1 ? null : Kv.toKv(maps.get(0));
+    }
+
+    @Override
+    public TOwnerStaff findOne(Map<String,Object> map) throws Exception {
+        return BeanMapUtils.toObject(map, TOwnerStaff.class);
+    }
+
+    @Override
+    public List<TOwnerStaff> findList(Map<String,Object> params) throws Exception {
+        List<Map<String, Object>> maps = findMaps(params);
+        return BeanMapUtils.toObject(maps, TOwnerStaff.class);
+    }
+
 
     @Override
     public TOwnerStaff findByPhone(String phone) {

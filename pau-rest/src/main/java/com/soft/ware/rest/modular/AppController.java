@@ -69,7 +69,7 @@ public class AppController extends BaseController {
 
 
     @RequestMapping(value = "goods")
-    public Object userGoods(SessionUser user, Page page, GoodsPageParam param){
+    public Object userGoods(SessionUser user, Page page, GoodsPageParam param) throws Exception {
         return goodsService.findPage(user, page, param);
     }
 

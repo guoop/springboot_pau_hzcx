@@ -7,7 +7,7 @@ import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
-import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class SimpleValidator implements IReqValidator {
 
     @Autowired
-    private TOwnerStaffService staffService;
+    private ITOwnerStaffService staffService;
 
     @Override
     public Object validate(Credence credence) {

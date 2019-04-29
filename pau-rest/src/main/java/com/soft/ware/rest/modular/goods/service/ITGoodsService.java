@@ -6,7 +6,9 @@ import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.model.TGoods;
+import com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ import java.util.Map;
  */
 public interface ITGoodsService extends IService<TGoods> {
 
-    List<Map<String, Object>> findPage(SessionUser user, Page page, GoodsPageParam param);
+    List<Map<String, Object>> findPage(SessionUser user, Page page, GoodsPageParam param) throws Exception;
 
     List<Map<String,Object>> findMaps(Map<String,Object> map);
 
@@ -31,5 +33,23 @@ public interface ITGoodsService extends IService<TGoods> {
 
     boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
 
+    /**
+     * 置顶/取消置顶商品
+     * @param goodsId 商品id
+     * @param date 置顶时间
+     * @return
+     */
+    boolean top(String goodsId, Date date);
+
     HashMap<String,Object> findById(String id);
+
+    boolean addByScan(SessionUser user, TGoods g, TGoodsStorage s) throws Exception;
+
+    /**
+     * 根据商品编码查询商品信息
+     * @param user
+     * @param code
+     * @return
+     */
+    List<TGoods> findByCode(SessionUser user, String code) throws Exception;
 }

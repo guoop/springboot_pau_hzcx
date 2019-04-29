@@ -17,7 +17,7 @@ import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.owner.model.TOwner;
 import com.soft.ware.rest.modular.owner.service.ITOwnerService;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
-import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
 import com.soft.ware.rest.modular.wx_app.model.SWxApp;
 import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class AuthController extends BaseController {
     private JwtProperties jwtProperties;
 
     @Autowired
-    private TOwnerStaffService tOwnerStaffService;
+    private ITOwnerStaffService tOwnerStaffService;
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;

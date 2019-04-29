@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.owner_staff.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.controller.dto.StaffEditParam;
 import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
@@ -8,7 +9,15 @@ import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import java.util.List;
 import java.util.Map;
 
-public interface TOwnerStaffService extends IService<TOwnerStaff> {
+public interface ITOwnerStaffService extends IService<TOwnerStaff> {
+
+    List<Map<String,Object>> findMaps(Map<String,Object> map);
+
+    Kv<String,Object> findMap(Map<String,Object> map);
+
+    TOwnerStaff findOne(Map<String, Object> map) throws Exception;
+
+    List<TOwnerStaff> findList(Map<String, Object> params) throws Exception;
 
     /**
      * 根据手机号查询用户信息
@@ -30,7 +39,6 @@ public interface TOwnerStaffService extends IService<TOwnerStaff> {
     boolean addOrUpdate(SessionUser sessionUser, StaffEditParam param);
 
     boolean delStaff(Map<String,Object> map,SessionUser sessionUser) throws Exception;
-
 
 
 }

@@ -13,8 +13,7 @@ import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.service.ITGoodsService;
-import com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage;
-import com.soft.ware.rest.modular.goods_storage.service.TGoodsStorageService;
+import com.soft.ware.rest.modular.goods_storage.service.ITGoodsStorageService;
 import com.soft.ware.rest.modular.order.model.TOrder;
 import com.soft.ware.rest.modular.order.model.TOrderChild;
 import com.soft.ware.rest.modular.order.service.ITOrderChildService;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +41,7 @@ public class TOrderAppServiceImpl extends BaseService<TOrderAppMapper,TOrderApp>
     private ITOrderChildService orderChildService;
 
     @Autowired
-    private TGoodsStorageService tGoodsStorageService;
+    private ITGoodsStorageService ITGoodsStorageService;
 
     @Autowired
     private ITGoodsService itGoodsService;

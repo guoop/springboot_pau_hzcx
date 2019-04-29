@@ -139,7 +139,7 @@ public class CustomerController extends BaseController {
      * @return
      */
     @RequestMapping(value = "goods/list", method = RequestMethod.GET)
-    public Tip goodsPage(GoodsPageParam param, SessionUser user, Page page) {
+    public Tip goodsPage(GoodsPageParam param, SessionUser user, Page page) throws Exception {
         List<Map<String, Object>> list = goodsService.findPage(user, page, param);
         return render().set("list", list);
     }

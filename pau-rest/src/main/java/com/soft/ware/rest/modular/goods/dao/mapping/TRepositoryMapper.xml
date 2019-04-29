@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TRepository">
         <id column="id" property="id" />
-        <result column="goods_code" property="goodsId" />
+        <result column="goods_code" property="goodsCode" />
         <result column="pics" property="pics" />
         <result column="is_delete" property="isDelete" />
         <result column="owner_id" property="ownerId" />
@@ -18,7 +18,39 @@
     <sql id="Base_Column_List">
         id, goods_id, pics, is_delete , owner_id , supplier_id, type, remark
     </sql>
-
+    <sql id="t_repository_alias_columns">
+        tr.goods_code AS goodsCode, tr.pics, tr.is_delete AS isDelete, tr.owner_id AS ownerId, tr.supplier_id AS supplierId, tr.type, tr.remark
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="t_repository_alias_columns"/>
+        from t_repository tr where true
+        <if test="params.id != null and params.id != ''">
+            and tr.id = #{params.id}
+        </if>
+        <if test="params.goodsCode != null and params.goodsCode != ''">
+            and tr.goods_code = #{params.goodsCode}
+        </if>
+        <if test="params.pics != null and params.pics != ''">
+            and tr.pics = #{params.pics}
+        </if>
+        <if test="params.isDelete != null">
+            and tr.is_delete = #{params.isDelete}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and tr.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.supplierId != null and params.supplierId != ''">
+            and tr.supplier_id = #{params.supplierId}
+        </if>
+        <if test="params.type != null and params.type != ''">
+            and tr.type = #{params.type}
+        </if>
+        <if test="params.remark != null and params.remark != ''">
+            and tr.remark = #{params.remark}
+        </if>
+    </select>
     <select id="selectRepositoryByGoodsCode"  resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from t_repository where code = #{code}
     </select>

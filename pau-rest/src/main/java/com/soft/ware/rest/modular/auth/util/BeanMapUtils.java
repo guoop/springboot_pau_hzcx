@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.util;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -90,6 +91,15 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
     public static <T> T toObject(Map<String, Object> map, Class<T> beanClass) throws Exception {
         return toObject(map, beanClass, false);
     }
+
+    public static <T> List<T> toObject(List<Map<String, Object>> maps, Class<T> beanClass) throws Exception {
+        List<T> list = Lists.newArrayList();
+        for (Map<String, Object> map : maps) {
+            list.add(toObject(map, beanClass));
+        }
+        return list;
+    }
+
 
     /**
      * 把 map 转为对象

@@ -40,7 +40,7 @@ public class SWxAppServiceImpl extends BaseService<SWxAppMapper,SWxApp> implemen
 
     @Override
     public List<Map<String, Object>> findMaps(Map<String,Object> map) {
-        return mapper.findMap(map);
+        return mapper.findMaps(map);
     }
 
     @Override
