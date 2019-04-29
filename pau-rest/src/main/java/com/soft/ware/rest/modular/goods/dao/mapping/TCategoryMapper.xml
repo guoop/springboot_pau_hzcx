@@ -18,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-                id, name, pid, description, sort, is_delete as isDelete, owner_id AS ownerId, status, is_system AS isSystem, category_icon_id AS categoryIconId
+                id, name, pid, description, sort, is_delete, owner_id, status, is_system, category_icon_id
     </sql>
 
     <sql id="Base_Column_Name_List">

@@ -291,6 +291,10 @@ public class Kv<K,V> extends Tip implements Map<K,V>  {
         return getBoolean(key) == null ? def : getBoolean(key);
     }
 
+    public Boolean getBoolean(K key,V trueValue) {
+        return trueValue.equals(get(key));
+    }
+
     /**
      * 注意数据类型需要一至
      * @param key

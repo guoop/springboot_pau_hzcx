@@ -7,6 +7,7 @@ import com.soft.ware.core.base.tips.SuccessTip;
 import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.DateUtil;
 import com.soft.ware.core.util.IdGenerator;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.modular.auth.controller.dto.CategorySortParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/owner/v1")
@@ -125,15 +127,25 @@ public class TGoodsController extends BaseController {
 
     /**
      * 通过分类id 删除分类
-     * @param id
+     * @param m
      * @return
      */
     @RequestMapping("category/del")
-    public Tip DelCategory(@RequestParam String id){
-        if(itCategoryService.deleteById(id)){
-            return new SuccessTip();
+    public Tip DelCategory(@RequestBody Map<String,Object> m,SessionUser user) throws Exception {
+        Kv<String,Object> kv = Kv.toKv(m);
+        String id = kv.requiredStr("id");
+        Boolean force = kv.getBoolean("force", "yes");
+        TCategory c = itCategoryService.selectById(id);
+        if (!force) {
+            List<Map<String, Object>> cs = itCategoryService.findChild(user, c, true);
+            List<String> ids = cs.stream().map(s -> s.get("id").toString()).collect(Collectors.toList());
+            int count = itGoodsService.selectCount(new EntityWrapper<>(new TGoods().setOwnerId(user.getOwnerId()).setIsDelete(TGoods.is_delete_0).setStatus(TGoods.status_1)).in("id", ids));
+            if (count > 0) {
+                return render(false, "存在上架商品，强制删除？");
+            }
         }
-        return new ErrorTip();
+        c.setIsDelete(TCategory.is_system_1);
+        return render(itCategoryService.updateById(c));
     }
 
     /**

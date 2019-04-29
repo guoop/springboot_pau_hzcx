@@ -79,7 +79,7 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         Object status = param.get("status");
         //传过来的categoryId，是父分类或者子分类
         List<String> ids = Lists.newArrayList();
-        if (ToolUtil.isEmpty(category)) {
+        if (ToolUtil.isNotEmpty(category)) {
             TCategory c = categoryService.selectById(category.toString());
             ids = categoryService.findChild(user, c, true).stream().map(s -> (String)s.get("id")).collect(Collectors.toList());
         }

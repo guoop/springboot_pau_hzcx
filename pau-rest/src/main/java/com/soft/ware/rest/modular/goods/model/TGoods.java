@@ -222,8 +222,8 @@ public class TGoods extends Model<TGoods> {
         return status;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public TGoods setStatus(Integer status) {
+        this.status = status; return this;
     }
 
     public Integer getSells() {

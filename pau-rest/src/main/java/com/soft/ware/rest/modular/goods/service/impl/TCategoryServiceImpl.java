@@ -116,6 +116,7 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
             category.setId(IdGenerator.getId());
             category.setOwnerId(user.getOwnerId());
             category.setSort(0);
+            category.setIsSystem(TCategory.is_system_0);
             result = insert(category);
         } else {
             result = updateById(category);
