@@ -116,6 +116,9 @@
         <if test="params.categoryId != null and params.categoryId != ''">
             and g.category_id = #{params.categoryId}
         </if>
+        <if test="params.categoryIds != null and params.categoryIds != ''">
+            and g.category_id in (#{params.categoryIds})
+        </if>
         <if test="params.likeName != null and params.likeName != ''">
             and g.name like '%${params.likeName}%'
         </if>

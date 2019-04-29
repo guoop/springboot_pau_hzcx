@@ -74,8 +74,10 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         } else {
             TCategory category = categoryService.selectById(c);
             List<Map<String, Object>> child = categoryService.findChild(user, category, true);
-            List<String> ids = child.stream().map(m -> m.get("id").toString()).collect(Collectors.toList());
-
+            List<String> ids = child.stream().map(m -> m.get("id").toString()).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+            if (!ids.isEmpty()) {
+                params.set("categoryIds", "'" + StringUtils.join(ids, "','") + "'");
+            }
         }
         long count = mapper.findMapsCount(params);
         page.setTotal(count);
