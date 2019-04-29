@@ -10,6 +10,7 @@ import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.handover.dao.THandoverRecordMapper;
 import com.soft.ware.rest.modular.handover.model.THandoverRecord;
 import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import com.soft.ware.rest.modular.owner_staff.service.TOwnerStaffService;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,11 @@ public class THandoverRecordServiceImpl extends ServiceImpl<THandoverRecordMappe
     @Override
     public List<Map<String,Object>> findPage(SessionUser user, HandoverPageParam param, Page page) {
         Kv<String, Object> params = Kv.obj("ownerId", user.getOwnerId()).set("staffId", user.getId());
+        TOwnerStaff staff = staffService.findByLoginName(user.getPhone());
+        //普通用户只能查看自己的交接班记录,店主可以查看所有的
+        if (!TOwnerStaff.shopkeeperFlag.equals(staff.getFunctionList())) {
+            params.set("staffId", user.getId());
+        }
         if (param.getStart() != null) {
             params.set("start", param.getStart());
             params.set("end", DateUtils.addDays(param.getStart(), 1));

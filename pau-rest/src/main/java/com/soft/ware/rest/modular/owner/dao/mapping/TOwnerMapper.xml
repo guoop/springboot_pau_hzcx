@@ -22,13 +22,13 @@
     <sql id="t_owner_alias_columns">
         w.name ,w.phone ,w.address ,w.description ,w.video_url videoUrl,w.begin_time beginTime,w.end_time endTime,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') createTime
     </sql>
-    <select id="findMap" resultType="java.util.Map">
+    <select id="findMaps" resultType="java.util.Map">
         select
         id,
         <include refid="t_owner_alias_columns"/>
         from t_owner w where true
-        <if test="params.ownerId != null and params.ownerId != ''">
-            and w.id = #{params.ownerId}
+        <if test="params.id != null and params.id != ''">
+            and w.id = #{params.id}
         </if>
     </select>
 

@@ -120,6 +120,7 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
         } else {
             result = updateById(category);
         }
+        List<String> ids = Lists.newArrayList();
         if (result) {
             List<TCategory> list = category.getChildCategory();
             TCategory c;
@@ -132,13 +133,17 @@ public class TCategoryServiceImpl extends ServiceImpl<TCategoryMapper, TCategory
                     c.setPid(category.getId());
                     c.setOwnerId(user.getOwnerId());
                     result = insert(c);
+                    ids.add(c.getId());
                 } else {
                     c.setSort(i);
                     result = updateById(c);
+                    ids.add(c.getId());
                 }
                 i++;
             } while (result && i < list.size());
         }
+        //删除未提交的子分类
+        delete(new EntityWrapper<>(new TCategory().setOwnerId(user.getOwnerId()).setPid(category.getId())).notIn("id", ids));
         if (!result) {
             throw new PauException(BizExceptionEnum.ERROR);
         }

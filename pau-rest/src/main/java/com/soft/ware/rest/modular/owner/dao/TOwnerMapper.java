@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface TOwnerMapper extends BaseMapper<TOwner> {
 
-    List<Map<String, Object>> findMap(@Param("params") Map<String, Object> map);
+    List<Map<String, Object>> findMaps(@Param("params") Map<String, Object> map);
 
     Map<String,Object> selectOwnerInfoByOwnerId(String OwnerId);
 }

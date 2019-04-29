@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.goods.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
@@ -77,8 +78,11 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         param.remove("categoryId");
         Object status = param.get("status");
         //传过来的categoryId，是父分类或者子分类
-        TCategory c = categoryService.selectById(category.toString());
-        List<Object> ids = categoryService.findChild(user, c, true).stream().map(s -> (String)s.get("id")).collect(Collectors.toList());
+        List<String> ids = Lists.newArrayList();
+        if (ToolUtil.isEmpty(category)) {
+            TCategory c = categoryService.selectById(category.toString());
+            ids = categoryService.findChild(user, c, true).stream().map(s -> (String)s.get("id")).collect(Collectors.toList());
+        }
         TGoods g = new TGoods().setOwnerId(ownerId).setIsDelete(TGoods.is_delete_0);
         if (ToolUtil.isNotEmpty(status)) {
             g.setCategoryId(category.toString());
