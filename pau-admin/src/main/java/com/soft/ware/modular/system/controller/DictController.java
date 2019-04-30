@@ -15,6 +15,7 @@ import com.soft.ware.modular.system.model.Dict;
 import com.soft.ware.modular.system.service.IDictService;
 import com.soft.ware.modular.system.warpper.DictWarpper;
 
+import io.swagger.annotations.ApiOperation;
 import org.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -92,6 +93,7 @@ public class DictController extends BaseController {
     /**
      * 获取所有字典列表
      */
+    @ApiOperation("字典列表")
     @RequestMapping(value = "/list")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody

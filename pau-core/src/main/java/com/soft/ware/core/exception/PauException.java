@@ -9,6 +9,11 @@ public class PauException extends RuntimeException {
 
     private String message;
 
+    public PauException(String message) {
+        this.code = 500;
+        this.message = message;
+    }
+
     public PauException(ServiceExceptionEnum serviceExceptionEnum) {
         this.code = serviceExceptionEnum.getCode();
         this.message = serviceExceptionEnum.getMessage();

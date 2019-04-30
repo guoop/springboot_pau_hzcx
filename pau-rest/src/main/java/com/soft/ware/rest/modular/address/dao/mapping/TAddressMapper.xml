@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.address.dao.TAddressMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.address.model.TAddress">
+        <id column="id" property="id" />
+        <result column="phone" property="phone" />
+        <result column="owner_id" property="ownerId" />
+        <result column="name" property="name" />
+        <result column="province" property="province" />
+        <result column="detail" property="detail" />
+        <result column="is_default" property="isDefault" />
+        <result column="is_delete" property="isDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+        <result column="delete_time" property="deleteTime" />
+    </resultMap>
+
+
+    <sql id="t_address_alias_columns">
+       phone ,owner_id ownerId,name ,province ,detail ,is_default isDefault,is_delete isDelete,DATE_FORMAT(ta.create_time,'%Y-%m-%d %H:%i:%s') createTime,creater ,DATE_FORMAT(ta.delete_time,'%Y-%m-%d %H:%i:%s') deleteTime
+    </sql>
+    <update id="deleteDefaultAddress">
+        update t_address a set a.is_default = 0 where a.owner_id = #{user.ownerId} and a.creater = #{user.openId}
+    </update>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        ta.id,
+        <include refid="t_address_alias_columns"/>
+        from t_address ta where true
+        <if test="params.id != null and params.id != ''">
+            and ta.id = #{params.id}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and ta.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.isDefault != null">
+            and ta.is_default = #{params.isDefault}
+        </if>
+        <if test="params.isDelete != null">
+            and ta.is_delete = #{params.isDelete}
+        </if>
+        <if test="params.creater != null and params.creater != ''">
+            and ta.creater = #{params.creater}
+        </if>
+        <if test="params.orderBy != null">
+            order by ${params.orderBy}
+        </if>
+    </select>
+
+    <sql id="params_limit">
+        <if test="params != null and params.page != null">
+            limit #{params.page.size} offset #{params.page.offset}
+        </if>
+    </sql>
+
+</mapper>

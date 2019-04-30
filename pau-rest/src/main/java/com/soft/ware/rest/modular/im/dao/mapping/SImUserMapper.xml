@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.im.dao.SImUserMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.im.model.SImUser">
+        <id column="id" property="id" />
+        <result column="owner_id" property="ownerId" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="nickname" property="nickname" />
+        <result column="avatar" property="avatar" />
+        <result column="birthday" property="birthday" />
+        <result column="signature" property="signature" />
+        <result column="gender" property="gender" />
+        <result column="region" property="region" />
+        <result column="address" property="address" />
+        <result column="body" property="body" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, owner_id AS ownerId, username, password, nickname, avatar, birthday, signature, gender, region, address, body, remark, create_time AS createTime, creater
+    </sql>
+    <sql id="s_im_user_alias_columns">
+        siu.owner_id AS ownerId, siu.username, siu.password, siu.nickname, siu.avatar, siu.birthday, siu.signature, siu.gender, siu.region, siu.address, siu.body, siu.remark, siu.create_time AS createTime, siu.creater
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="s_im_user_alias_columns"/>
+        from s_im_user siu where true
+        <if test="params.id != null and params.id != ''">
+            and siu.id = #{params.id}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and siu.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.username != null and params.username != ''">
+            and siu.username = #{params.username}
+        </if>
+        <if test="params.password != null and params.password != ''">
+            and siu.password = #{params.password}
+        </if>
+        <if test="params.nickname != null and params.nickname != ''">
+            and siu.nickname = #{params.nickname}
+        </if>
+        <if test="params.avatar != null and params.avatar != ''">
+            and siu.avatar = #{params.avatar}
+        </if>
+        <if test="params.birthday != null and params.birthday != ''">
+            and siu.birthday = #{params.birthday}
+        </if>
+        <if test="params.signature != null and params.signature != ''">
+            and siu.signature = #{params.signature}
+        </if>
+        <if test="params.gender != null">
+            and siu.gender = #{params.gender}
+        </if>
+        <if test="params.region != null and params.region != ''">
+            and siu.region = #{params.region}
+        </if>
+        <if test="params.address != null and params.address != ''">
+            and siu.address = #{params.address}
+        </if>
+        <if test="params.body != null and params.body != ''">
+            and siu.body = #{params.body}
+        </if>
+        <if test="params.remark != null and params.remark != ''">
+            and siu.remark = #{params.remark}
+        </if>
+        <if test="params.createTime != null">
+            and siu.create_time = #{params.createTime}
+        </if>
+        <if test="params.creater != null and params.creater != ''">
+            and siu.creater = #{params.creater}
+        </if>
+    </select>
+</mapper>

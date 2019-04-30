@@ -20,6 +20,7 @@ import com.soft.ware.modular.system.model.User;
 import com.soft.ware.modular.system.service.IRoleService;
 import com.soft.ware.modular.system.service.IUserService;
 import com.soft.ware.modular.system.warpper.RoleWarpper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -98,6 +99,7 @@ public class RoleController extends BaseController {
     /**
      * 获取角色列表
      */
+    @ApiOperation("角色列表")
     @Permission
     @RequestMapping(value = "/list")
     @ResponseBody

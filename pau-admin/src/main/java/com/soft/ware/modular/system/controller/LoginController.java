@@ -14,6 +14,7 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.model.User;
 import com.soft.ware.modular.system.service.IMenuService;
 import com.soft.ware.modular.system.service.IUserService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,7 @@ public class LoginController extends BaseController {
     /**
      * 点击登录执行的动作
      */
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginVali() {
 

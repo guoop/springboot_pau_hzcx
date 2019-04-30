@@ -1,7 +1,9 @@
 package com.soft.ware.rest.modular.auth.util;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
@@ -90,6 +92,15 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
         return toObject(map, beanClass, false);
     }
 
+    public static <T> List<T> toObject(List<Map<String, Object>> maps, Class<T> beanClass) throws Exception {
+        List<T> list = Lists.newArrayList();
+        for (Map<String, Object> map : maps) {
+            list.add(toObject(map, beanClass));
+        }
+        return list;
+    }
+
+
     /**
      * 把 map 转为对象
      * @param map
@@ -133,6 +144,12 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                             field.set(obj, Boolean.valueOf(s));
                         } else if (field.getType() == Short.class){
                             field.set(obj, Short.valueOf(s));
+                        } else if(field.getType() == java.util.Date.class) {
+                            if (o instanceof String) {
+                                field.set(obj, DateUtils.parseDate(o.toString(), "yyyy-MM-dd HH:mm:ss"));
+                            } else {
+                                field.set(obj, s);
+                            }
                         } else {
                             logger.warn("未知类型:" + field.getType().getName());
                         }
@@ -147,7 +164,36 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
                     continue;
                 }
                 field.setAccessible(true);
-                field.set(obj, map.get(field.getName()));
+                Object s = map.get(field.getName());
+                if (s != null) {
+                    if (field.getType() == String.class) {
+                        field.set(obj, s);
+                    }else if (field.getType() == Long.class) {
+                        field.set(obj, Long.valueOf(s.toString()));
+                    } else if (field.getType() == Integer.class) {
+                        field.set(obj,Integer.valueOf(s.toString()));
+                    } else if (field.getType() == BigDecimal.class) {
+                        field.set(obj, BigDecimal.valueOf(Double.valueOf(s.toString())));
+                    } else if (field.getType() == Float.class) {
+                        field.set(obj, Float.valueOf(s.toString()));
+                    } else if (field.getType() == Double.class) {
+                        field.set(obj, Double.valueOf(s.toString()));
+                    } else if (field.getType() == Boolean.class) {
+                        field.set(obj, Boolean.valueOf(s.toString()));
+                    } else if (field.getType() == Short.class){
+                        field.set(obj, Short.valueOf(s.toString()));
+                    } else if(field.getType() == java.util.Date.class) {
+                        if (s instanceof String) {
+                            field.set(obj, DateUtils.parseDate(map.get(field.getName()).toString(), "yyyy-MM-dd HH:mm:ss"));
+                        } else {
+                            field.set(obj, s);
+                        }
+                    } else {
+                        field.set(obj, map.get(field.getName()));
+                    }
+                } else {
+                    field.set(obj, null);
+                }
             }
         }
 
@@ -167,14 +213,14 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
     }
 
     public static Map<String, Object> toMap(Object obj,boolean underline) throws Exception {
-        return toMap(obj, underline, 1);
+        return toMap(obj, underline, 0);
     }
 
     /**
      * object 转 map
      * @param obj
      * @param underline
-     * @param empty 1 不返回null，2 返回null, 3 把null替换为空
+     * @param empty 0 不返回null，1 返回null, 2 把null替换为空
      * @return
      * @throws Exception
      */
@@ -248,6 +294,34 @@ public class BeanMapUtils extends org.springframework.beans.BeanUtils {
         }
         return underline(sb);
     }
+
+    /**
+     * 转换为驼峰
+     *
+     * @param underscoreName
+     * @return
+     */
+    public static String camelCaseName(String underscoreName) {
+        StringBuilder result = new StringBuilder();
+        if (underscoreName != null && underscoreName.length() > 0) {
+            boolean flag = false;
+            for (int i = 0; i < underscoreName.length(); i++) {
+                char ch = underscoreName.charAt(i);
+                if ("_".charAt(0) == ch) {
+                    flag = true;
+                } else {
+                    if (flag) {
+                        result.append(Character.toUpperCase(ch));
+                        flag = false;
+                    } else {
+                        result.append(ch);
+                    }
+                }
+            }
+        }
+        return result.toString();
+    }
+
 
 
     /**

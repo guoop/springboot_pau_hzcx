@@ -23,6 +23,7 @@ import com.soft.ware.modular.system.model.User;
 import com.soft.ware.modular.system.service.IUserService;
 import com.soft.ware.modular.system.transfer.UserDto;
 import com.soft.ware.modular.system.warpper.UserWarpper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -153,6 +154,7 @@ public class UserMgrController extends BaseController {
     /**
      * 查询管理员列表
      */
+    @ApiOperation("用户列表")
     @RequestMapping("/list")
     @Permission
     @ResponseBody

@@ -3,18 +3,22 @@ package com.soft.ware.rest.modular.auth.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.MapWrapper;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
+import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ResultView;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
 import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_config.service.ITOwnerConfigService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
 public class WxController extends BaseController {
@@ -23,7 +27,13 @@ public class WxController extends BaseController {
     private HzcxWxService hzcxWxService;
 
     @Autowired
-    private TblOwnerService ownerService;
+    private ITOwnerService ownerService;
+
+    @Autowired
+    private ISWxAppService appService;
+
+    @Autowired
+    private ITOwnerConfigService configService;
 
 
     /**
@@ -32,13 +42,13 @@ public class WxController extends BaseController {
      * @return
      */
     @RequestMapping(value = {"/customer/v1/wx_identifier"})
-    public Object wx_identifier(String code, HttpServletRequest request) throws Exception {
+    public ResultView wx_identifier(String code, HttpServletRequest request) throws Exception {
         String appId = WXUtils.getAppId(request);
-        TblOwner owner = ownerService.findByAppId(appId);
-        WxMaService service = hzcxWxService.getWxMaService(owner);
-        MapWrapper map = getOpenId(service, appId, code);
-        map.put("owner", BeanMapUtils.toMap(owner, true));
-        return warpObject(map);
+        Map<String, Object> app = appService.findMap(Kv.by("appId", appId));
+        Map<String, Object> owner = ownerService.findMap(Kv.by("id",app.get("ownerId")));
+        WxMaService service = hzcxWxService.getWxMaService(BeanMapUtils.toObject(app, SWxApp.class));
+        Map<String, Object> config = configService.findMap(Kv.by("ownerId", app.get("ownerId")));
+        return renderOpenId(service, appId, code).set("owner", owner).merge("owner", app).merge("owner",config).del("owner", "app_secret");
     }
 
     /**
@@ -52,15 +62,12 @@ public class WxController extends BaseController {
     public Object owner_wx_identifier(String code, HttpServletRequest request) throws Exception {
         String appId = WXContants.OWNER_APP_ID;
         WxMaService service = hzcxWxService.getWxMaService();
-        return warpObject(getOpenId(service, appId, code));
+        return renderOpenId(service, appId, code);
     }
 
-    public MapWrapper getOpenId(WxMaService service,String appId,String code) throws Exception {
+    public ResultView renderOpenId(WxMaService service, String appId, String code) throws Exception {
         WxMaJscode2SessionResult result = service.jsCode2SessionInfo(code);
-        MapWrapper map = new MapWrapper();
-        map.put("code", SUCCESS);
-        map.put("openid", result.getOpenid());
-        return map;
+        return render().set("openid", result.getOpenid());
     }
 
 

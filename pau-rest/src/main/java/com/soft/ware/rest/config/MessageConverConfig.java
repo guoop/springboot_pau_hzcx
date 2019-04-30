@@ -1,15 +1,9 @@
 package com.soft.ware.rest.config;
 
-import com.soft.ware.core.config.DefaultFastjsonConfig;
-import com.soft.ware.rest.config.properties.RestProperties;
-import com.soft.ware.rest.modular.auth.converter.WithSignMessageConverter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * 签名校验messageConverter
- *
  * @author paulo
  * @date 2017-08-25 16:04
  */

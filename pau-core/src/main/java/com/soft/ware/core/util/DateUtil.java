@@ -342,6 +342,8 @@ public class DateUtil {
     	long timestamp = cal.getTimeInMillis();
     	return String.valueOf(timestamp/1000);
 	}
+
+
 	
 	 /* 
      * 将时间转换为时间戳
@@ -355,12 +357,24 @@ public class DateUtil {
         return res;
     }
 
+	/**
+	 * 日期转换中文日期
+	 * @param date
+	 * @return
+	 */
+    public  static Date EngDateToChaData(Date date){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String timeFormat = sdf.format(date);
+		return DateUtil.parseDate(timestampToDate());
+	}
+
 
 	public static void main(String[] args) {
-		
-      System.out.println(timestampToDate());
-		System.out.println();
-		
+    	System.out.println(DateUtil.timestampToDate());
+
+
+		System.out.println(DateUtil.getAllTime());
+		System.out.println(DateUtil.getTimeByDate(new Date()));
 	}
 
 }

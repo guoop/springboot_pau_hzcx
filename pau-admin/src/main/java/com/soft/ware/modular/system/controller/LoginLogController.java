@@ -10,6 +10,7 @@ import com.soft.ware.core.common.constant.factory.PageFactory;
 import com.soft.ware.modular.system.model.OperationLog;
 import com.soft.ware.modular.system.service.ILoginLogService;
 import com.soft.ware.modular.system.warpper.LogWarpper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ public class LoginLogController extends BaseController {
     /**
      * 查询登录日志列表
      */
+    @ApiOperation("登录日志列表")
     @RequestMapping("/list")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody

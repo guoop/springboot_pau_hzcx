@@ -6,7 +6,6 @@
 	<artifactId>pau-rest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
 	<name>pau-rest</name>
 	<description>pau REST服务器</description>
 
@@ -60,6 +59,12 @@
 			<dependency>
 			  <groupId>com.github.qcloudsms</groupId>
 			  <artifactId>qcloudsms</artifactId>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -69,11 +74,33 @@
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-pay</artifactId>
 			<version>3.3.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.github.binarywang</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
 			<artifactId>weixin-java-miniapp</artifactId>
 			<version>3.3.0</version>
+		</dependency>
+
+        <dependency>
+            <groupId>org.springframework.hateoas</groupId>
+            <artifactId>spring-hateoas</artifactId>
+        </dependency>
+
+
+		<!-- 添加Swagger2依赖,用于生成接口文档 -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
 		</dependency>
 	</dependencies>
 

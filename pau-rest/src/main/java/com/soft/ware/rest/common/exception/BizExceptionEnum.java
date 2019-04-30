@@ -16,7 +16,9 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      */
     TOKEN_EXPIRED(700, "token过期"),
     TOKEN_ERROR(700, "token验证失败"),
-    
+    USER_DISABLED(700, "账户被禁用"),
+    USER_DELETED(700, "账户不存在或被删除"),
+
     PARAME_ERROR(400,"参数错误"),
 
     /**
@@ -39,7 +41,9 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      */
     AUTH_REQUEST_ERROR(400, "账号密码错误"),
 
-
+    /**
+     * 极光添加失败
+     */
     JPUSH_USER_ADD_FAIL(500, "极光im添加用户失败"),
     
     /**
@@ -64,8 +68,12 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     ORDER_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_DIFF_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_REFUND_FINISHED(500,"已退款，请勿重复"),
-    ORDER_DIFF_REFUND_FINISHED(500,"差价已退款，请勿重复"),
 
+    ORDER_DIFF_REFUND_FINISHED(500,"差价已退款，请勿重复"),
+    /**
+     * 当上传的小票金额和支付金额相等时抛出此异常
+     */
+    ORDER_DIFF_REFUND_EXCEPTION(500,"支付金额与小票金额相同，不需要支持退补差价"),
 
     GOODS_REPEAT(500,"商品已存在"),
 
@@ -76,7 +84,16 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
 
     SMS_ERROR_SEND(400,"短信发送失败"),
 
+    IM_USER_DELETE(500,"没有当前用户"),
+
+    TORDERCHILD_SYN(600,"同步失败，该订单已存在"),
+
     ERROR(500,"未知错误");
+
+
+
+
+
 
 
 

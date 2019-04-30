@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.goods.dao.TGoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TGoods">
+        <id column="id" property="id" />
+        <result column="category_id" property="categoryId" />
+        <result column="name" property="name" />
+        <result column="code" property="code" />
+        <result column="unit_id" property="unitId" />
+        <result column="price" property="price" />
+        <result column="pics" property="pics" />
+        <result column="description" property="description" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+        <result column="owner_id" property="ownerId" />
+        <result column="status" property="status" />
+        <result column="sells" property="sells" />
+        <result column="sort" property="sort" />
+        <result column="is_delete" property="isDelete" />
+        <result column="source" property="source" />
+        <result column="top_time" property="topTime" />
+        <result column="is_promotion" property="isPromotion" />
+    </resultMap>
+
+    <resultMap id="GoodsMap" type="map" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="spec_id"/>
+        <result column="spec_name"/>
+        <collection property="specs" ofType="map" javaType="list" columnPrefix="spec_" autoMapping="true"/>
+    </resultMap>
+
+    <resultMap id="ResultGoodsMap" type="com.soft.ware.rest.modular.goods.controller.dto.GoodsParam">
+        <result column="id"/><result column="name"/><result column="code"/><result column="unitId"/><result column="status"/><result column="price"/><result column="pics"/>
+        <result column="isPromotion"/><result column="description"/><result column="sells"/><result column="sort"/><result column="source"/><result column="categoryId"/>
+        <result column="creater"/><result column="createTime"/><result column="promotionMoney"/><result column="startTime"/><result column="endTime"/><result column="specsName"/>
+        <result column="categoryName"/><result column="stock"/><result column="baseline"/>
+
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, category_id , name, code, unit_id , price, pics, description, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s'), creater, owner_id , status, sells, sort, is_delete , source, top_time , is_promotion
+    </sql>
+    <sql id="limit">
+        limit #{page.size} offset #{page.offset}
+    </sql>
+    <sql id="t_goods_alias_columns">
+        g.category_id categoryId,g.name ,g.code ,g.unit_id unitId,g.price ,g.pics ,g.description ,DATE_FORMAT(g.create_time,'%Y-%m-%d %H:%i:%s') createTime,g.creater ,g.owner_id ownerId,g.status ,g.sells ,g.sort ,g.is_delete isDelete,g.source ,DATE_FORMAT(g.top_time,'%Y-%m-%d %H:%i:%s') topTime,g.is_promotion isPromotion
+        <!--,g.is_promotion isPromotion--> <!--删掉了 需要配合 t_promotion 才有意义-->
+    </sql>
+    <sql id="goodsJoinSql">
+        left join t_unit u on u.id = g.unitId
+        left join t_promotion tp on tp.goods_id = g.id
+        left join t_specs ts on ts.goods_id = g.id
+    </sql>
+    <sql id="goodsJoinColumnSql">
+        ,tp.id promotionId ,tp.money promotionMoney,DATE_FORMAT(tp.start_time,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(tp.end_time,'%Y-%m-%d %H:%i:%s') endTime
+        ,(g.isPromotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) isPromotion
+        ,u.name measurementUnit
+        ,ts.name spec_name, ts.id spec_id
+        <!-- 查询库存信息 -->
+        ,((select ifnull(sum(ggss.in_amount),0) from t_goods_storage ggss where ggss.goods_id = g.id) - (select ifnull(sum(oocc.goods_num),0) from t_order_child oocc,t_order oo where oo.id = oocc.order_id and oo.status in (1,2,3,10)  and oocc.goods_id = g.id)) as storage
+    </sql>
+    <select id="findMaps" resultType="java.util.Map" resultMap="GoodsMap">
+        select g.*
+            <include refid="goodsJoinColumnSql"/>
+            from (
+            select
+            g.id,
+            <include refid="t_goods_alias_columns"/>
+            from t_goods g
+            where true
+            <include refid="findMapsCondition"/>
+            <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+        ) as g
+        <include refid="goodsJoinSql"/>
+        <choose>
+            <!--商品计算价格需要这个 in ids 排序 -->
+            <when test="params.ids != null and params.ids != ''">
+                order by field(g.id,${params.ids})
+            </when>
+            <otherwise>
+                <!--普通列表查询-->
+                order by g.topTime desc,g.sort asc,g.createTime desc
+            </otherwise>
+        </choose>
+    </select>
+    <select id="findMapsCount" resultType="long">
+        select count(1) from t_goods g where true
+        <include refid="findMapsCondition"/>
+    </select>
+
+    <sql id="findMapsCondition">
+        <if test="params.id != null and params.id != ''">
+            and g.id = #{params.id}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and g.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.code != null and params.code != ''">
+            and g.code = #{params.code}
+        </if>
+        <if test="params.ids != null and params.ids != ''">
+            and g.id in (${params.ids})
+        </if>
+        <if test="params.specId != null and params.specId != ''">
+            and gs.id in (${params.specId})
+        </if>
+        <if test="params.isDelete != null and params.isDelete != ''">
+            and g.is_delete = #{params.isDelete}
+        </if>
+        <if test="params.lastUpdateTime != null">
+            and g.update_time > #{params.lastUpdateTime}
+        </if>
+        <if test="params.categoryId != null and params.categoryId != ''">
+            and g.category_id = #{params.categoryId}
+        </if>
+        <if test="params.categoryIds != null and params.categoryIds != ''">
+            and g.category_id in (#{params.categoryIds})
+        </if>
+        <if test="params.likeName != null and params.likeName != ''">
+            and g.name like '%${params.likeName}%'
+        </if>
+        <choose>
+            <!--商品计算价格需要这个 in ids 排序 -->
+            <when test="params.ids != null and params.ids != ''">
+                order by field(g.id,${params.ids})
+            </when>
+            <otherwise>
+                <!--普通列表查询-->
+                order by g.top_time desc, g.sort asc,g.create_time desc
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="selectTGoodsListByMapCondition">
+        <if test="params.categoryId != null and params.categoryId != ''">
+            and a.category_id = #{params.categoryId}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and a.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.name != null and params.name != ''">
+            and a.name like '%${params.name}%'
+        </if>
+        <if test="params.isDelete != null">
+            and a.is_delete = #{params.isDelete}
+        </if>
+        <if test="params.categoryIds != null and params.categoryIds != ''">
+            and a.category_id in (${params.categoryIds})
+        </if>
+
+    </sql>
+    <!--根据商品分类id查询所有商品列表-->
+    <select id="selectTGoodsListByMap"  resultType="java.util.HashMap" >
+        select a.id,a.name,a.code,a.unit_id as unitId,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime
+        ,c.`name` as specName ,d.`name` categoryName
+        ,tp.id promotionId ,tp.money promotionMoney,DATE_FORMAT(tp.start_time,'%Y-%m-%d %H:%i:%s') promotionStartTime,DATE_FORMAT(tp.end_time,'%Y-%m-%d %H:%i:%s') promotionEndTime
+        ,(a.is_promotion = 1 and now() >= tp.start_time and now() &lt; tp.end_time) promotionInProgress
+        ,e.after_storage stock ,e.baseline
+        from t_goods a
+        LEFT JOIN t_promotion tp on a.id = tp.goods_id
+        LEFT JOIN (select GROUP_CONCAT(name) name,goods_id from t_specs GROUP BY goods_id) c on a.id = c.goods_id
+        LEFT JOIN t_category d on a.category_id = d.id
+        LEFT JOIN t_goods_storage e on a.id = e.goods_id
+        where 1=1
+        <include refid="selectTGoodsListByMapCondition"/>
+        <if test="params.promotionInProgress != null ">
+            having true
+            and promotionInProgress = #{params.promotionInProgress}
+        </if>
+        order by a.top_time desc,a.sort asc,a.create_time desc
+       <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+    </select>
+    <select id="selectTGoodsListByMapCount" resultType="long">
+        select count(1)
+        from t_goods a
+        LEFT JOIN t_promotion b on a.id = b.goods_id
+        where true
+        <include refid="selectTGoodsListByMapCondition"/>
+        <if test="params.promotionInProgress != null ">
+            and (a.is_promotion = 1 and now() >= b.start_time and now() &lt; b.end_time) = #{params.promotionInProgress}
+        </if>
+    </select>
+
+    <update id="updateGoodsTopTimeOrStatus" parameterType="java.util.Map">
+      <if test="top_time != null">
+          update t_goods set top_time = #{top_time} where id = #{id}
+      </if>
+      <if test="status != null">
+          update t_goods set status = #{status} where id = #{id}
+      </if>
+    </update>
+
+    <sql id="findByCodeOrId">
+        select a.id,a.name,a.code,a.unit_id unitId,a.`status`,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime
+         ,b.money as promotionMoney,b.start_time promotionStartTime,b.end_time promotionEndTime,c.`name` as specsName ,d.`name` categoryName
+         ,(a.is_promotion = 1 and now() >= b.start_time and now() &lt; b.end_time) promotionInProgress
+         ,IFNULL(e.after_storage,0) stock ,IFNULL(e.baseline,0)
+        from t_goods a
+            LEFT JOIN t_promotion b on a.id = b.goods_id
+            LEFT JOIN (select GROUP_CONCAT(name) name,goods_id from t_specs GROUP BY goods_id) c on a.id = c.goods_id
+            LEFT JOIN t_category d on a.category_id = d.id
+            LEFT JOIN t_goods_storage e on a.id = e.goods_id
+            where 1=1
+    </sql>
+
+    <select id="findById"  resultType="map">
+        <include refid="findByCodeOrId"/>
+        and a.id = #{id}
+    </select>
+    <select id="findByCode" resultType="map">
+        <include refid="findByCodeOrId"/>
+        and a.owner_id = #{ownerId}
+        and a.code =  #{code}
+    </select>
+</mapper>

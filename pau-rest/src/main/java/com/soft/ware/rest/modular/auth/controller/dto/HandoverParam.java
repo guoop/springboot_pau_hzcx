@@ -10,15 +10,15 @@ import java.util.Date;
 public class HandoverParam {
 
     //操作人（登录）账号
-    private Integer  phone;
+    private String  phone;
     //操作人名字
     private String  name;
     //收银机编号
     private String  pospalcode;
     //账号登录时间
-    private Date  optionstart;
+    private Long  optionstart;
     //交接班结束时间
-    private Date optionat;
+    private Long optionat;
     //收银单数
     private Integer ordernum;
     //退单数
@@ -60,10 +60,17 @@ public class HandoverParam {
     //现金会员支付单数
     private Integer  momberpaynum;
     //第一笔收银订单时间
-    private Date  fistordertime;
+    private Long  fistordertime;
     //最后一笔订单时间
-    private Date  lastordertime;
+    private Long  lastordertime;
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public String getName() {
         return name;
@@ -81,19 +88,19 @@ public class HandoverParam {
         this.pospalcode = pospalcode;
     }
 
-    public Date getOptionstart() {
+    public Long getOptionstart() {
         return optionstart;
     }
 
-    public void setOptionstart(Date optionstart) {
+    public void setOptionstart(Long optionstart) {
         this.optionstart = optionstart;
     }
 
-    public Date getOptionat() {
+    public Long getOptionat() {
         return optionat;
     }
 
-    public void setOptionat(Date optionat) {
+    public void setOptionat(Long optionat) {
         this.optionat = optionat;
     }
 
@@ -257,28 +264,19 @@ public class HandoverParam {
         this.momberpaynum = momberpaynum;
     }
 
-    public Integer getPhone() {
-        return phone;
-    }
-
-    public void setPhone(Integer phone) {
-        this.phone = phone;
-    }
-
-
-    public Date getFistordertime() {
+    public Long getFistordertime() {
         return fistordertime;
     }
 
-    public void setFistordertime(Date fistordertime) {
+    public void setFistordertime(Long fistordertime) {
         this.fistordertime = fistordertime;
     }
 
-    public Date getLastordertime() {
+    public Long getLastordertime() {
         return lastordertime;
     }
 
-    public void setLastordertime(Date lastordertime) {
+    public void setLastordertime(Long lastordertime) {
         this.lastordertime = lastordertime;
     }
 }

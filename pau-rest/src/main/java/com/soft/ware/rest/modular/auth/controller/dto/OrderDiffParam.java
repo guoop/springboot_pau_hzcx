@@ -19,11 +19,11 @@ public class OrderDiffParam {
     @NotBlank
     private String pic;
 
-    public String getOrderNO() {
+    public String gevoidNO() {
         return orderNO;
     }
 
-    public void setOrderNO(String orderNO) {
+    public void sevoidNO(String orderNO) {
         this.orderNO = orderNO;
     }
 

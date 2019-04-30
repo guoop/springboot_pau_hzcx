@@ -10,7 +10,7 @@ public class OrderUpdateStatusParam {
     @NotBlank(message = "订单状态不能为空")
     private String status;
     @NotBlank(message = "订单号不能为空")
-    private String no;
+    private String orderNo;
 
     public String getStatus() {
         return status;
@@ -20,11 +20,11 @@ public class OrderUpdateStatusParam {
         this.status = status;
     }
 
-    public String getNo() {
-        return no;
+    public String getOrderNo() {
+        return orderNo;
     }
 
-    public void setNo(String no) {
-        this.no = no;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 }
