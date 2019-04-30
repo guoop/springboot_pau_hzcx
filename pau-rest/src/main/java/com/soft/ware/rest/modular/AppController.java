@@ -4,6 +4,7 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.soft.ware.core.base.controller.BaseController;
 import com.soft.ware.core.base.tips.ErrorTip;
 import com.soft.ware.core.base.tips.SuccessTip;
+import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.rest.modular.auth.controller.dto.*;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.nio.channels.SeekableByteChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,9 +155,9 @@ public class AppController extends BaseController {
             param.setStatus("");
 
         }*/
-        param.setStatus(String.valueOf(ParamUtils.getOrderStatus(param.getStatus())));
-        List<Map<String, Object>> maps = orderService.findPage(user, page, param, TOrder.SOURCE_2, TOrder.SOURCE_0);
-        return render().set("orders", maps);
+            param.setStatus(String.valueOf(ParamUtils.getOrderStatus(param.getStatus())));
+            List<Map<String, Object>> maps = orderService.findPage(user, page, param, TOrder.SOURCE_2, TOrder.SOURCE_0);
+            return render().set("orders", maps);
     }
 
     /**
@@ -200,7 +202,7 @@ public class AppController extends BaseController {
      * 线下订单退款
      */
     @RequestMapping(value = "order/refund",method = RequestMethod.POST)
-    public Object orderRefund(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws WxPayException {
+    public Object orderRefund(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws Exception {
         param.put("owner_id",sessionUser.getOwnerId());
             if(orderService.orderRefund(param,sessionUser)){
                 return new SuccessTip();
@@ -208,11 +210,16 @@ public class AppController extends BaseController {
         return new ErrorTip();
     }
 
-
     /**
-     * 退款库存修改
+     * 小票金额上传
+     * @param param orderNo 订单号 money 小票金额  owner 商户唯一id
      */
-
-
+   @RequestMapping(value = "order/diff",method = RequestMethod.POST)
+   public Tip diffMoney(@RequestParam Map<String,Object> param, SessionUser sessionUser) throws Exception {
+      if(orderService.diffMoney(param,sessionUser)){
+          return new SuccessTip();
+      }
+       return new ErrorTip();
+   }
 
 }

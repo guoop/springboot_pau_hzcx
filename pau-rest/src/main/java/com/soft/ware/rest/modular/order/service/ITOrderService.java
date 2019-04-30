@@ -47,7 +47,7 @@ public interface ITOrderService extends IService<TOrder> {
      * @return
      * @throws WxPayException
      */
-    boolean orderRefund(Map<String,Object> map , SessionUser sessionUser) throws WxPayException;
+    boolean orderRefund(Map<String,Object> map , SessionUser sessionUser) throws Exception;
 
     WxMaTemplateMessage buildOrderTemplateMessage(SessionUser user,String templateKey, String fromID, TOrder order,List<String> goodsNames, TAddress address) throws Exception;
 
