@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TRepository">
         <id column="id" property="id" />
-        <result column="goods_code" property="goodsCode" />
+        <result column="code" property="code" />
         <result column="pics" property="pics" />
         <result column="is_delete" property="isDelete" />
         <result column="owner_id" property="ownerId" />
@@ -16,10 +16,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, goods_id, pics, is_delete , owner_id , supplier_id, type, remark
+        id, code, pics, is_delete , owner_id , supplier_id, type, remark
     </sql>
     <sql id="t_repository_alias_columns">
-        tr.goods_code AS goodsCode, tr.pics, tr.is_delete AS isDelete, tr.owner_id AS ownerId, tr.supplier_id AS supplierId, tr.type, tr.remark
+        tr.code AS code, tr.pics, tr.is_delete AS isDelete, tr.owner_id AS ownerId, tr.supplier_id AS supplierId, tr.type, tr.remark
     </sql>
     <select id="findMaps" resultType="java.util.Map">
         select
@@ -29,8 +29,8 @@
         <if test="params.id != null and params.id != ''">
             and tr.id = #{params.id}
         </if>
-        <if test="params.goodsCode != null and params.goodsCode != ''">
-            and tr.goods_code = #{params.goodsCode}
+        <if test="params.code != null and params.code != ''">
+            and tr.code = #{params.code}
         </if>
         <if test="params.pics != null and params.pics != ''">
             and tr.pics = #{params.pics}

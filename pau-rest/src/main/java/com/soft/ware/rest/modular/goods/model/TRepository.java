@@ -36,8 +36,7 @@ public class TRepository extends Model<TRepository> {
     /**
      * 商品唯一id
      */
-    @TableField("goods_code")
-    private String goodsCode;
+    private String code;
     /**
      * 商品图片
      */
@@ -89,12 +88,12 @@ public class TRepository extends Model<TRepository> {
         this.id = id;return this;
     }
 
-    public String getGoodsCode() {
-        return goodsCode;
+    public String getCode() {
+        return code;
     }
 
-    public TRepository setGoodsCode( String goodsCode) {
-        this.goodsCode = goodsCode;return this;
+    public TRepository setCode( String code) {
+        this.code = code;return this;
     }
 
     public String getPics() {
@@ -178,7 +177,7 @@ public class TRepository extends Model<TRepository> {
     public String toString() {
         return "TRepository{" +
         "id=" + id +
-        ", goodsCode=" + goodsCode +
+        ", code=" + code +
         ", pics=" + pics +
         ", isDelete=" + isDelete +
         ", ownerId=" + ownerId +

@@ -193,20 +193,26 @@
       </if>
     </update>
 
+    <sql id="findByCodeOrId">
+        select a.id,a.name,a.code,a.unit_id unitId,a.`status`,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime
+         ,b.money as promotionMoney,b.start_time promotionStartTime,b.end_time promotionEndTime,c.`name` as specsName ,d.`name` categoryName
+         ,(a.is_promotion = 1 and now() >= b.start_time and now() &lt; b.end_time) promotionInProgress
+         ,IFNULL(e.after_storage,0) stock ,IFNULL(e.baseline,0)
+        from t_goods a
+            LEFT JOIN t_promotion b on a.id = b.goods_id
+            LEFT JOIN (select GROUP_CONCAT(name) name,goods_id from t_specs GROUP BY goods_id) c on a.id = c.goods_id
+            LEFT JOIN t_category d on a.category_id = d.id
+            LEFT JOIN t_goods_storage e on a.id = e.goods_id
+            where 1=1
+    </sql>
 
-<select id="findById"  parameterType="String" resultType="java.util.HashMap" >
-     select a.id,a.name,a.code,a.unit_id unitId,a.`status`,a.price,a.pics,a.is_promotion isPromotion,a.description,a.sells,a.sort,a.source,a.category_id categoryId,a.creater,a.create_time createTime
-     ,b.money as promotionMoney,b.start_time promotionStartTime,b.end_time promotionEndTime,c.`name` as specsName ,d.`name` categoryName
-     ,(a.is_promotion = 1 and now() >= b.start_time and now() &lt; b.end_time) promotionInProgress
-     ,IFNULL(e.after_storage,0) stock ,IFNULL(e.baseline,0)
-    from t_goods a
-        LEFT JOIN t_promotion b on a.id = b.goods_id
-        LEFT JOIN (select GROUP_CONCAT(name) name,goods_id from t_specs GROUP BY goods_id) c on a.id = c.goods_id
-        LEFT JOIN t_category d on a.category_id = d.id
-        LEFT JOIN t_goods_storage e on a.id = e.goods_id
-        where 1=1 and  a.id = #{id,jdbcType=VARCHAR}
-</select>
-
-
-
+    <select id="findById"  resultType="map">
+        <include refid="findByCodeOrId"/>
+        and a.id = #{id}
+    </select>
+    <select id="findByCode" resultType="map">
+        <include refid="findByCodeOrId"/>
+        and a.owner_id = #{ownerId}
+        and a.code =  #{code}
+    </select>
 </mapper>

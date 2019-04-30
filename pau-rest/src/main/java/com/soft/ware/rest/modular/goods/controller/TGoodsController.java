@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -90,6 +89,9 @@ public class TGoodsController extends BaseController {
 
     @Autowired
     private ITOwnerStaffService staffService;
+
+    @Autowired
+    private ITRepositoryService repositoryService;
 
     /**
      * 获取分类列表
@@ -175,17 +177,33 @@ public class TGoodsController extends BaseController {
     @RequestMapping("goods/list")
     public Tip getGoodsList(@RequestParam Map<String,Object> param,Page page ,SessionUser user) throws Exception {
         List<Map<String, Object>> list = itGoodsService.selectTGoodsListByMap(user, param, page);
-        return render().set("data", list);
+        return render().set("data", list).set("xxxxx", "aaaaa");
     }
-    @RequestMapping("goods/detail")
+    @RequestMapping(value = "goods/detail",method = RequestMethod.GET,params = "id")
     public Tip getGoodsDetail(@RequestParam String id){
-       HashMap<String,Object> goods = itGoodsService.findById(id);
+       Map<String,Object> goods = itGoodsService.findById(id);
          if(ToolUtil.isNotEmpty(goods)){
              return new SuccessTip(goods);
          }
          return new ErrorTip();
     }
 
+    @RequestMapping(value = "goods/detail",method = RequestMethod.GET,params = "code")
+    public Tip goods(@RequestParam String code,SessionUser user) throws Exception {
+        List<Map<String, Object>> goods = itGoodsService.findByCode(user,code);
+        return renderData(goods);
+    }
+
+    /**
+     * 根据商品编码从商品库查询
+     * @param code
+     * @return
+     */
+    @RequestMapping(value = "goods/repository",method = RequestMethod.GET)
+    public Tip repository(String code){
+        List<Map<String, Object>> maps = repositoryService.findMaps(Kv.by("code", code));
+        return renderData(maps);
+    }
     /**
      * 获取系统内置商品分类图标
      * @param sessionUser
@@ -218,18 +236,20 @@ public class TGoodsController extends BaseController {
      * @param goods
      * @return
      */
-    @RequestMapping("goods/addOrUpdate")
-    public Tip goodsEdit(@RequestParam TGoods goods){
-         boolean isSuccess = false;
-         if (goods.getId() != null){
-             isSuccess = itGoodsService.updateById(goods);
+    @RequestMapping(value = "goods/addOrUpdate",method = RequestMethod.POST)
+    public Tip goodsEdit(@RequestBody Map<String,Object> goods,SessionUser user) throws Exception {
+        boolean isSuccess = false;
+        TGoods g = BeanMapUtils.toObject(goods, TGoods.class);
+        itGoodsService.addByManual(user, g, null);
+        /*if (g.getId() != null){
+             isSuccess = itGoodsService.updateById(g);
          }else{
-             isSuccess = itGoodsService.insert(goods);
+             isSuccess = itGoodsService.insert(g);
          }
          if(isSuccess){
              return  new SuccessTip();
-         }
-         return new ErrorTip();
+         }*/
+        return new ErrorTip();
     }
 
     /**

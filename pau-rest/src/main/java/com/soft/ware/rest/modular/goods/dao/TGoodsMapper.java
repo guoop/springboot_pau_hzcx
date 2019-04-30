@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +29,12 @@ public interface TGoodsMapper extends BaseMapper<TGoods> {
 
     boolean updateGoodsTopTimeOrStatus(Map<String,Object> map);
 
-    HashMap<String,Object> findById(String id);
+    Map<String,Object> findById(@Param("id") String id);
 
     @Update(value = "update t_goods g set g.top_time = #{date} where g.id = #{id}")
     boolean top(@Param("id") String id, @Param("date") Date date);
 
     long findMapsCount(@Param("params") Map<String,Object> params);
+
+    List<Map<String,Object>> findByCode(@Param("ownerId") String ownerId, @Param("code") String code);
 }

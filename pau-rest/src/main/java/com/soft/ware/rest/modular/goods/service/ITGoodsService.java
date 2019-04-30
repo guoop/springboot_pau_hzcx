@@ -9,7 +9,6 @@ import com.soft.ware.rest.modular.goods.model.TGoods;
 import com.soft.ware.rest.modular.goods_storage.model.TGoodsStorage;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public interface ITGoodsService extends IService<TGoods> {
      */
     boolean top(String goodsId, Date date);
 
-    HashMap<String,Object> findById(String id);
+    Map<String,Object> findById(String id);
 
     boolean addByScan(SessionUser user, TGoods g, TGoodsStorage s) throws Exception;
 
@@ -51,5 +50,14 @@ public interface ITGoodsService extends IService<TGoods> {
      * @param code
      * @return
      */
-    List<TGoods> findByCode(SessionUser user, String code) throws Exception;
+    List<Map<String, Object>> findByCode(SessionUser user, String code);
+
+    /**
+     * 手动添加商品信息
+     * @param user 创建人
+     * @param g    商品信息
+     * @param s    库存信息
+     * @return
+     */
+    boolean addByManual(SessionUser user, TGoods g, TGoodsStorage s);
 }

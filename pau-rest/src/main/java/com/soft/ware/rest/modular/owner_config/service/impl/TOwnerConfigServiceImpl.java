@@ -40,6 +40,8 @@ public class TOwnerConfigServiceImpl extends BaseService<TOwnerConfigMapper,TOwn
         conData.setId(con.getId());
         if(ToolUtil.isNotEmpty(map.get("orderPhone"))){
             conData.setOrderPhone(map.get("orderPhone").toString());
+        }else{
+            conData.setOrderPhone("");
         }
         if(ToolUtil.isNotEmpty(map.get("isDelivery"))){
             conData.setIsDelivery(Integer.valueOf(map.get("isDelivery").toString()));

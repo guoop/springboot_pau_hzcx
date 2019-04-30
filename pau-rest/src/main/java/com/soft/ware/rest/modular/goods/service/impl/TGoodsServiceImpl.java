@@ -2,12 +2,12 @@ package com.soft.ware.rest.modular.goods.service.impl;
 
 import com.soft.ware.core.base.controller.BaseService;
 import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.IdGenerator;
 import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.modular.auth.controller.dto.GoodsPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.Page;
 import com.soft.ware.rest.modular.goods.dao.TGoodsMapper;
 import com.soft.ware.rest.modular.goods.model.TCategory;
@@ -22,11 +22,11 @@ import com.soft.ware.rest.modular.im.service.ImService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -143,19 +143,23 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
     }
 
     @Override
-    public HashMap<String,Object> findById(String id ) {
-        HashMap<String,Object> mapdata = mapper.findById(id);
+    public Map<String,Object> findById(String id ) {
+        Map<String,Object> mapdata = mapper.findById(id);
         return mapdata;
     }
 
 
     @Override
-    public boolean addByScan(SessionUser user, TGoods g, TGoodsStorage s) throws Exception {
+    @Transactional(rollbackFor = Throwable.class)
+    public boolean addByScan(SessionUser user, TGoods g, TGoodsStorage s) {
         Date date = new Date();
-        List<TGoods> list = this.findByCode(user, g.getCode());
+        List<Map<String,Object>> list = this.findByCode(user, g.getCode());
         if (!list.isEmpty()) {
             throw new PauException(BizExceptionEnum.GOODS_REPEAT);
         }
+        g.setId(IdGenerator.getId());
+        g.setCategoryId("-");//todo yancc
+        g.setUnitId("");//todo yancc
         g.setCreateTime(date);
         g.setCreater(user.getId());
         g.setOwnerId(user.getOwnerId());
@@ -164,7 +168,7 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
         g.setSource(TGoods.source_1);
         g.setIsDelete(TGoods.is_delete_0);
         if(this.insert(g)){
-            imService.sendAddGoodsNotify(user, g);
+            s.setId(IdGenerator.getId());
             s.setOwnerId(user.getOwnerId());
             s.setGoodsId(g.getId());
             s.setBeforeBaseline(BigDecimal.ZERO);
@@ -173,23 +177,57 @@ public class TGoodsServiceImpl extends BaseService<TGoodsMapper, TGoods> impleme
 
             if (repositoryService.selectRepositoryByGoodsCode(g.getCode()) == null) {
                 TRepository r = new TRepository();
-                r.setGoodsCode(g.getCode());
+                r.setId(IdGenerator.getId());
+                r.setCode(g.getCode());
                 r.setCreateTime(date);
-                //r.setMeasurement(gcate.getMeasurementUnit());
+                //r.setMeasurement(gcate.getMeasurementUnit()); //todo yancc
                 r.setName(g.getName());
                 r.setPics(g.getPics());
                 r.setIsDelete(TRepository.is_delete_0);
                 repositoryService.insert(r);
             }
-            return storageService.insert(s);
+            storageService.insert(s);
+            imService.sendAddGoodsNotify(user, g);
+            return true;
         }
         return false;
     }
 
     @Override
-    public List<TGoods> findByCode(SessionUser user, String code) throws Exception {
-        return BeanMapUtils.toObject(findMaps(Kv.obj("code", code).set("ownerId", user.getOwnerId())), TGoods.class);
+    public List<Map<String, Object>> findByCode(SessionUser user, String code) {
+        List<Map<String, Object>> maps = mapper.findByCode(user.getOwnerId(), code);
+        return maps;
     }
 
+    @Override
+    public boolean addByManual(SessionUser user, TGoods g, TGoodsStorage s) {
+        Date date = new Date();
+        List<Map<String,Object>> list = this.findByCode(user, g.getCode());
+        if (!list.isEmpty()) {
+            throw new PauException(BizExceptionEnum.GOODS_REPEAT);
+        }
+        g.setUnitId("");//todo yancc
+        g.setCategoryId("-");
+        g.setId(IdGenerator.getId());
+        g.setCreateTime(date);
+        g.setCreater(user.getId());
+        g.setOwnerId(user.getOwnerId());
+        g.setStatus(TGoods.status_1);
+        g.setSort(1);
+        g.setSource(TGoods.source_2);
+        g.setIsDelete(TGoods.is_delete_0);
+        if(this.insert(g)){
+            s.setId(IdGenerator.getId());
+            s.setOwnerId(user.getOwnerId());
+            s.setGoodsId(g.getId());
+            s.setBeforeBaseline(BigDecimal.ZERO);
+            s.setCreateTime(date);
+            s.setInTime(date);
+            storageService.insert(s);
+            imService.sendAddGoodsNotify(user, g);
+            return true;
+        }
+        return  false;
+    }
 
 }

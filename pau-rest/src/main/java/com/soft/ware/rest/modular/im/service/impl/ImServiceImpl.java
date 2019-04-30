@@ -197,6 +197,9 @@ public class ImServiceImpl implements ImService {
 
 
     private SImGroups requireOwnerGroup(SessionUser user,TOwner owner,ImGroupType type){
+        if (owner == null) {
+            owner = ownerService.find(user);
+        }
         //先查数据库
         List<SImGroups> gs = imGroupsService.find(user, type.ordinal());
         for (SImGroups g : gs) {

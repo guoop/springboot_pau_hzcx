@@ -2,8 +2,10 @@ package com.soft.ware.rest.modular.goods.model;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
-import org.springframework.data.annotation.Id;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -46,13 +48,12 @@ public class TGoods extends Model<TGoods> {
     public static Integer is_promotion_1 = 1;
 
     /**
-     * 主键
+     * 主键id
      */
-    @Id
-    @TableField("id")
+    @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
-     * 商品所属类别（关联表tbl_category的id字段）
+     * 商品所属类别（关联表t_category的id字段）
      */
     @TableField("category_id")
     private String categoryId;
@@ -84,6 +85,7 @@ public class TGoods extends Model<TGoods> {
     /**
      * 添加时间
      */
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
     @TableField("create_time")
     private Date createTime;
     /**
@@ -119,6 +121,7 @@ public class TGoods extends Model<TGoods> {
     /**
      * 置顶时间（用于控制买家端首页商品的展示顺序）
      */
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
     @TableField("top_time")
     private Date topTime;
     /**
@@ -128,21 +131,19 @@ public class TGoods extends Model<TGoods> {
     private Integer isPromotion;
 
 
-
     public String getId() {
         return id;
     }
 
-    public TGoods setId(String id) {
-        this.id = id;
-        return this;
+    public TGoods setId(String id){
+        this.id = id;return this;
     }
 
     public String getCategoryId() {
         return categoryId;
     }
 
-    public TGoods setCategoryId(String categoryId) {
+    public TGoods setCategoryId( String categoryId) {
         this.categoryId = categoryId;return this;
     }
 
@@ -150,71 +151,71 @@ public class TGoods extends Model<TGoods> {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public TGoods setName( String name) {
+        this.name = name;return this;
     }
 
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public TGoods setCode( String code) {
+        this.code = code;return this;
     }
 
     public String getUnitId() {
         return unitId;
     }
 
-    public void setUnitId(String unitId) {
-        this.unitId = unitId;
+    public TGoods setUnitId( String unitId) {
+        this.unitId = unitId;return this;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public TGoods setPrice( BigDecimal price) {
+        this.price = price;return this;
     }
 
     public String getPics() {
         return pics;
     }
 
-    public void setPics(String pics) {
-        this.pics = pics;
+    public TGoods setPics( String pics) {
+        this.pics = pics;return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public TGoods setDescription( String description) {
+        this.description = description;return this;
     }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public TGoods setCreateTime( Date createTime) {
+        this.createTime = createTime;return this;
     }
 
     public String getCreater() {
         return creater;
     }
 
-    public void setCreater(String creater) {
-        this.creater = creater;
+    public TGoods setCreater( String creater) {
+        this.creater = creater;return this;
     }
 
     public String getOwnerId() {
         return ownerId;
     }
 
-    public TGoods setOwnerId(String ownerId) {
+    public TGoods setOwnerId( String ownerId) {
         this.ownerId = ownerId;return this;
     }
 
@@ -222,31 +223,31 @@ public class TGoods extends Model<TGoods> {
         return status;
     }
 
-    public TGoods setStatus(Integer status) {
-        this.status = status; return this;
+    public TGoods setStatus( Integer status) {
+        this.status = status;return this;
     }
 
     public Integer getSells() {
         return sells;
     }
 
-    public void setSells(Integer sells) {
-        this.sells = sells;
+    public TGoods setSells( Integer sells) {
+        this.sells = sells;return this;
     }
 
     public Integer getSort() {
         return sort;
     }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public TGoods setSort( Integer sort) {
+        this.sort = sort;return this;
     }
 
     public Integer getIsDelete() {
         return isDelete;
     }
 
-    public TGoods setIsDelete(Integer isDelete) {
+    public TGoods setIsDelete( Integer isDelete) {
         this.isDelete = isDelete;return this;
     }
 
@@ -254,24 +255,24 @@ public class TGoods extends Model<TGoods> {
         return source;
     }
 
-    public void setSource(Integer source) {
-        this.source = source;
+    public TGoods setSource( Integer source) {
+        this.source = source;return this;
     }
 
     public Date getTopTime() {
         return topTime;
     }
 
-    public void setTopTime(Date topTime) {
-        this.topTime = topTime;
+    public TGoods setTopTime( Date topTime) {
+        this.topTime = topTime;return this;
     }
 
     public Integer getIsPromotion() {
         return isPromotion;
     }
 
-    public void setIsPromotion(Integer isPromotion) {
-        this.isPromotion = isPromotion;
+    public TGoods setIsPromotion( Integer isPromotion) {
+        this.isPromotion = isPromotion;return this;
     }
 
     @Override
@@ -290,7 +291,7 @@ public class TGoods extends Model<TGoods> {
         ", price=" + price +
         ", pics=" + pics +
         ", description=" + description +
-        ", createdTime=" + createTime +
+        ", createTime=" + createTime +
         ", creater=" + creater +
         ", ownerId=" + ownerId +
         ", status=" + status +

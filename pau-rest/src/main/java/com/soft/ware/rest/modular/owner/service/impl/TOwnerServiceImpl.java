@@ -49,7 +49,7 @@ public class TOwnerServiceImpl extends BaseService<TOwnerMapper, TOwner> impleme
     public TOwner find(SessionUser user) {
         TOwner owner = null;
         try {
-            owner = BeanMapUtils.toObject(findMap(Kv.by("ownerId", user.getOwnerId())), TOwner.class);
+            owner = BeanMapUtils.toObject(findMap(Kv.by("id", user.getOwnerId())), TOwner.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
