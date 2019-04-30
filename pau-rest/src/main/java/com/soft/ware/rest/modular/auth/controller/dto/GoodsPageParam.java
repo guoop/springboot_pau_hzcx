@@ -1,5 +1,7 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
+import java.util.Date;
+
 /**
  * 商品列表参数
  */
@@ -10,6 +12,8 @@ public class GoodsPageParam {
     public String name;
     //根据分类搜索
     public String category;
+
+    private Date beginTime;
 
     public String getName() {
         return name;
@@ -25,5 +29,13 @@ public class GoodsPageParam {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
     }
 }

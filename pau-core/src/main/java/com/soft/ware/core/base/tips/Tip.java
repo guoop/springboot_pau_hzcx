@@ -5,7 +5,7 @@ package com.soft.ware.core.base.tips;
  */
 public abstract class Tip {
 	
-	
+	protected Object data;
     protected String code;
     protected String msg;
 
@@ -24,5 +24,12 @@ public abstract class Tip {
         this.msg = msg;
     }
 
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
 
 }

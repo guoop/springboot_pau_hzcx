@@ -1,5 +1,6 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
+import com.google.common.collect.Lists;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.math.BigDecimal;
@@ -36,37 +37,32 @@ public class CartParam {
     }
 
 
-
     /**
      * 这几个参数不是前端传来的
      */
-    private List<String> sids;
-    private long[] ids;
+    private List<String> ids = Lists.newArrayList();
     private String[] units;
     private int[] nums;
-    private List<BigDecimal> totals = new ArrayList<>();
+    private List<BigDecimal> totals = Lists.newArrayList();
 
     public void resolver(){
         String[] goodsList = goods.split(",");
         String[] ss;
-        ids = new long[goodsList.length];
         units = new String[goodsList.length];
         nums = new int[goodsList.length];
-        sids = new ArrayList<>();
         for (int i = 0; i < goodsList.length; i++) {
             ss = goodsList[i].split("\\$\\$");
-            ids[i]= Long.parseLong(ss[0]);
             units[i] = ss[1];
             nums[i] = Integer.parseInt(ss[2]);
-            sids.add(ss[0]);
+            ids.add(ss[0]);
         }
     }
 
     public List<String> getSids() {
-        return sids;
+        return new ArrayList<>();
     }
 
-    public long[] getIds() {
+    public List<String> getIds() {
         return ids;
     }
 

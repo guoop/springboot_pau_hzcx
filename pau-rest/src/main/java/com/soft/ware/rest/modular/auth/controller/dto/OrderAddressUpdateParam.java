@@ -12,11 +12,11 @@ public class OrderAddressUpdateParam {
     private Long addressID;
 
 
-    public String getOrderNO() {
+    public String gevoidNO() {
         return orderNO;
     }
 
-    public void setOrderNO(String orderNO) {
+    public void sevoidNO(String orderNO) {
         this.orderNO = orderNO;
     }
 

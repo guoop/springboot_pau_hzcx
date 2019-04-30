@@ -10,10 +10,12 @@ import java.util.Map;
 /**
  * 错误页面的默认跳转(例如请求404的时候,默认走这个视图解析器)
  */
+/*
 @Component("error")
 public class PauErrorView implements View {
+*/
 
-    @Override
+   /* @Override
     public String getContentType() {
         return "text/html";
     }
@@ -22,4 +24,4 @@ public class PauErrorView implements View {
     public void render(Map<String, ?> map, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         httpServletRequest.getRequestDispatcher("/global/error").forward(httpServletRequest, httpServletResponse);
     }
-}
+}*/

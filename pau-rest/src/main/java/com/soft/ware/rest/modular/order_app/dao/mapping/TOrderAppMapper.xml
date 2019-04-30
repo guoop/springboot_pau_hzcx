@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.order_app.dao.TOrderAppMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order_app.model.TOrderApp">
+        <id column="id" property="id" />
+        <result column="no" property="no" />
+        <result column="source" property="source" />
+        <result column="money_channel" property="moneyChannel" />
+        <result column="money" property="money" />
+        <result column="money_pay" property="moneyPay" />
+        <result column="money_real_income" property="moneyRealIncome" />
+        <result column="money_change" property="moneyChange" />
+        <result column="channel_pay" property="channelPay" />
+        <result column="pay_time" property="payTime" />
+        <result column="create_time" property="createTime" />
+        <result column="settlementer" property="settlementer" />
+        <result column="owner_id" property="ownerId" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,no,source,money_channel,money,money_pay,money_real_income,money_change,channel_pay,pay_time,create_time,settlementer,owner_id,status
+    </sql>
+    <sql id="t_order_app_alias_columns">
+        toa.no no,toa.source source,toa.money_channel money_channel,toa.money money,toa.money_pay money_pay,toa.money_real_income money_real_income,toa.money_change money_change,toa.channel_pay channel_pay,DATE_FORMAT(toa.pay_time,'%Y-%m-%d %H:%i:%s') pay_time,DATE_FORMAT(toa.create_time,'%Y-%m-%d %H:%i:%s') create_time,toa.settlementer settlementer,toa.owner_id owner_id,toa.status status,toa.remark remark
+    </sql>
+    <sql id="limit">
+        limit #{page.size} offset #{page.offset}
+    </sql>
+    
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="t_order_app_alias_columns"/>
+        from t_order_app toa where true
+        <if test="params.id != null and params.id != ''">
+            and toa.id = #{params.id}
+        </if>
+        <if test="params.source != null">
+            and toa.source = #{params.source}
+        </if>
+        <if test="params.moneyChannel != null and params.moneyChannel != ''">
+            and toa.money_channel = #{params.moneyChannel}
+        </if>
+        <if test="params.moneyRealIncome != null">
+            and toa.money_real_income = #{params.moneyRealIncome}
+        </if>
+        <if test="params.settlementer != null and params.settlementer != ''">
+            and toa.settlementer = #{params.settlementer}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and toa.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.status != null">
+            and toa.status = #{params.status}
+        </if>
+        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+    </select>
+
+    <select id="getAppOrderList"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from t_order_app where 1=1
+    <if test="params.id != null and params.id != ''">
+        and id = #{params.id}
+    </if>
+    <if test="params.ownerId != null and params.ownerId != ''">
+        and owner_id = #{params.ownerId}
+    </if>
+   <include refid="limit"/>
+
+    </select>
+    <!--根据订单编号查询是否已经同步过的账单-->
+    <select id="selectOrderChildByOrderNo" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_order_app where no = #{no}
+    </select>
+
+</mapper>

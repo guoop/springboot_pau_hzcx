@@ -1,6 +1,7 @@
 package com.soft.ware.rest.modular.auth.filter;
 
 import com.soft.ware.core.base.tips.ErrorTip;
+import com.soft.ware.core.exception.SessionException;
 import com.soft.ware.core.util.RenderUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
 import com.soft.ware.rest.config.properties.JwtProperties;
@@ -10,8 +11,10 @@ import io.jsonwebtoken.JwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +29,8 @@ import java.util.Set;
  * @author paulo
  * @Date 2017/8/24 14:04
  */
-public class AuthFilter extends OncePerRequestFilter {
+@Configuration
+public class AuthFilter extends OncePerRequestFilter implements Filter {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -44,12 +48,13 @@ public class AuthFilter extends OncePerRequestFilter {
 
     static {
         whiteUrlSet.add("/test/xxxx");
+        whiteUrlSet.add("/im/init");
         whiteUrlSet.add("/customer/v1/banner/list");
         whiteUrlSet.add("/customer/v1/category/list");
         whiteUrlSet.add("/customer/v1/goods/list");
         whiteUrlSet.add("/customer/v1/shop");
         whiteUrlSet.add("/customer/v1/cart");
-        whiteUrlSet.add("/customer/v2/orders");
+        whiteUrlSet.add("/customer/v2/orders");whiteUrlSet.add("/customer/v1/orders");
         whiteUrlSet.add("/customer/v1/address");
         whiteUrlSet.add("/customer/v1/address/man");
         whiteUrlSet.add("/customer/v1/question");
@@ -60,19 +65,26 @@ public class AuthFilter extends OncePerRequestFilter {
         whiteUrlSet.add("/customer-pay");//支付回调
         whiteUrlSet.add("/customer-pay/pickup");//支付回调,到店自提
         whiteUrlSet.add("/customer-pay/money-diff");//差额支付回调,到店自提
+        whiteUrlSet.add("/customer-pay/money-diff-refund");//差额支付回调,到店自提
         whiteUrlSet.add("/customer/v1/wx_identifier");//获取openId
         whiteUrlSet.add("/customer/v1/order/address");
-        whiteUrlSet.add("/customer/v2/diff/wxpay/unifiedorder");//补差价
+        whiteUrlSet.add("/customer/v1/diff/wxpay/unifiedorder");//补差价
 
         whiteUrlSet.add("/owner/share/login");
         whiteUrlSet.add("/owner/im/init");
         whiteUrlSet.add("/owner/share/wx_identifier");
 
+        whiteUrlSet.add("/version/check");
+        whitePrefixUrlSet.add("/pau-rest/swagger");
+        whitePrefixUrlSet.add("/swagger");
         whitePrefixUrlSet.add("/customer/v2/orders/");
         whitePrefixUrlSet.add("/customer/v1/orders/");
         whitePrefixUrlSet.add("/customer/v1/goods/");
         whitePrefixUrlSet.add("/customer/v1/address/");
         whitePrefixUrlSet.add("/owner/share/code");
+        whitePrefixUrlSet.add("/hello/api");
+        whitePrefixUrlSet.add("/owner/v1/share/code");
+
     }
 
     @Override
@@ -82,7 +94,7 @@ public class AuthFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        for (String s : whitePrefixUrlSet) {
+       for (String s : whitePrefixUrlSet) {
             if (path.startsWith(s)) {
                 chain.doFilter(request, response);
                 return;
@@ -98,8 +110,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 boolean flag = jwtTokenUtil.isTokenExpired(authToken);
                 
                 if (flag) {
-                    RenderUtil.renderJson(response, new ErrorTip(BizExceptionEnum.TOKEN_EXPIRED.getCode(), BizExceptionEnum.TOKEN_EXPIRED.getMessage()));
-                    return;
+                    throw new SessionException();
                 }else{
                     Claims c = jwtTokenUtil.getClaimFromToken(authToken);
                     request.setAttribute("claims", c);

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.owner_temp.dao.TOwnerTempMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.owner_temp.model.TOwnerTemp">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="shop_secret" property="shopSecret" />
+        <result column="app_id" property="appId" />
+        <result column="app_secret" property="appSecret" />
+        <result column="app_name" property="appName" />
+        <result column="app_qr" property="appQr" />
+        <result column="owner_id" property="ownerId" />
+        <result column="acct_name" property="acctName" />
+        <result column="acct_pwd" property="acctPwd" />
+        <result column="company_name" property="companyName" />
+        <result column="company_license" property="companyLicense" />
+        <result column="company_code" property="companyCode" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="mailbox" property="mailbox" />
+        <result column="wx_api_card" property="wxApiCard" />
+        <result column="msg_tmplate" property="msgTmplate" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+        <result column="owner_data_status" property="ownerDataStatus" />
+        <result column="wxapp_data_status" property="wxappDataStatus" />
+        <result column="owner_data_auditor" property="ownerDataAuditor" />
+        <result column="owner_data_time" property="ownerDataTime" />
+        <result column="wxapp_data_auditor" property="wxappDataAuditor" />
+        <result column="wxapp_data_time" property="wxappDataTime" />
+        <result column="owner_refuser" property="ownerRefuser" />
+        <result column="owner_refuser_time" property="ownerRefuserTime" />
+        <result column="owner_refuser_reason" property="ownerRefuserReason" />
+        <result column="wxapp_refuser" property="wxappRefuser" />
+        <result column="wxapp_refuser_time" property="wxappRefuserTime" />
+        <result column="wxapp_refuser_reason" property="wxappRefuserReason" />
+        <result column="owner_is_valid" property="ownerIsValid" />
+        <result column="is_verify" property="isVerify" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, shop_id AS shopId, shop_secret AS shopSecret, app_id AS appId, app_secret AS appSecret, app_name AS appName, app_qr AS appQr, owner_id AS ownerId, acct_name AS acctName, acct_pwd AS acctPwd, company_name AS companyName, company_license AS companyLicense, company_code AS companyCode, name, phone, mailbox, wx_api_card AS wxApiCard, msg_tmplate AS msgTmplate, create_time AS createTime, creater, owner_data_status AS ownerDataStatus, wxapp_data_status AS wxappDataStatus, owner_data_auditor AS ownerDataAuditor, owner_data_time AS ownerDataTime, wxapp_data_auditor AS wxappDataAuditor, wxapp_data_time AS wxappDataTime, owner_refuser AS ownerRefuser, owner_refuser_time AS ownerRefuserTime, owner_refuser_reason AS ownerRefuserReason, wxapp_refuser AS wxappRefuser, wxapp_refuser_time AS wxappRefuserTime, wxapp_refuser_reason AS wxappRefuserReason, owner_is_valid AS ownerIsValid, is_verify AS isVerify
+    </sql>
+    <sql id="t_owner_temp_alias_columns">
+        tot.shop_id AS shopId, tot.shop_secret AS shopSecret, tot.app_id AS appId, tot.app_secret AS appSecret, tot.app_name AS appName, tot.app_qr AS appQr, tot.owner_id AS ownerId, tot.acct_name AS acctName, tot.acct_pwd AS acctPwd, tot.company_name AS companyName, tot.company_license AS companyLicense, tot.company_code AS companyCode, tot.name, tot.phone, tot.mailbox, tot.wx_api_card AS wxApiCard, tot.msg_tmplate AS msgTmplate, tot.create_time AS createTime, tot.creater, tot.owner_data_status AS ownerDataStatus, tot.wxapp_data_status AS wxappDataStatus, tot.owner_data_auditor AS ownerDataAuditor, tot.owner_data_time AS ownerDataTime, tot.wxapp_data_auditor AS wxappDataAuditor, tot.wxapp_data_time AS wxappDataTime, tot.owner_refuser AS ownerRefuser, tot.owner_refuser_time AS ownerRefuserTime, tot.owner_refuser_reason AS ownerRefuserReason, tot.wxapp_refuser AS wxappRefuser, tot.wxapp_refuser_time AS wxappRefuserTime, tot.wxapp_refuser_reason AS wxappRefuserReason, tot.owner_is_valid AS ownerIsValid, tot.is_verify AS isVerify
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        <include refid="t_owner_temp_alias_columns"/>
+        from t_owner_temp tot where true
+        <if test="params.id != null and params.id != ''">
+            and tot.id = #{params.id}
+        </if>
+        <if test="params.shopId != null and params.shopId != ''">
+            and tot.shop_id = #{params.shopId}
+        </if>
+        <if test="params.appId != null and params.appId != ''">
+            and tot.app_id = #{params.appId}
+        </if>
+        <if test="params.appSecret != null and params.appSecret != ''">
+            and tot.app_secret = #{params.appSecret}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and tot.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.phone != null and params.phone != ''">
+            and tot.phone = #{params.phone}
+        </if>
+        <if test="params.ownerIsValid != null">
+            and tot.owner_is_valid = #{params.ownerIsValid}
+        </if>
+        <if test="params.isVerify != null">
+            and tot.is_verify = #{params.isVerify}
+        </if>
+    </select>
+</mapper>

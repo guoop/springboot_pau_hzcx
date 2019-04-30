@@ -13,6 +13,5 @@ public class StartUpController {
 	public static void main(String[] args) {
 		SpringApplication.run(StartUpController.class, args);
 		logger.info("StartUpController is success!");
-
 	}
 }

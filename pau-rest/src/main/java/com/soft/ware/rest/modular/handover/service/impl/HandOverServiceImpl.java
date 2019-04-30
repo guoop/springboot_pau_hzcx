@@ -1,20 +1,16 @@
 package com.soft.ware.rest.modular.handover.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.common.persistence.dao.HandOverMapper;
-import com.soft.ware.rest.common.persistence.dao.TblOwnerStaffMapper;
-import com.soft.ware.rest.common.persistence.model.HandOver;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
-import com.soft.ware.rest.modular.auth.util.Page;
+import com.soft.ware.rest.modular.handover.dao.HandOverMapper;
+import com.soft.ware.rest.modular.handover.model.HandOver;
 import com.soft.ware.rest.modular.handover.service.IHandOverService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,26 +20,24 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
     @Resource
     private HandOverMapper overMapper;
 
-    @Resource
-    private TblOwnerStaffMapper staffMapper;
 
 
     @Override
     public HandOver over(SessionUser user, HandoverParam param) {
         //todo yancc 考虑改成session中
-        TblOwnerStaff staff = staffMapper.selectById(user.getId());
+        TOwnerStaff staff = null;// staffMapper.selectById(user.getId());
         HandOver o = new HandOver();
         Date date = new Date();
-        o.setOwner(user.getOwner());
-        o.setUserPhone(user.getUsername());
+        o.setOwner(user.getOwnerId());
+        o.setUserPhone(user.getPhone());
         o.setUserName(staff.getName());
 
         o.setPospalcode(param.getPospalcode());
         o.setSyncAt(date);
-        o.setOptionStart(param.getOptionstart());
-        o.setOptionaAt(param.getOptionat());
-        o.setFistOrderTime(param.getFistordertime());
-        o.setLastOrderTime(param.getLastordertime());
+        o.setOptionStart(new Date(param.getOptionstart()));
+        o.setOptionaAt(new Date(param.getOptionat()));
+        o.setFistOrderTime(new Date(param.getFistordertime()));
+        o.setLastOrderTime(new Date(param.getLastordertime()));
         o.setOrderNum(param.getOrdernum());
         o.setOrdertuinum(param.getOrdertuinum());
         o.setOrderReturnNum(param.getOrderreturnnum());
@@ -73,17 +67,11 @@ public class HandOverServiceImpl extends ServiceImpl<HandOverMapper, HandOver> i
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<HandOver> getHandOver(HandoverParam param,SessionUser user,Page page) {
+	public List<HandOver> getHandOver(Map<String,Object> param) {
 		List<HandOver> list = null;
-		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("owner", user.getOwner());
-		map.put("startTime", param.getOptionstart());
-		map.put("endTime", param.getOptionat());
-		map.put("size", page.getLimit());
-		map.put("page", page.getPage());
-		if(ToolUtil.isNotEmpty(param.getOptionat())&&ToolUtil.isNotEmpty(param.getOptionstart())){
-			list = (List<HandOver>) overMapper.getHandOverList(map);
-		}
+
+        overMapper.getHandOverList(param);
+
 		return list;
 	}
 }

@@ -7,7 +7,7 @@ import com.soft.ware.core.base.warpper.BaseControllerWarpper;
 import com.soft.ware.core.page.PageInfoBT;
 import com.soft.ware.core.support.HttpKit;
 import com.soft.ware.core.util.FileUtil;
-import com.soft.ware.core.util.Kv;
+import com.soft.ware.core.util.ResultView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 public class BaseController {
@@ -123,19 +124,26 @@ public class BaseController {
     }
 
 
-    public Kv<String,Object> render(){
+    public ResultView render(List<?> list){
+        return render().set("list", list);
+    }
+    public ResultView renderData(Object data){
+        return render().set("data", data);
+    }
+
+    public ResultView render(){
         return render(true);
     }
 
-    public Kv<String,Object> render(boolean result){
-        return Kv.view(result);
+    public ResultView render(boolean result){
+        return ResultView.view(result);
     }
 
-    public Kv<String,Object> render(boolean result, String msg){
-        return Kv.view(result, msg);
+    public ResultView render(boolean result, String msg){
+        return ResultView.view(result, msg);
     }
 
-    public Kv<String,Object> render(Page page){
+    public ResultView render(Page page){
         return render().set("page",page);
     }
 

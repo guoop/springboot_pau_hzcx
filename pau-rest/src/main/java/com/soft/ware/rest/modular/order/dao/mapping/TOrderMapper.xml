@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.order.dao.TOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order.model.TOrder">
+        <id column="id" property="id" />
+        <result column="order_no" property="orderNo" />
+        <result column="source" property="source" />
+        <result column="pickup_no" property="pickupNo" />
+        <result column="pickup_time" property="pickupTime" />
+        <result column="money_channel" property="moneyChannel" />
+        <result column="order_money" property="orderMoney" />
+        <result column="run_money" property="runMoney" />
+        <result column="pay_money" property="payMoney" />
+        <result column="pay_time" property="payTime" />
+        <result column="pay_response" property="payResponse" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+        <result column="settlementer" property="settlementer" />
+        <result column="owner_id" property="ownerId" />
+        <result column="address_id" property="addressId" />
+        <result column="type" property="type" />
+        <result column="version" property="version" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="is_delete" property="isDelete"/>
+        <result column="phone" property="phone"/>
+        <result column="cancel_reason" property="cancelReason"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_no AS orderNo, source, pickup_no AS pickupNo, pickup_time AS pickupTime, money_channel AS moneyChannel, order_money AS orderMoney, run_money AS runMoney, pay_money AS payMoney, pay_time AS payTime, pay_response AS payResponse, create_time AS createTime, creater, settlementer, owner_id AS ownerId, address_id AS addressId, type, version, status, remark,is_delete
+    </sql>
+    <sql id="t_order_alias_columns">
+        a.order_no orderNo,a.source source,a.pickup_no pickupNo,DATE_FORMAT(a.pickup_time,'%Y-%m-%d %H:%i:%s') pickupTime,a.money_channel moneyChannel,a.order_money orderMoney,a.run_money runMoney,a.pay_money payMoney,DATE_FORMAT(a.pay_time,'%Y-%m-%d %H:%i:%s') payTime,a.pay_response payResponse,DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') createTime,a.creater creater,a.settlementer settlementer,a.owner_id ownerId,a.address_id addressId,a.type type,a.version version,a.status status,a.remark remark,a.is_delete isDelete,a.phone phone
+    </sql>
+    <sql id="Condition">
+        <if test="id != null and id != ''">
+            and id = #{id}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and order_no = #{orderNo}
+        </if>
+        <if test="version != null and version != ''">
+            and version = #{version}
+        </if>
+        <if test="status != null and status != ''">
+            and status = #{status}
+        </if>
+        <if test="owner_id != null and owner_id != ''">
+            and owner_id = #{owner_id}
+        </if>
+        <if test="page != null">
+            limit #{page},20
+        </if>
+
+    </sql>
+
+    <sql id="limit">
+        limit #{page.size} offset #{page.offset}
+    </sql>
+
+
+    <resultMap id="goodsMap" type="map" autoMapping="true">
+        <result column="spec_id"/>
+        <result column="spec_name"/>
+        <association property="specs" javaType="map" columnPrefix="spec_" autoMapping="true"/>
+    </resultMap>
+    <resultMap id="orderMap" type="map" autoMapping="true">
+        <id column="id" property="id"/>
+        <result column="child_id"/>
+        <result column="child_goodsId"/>
+        <result column="child_goodsPic"/>
+        <result column="child_goodsNum"/>
+        <result column="child_goodsPrice"/>
+        <result column="child_goodsName"/>
+        <result column="child_totalPrice"/>
+        <result column="child_goodsSpec"/>
+        <result column="child_spec_id"/>
+        <result column="child_spec_name"/>
+        <result column="child_unitId"/>
+        <result column="child_unitName"/>
+        <collection property="goods" ofType="map" javaType="list" columnPrefix="child_" resultMap="goodsMap"/>
+    </resultMap>
+    <sql id="orderJoinColumnSql">
+        <if test="params.noJoin == null">
+            ,b.no diffNo,b.ticket_money ticketMoney,b.money diffMoney,b.pic diffPic,b.status diffStatus,DATE_FORMAT(b.pay_time,'%Y-%m-%d %H:%i:%s') diffPayTime
+            ,ta.phone phone,ta.owner_id ownerId,ta.name name,ta.province province,ta.detail detail,ta.is_default isDefault
+            ,tr.reason refundReason,tr.status refundStatus,tr.order_money refundMoney,DATE_FORMAT(tr.create_time,'%Y-%m-%d %H:%i:%s') refundTime
+            ,oc.id child_id,oc.goods_id child_goodsId,oc.goods_name child_goodsName,oc.goods_price child_goodsPrice,oc.goods_pic child_goodsPic,oc.goods_num child_goodsNum,oc.total_price child_totalPrice
+            ,ts.id child_spec_id, ts.name child_spec_name
+        </if>
+    </sql>
+    <sql id="orderJoinSql">
+        <if test="params.noJoin == null">
+            left join t_order_child oc on oc.order_id = a.id
+            left join t_order_money_diff b on a.orderNo = b.order_no
+            left join t_address ta on ta.id = a.addressId
+            left join t_refund tr on tr.order_no = a.orderNo
+            left join t_specs ts on ts.id = oc.goods_spec_id
+        </if>
+    </sql>
+    <select id="findMaps" resultType="java.util.Map" resultMap="orderMap">
+    select a.*
+    <include refid="orderJoinColumnSql"/>
+    from (
+        select
+        a.id id,
+        <include refid="t_order_alias_columns"/>
+        from t_order a
+        where true
+        <if test="params.id != null and params.id != ''">
+            and a.id = #{params.id}
+        </if>
+        <if test="params.orderNo != null and params.orderNo != ''">
+            and a.order_no = #{params.orderNo}
+        </if>
+        <if test="params.source != null and params.source != ''">
+            and a.source = #{params.source}
+        </if>
+        <if test="params.pickupNo != null and params.pickupNo != ''">
+            and a.pickup_no = #{params.pickupNo}
+        </if>
+        <if test="params.moneyChannel != null and params.moneyChannel != ''">
+            and a.money_channel = #{params.moneyChannel}
+        </if>
+        <if test="params.creater != null and params.creater != ''">
+            and a.creater = #{params.creater}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and a.owner_id = #{params.ownerId}
+        </if>
+        <if test="params.type != null and params.type != ''">
+            and a.type = #{params.type}
+        </if>
+        <if test="params.status != null and params.status != ''">
+            and a.status in (${params.status})
+        </if>
+        <if test="params.sources != null and params.sources != ''">
+            and a.source in (${params.sources})
+        </if>
+        <if test="params.orderBy != null">
+            order by ${params.orderBy}
+        </if>
+        <include refid="com.soft.ware.rest.modular.address.dao.TAddressMapper.params_limit"/>
+    ) as a
+    <include refid="orderJoinSql"/>
+    order by a.createTime desc
+    </select>
+    <select id="selectOrderListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_order where 1=1
+        <include refid="Condition"></include>
+    </select>
+    <select id="selectOrdersListByMap" parameterType="java.util.Map" resultType="java.util.HashMap">
+        select  a.id,<include refid="t_order_alias_columns"/>
+        ,b.`name` ,b.phone ,b.province as address,b.detail,c.`status` as 'refundStatus'
+        ,d.no diffNo,d.ticket_money as diffTicketMoney,ifnull(d.money,0) as diffMoney,d.status  diffStatus, d.status diffRefundStatus,d.pic diffPic
+        ,c.reason refundReason,c.status refundStatus,c.order_money refundMoney,DATE_FORMAT(c.create_time,'%Y-%m-%d %H:%i:%s') refundAt,c.creater refundBy
+        from t_order a
+        LEFT JOIN t_address b
+        on a.address_id = b.id
+        LEFT JOIN t_refund c
+        on a.order_no = c.order_no
+        LEFT JOIN t_order_money_diff d
+        on a.order_no = d.order_no
+        where 1=1 and a.source != 1
+        <if test="params.status != null and params.status != ''">
+            and a.status = #{params.status}
+        </if>
+        <if test="params.owner_id != null and params.owner_id != ''">
+            and a.owner_id = #{params.owner_id}
+        </if>
+            order by a.create_time desc
+        <include refid="limit"/>
+    </select>
+
+    <select id="selectOrdersListByMapCount" resultType="int">
+        select count(1)
+        from t_order a
+        LEFT JOIN t_address b
+        on a.address_id = b.id
+        LEFT JOIN t_refund c
+        on a.order_no = c.order_no
+        LEFT JOIN t_order_money_diff d
+        on a.order_no = d.order_no
+        where 1=1 and a.source != 1
+        <if test="params.status != null and params.status != ''">
+            and a.status = #{params.status}
+        </if>
+        <if test="params.owner_id != null and params.owner_id != ''">
+            and a.owner_id = #{params.owner_id}
+        </if>
+    </select>
+
+    <select id="selectOrderCount" resultType="int" >
+        select count(1) from t_order a where owner_id = #{ownerId}
+    </select>
+
+
+    <update id="customerDelete">
+        update t_order set status = -3 where owner_id = #{user.ownerId} and order_no = #{param.no} and creater = #{user.openId} and status in (-2, -1, 0, 3);
+    </update>
+    <update id="customerCancel">
+        update t_order set status = -1, canceler = #{user.openId}, cancel_time = now() where owner_id = #{user.ownerId} and order_no = #{param.no} and creater = #{user.openId} and status in (0, 1);
+    </update>
+
+    <!--根据订单id查询订单 -->
+    <select id="selectOrderDetailById" resultType="java.util.Map">
+        select a.id,<include refid="t_order_alias_columns"/>
+        ,d.no diffNo,d.ticket_money as diffTicketMoney,ifnull(d.money,0) as diffMoney,d.status  diffStatus, d.status diffRefundStatus,d.pic diffPic
+        ,c.reason refundReason,c.status refundStatus,c.order_money refundMoney,DATE_FORMAT(c.create_time,'%Y-%m-%d %H:%i:%s') refundAt,c.creater refundBy
+        from t_order a
+        LEFT JOIN t_order_money_diff d on a.order_no = d.order_no
+        LEFT JOIN t_refund c on a.order_no = c.order_no
+        where a.order_no = #{orderNo}
+    </select>
+</mapper>

@@ -1,39 +1,33 @@
 package com.soft.ware.rest.modular.auth.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
+import com.google.common.collect.Lists;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.base.warpper.MapWrapper;
+import com.soft.ware.core.base.tips.Tip;
 import com.soft.ware.core.exception.PauException;
-import com.soft.ware.core.support.HttpKit;
+import com.soft.ware.core.util.Kv;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.rest.common.exception.BizExceptionEnum;
-import com.soft.ware.rest.common.persistence.model.TblOwner;
-import com.soft.ware.rest.common.persistence.model.TblOwnerStaff;
 import com.soft.ware.rest.config.properties.JwtProperties;
 import com.soft.ware.rest.modular.auth.controller.dto.AuthRequest;
-import com.soft.ware.rest.modular.auth.controller.dto.AuthResponse;
-import com.soft.ware.rest.modular.auth.service.AuthService;
 import com.soft.ware.rest.modular.auth.service.HzcxWxService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerService;
-import com.soft.ware.rest.modular.auth.service.TblOwnerStaffService;
-import com.soft.ware.rest.modular.auth.util.BeanMapUtils;
 import com.soft.ware.rest.modular.auth.util.JwtTokenUtil;
-import com.soft.ware.rest.modular.auth.util.WXContants;
 import com.soft.ware.rest.modular.auth.util.WXUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
-import com.soft.ware.rest.modular.auth.validator.Validator;
-import com.soft.ware.rest.modular.auth.wrapper.AuthWrapper;
+import com.soft.ware.rest.modular.owner.model.TOwner;
+import com.soft.ware.rest.modular.owner.service.ITOwnerService;
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
+import com.soft.ware.rest.modular.wx_app.model.SWxApp;
+import com.soft.ware.rest.modular.wx_app.service.ISWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 请求验证的
@@ -51,16 +45,13 @@ public class AuthController extends BaseController {
     private IReqValidator reqValidator;
 
     @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private TblOwnerService ownerService;
+    private ITOwnerService ownerService;
     
     @Autowired
     private JwtProperties jwtProperties;
 
     @Autowired
-    private TblOwnerStaffService tblOwnerStaffService;
+    private ITOwnerStaffService tOwnerStaffService;
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
@@ -68,95 +59,87 @@ public class AuthController extends BaseController {
     @Autowired
     private HzcxWxService hzcxWxService;
 
+    @Autowired
+    private ISWxAppService appService;
+
+
     /**
      * 收银appDenglu
-     * @param authRequest
+     * @param params
      * @return
      */
     @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/x-www-form-urlencoded"})
-    public Object createAuthenticationToken(AuthRequest authRequest,HttpServletRequest request,BindingResult result) {
-        Validator.valid(result);
-    	 boolean validate = false;
-        if(ToolUtil.isNotEmpty(authRequest.getPhone())){
-        	validate = reqValidator.validate(authRequest);
+    public Object appLogin(AuthRequest params) throws Exception {
+        //todo yancc 没有验证码不安全
+    	TOwnerStaff user;
+        if(ToolUtil.isNotEmpty(params.getPhone())){
+            user = (TOwnerStaff) reqValidator.validate(params);
         }else{
-        	validate = reqValidator.validate(authRequest);
+            user = (TOwnerStaff) reqValidator.validate(params);
         }
-        if (validate) {
-            final String randomKey = jwtTokenUtil.getRandomKey();
-            final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
-            return returnTokenParams(authRequest,token,randomKey);
-        }else{
-        	throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+        if (user != null) {
+            String token = jwtTokenUtil.generateToken(params.getPhone(), jwtTokenUtil.getRandomKey());
+            TOwner owner = ownerService.find(user);
+            SWxApp app = appService.find(owner);
+            appService.find(owner);
+            return render()
+                    .set("payload", WXUtils.getPayLoad())
+                    .set("token", token)
+                    .set("owner", user.getOwnerId())
+                    .set("app_name", app.getAppName())
+                    .set("app_qr", app.getAppQr())
+                    .set("users", Lists.newArrayList(user));
+        } else {
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
     }
 
     /**
      * 商家小程序登录
      * @param param
-     * @param request
      * @return
      */
-    @RequestMapping(value = "${jwt.auth-path}",headers = {"Content-Type=application/json"})
-    public Object maLogin(@RequestBody AuthRequest param, HttpServletRequest request, BindingResult result) throws Exception {
-        Validator.valid(result);
+    @RequestMapping(value = "${jwt.auth-path}")
+    public Object maLogin(@RequestBody AuthRequest param) throws Exception {
         String phone = param.getPhone();
-        String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
+        //调试验证码写成123456
+        //String s = redisTemplate.opsForValue().get(WXContants.loginCodePrefix + phone);
+        String s = "123456";
    /*     if (!param.getPassword().equals(s)) {
             return warpObject(render(false, "验证码错误"));
         }*/
         WxMaService service = hzcxWxService.getWxMaService();
-        String appId = service.getWxMaConfig().getAppid();
-        TblOwnerStaff user = tblOwnerStaffService.findByPhone(phone);
+        TOwnerStaff user = tOwnerStaffService.findByLoginName(phone);
         if (user == null) {
             return render(false, "用户不存在");
         }
-        if (TblOwnerStaff.status_1.equals(user.getStatus())) {
+        if (TOwnerStaff.status_1.equals(user.getStatus())) {
             return render(false, "账户被禁用");
         }
-        if (TblOwnerStaff.status_2.equals(user.getStatus())) {
+        if (TOwnerStaff.status_2.equals(user.getStatus())) {
             return render(false, "账户不存在");
         }
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(phone, randomKey);
+        TOwner owner = ownerService.find(user);
+        //店主
+        if (owner.getPhone().equals(user.getPhone())) {
+            user.setUrlList(TOwnerStaff.shopkeeperFlag);
+            user.setFunctionList(TOwnerStaff.shopkeeperFlag);
+            user.setCategoryList(TOwnerStaff.shopkeeperFlag);
+        }
 
-        MapWrapper map = new MapWrapper();
-        map.put("code", SUCCESS);
-        map.put("msg", "认证通过");
-        map.put("token", token);
-        map.put("payload", WXUtils.getPayLoad());
-        map.put("user", BeanMapUtils.toMap(user, true));
-        map.put("owner", user.getOwner());
-        HttpKit.getRequest().setAttribute("owner", user.getOwner());
-        return warpObject(map);
+        Kv<String,Object> map = render(true,"认证通过");
+        map.set("token", token);
+        map.set("payload", WXUtils.getPayLoad());
+        map.set("user", user);
+        map.set("ownerId", user.getOwnerId());
+        //HttpKit.getRequest().setAttribute("ownerId", user.getOwnerId());
+        return map;
     }
 
-    protected Object returnTokenParams(AuthRequest authRequest,String token,String randomKey) {
-    	if(ToolUtil.isNotEmpty(authRequest.getPhone())){
-    		TblOwnerStaff user = authService.findByUsername(authRequest.getPhone());
-    		if(ToolUtil.isEmpty(user)){
-            	throw new PauException(BizExceptionEnum.NO_USER);
-            }
-    		 TblOwner owner = ownerService.find(user.getOwner());
-             AuthResponse resp = new AuthResponse(token, randomKey);
-             Map<String,Object> map = new HashMap<>();
-             map.put("code", SUCCESS);
-             map.put("payload", WXUtils.getPayLoad());
-             map.put("token", resp.getToken());
-             map.put("owner", user.getOwner());
-             HttpKit.getRequest().setAttribute("owner", user.getOwner());
-             map.put("app_name", owner.getAppName());
-             map.put("app_qr", owner.getAppName());
-             return super.warpObject(new AuthWrapper(map));
-    		
-    	} else {
-    		throw new PauException(BizExceptionEnum.NO_USER);
-    	}
-    	
-	}
-    
     @RequestMapping(value = "${jwt.logout-path}")
-    public void clearToken(HttpServletRequest request,String owner){
+    public Tip clearToken(HttpServletRequest request, String owner){
     	 String requestHeader = request.getHeader(jwtProperties.getHeader());
     	 String authToken = null;
     	 if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
@@ -165,7 +148,7 @@ public class AuthController extends BaseController {
             	 request.setAttribute("claims", "");
              }
     	 }
-    	 
+    	 return SUCCESS_TIP;
     	
     }
 }

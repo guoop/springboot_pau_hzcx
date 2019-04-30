@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.promotion.dao.TPromotionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.promotion.model.TPromotion">
+        <id column="id" property="id" />
+        <result column="goods_id" property="goodsId" />
+        <result column="money" property="money" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="in_amount" property="inAmount" />
+        <result column="create_time" property="createTime" />
+        <result column="creater" property="creater" />
+        <result column="update_time" property="updateTime" />
+        <result column="updater" property="updater" />
+    </resultMap>
+
+<update id="updateByGoodsId">
+    update t_promotion set money = #{money} set end_time = #{endTime} where goods_id = #{goodsId}
+</update>
+</mapper>

@@ -12,6 +12,7 @@ import com.soft.ware.core.support.BeanKit;
 import com.soft.ware.modular.system.model.OperationLog;
 import com.soft.ware.modular.system.service.IOperationLogService;
 import com.soft.ware.modular.system.warpper.LogWarpper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +46,8 @@ public class LogController extends BaseController {
     /**
      * 查询操作日志列表
      */
-    @RequestMapping("/list")
+    @ApiOperation("部门列表")
+    @RequestMapping("/日志列表")
     @Permission(Const.ADMIN_NAME)
     @ResponseBody
     public Object list(@RequestParam(required = false) String beginTime, @RequestParam(required = false) String endTime, @RequestParam(required = false) String logName, @RequestParam(required = false) Integer logType) {

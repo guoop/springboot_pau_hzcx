@@ -23,6 +23,7 @@ public class ErrorTip extends Tip {
     public ErrorTip(String code,String msg) {
         super();
         this.code = code + "";
+        this.msg = msg;
     }
     
     public Map<String,Object> resultError(int code,String message){

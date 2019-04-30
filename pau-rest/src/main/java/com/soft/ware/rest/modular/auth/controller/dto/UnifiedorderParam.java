@@ -17,7 +17,7 @@ public class UnifiedorderParam {
         return orderNO;
     }
 
-    public void setOrderNO(String orderNO) {
+    public void setorderNO(String orderNO) {
         this.orderNO = orderNO;
     }
 

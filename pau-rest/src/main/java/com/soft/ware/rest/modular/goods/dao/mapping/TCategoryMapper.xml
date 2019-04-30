@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.goods.dao.TCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.goods.model.TCategory">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="pid" property="pid"/>
+        <result column="description" property="description"/>
+        <result column="sort" property="sort"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="owner_id" property="ownerId"/>
+        <result column="status" property="status"/>
+        <result column="is_system" property="isSystem"/>
+        <result column="category_icon_id" property="categoryIconId"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+         id, name, pid, description, sort, is_delete, owner_id, status, is_system, category_icon_id
+    </sql>
+
+    <sql id="Base_Column_Name_List">
+        id,name,sort,owner_id,status
+    </sql>
+
+    <sql id="Condition">
+
+        <if test="params.id != null and params.id != ''">
+            and id = #{params.id}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and owner_id = #{params.ownerId}
+        </if>
+        <if test="params.status != null and params.status != ''">
+            and status = #{params.status}
+        </if>
+        <if test="params.pid != null and params.pid != ''">
+            and pid = #{params.pid}
+        </if>
+
+    </sql>
+
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from t_category where true
+        <if test="params.id != null and params.id != ''">
+            and id = #{params.id}
+        </if>
+        <if test="params.ownerId != null and params.ownerId != ''">
+            and owner_id = #{params.ownerId}
+        </if>
+        <choose>
+            <when test="params.pid_null == null">
+                <if test="params.pid != null and params.pid != ''">
+                    and pid = #{params.pid}
+                </if>
+            </when>
+            <otherwise>
+                <if test="params.pid == null">
+                    and pid is null
+                </if>
+                <if test="params.pid != null">
+                    and pid is not null
+                </if>
+            </otherwise>
+        </choose>
+        order by sort asc
+    </select>
+
+    <select id="selectParentCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_category where 1=1
+        and pid is null and is_delete = 0
+        <include refid="Condition"/>
+        <!-- 系统类目排在最后 -->
+        order by is_system,sort asc
+    </select>
+
+    <select id="selectChildrenCategoryList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_Name_List"/>
+        from t_category where 1=1 and is_delete = 0
+        <include refid="Condition"/>
+    </select>
+
+    <update id="updateOrSort" parameterType="list">
+        UPDATE t_category
+        SET
+        status =
+        CASE id
+        <foreach collection="param.list" item="item">
+            WHEN #{item.id} THEN #{item.status}
+        </foreach>
+        END,
+        sort =
+        CASE id
+        <foreach collection="param.list" item="item">
+            WHEN #{item.id} THEN #{item.weights}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="param.list" close=")" open="(" item="item" separator="," index="index">
+            #{item.id}
+        </foreach>
+    </update>
+
+</mapper>

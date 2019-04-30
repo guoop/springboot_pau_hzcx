@@ -1,9 +1,14 @@
 package com.soft.ware.rest.modular.auth.validator.impl;
 
-import com.soft.ware.core.support.HttpKit;
+import com.soft.ware.core.exception.PauException;
+import com.soft.ware.core.util.ToolUtil;
+import com.soft.ware.rest.common.exception.BizExceptionEnum;
+import com.soft.ware.rest.modular.auth.util.PasswordUtils;
 import com.soft.ware.rest.modular.auth.validator.IReqValidator;
 import com.soft.ware.rest.modular.auth.validator.dto.Credence;
-
+import com.soft.ware.rest.modular.owner_staff.model.TOwnerStaff;
+import com.soft.ware.rest.modular.owner_staff.service.ITOwnerStaffService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,23 +20,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimpleValidator implements IReqValidator {
 
-    private static String USER_NAME = "15639004097";
-
-    private static String PASSWORD = "admin";
+    @Autowired
+    private ITOwnerStaffService staffService;
 
     @Override
-    public boolean validate(Credence credence) {
-
-        String userName = credence.getCredenceName();
+    public Object validate(Credence credence) {
         String password = credence.getCredenceCode();
         String phone = credence.getPhoneName();
-        String user = (String) HttpKit.getRequest().getSession().getAttribute(phone);
-        if(user != null && user.equals(password)){
-        	return true;
-        }else if(USER_NAME.equals(userName) && PASSWORD.equals(password)){
-        	 return true;
-        }else{
-        	 return false;
+        TOwnerStaff staff = staffService.findByLoginName(phone);
+
+        if (staff == null) {
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
         }
+
+        if (ToolUtil.isEmpty(password) || ToolUtil.isEmpty(phone)) {
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+        }
+
+        password = PasswordUtils.encode(phone, password);
+        if (!phone.equals(staff.getPhone()) || !password.equals(staff.getPassword())) {
+            throw new PauException(BizExceptionEnum.AUTH_REQUEST_ERROR);
+        }
+
+        if (TOwnerStaff.status_1.equals(staff.getStatus())) {
+            throw new PauException(BizExceptionEnum.USER_DISABLED);
+        }
+
+        if (TOwnerStaff.status_2.equals(staff.getStatus())) {
+            throw new PauException(BizExceptionEnum.USER_DELETED);
+        }
+        return staff;
     }
+
+
 }

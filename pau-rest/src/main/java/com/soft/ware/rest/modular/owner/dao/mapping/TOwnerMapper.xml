@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.owner.dao.TOwnerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.owner.model.TOwner">
+        <id column="phone" property="phone" />
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="address" property="address" />
+        <result column="description" property="description" />
+        <result column="video_url" property="videoUrl" />
+        <result column="begin_time" property="beginTime" />
+        <result column="end_time" property="endTime" />
+        <result column="create_time" property="createTime" />
+        <result column="msg_template" property="msgTemplate"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, phone, address, description, video_url AS videoUrl, begin_time AS beginTime, end_time AS endTime, create_time AS createTime
+    </sql>
+    <sql id="t_owner_alias_columns">
+        w.name ,w.phone ,w.address ,w.description ,w.video_url videoUrl,w.begin_time beginTime,w.end_time endTime,DATE_FORMAT(w.create_time,'%Y-%m-%d %H:%i:%s') createTime
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        id,
+        <include refid="t_owner_alias_columns"/>
+        from t_owner w where true
+        <if test="params.id != null and params.id != ''">
+            and w.id = #{params.id}
+        </if>
+        <if test="params.id != null and params.id != ''">
+            and w.id = #{params.id}
+        </if>
+    </select>
+
+    <select id="selectOwnerInfoByOwnerId" resultType="map">
+        select <include refid="t_owner_alias_columns"/>,z.app_name as appName,s.delivery_distance as deliveryDistance,s.delivery_great_money as deliveryGreatMoney,s.delivery_less_money as deliveryLessMoney,s.delivery_money as deliveryMoney,s.is_delivery isDelivery
+        ,s.is_reach_pay as isReachPay,s.is_self_pickup as isSelfPickup,s.order_phone as orderPhone,s.default_desc as defaultDesc,s.default_refund_reason as defaultRefundReason
+         from t_owner w left join  s_wx_app z on w.id = z.owner_id
+         left join t_owner_config s on w.id = s.owner_id
+         where w.id = #{owner_id}
+     </select>
+
+</mapper>

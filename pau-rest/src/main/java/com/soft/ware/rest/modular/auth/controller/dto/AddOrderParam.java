@@ -1,7 +1,13 @@
 package com.soft.ware.rest.modular.auth.controller.dto;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.soft.ware.rest.modular.order.model.TOrderChild;
+
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class AddOrderParam {
 
@@ -9,7 +15,7 @@ public class AddOrderParam {
     //订单编号
     private String no;
     //（支付方式：1现金、2微信、3支付宝、4银联，多种支付方式以_
-    private Integer money_channel;
+    private String money_channel;
     //（订单金额，单位元，精确到分），
     private BigDecimal money;
     //（订单来源：0：android收银机、1：windows收银机）
@@ -23,13 +29,23 @@ public class AddOrderParam {
     //(支付明细  格式(支付方式_支付金钱，支付方式_支付金钱))
     private String channel_pay;
     //pay_at
-    private Date pay_at;
+    private long pay_at;
     //(订单状态  0 为正常  1 ：退单  2 ：反结账)
     private Integer status;
     //（结算人标识（收银app登录账号）），
     private String settlement_by;
     //（订单包含的商品清单）,
-    private String goods;
+    private String goods_id;
+
+    private String goodsUnit;
+
+    public String getGoods_id() {
+        return goods_id;
+    }
+
+    public void setGoods_id(String goods_id) {
+        this.goods_id = goods_id;
+    }
 
     public String getOwner() {
         return owner;
@@ -47,11 +63,11 @@ public class AddOrderParam {
         this.no = no;
     }
 
-    public Integer getMoney_channel() {
+    public String getMoney_channel() {
         return money_channel;
     }
 
-    public void setMoney_channel(Integer money_channel) {
+    public void setMoney_channel(String money_channel) {
         this.money_channel = money_channel;
     }
 
@@ -103,11 +119,11 @@ public class AddOrderParam {
         this.channel_pay = channel_pay;
     }
 
-    public Date getPay_at() {
+    public long getPay_at() {
         return pay_at;
     }
 
-    public void setPay_at(Date pay_at) {
+    public void setPay_at(long pay_at) {
         this.pay_at = pay_at;
     }
 
@@ -127,11 +143,51 @@ public class AddOrderParam {
         this.settlement_by = settlement_by;
     }
 
-    public String getGoods() {
-        return goods;
+
+    public String getGoodsUnit() {
+        return goodsUnit;
     }
 
-    public void setGoods(String goods) {
-        this.goods = goods;
+    public void setGoodsUnit(String goodsUnit) {
+        this.goodsUnit = goodsUnit;
+    }
+
+    public Map<Integer,BigDecimal> getPayMap(){
+        String[] ss = getChannel_pay().split(",");
+        Map<Integer, BigDecimal> map = Maps.newLinkedHashMap();
+        String c;
+        String n;
+        for (String s : ss) {
+            c = s.substring(0, s.indexOf("_"));
+            n = s.substring(s.indexOf("_")+1);
+            map.put(Integer.valueOf(c),BigDecimal.valueOf(Double.valueOf(n)));
+        }
+
+        return map;
+    }
+
+    public List<TOrderChild> getGoodsList1(){
+        String[] ss = goods_id.split(",");
+        String[] gs;
+        List<TOrderChild> cs = Lists.newArrayList();
+        TOrderChild c;
+        for (String s : ss) {
+            gs = s.split("__");
+            c = new TOrderChild();
+            c.setGoodsId(gs[0]);
+            c.setGoodsPic(gs[1]);
+            c.setGoodsName(gs[2]);
+            c.setGoodsUnitId(gs[3]);
+            c.setGoodsNum(Integer.valueOf(gs[4]));
+            c.setGoodsPrice(BigDecimal.valueOf(Double.valueOf(gs[5])));
+            c.setTotalPrice(BigDecimal.valueOf(Double.valueOf(gs[6])));
+            cs.add(c);
+        }
+        return cs;
+    }
+
+    public List<TOrderChild> getGoodsList(){
+        List<TOrderChild> list = JSON.parseArray(goods_id, TOrderChild.class);
+        return list;
     }
 }

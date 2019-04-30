@@ -18,6 +18,7 @@ import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.model.Menu;
 import com.soft.ware.modular.system.service.IMenuService;
 import com.soft.ware.modular.system.warpper.MenuWarpper;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -111,6 +112,7 @@ public class MenuController extends BaseController {
     /**
      * 获取菜单列表
      */
+    @ApiOperation("菜单列表")
     @Permission(Const.ADMIN_NAME)
     @RequestMapping(value = "/list")
     @ResponseBody

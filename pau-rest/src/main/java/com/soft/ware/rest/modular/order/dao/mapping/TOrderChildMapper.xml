@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soft.ware.rest.modular.order.dao.TOrderChildMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.soft.ware.rest.modular.order.model.TOrderChild">
+        <id column="id" property="id" />
+        <result column="order_id" property="orderId" />
+        <result column="goods_id" property="goodsId" />
+        <result column="goods_name" property="goodsName" />
+        <result column="goods_price" property="goodsPrice" />
+        <result column="goods_pic" property="goodsPic" />
+        <result column="goods_spec_id" property="goodsSpecId" />
+        <result column="goods_num" property="goodsNum" />
+        <result column="goods_unit_id" property="goodsUnitId" />
+        <result column="total_price" property="totalPrice"/>
+        <result column="stock" property="stock"></result>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id, a.order_id , a.goods_id , a.goods_name , a.goods_price , a.goods_pic , a.goods_spec_id , a.goods_num , a.goods_unit_id ,a.total_price,c.after_storage as stock
+    </sql>
+    <sql id="t_order_child_alias_columns">
+        toc.order_id AS orderId, toc.goods_id AS goodsId, toc.goods_name AS goodsName, toc.goods_price AS goodsPrice, toc.goods_pic AS goodsPic, toc.goods_spec_id AS goodsSpecId, toc.goods_num AS goodsNum, toc.goods_unit_id AS goodsUnitId,toc.total_price totalPrice
+    </sql>
+    <select id="findMaps" resultType="java.util.Map">
+        select
+        toc.id,
+        <include refid="t_order_child_alias_columns"/>
+        from t_order_child toc where true
+        <if test="params.id != null and map.id != ''">
+            and toc.id = #{params.id}
+        </if>
+        <if test="params.orderId != null and params.orderId != ''">
+            and toc.order_id = #{params.orderId}
+        </if>
+    </select>
+
+    <select id="selectOrderChildListByMap" parameterType="java.util.Map" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List"/> ,c.after_storage as stock from t_order_child a
+        LEFT JOIN t_goods_storage c on a.`goods_id` = c.goods_id
+        where 1=1
+        <if test="orderId != null and orderId != ''">
+            and a.order_id = #{orderId}
+        </if>
+
+    </select>
+
+</mapper>

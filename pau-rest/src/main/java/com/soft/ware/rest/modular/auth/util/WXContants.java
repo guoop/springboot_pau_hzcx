@@ -21,6 +21,9 @@ public class WXContants {
 	@Value(value = "${wx.pay.notify_url_customer_pay_diff}")
 	private String customerPayDiff;
 
+	/*@Value(value = "${wx.pay.notify_url_customer_pay_diff_refund}")*/
+	private String customerPayDiffRefund;
+
 	//用户登录,验证码redis key 前缀
 	public final static String loginCodePrefix = "owner:sms_login_code";
 	//用户登录,验证码时常 秒
@@ -46,6 +49,10 @@ public class WXContants {
 	 * 腾讯云短信服务
 	 */
 	public static final String TENCENTMSG_GATAWAY = "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=1400165586&random=142536";
+	/**
+	 * 群发接口
+	 */
+	public static final String TENCENTMSG_GATAWAY2 = "https://yun.tim.qq.com/v5/tlssmssvr/sendmultisms2?sdkappid=1400165586&random=142536";
 	//appid
 	public static final String TENCENTMSG_APPID = "1400165586";
     //app key
@@ -72,7 +79,7 @@ public class WXContants {
 	public static final String JG_GATEWAY = "https://api.im.jpush.cn";
 
 	//默认日期时间格式
-	public static final String date_format = "YYYY-MM-DD HH:mm:ss";
+	public static final String date_format = "YYYY-MM-dd HH:mm:ss";
 	//默认金额显示，格式
 	public static final int big_decimal_sale = BigDecimal.ROUND_HALF_UP;
 
@@ -107,5 +114,13 @@ public class WXContants {
 
 	public void setCustomerPayDiff(String customerPayDiff) {
 		this.customerPayDiff = customerPayDiff;
+	}
+
+	public String getCustomerPayDiffRefund() {
+		return customerPayDiffRefund;
+	}
+
+	public void setCustomerPayDiffRefund(String customerPayDiffRefund) {
+		this.customerPayDiffRefund = customerPayDiffRefund;
 	}
 }

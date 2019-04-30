@@ -1,17 +1,17 @@
 package com.soft.ware.rest.modular.handover.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.soft.ware.core.base.controller.BaseController;
-import com.soft.ware.core.util.ToolUtil;
-import com.soft.ware.rest.common.persistence.model.HandOver;
-import com.soft.ware.rest.modular.auth.controller.dto.HandoverParam;
+import com.soft.ware.core.base.tips.Tip;
+import com.soft.ware.rest.modular.auth.controller.dto.HandoverPageParam;
 import com.soft.ware.rest.modular.auth.controller.dto.SessionUser;
 import com.soft.ware.rest.modular.auth.util.Page;
-import com.soft.ware.rest.modular.handover.service.IHandOverService;
+import com.soft.ware.rest.modular.handover.service.ITHandoverRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 交接班controller
@@ -19,40 +19,23 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date 2019-03-20 11:46
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/owner/v1")
 public class HandoverController extends BaseController{
 	@Autowired
-	private IHandOverService overService;
+	private ITHandoverRecordService itHandoverRecordService;
 	/**
 	 * 通过owner字段获取交接班当前详细信息
-	 * @param owner
+	 * @param param startTime开始时间，endTime结束时间，page当前页，size当前查询的页面数量
+	 * @param user 当前登录的商户
 	 * @return
 	 */
-	@RequestMapping("handover")
-	public Object getHandover(HandoverParam param,SessionUser session,Page page){
-		/*//添加page是为了在另外一个地方使用，当前controller可为空
-		overService.getHandOver(param,session,page);*/
-		HandOver ho = new HandOver();
-		ho.setOwner(session.getOwner());
-		ho = overService.selectOne(new EntityWrapper<>(ho));
-		if(ToolUtil.isNotEmpty(ho)){
-			return ho;
-		}
-		return null;
-
+	@RequestMapping("handover/getHandover")
+	public Tip getHandover(HandoverPageParam param, Page page, SessionUser user){
+		List<Map<String, Object>> list = itHandoverRecordService.findPage(user,param,page);
+		return render(list);
 	}
 
 
-	/**
-	 * 交接班,记录
-	 * @return
-	 */
-	@RequestMapping(value = "handover",method = RequestMethod.POST)
-	public Object handover(SessionUser user, HandoverParam param){
-		HandOver over = overService.over(user, param);
-		return render(over != null);
-	}
-	
 	
 
 }
