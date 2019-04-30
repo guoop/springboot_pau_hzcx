@@ -89,8 +89,9 @@ public class TRefund extends Model<TRefund> {
         return no;
     }
 
-    public void setNo(String no) {
+    public TRefund setNo(String no) {
         this.no = no;
+        return this;
     }
 
 
@@ -98,8 +99,9 @@ public class TRefund extends Model<TRefund> {
         return orderNo;
     }
 
-    public void setOrderNo(String orderNo) {
+    public TRefund setOrderNo(String orderNo) {
         this.orderNo = orderNo;
+        return this;
     }
 
     public String getReason() {

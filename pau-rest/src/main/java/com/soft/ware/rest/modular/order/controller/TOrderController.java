@@ -146,7 +146,7 @@ public class TOrderController extends BaseController {
      * @param sessionUser  当前登录用户
      */
     @RequestMapping(value = "orders/refund",method = RequestMethod.POST)
-    public Tip ordersRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser){
+    public Tip ordersRefund(@RequestBody Map<String,Object> param,SessionUser sessionUser) throws Exception {
         param.put("owner_id",sessionUser.getOwnerId());
         try {
             if(tOrderService.orderRefund(param,sessionUser)){

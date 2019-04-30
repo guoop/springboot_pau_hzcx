@@ -41,7 +41,9 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      */
     AUTH_REQUEST_ERROR(400, "账号密码错误"),
 
-
+    /**
+     * 极光添加失败
+     */
     JPUSH_USER_ADD_FAIL(500, "极光im添加用户失败"),
     
     /**
@@ -63,11 +65,14 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     ORDER_DELIVER_FAIL(500,"该订单不支持配送操作"),
     ORDER_DONE_FAIL(500,"该订单不支持完成操作"),
     ORDER_REFUND_NOT_SUPPORT(500,"该订单不支持退款操作"),
-    ORDER_REFUND_MODE_NOT_SUPPORT(500,"不支持的退款方式"),
     ORDER_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_DIFF_REFUND_RUNNING(500,"退款中，请稍后"),
     ORDER_REFUND_FINISHED(500,"已退款，请勿重复"),
+
     ORDER_DIFF_REFUND_FINISHED(500,"差价已退款，请勿重复"),
+    /**
+     * 当上传的小票金额和支付金额相等时抛出此异常
+     */
     ORDER_DIFF_REFUND_EXCEPTION(500,"支付金额与小票金额相同，不需要支持退补差价"),
 
     GOODS_REPEAT(500,"商品已存在"),
