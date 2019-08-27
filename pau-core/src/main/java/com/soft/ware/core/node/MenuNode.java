@@ -282,11 +282,11 @@ public class MenuNode implements Comparable {
      * @date 2017年2月19日 下午11:18:19
      */
     public static List<MenuNode> buildTitle(List<MenuNode> nodes) {
-
+        //**清除掉按钮级别的资源*/
         List<MenuNode> clearBtn = clearBtn(nodes);
-
+        //**构建菜单树*/
         new MenuNode().buildNodeTree(clearBtn);
-
+        //**清除所有二级菜单*/
         List<MenuNode> menuNodes = clearLevelTwo(clearBtn);
 
         //对菜单排序
