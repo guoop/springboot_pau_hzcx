@@ -19,7 +19,9 @@ import com.soft.ware.core.shiro.ShiroUser;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.dao.UserMapper;
 import com.soft.ware.modular.system.factory.UserFactory;
+import com.soft.ware.modular.system.model.TbMember;
 import com.soft.ware.modular.system.model.User;
+import com.soft.ware.modular.system.service.ITbMemberService;
 import com.soft.ware.modular.system.service.IUserService;
 import com.soft.ware.modular.system.transfer.UserDto;
 import com.soft.ware.modular.system.warpper.UserWarpper;
@@ -34,10 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.naming.NoPermissionException;
 import javax.validation.Valid;
 import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 系统管理员控制器
@@ -54,19 +53,29 @@ public class UserMgrController extends BaseController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private ITbMemberService memberService;
+
     /**
      * 跳转到查看管理员列表的页面
      */
     @RequestMapping("")
     public String index() {
-        return PREFIX + "user.html";
+          return PREFIX + "user.html";
     }
 
     /**
      * 跳转到查看管理员列表的页面
      */
     @RequestMapping("/user_add")
-    public String addView() {
+    public String addView(Model model) {
+        Map map = new HashMap<>();
+            map.put("userId",ShiroKit.getUser().id);
+        List<TbMember> memberList = memberService.memberList(map);
+        if(memberList.size() == 0){
+            memberList.add(memberService.selectById(ShiroKit.getUser().getMemberId()));
+        }
+        model.addAttribute("memberList",memberList);
         return PREFIX + "user_add.html";
     }
 
@@ -95,10 +104,18 @@ public class UserMgrController extends BaseController {
         if (ToolUtil.isEmpty(userId)) {
             throw new PauException(BizExceptionEnum.REQUEST_NULL);
         }
+        Map map = new HashMap();
+        map.put("userId",userId);
+
         assertAuth(userId);
         User user = this.userService.selectById(userId);
+        List<TbMember> memberList = memberService.memberList(map);
+        if(memberList.size() == 0){
+            memberList.add(memberService.selectById(user.getMemberId()));
+        }
         model.addAttribute(user);
         model.addAttribute("roleName", ConstantFactory.me().getRoleName(user.getRoleid()));
+        model.addAttribute("memberList",memberList);
         model.addAttribute("deptName", ConstantFactory.me().getDeptName(user.getDeptid()));
         LogObjectHolder.me().set(user);
         return PREFIX + "user_edit.html";
@@ -159,12 +176,13 @@ public class UserMgrController extends BaseController {
     @Permission
     @ResponseBody
     public Object list(@RequestParam(required = false) String name, @RequestParam(required = false) String beginTime, @RequestParam(required = false) String endTime, @RequestParam(required = false) Integer deptid) {
-        if (ShiroKit.isAdmin()) {
-            List<Map<String, Object>> users = userService.selectUsers(null, name, beginTime, endTime, deptid);
+        User user = userService.selectById(ShiroKit.getUser().id);
+            if (ShiroKit.isAdmin()) {
+            List<Map<String, Object>> users = userService.selectUsers(null, name, beginTime, endTime, deptid,ShiroKit.getUser().getMemberId(),ShiroKit.getUser().getAccount());
             return new UserWarpper(users).warp();
         } else {
-            DataScope dataScope = new DataScope(ShiroKit.getDeptDataScope());
-            List<Map<String, Object>> users = userService.selectUsers(dataScope, name, beginTime, endTime, deptid);
+           // DataScope dataScope = new DataScope(ShiroKit.getDeptDataScope());
+            List<Map<String, Object>> users = userService.selectUsers(null, name, beginTime, endTime, deptid ,user.getMemberId() ,ShiroKit.getUser().getAccount());
             return new UserWarpper(users).warp();
         }
     }
@@ -174,7 +192,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/add")
     @BussinessLog(value = "添加管理员", key = "account", dict = UserDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip add(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
@@ -192,7 +210,7 @@ public class UserMgrController extends BaseController {
         user.setPassword(ShiroKit.md5(user.getPassword(), user.getSalt()));
         user.setStatus(ManagerStatus.OK.getCode());
         user.setCreatetime(new Date());
-
+        user.setCreater(ShiroKit.getUser().account);
         this.userService.insert(UserFactory.createUser(user));
         return SUCCESS_TIP;
     }
@@ -262,7 +280,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/reset")
     @BussinessLog(value = "重置管理员密码", key = "userId", dict = UserDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip reset(@RequestParam Integer userId) {
         if (ToolUtil.isEmpty(userId)) {
@@ -281,7 +299,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/freeze")
     @BussinessLog(value = "冻结用户", key = "userId", dict = UserDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip freeze(@RequestParam Integer userId) {
         if (ToolUtil.isEmpty(userId)) {
@@ -301,7 +319,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/unfreeze")
     @BussinessLog(value = "解除冻结用户", key = "userId", dict = UserDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip unfreeze(@RequestParam Integer userId) {
         if (ToolUtil.isEmpty(userId)) {
@@ -317,7 +335,7 @@ public class UserMgrController extends BaseController {
      */
     @RequestMapping("/setRole")
     @BussinessLog(value = "分配角色", key = "userId,roleIds", dict = UserDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip setRole(@RequestParam("userId") Integer userId, @RequestParam("roleIds") String roleIds) {
         if (ToolUtil.isOneEmpty(userId, roleIds)) {

@@ -26,6 +26,8 @@ public class UserDto{
 	private Date createtime;
 	private Integer version;
 	private String avatar;
+	private Integer memberId;
+	private String creater;
 
 
 	public Integer getId() {
@@ -146,5 +148,21 @@ public class UserDto{
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
+
+	public String getCreater() {
+		return creater;
+	}
+
+	public void setCreater(String creater) {
+		this.creater = creater;
 	}
 }

@@ -29,8 +29,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public List<Map<String, Object>> selectUsers(DataScope dataScope, String name, String beginTime, String endTime, Integer deptid) {
-        return this.baseMapper.selectUsers(dataScope, name, beginTime, endTime, deptid);
+    public List<Map<String, Object>> selectUsers(DataScope dataScope, String name, String beginTime, String endTime, Integer deptid, int memberId,String creater) {
+        return this.baseMapper.selectUsers(dataScope,name,beginTime,endTime,deptid,memberId,creater);
     }
 
     @Override
@@ -41,5 +41,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public User getByAccount(String account) {
         return this.baseMapper.getByAccount(account);
+    }
+
+    @Override
+    public List<User> getUserListByMemberId(Integer memberId) {
+        return this.baseMapper.getUserListByMemberId(memberId);
     }
 }

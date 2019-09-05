@@ -71,6 +71,10 @@ public class User extends Model<User> {
      * 状态(1：启用  2：冻结  3：删除）
      */
 	private Integer status;
+	/**
+	 * 会员id
+	 */
+	private Integer memberId;
     /**
      * 创建时间
      */
@@ -79,6 +83,8 @@ public class User extends Model<User> {
      * 保留字段
      */
 	private Integer version;
+
+	private String creater;
 
 
 	public Integer getId() {
@@ -185,6 +191,14 @@ public class User extends Model<User> {
 		this.status = status;
 	}
 
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
+
 	public Date getCreatetime() {
 		return createtime;
 	}
@@ -199,6 +213,14 @@ public class User extends Model<User> {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	public String getCreater() {
+		return creater;
+	}
+
+	public void setCreater(String creater) {
+		this.creater = creater;
 	}
 
 	@Override
@@ -224,6 +246,8 @@ public class User extends Model<User> {
 			", status=" + status +
 			", createtime=" + createtime +
 			", version=" + version +
+			", memberId" + memberId+
+			", creater" + creater+
 			"}";
 	}
 }
