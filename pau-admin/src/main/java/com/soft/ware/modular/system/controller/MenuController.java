@@ -12,7 +12,9 @@ import com.soft.ware.core.common.constant.state.MenuStatus;
 import com.soft.ware.core.common.exception.BizExceptionEnum;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.log.LogObjectHolder;
+import com.soft.ware.core.node.MenuNode;
 import com.soft.ware.core.node.ZTreeNode;
+import com.soft.ware.core.shiro.ShiroKit;
 import com.soft.ware.core.support.BeanKit;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.model.Menu;
@@ -29,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,12 +117,17 @@ public class MenuController extends BaseController {
      * 获取菜单列表
      */
     @ApiOperation("菜单列表")
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.MEMBER_ROLE})
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(@RequestParam(required = false) String menuName, @RequestParam(required = false) String level) {
-        List<Map<String, Object>> menus = this.menuService.selectMenus(menuName, level);
-        return super.warpObject(new MenuWarpper(menus));
+        if(ShiroKit.isAdmin()){
+            List<Map<String, Object>> menus = this.menuService.selectMenus(menuName, level);
+            return super.warpObject(new MenuWarpper(menus));
+        }else{
+            List<Map<String,Object>> menus = this.menuService.selectListByRoleId(ShiroKit.getUser().getRoleList());
+            return  super.warpObject(new MenuWarpper(menus));
+        }
     }
 
     /**

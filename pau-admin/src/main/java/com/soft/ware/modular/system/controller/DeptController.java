@@ -9,6 +9,7 @@ import com.soft.ware.core.common.exception.BizExceptionEnum;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.log.LogObjectHolder;
 import com.soft.ware.core.node.ZTreeNode;
+import com.soft.ware.core.shiro.ShiroKit;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.model.Dept;
 import com.soft.ware.modular.system.service.IDeptService;
@@ -72,7 +73,8 @@ public class DeptController extends BaseController {
     @RequestMapping(value = "/tree")
     @ResponseBody
     public List<ZTreeNode> tree() {
-        List<ZTreeNode> tree = this.deptService.tree();
+
+        List<ZTreeNode> tree = this.deptService.tree(ShiroKit.getUser().getMemberId());
         tree.add(ZTreeNode.createParent());
         return tree;
     }
@@ -90,6 +92,7 @@ public class DeptController extends BaseController {
         }
         //完善pids,根据pid拿到pid的pids
         deptSetPids(dept);
+        dept.setMemberId(ShiroKit.getUser().getMemberId());
         return this.deptService.insert(dept);
     }
 
@@ -101,7 +104,7 @@ public class DeptController extends BaseController {
     @Permission
     @ResponseBody
     public Object list(String condition) {
-        List<Map<String, Object>> list = this.deptService.list(condition);
+        List<Map<String, Object>> list = this.deptService.list(condition,ShiroKit.getUser().getMemberId());
         return super.warpObject(new DeptWarpper(list));
     }
 

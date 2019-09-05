@@ -3,7 +3,7 @@ package com.soft.ware.modular.system.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.soft.ware.core.node.ZTreeNode;
 import com.soft.ware.modular.system.model.Role;
-import org.apache.ibatis.annotations.Param;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ public interface IRoleService extends IService<Role> {
      * @return
      * @date 2017年2月12日 下午9:14:34
      */
-    List<Map<String, Object>> selectRoles(@Param("condition") String condition);
+    List<Map<String, Object>> selectRoles(@Param("condition") String condition,@Param("memberId") Integer memberId);
 
     /**
      * 删除某个角色的所有权限
@@ -53,7 +53,7 @@ public interface IRoleService extends IService<Role> {
      * @return
      * @date 2017年2月18日 上午10:32:04
      */
-    List<ZTreeNode> roleTreeList();
+    List<ZTreeNode> roleTreeList(Integer memberId);
 
     /**
      * 获取角色列表树
@@ -61,5 +61,5 @@ public interface IRoleService extends IService<Role> {
      * @return
      * @date 2017年2月18日 上午10:32:04
      */
-    List<ZTreeNode> roleTreeListByRoleId(String[] roleId);
+    List<ZTreeNode> roleTreeListByRoleId(Map map);
 }

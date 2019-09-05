@@ -21,11 +21,11 @@ public interface DeptMapper extends BaseMapper<Dept> {
     /**
      * 获取ztree的节点列表
      */
-    List<ZTreeNode> tree();
+    List<ZTreeNode> tree(Integer memberId);
 
     /**
      * 获取所有部门列表
      */
-    List<Map<String, Object>> list(@Param("condition") String condition);
+    List<Map<String, Object>> list(@Param("condition") String condition ,@Param("memberId") Integer memberId);
 
 }

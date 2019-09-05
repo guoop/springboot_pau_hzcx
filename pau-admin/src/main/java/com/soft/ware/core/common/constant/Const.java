@@ -16,6 +16,15 @@ public interface Const {
     String ADMIN_NAME = "administrator";
 
     /**
+     * 临时测试
+     */
+    String TEST = "temp";
+
+    /**
+     * 管理员
+     */
+    String ADMIN = "admin";
+    /**
      * 管理员id
      */
     Integer ADMIN_ID = 1;
@@ -29,5 +38,10 @@ public interface Const {
      * 接口文档的菜单名
      */
     String API_MENU_NAME = "接口文档";
+
+    /**
+     * 会员管理员
+     */
+    String  MEMBER_ROLE = "member_admin";
 
 }

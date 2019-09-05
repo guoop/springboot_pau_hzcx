@@ -56,6 +56,8 @@ public class OperationLog extends Model<OperationLog> {
      */
 	private String message;
 
+	private Integer memberId;
+
 
 	public Integer getId() {
 		return id;
@@ -129,6 +131,14 @@ public class OperationLog extends Model<OperationLog> {
 		this.message = message;
 	}
 
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
+
 	@Override
 	protected Serializable pkVal() {
 		return this.id;
@@ -146,6 +156,7 @@ public class OperationLog extends Model<OperationLog> {
 			", createtime=" + createtime +
 			", succeed=" + succeed +
 			", message=" + message +
+			", memberId=" + memberId +
 			"}";
 	}
 }

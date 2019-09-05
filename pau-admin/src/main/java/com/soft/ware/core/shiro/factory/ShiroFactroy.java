@@ -26,10 +26,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ShiroFactroy implements IShiro {
 
-    @Autowired
+    @Autowired(required = false)
     private UserMapper userMapper;
 
-    @Autowired
+    @Autowired(required = false)
     private MenuMapper menuMapper;
 
     public static IShiro me() {
@@ -61,6 +61,7 @@ public class ShiroFactroy implements IShiro {
         shiroUser.setDeptId(user.getDeptid());
         shiroUser.setDeptName(ConstantFactory.me().getDeptName(user.getDeptid()));
         shiroUser.setName(user.getName());
+        shiroUser.setMemberId(user.getMemberId());
 
         Integer[] roleArray = Convert.toIntArray(user.getRoleid());
         List<Integer> roleList = new ArrayList<Integer>();

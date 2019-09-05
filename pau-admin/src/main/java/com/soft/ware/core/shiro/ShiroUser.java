@@ -14,6 +14,7 @@ public class ShiroUser implements Serializable {
     public String account;      // 账号
     public String name;         // 姓名
     public Integer deptId;      // 部门id
+    public Integer memberId;    //会员id
     public List<Integer> roleList; // 角色集
     public String deptName;        // 部门名称
     public List<String> roleNames; // 角色名称集
@@ -25,6 +26,14 @@ public class ShiroUser implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
 
     public String getAccount() {

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.soft.ware.core.support.HttpKit.getIp;
 
@@ -51,7 +52,7 @@ public class LoginController extends BaseController {
             model.addAttribute("tips", "该用户没有角色，无法登陆");
             return "/login.html";
         }
-        List<MenuNode> menus = menuService.getMenusByRoleIds(roleList);
+        List<MenuNode> menus = menuService.getMenusByRoleIds(roleList,ShiroKit.getUser().getMemberId());
         List<MenuNode> titles = MenuNode.buildTitle(menus);
         titles = ApiMenuFilter.build(titles);
 
@@ -112,6 +113,7 @@ public class LoginController extends BaseController {
         ShiroUser shiroUser = ShiroKit.getUser();
         super.getSession().setAttribute("shiroUser", shiroUser);
         super.getSession().setAttribute("username", shiroUser.getAccount());
+        super.getSession().setAttribute("memberId", shiroUser.getMemberId());
 
         LogManager.me().executeLog(LogTaskFactory.loginLog(shiroUser.getId(), getIp()));
 

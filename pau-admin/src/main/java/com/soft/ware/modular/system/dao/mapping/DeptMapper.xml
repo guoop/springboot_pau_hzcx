@@ -24,12 +24,13 @@
 		'false'
 		END
 		) as isOpen from sys_dept
+		where memberid = #{memberId}
 	</select>
 
     <select id="list" resultType="map">
-        select * from sys_dept
+        select * from sys_dept where memberid = #{memberId}
         <if test="condition != null and condition != ''">
-            where simplename like CONCAT('%',#{condition},'%') or fullname like CONCAT('%',#{condition},'%')
+            and simplename like CONCAT('%',#{condition},'%') or fullname like CONCAT('%',#{condition},'%')
         </if>
         order by num ASC
     </select>

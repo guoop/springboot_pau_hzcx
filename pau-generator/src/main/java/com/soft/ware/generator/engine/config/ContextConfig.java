@@ -9,7 +9,7 @@ import com.soft.ware.core.util.ToolUtil;
 public class ContextConfig {
 
     private String templatePrefixPath = "pauTemplate/advanced";
-    private String projectPath = "D:\\ideaSpace\\pau";//模板输出的项目目录
+    private String projectPath = "D:\\gitrepsitory\\springboot_pau_hzcx";//模板输出的项目目录
     private String bizChName;   //业务名称
     private String bizEnName;   //业务英文名称
     private String bizEnBigName;//业务英文名称(大写)

@@ -46,6 +46,10 @@ public class Role extends Model<Role> {
      * 保留字段(暂时没用）
      */
 	private Integer version;
+	/**
+	 * 会员id
+	 */
+	private Integer memberId;
 
 
 	public Integer getId() {
@@ -109,6 +113,14 @@ public class Role extends Model<Role> {
 		return this.id;
 	}
 
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
+	}
+
 	@Override
 	public String toString() {
 		return "Role{" +
@@ -119,6 +131,7 @@ public class Role extends Model<Role> {
 			", deptid=" + deptid +
 			", tips=" + tips +
 			", version=" + version +
+			", memberId=" + memberId +
 			"}";
 	}
 }

@@ -23,7 +23,7 @@ public class PauGeneratorConfig extends AbstractGeneratorConfig {
         dataSourceConfig.setDriverName("com.mysql.jdbc.Driver");
         dataSourceConfig.setUsername("root");
         dataSourceConfig.setPassword("root");
-        dataSourceConfig.setUrl("jdbc:mysql://127.0.0.1:3306/pau?characterEncoding=utf8");
+        dataSourceConfig.setUrl("jdbc:mysql://127.0.0.1:3306/zk_snc?characterEncoding=utf8");
     }
 
     protected void strategyConfig() {

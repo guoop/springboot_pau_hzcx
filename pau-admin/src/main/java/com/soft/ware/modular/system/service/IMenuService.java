@@ -81,5 +81,14 @@ public interface IMenuService extends IService<Menu> {
      * @return
      * @date 2017年2月19日 下午10:35:40
      */
-    List<MenuNode> getMenusByRoleIds(List<Integer> roleIds);
+    List<MenuNode> getMenusByRoleIds(List<Integer> roleIds,Integer memberId);
+
+    /**
+     * 根据角色获取菜单列表
+     * @param roleIds
+     * @return
+     */
+    List<Map<String,Object>> selectListByRoleId(@Param("roleIds")List<Integer> roleIds);
+
+
 }

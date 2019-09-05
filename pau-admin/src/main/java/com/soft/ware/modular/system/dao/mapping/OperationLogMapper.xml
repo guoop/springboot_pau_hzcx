@@ -13,6 +13,7 @@
 		<result column="createtime" property="createtime" />
 		<result column="succeed" property="succeed" />
 		<result column="message" property="message" />
+		<result column="memberid" property="memberId" />
 	</resultMap>
 
 	<select id="getOperationLogs" resultType="map">

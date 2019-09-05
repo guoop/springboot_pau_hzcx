@@ -17,11 +17,12 @@
 		<result column="tips" property="tips" />
 		<result column="status" property="status" />
 		<result column="isopen" property="isopen" />
+        <result column="memberid" property="memberId"/>
 	</resultMap>
 
     <sql id="Base_Column_List">
         id, code, pcode, name, icon, url, num, levels,pcodes,
-        tips, status,isopen,ismenu
+        tips, status,isopen,ismenu,memberid
     </sql>
 
     <select id="selectMenus" resultType="map">
@@ -35,6 +36,8 @@
         <if test="level != null and level != ''">
             and levels = #{level}
         </if>
+
+
     </select>
 
     <select id="getMenuIdsByRoleId" resultType="long">
@@ -165,13 +168,24 @@
         sys_relation rela
         WHERE
         rela.roleid IN
-        <foreach collection="list" index="index" item="i" open="(" separator="," close=")">
+        <foreach collection="roleIds"  index="index" item="i" open="(" separator="," close=")">
             #{i}
         </foreach>
         )
         ) m3 ON m1.id = m3.id
         where m1.ismenu = 1
         order by levels,num asc
+    </select>
+
+    <select id="selectListByRoleId" resultType="map" >
+        select sm.id,sm.code,sm.pcode,sm.name,sm.icon,sm.url,sm.num,sm.levels,sm.pcodes,sm.tips,sm.tips,sm.status,sm.isopen,sm.memberid
+        from sys_role sr
+        LEFT JOIN  sys_relation sl on sr.id = sl.roleid
+        LEFT JOIN  sys_menu sm on sl.menuid = sm.id
+        where sr.id in
+        <foreach collection="roleIds"  index="index" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
     </select>
 
 </mapper>

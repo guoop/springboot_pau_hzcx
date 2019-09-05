@@ -2,6 +2,7 @@ package com.soft.ware.core.log.factory;
 
 import com.soft.ware.core.common.constant.state.LogSucceed;
 import com.soft.ware.core.common.constant.state.LogType;
+import com.soft.ware.core.shiro.ShiroKit;
 import com.soft.ware.modular.system.model.LoginLog;
 import com.soft.ware.modular.system.model.OperationLog;
 
@@ -25,6 +26,7 @@ public class LogFactory {
         operationLog.setCreatetime(new Date());
         operationLog.setSucceed(succeed.getMessage());
         operationLog.setMessage(msg);
+        operationLog.setMemberId(ShiroKit.getUser().getMemberId());
         return operationLog;
     }
 

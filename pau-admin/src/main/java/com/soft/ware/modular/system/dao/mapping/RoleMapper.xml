@@ -21,8 +21,9 @@
 		select
 		<include refid="Base_Column_List" />
 		from sys_role
+		where memberid = #{memberId}
 		<if test="condition != null">
-			where name like CONCAT('%',#{condition},'%')
+			and name like CONCAT('%',#{condition},'%')
 		</if>
 	</select>
 
@@ -30,13 +31,13 @@
 		delete from sys_relation where roleid = #{roleId}
 	</delete>
 
-	<select id="roleTreeList" resultType="com.soft.ware.core.node.ZTreeNode">
+	<select id="roleTreeList" parameterType="int" resultType="com.soft.ware.core.node.ZTreeNode">
 		select id "id",pId
 		"pId",name as "name",(case when (pId=0 or pId is null) then 'true'
-		else 'false' end) "open" from sys_role
+		else 'false' end) "open" from sys_role where memberid = #{memberId}
 	</select>
 
-	<select id="roleTreeListByRoleId" resultType="com.soft.ware.core.node.ZTreeNode">
+	<select id="roleTreeListByRoleId" parameterType="map" resultType="com.soft.ware.core.node.ZTreeNode">
 		SELECT
 		r.id "id",
 		pId "pId",
@@ -66,14 +67,13 @@
 		sys_role
 		WHERE
 		ID IN
-
-		<foreach collection="array" index="index" item="i" open="(" separator="," close=")">
-			#{i}
+		<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
 		</foreach>
-
-		) r1 ON r.ID = r1.ID
-		ORDER BY
-		pId,
-		num ASC
+			) r1 ON r.ID = r1.ID
+			where r.memberid = #{memberId}
+			ORDER BY
+			pId,
+			num ASC
 	</select>
 </mapper>

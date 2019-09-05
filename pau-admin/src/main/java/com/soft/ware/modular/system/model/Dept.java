@@ -51,6 +51,8 @@ public class Dept extends Model<Dept> {
      */
 	private Integer version;
 
+	private Integer memberId;
+
 
 	public Integer getId() {
 		return id;
@@ -114,6 +116,14 @@ public class Dept extends Model<Dept> {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	public Integer getMemberId() {
+		return memberId;
+	}
+
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
 	}
 
 	@Override

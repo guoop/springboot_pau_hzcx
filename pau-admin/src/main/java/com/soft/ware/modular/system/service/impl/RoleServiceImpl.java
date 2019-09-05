@@ -51,8 +51,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public List<Map<String, Object>> selectRoles(String condition) {
-        return this.baseMapper.selectRoles(condition);
+    public List<Map<String, Object>> selectRoles(String condition,Integer memberId) {
+        return this.baseMapper.selectRoles(condition,memberId);
     }
 
     @Override
@@ -61,13 +61,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public List<ZTreeNode> roleTreeList() {
-        return this.baseMapper.roleTreeList();
+    public List<ZTreeNode> roleTreeList(Integer memberId) {
+        return this.baseMapper.roleTreeList(memberId);
     }
 
     @Override
-    public List<ZTreeNode> roleTreeListByRoleId(String[] roleId) {
-        return this.baseMapper.roleTreeListByRoleId(roleId);
+    public List<ZTreeNode> roleTreeListByRoleId(Map map) {
+        return this.baseMapper.roleTreeListByRoleId(map);
     }
 
 }

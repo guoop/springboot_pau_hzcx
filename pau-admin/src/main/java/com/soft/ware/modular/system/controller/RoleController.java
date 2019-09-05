@@ -13,6 +13,7 @@ import com.soft.ware.core.common.exception.BizExceptionEnum;
 import com.soft.ware.core.exception.PauException;
 import com.soft.ware.core.log.LogObjectHolder;
 import com.soft.ware.core.node.ZTreeNode;
+import com.soft.ware.core.shiro.ShiroKit;
 import com.soft.ware.core.util.Convert;
 import com.soft.ware.core.util.ToolUtil;
 import com.soft.ware.modular.system.model.Role;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,7 +106,7 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(@RequestParam(required = false) String roleName) {
-        List<Map<String, Object>> roles = this.roleService.selectRoles(super.getPara("roleName"));
+        List<Map<String, Object>> roles = this.roleService.selectRoles(super.getPara("roleName"),ShiroKit.getUser().getMemberId());
         return super.warpObject(new RoleWarpper(roles));
     }
 
@@ -113,13 +115,14 @@ public class RoleController extends BaseController {
      */
     @RequestMapping(value = "/add")
     @BussinessLog(value = "添加角色", key = "name", dict = RoleDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip add(@Valid Role role, BindingResult result) {
         if (result.hasErrors()) {
             throw new PauException(BizExceptionEnum.REQUEST_NULL);
         }
         role.setId(null);
+        role.setMemberId(ShiroKit.getUser().getMemberId());
         this.roleService.insert(role);
         return SUCCESS_TIP;
     }
@@ -129,7 +132,7 @@ public class RoleController extends BaseController {
      */
     @RequestMapping(value = "/edit")
     @BussinessLog(value = "修改角色", key = "name", dict = RoleDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip edit(@Valid Role role, BindingResult result) {
         if (result.hasErrors()) {
@@ -147,7 +150,7 @@ public class RoleController extends BaseController {
      */
     @RequestMapping(value = "/remove")
     @BussinessLog(value = "删除角色", key = "roleId", dict = RoleDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip remove(@RequestParam Integer roleId) {
         if (ToolUtil.isEmpty(roleId)) {
@@ -187,7 +190,7 @@ public class RoleController extends BaseController {
      */
     @RequestMapping("/setAuthority")
     @BussinessLog(value = "配置权限", key = "roleId,ids", dict = RoleDict.class)
-    @Permission(Const.ADMIN_NAME)
+    @Permission({Const.ADMIN_NAME,Const.ADMIN,Const.TEST,Const.MEMBER_ROLE})
     @ResponseBody
     public Tip setAuthority(@RequestParam("roleId") Integer roleId, @RequestParam("ids") String ids) {
         if (ToolUtil.isOneEmpty(roleId)) {
@@ -203,7 +206,7 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/roleTreeList")
     @ResponseBody
     public List<ZTreeNode> roleTreeList() {
-        List<ZTreeNode> roleTreeList = this.roleService.roleTreeList();
+        List<ZTreeNode> roleTreeList = this.roleService.roleTreeList(ShiroKit.getUser().getMemberId());
         roleTreeList.add(ZTreeNode.createParent());
         return roleTreeList;
     }
@@ -215,13 +218,16 @@ public class RoleController extends BaseController {
     @ResponseBody
     public List<ZTreeNode> roleTreeListByUserId(@PathVariable Integer userId) {
         User theUser = this.userService.selectById(userId);
+        Map param = new HashMap();
         String roleid = theUser.getRoleid();
         if (ToolUtil.isEmpty(roleid)) {
-            List<ZTreeNode> roleTreeList = this.roleService.roleTreeList();
+            List<ZTreeNode> roleTreeList = this.roleService.roleTreeList(ShiroKit.getUser().getMemberId());
             return roleTreeList;
         } else {
             String[] strArray = Convert.toStrArray(",", roleid);
-            List<ZTreeNode> roleTreeListByUserId = this.roleService.roleTreeListByRoleId(strArray);
+            param.put("array",strArray);
+            param.put("memberId",ShiroKit.getUser().getMemberId());
+            List<ZTreeNode> roleTreeListByUserId = this.roleService.roleTreeListByRoleId(param);
             return roleTreeListByUserId;
         }
     }
